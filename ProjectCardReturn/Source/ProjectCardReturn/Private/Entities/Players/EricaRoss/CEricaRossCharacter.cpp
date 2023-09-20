@@ -4,6 +4,7 @@
 #include "Entities/Players/EricaRoss/CEricaRossCharacter.h"
 
 #include "Entities/Players/EricaRoss/CEricaRossDataAsset.h"
+#include "Entities/Players/EricaRoss/CEricaRossPlayerController.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -69,7 +70,7 @@ ACEricaRossCharacter::ACEricaRossCharacter()
 	}
 
 	bUseControllerRotationYaw = false;
-	CurrentShootMode = ShootMode::Auto;
+	CurrentShootMode = ShootMode::Rapid;
 }
 
 void ACEricaRossCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -83,6 +84,14 @@ void ACEricaRossCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	}
 }
 
+void ACEricaRossCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	CachedEricaRossPlayerController = Cast<ACEricaRossPlayerController>(NewController);
+	RETURN_IF_INVALID(CachedEricaRossPlayerController);
+}
+
 void ACEricaRossCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -93,13 +102,23 @@ void ACEricaRossCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+/**
+ * 필드에 카드를 발사합니다.
+ * CurrentShootMode의 값에따라 발사모드가 달라집니다.
+ */
 void ACEricaRossCharacter::Shoot()
 {
 	switch (CurrentShootMode)
 	{
-		case ShootMode::Auto:
+		case ShootMode::Rapid:
 		{
+			RapidShoot();
 			
+			break;
+		}
+		case ShootMode::Buckshot:
+		{
+			BuckshotShoot();
 			
 			break;
 		}
@@ -108,6 +127,15 @@ void ACEricaRossCharacter::Shoot()
 			break;
 		}
 	}
+}
+
+/**
+ * 필드에 발사된 카드를 회수합니다.
+ */
+void ACEricaRossCharacter::Return()
+{
+	
+	UE_LOG(LogTemp, Warning, TEXT("Return!"));
 }
 
 void ACEricaRossCharacter::Move(const FInputActionValue& InputActionValue)
@@ -126,4 +154,17 @@ void ACEricaRossCharacter::Move(const FInputActionValue& InputActionValue)
 
 	FVector MoveDirection = (FrontDirection * MoveScalar.X) + (SideDirection * MoveScalar.Y);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+}
+
+void ACEricaRossCharacter::RapidShoot()
+{
+	FVector MouseDirection = CachedEricaRossPlayerController->GetMouseDirection();
+
+	UE_LOG(LogTemp, Warning, TEXT("RapidShoot to %s"), *MouseDirection.ToString());
+
+}
+void ACEricaRossCharacter::BuckshotShoot()
+{
+	UE_LOG(LogTemp, Warning, TEXT("BuckshotShoot!"));
+
 }

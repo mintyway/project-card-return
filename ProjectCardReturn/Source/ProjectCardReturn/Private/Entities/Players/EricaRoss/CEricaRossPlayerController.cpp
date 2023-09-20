@@ -7,6 +7,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Entities/Players/EricaRoss/CEricaRossCharacter.h"
 
 ACEricaRossPlayerController::ACEricaRossPlayerController()
 {
@@ -22,7 +23,7 @@ ACEricaRossPlayerController::ACEricaRossPlayerController()
 void ACEricaRossPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	
+
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		RETURN_IF_INVALID(DataAsset);
@@ -35,7 +36,8 @@ void ACEricaRossPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	
+	CachedEricaRossCharacter = Cast<ACEricaRossCharacter>(InPawn);
+	RETURN_IF_INVALID(CachedEricaRossCharacter);
 }
 
 void ACEricaRossPlayerController::BeginPlay()
@@ -48,12 +50,37 @@ void ACEricaRossPlayerController::BeginPlay()
 	}
 }
 
+/**
+ * 현재 마우스 커서의 위치를 반환합니다.\n
+ * 실패 시 FVector::UnitX()를 반환합니다.
+ * @return 현재 마우스 커서의 위치
+ */
+FVector ACEricaRossPlayerController::GetMouseDirection()
+{
+	FHitResult MouseClickedResult;
+	if (GetHitResultUnderCursor(ECC_Visibility, false, MouseClickedResult))
+	{
+		FVector MouseClickedLocation = MouseClickedResult.Location;
+		MouseClickedLocation.Z = 0.0;
+		
+		RETURN_IF_INVALID(CachedEricaRossCharacter, FVector::UnitX());
+		FVector EricaRossLocation = CachedEricaRossCharacter->GetActorLocation();
+		EricaRossLocation.Z = 0.0;
+		
+		FVector MouseDirection = (MouseClickedLocation - EricaRossLocation).GetSafeNormal();
+		return MouseDirection;
+	}
+	
+	return FVector::UnitX();
+}
+
 void ACEricaRossPlayerController::Shoot()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Shoot!"));
+	GetMouseDirection();
+	CachedEricaRossCharacter->Shoot();
 }
 
 void ACEricaRossPlayerController::Return()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Return!"));
+	CachedEricaRossCharacter->Return();
 }

@@ -15,7 +15,7 @@ UCLASS()
 class PROJECTCARDRETURN_API ACEricaRossPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 public:
 	ACEricaRossPlayerController();
 
@@ -24,10 +24,13 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
 
+public:
+	FVector GetMouseDirection();
+
 private:
 	void Shoot();
 	void Return();
-	
+
 	TObjectPtr<UCEricaRossDataAsset> DataAsset;
-	TObjectPtr<ACEricaRossCharacter> CachedEricaRossCharacter; 
+	TObjectPtr<ACEricaRossCharacter> CachedEricaRossCharacter;
 };

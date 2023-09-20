@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "CEricaRossCharacter.generated.h"
 
+class ACEricaRossPlayerController;
 class UCEricaRossDataAsset;
 class UCameraComponent;
 class USpringArmComponent;
@@ -16,8 +17,8 @@ class USpringArmComponent;
  */
 enum class ShootMode
 {
-	Auto,
-	
+	Rapid,
+	Buckshot
 };
 
 UCLASS()
@@ -30,14 +31,18 @@ public:
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 public:
 	void Shoot();
+	void Return();
 	
 private:
 	void Move(const FInputActionValue& InputActionValue);
+	void RapidShoot();
+	void BuckshotShoot();
 	
 	UPROPERTY()
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -46,6 +51,6 @@ private:
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	TObjectPtr<UCEricaRossDataAsset> DataAsset;
-	
+	TObjectPtr<ACEricaRossPlayerController> CachedEricaRossPlayerController;
 	ShootMode CurrentShootMode;
 };
