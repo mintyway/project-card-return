@@ -1,0 +1,19 @@
+# Visual Studio
+.vs/
+*.sln
+*.vsconfig
+
+# Rider
+.idea/
+*.uproject.DotSettings.user
+
+# Unreal Engine
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Platforms/
+Saved/
+
+# Misc
+.DS_Store/
