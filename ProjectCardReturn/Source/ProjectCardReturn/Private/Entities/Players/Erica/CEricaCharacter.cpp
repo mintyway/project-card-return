@@ -6,6 +6,7 @@
 
 #include "Entities/Players/Erica/CEricaDataAsset.h"
 #include "Entities/Players/Erica/CEricaPlayerController.h"
+#include "Entities/Projectiles/CEricaCardProjectile.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -114,13 +115,13 @@ void ACEricaCharacter::Shoot()
 		case ShootMode::Rapid:
 		{
 			RapidShoot();
-			
+
 			break;
 		}
 		case ShootMode::Buckshot:
 		{
 			BuckshotShoot();
-			
+
 			break;
 		}
 		default:
@@ -135,8 +136,13 @@ void ACEricaCharacter::Shoot()
  */
 void ACEricaCharacter::Return()
 {
-	
 	UE_LOG(LogTemp, Warning, TEXT("Return!"));
+
+	while ((CardProjectileQueue.Num() >= 1) && (!CardProjectileQueue.Last()->IsShooting()))
+	{
+		ACEricaCardProjectile* ReturningCard = CardProjectileQueue.Pop();
+		ReturningCard->CardReturn();
+	}
 }
 
 void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
@@ -160,11 +166,19 @@ void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 void ACEricaCharacter::RapidShoot()
 {
 	FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+	FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
+
+	ACEricaCardProjectile* CardProjectile = GetWorld()->SpawnActor<ACEricaCardProjectile>(GetActorLocation(), MouseDirectionRotator);
+	CardProjectileQueue.Insert(CardProjectile, 0);
+	CardProjectileQueue[0]->Init(this);
+
+	// FTimerHandle CoolTimeHandle;
+	// GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::)
 
 	UE_LOG(LogTemp, Warning, TEXT("RapidShoot to %s"), *MouseDirection.ToString());
 }
+
 void ACEricaCharacter::BuckshotShoot()
 {
 	UE_LOG(LogTemp, Warning, TEXT("BuckshotShoot!"));
-
 }

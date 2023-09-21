@@ -22,7 +22,12 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
+	virtual void Init(AActor* InitShooter) override;
+	
+	bool IsShooting();
+	void CardReturn();
 
 private:
-	
+	bool bIsShooting;
+	bool bIsReturning;
 };

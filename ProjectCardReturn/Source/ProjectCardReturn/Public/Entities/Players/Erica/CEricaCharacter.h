@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "CEricaCharacter.generated.h"
 
+class ACEricaCardProjectile;
 class ACEricaPlayerController;
 class UCEricaDataAsset;
 class UCameraComponent;
@@ -53,4 +54,5 @@ private:
 	TObjectPtr<UCEricaDataAsset> EricaDataAsset;
 	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
 	ShootMode CurrentShootMode;
+	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileQueue;
 };

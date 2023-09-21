@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CBaseProjectile.generated.h"
 
+class UBoxComponent;
 class UCProjectileDataAsset;
 class UProjectileMovementComponent;
 
@@ -24,12 +25,29 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	virtual void Init(AActor* InitShooter);
+	
+	FORCEINLINE TObjectPtr<UBoxComponent> GetBoxComponent() const { return BoxComponent; }
+	FORCEINLINE TObjectPtr<UProjectileMovementComponent> GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
+	FORCEINLINE TObjectPtr<UStaticMeshComponent> GetStaticMeshComponent() const { return StaticMeshComponent; }
+	FORCEINLINE TObjectPtr<UCProjectileDataAsset> GetProjectileDataAsset() const { return ProjectileDataAsset; }
+	FORCEINLINE TObjectPtr<AActor> GetShooter() const { return Shooter; }
+	FORCEINLINE FVector GetStartLocation() const { return StartLocation; }
+
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Collider")
+	TObjectPtr<UBoxComponent> BoxComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Owner")
+	TObjectPtr<AActor> Shooter;
+
 	TObjectPtr<UCProjectileDataAsset> ProjectileDataAsset;
+	FVector StartLocation;
 };
