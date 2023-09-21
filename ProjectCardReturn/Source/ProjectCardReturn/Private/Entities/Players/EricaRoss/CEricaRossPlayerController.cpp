@@ -4,10 +4,10 @@
 #include "Entities/Players/EricaRoss/CEricaRossPlayerController.h"
 
 #include "Entities/Players/EricaRoss/CEricaRossDataAsset.h"
+#include "Entities/Players/EricaRoss/CEricaRossCharacter.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Entities/Players/EricaRoss/CEricaRossCharacter.h"
 
 ACEricaRossPlayerController::ACEricaRossPlayerController()
 {
@@ -48,6 +48,15 @@ void ACEricaRossPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DataAsset->GetDefaultInputMappingContext(), 0);
 	}
+}
+
+void ACEricaRossPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
+	RETURN_IF_INVALID(IsValid(CachedEricaRossCharacter));
+	CachedEricaRossCharacter->SetActorRotation(MouseDirectionRotator);
 }
 
 /**

@@ -19,7 +19,7 @@ ACEricaRossCharacter::ACEricaRossCharacter()
 	static ConstructorHelpers::FObjectFinder<UCEricaRossDataAsset> DA_EricaRoss(TEXT("/Script/ProjectCardReturn.CEricaRossDataAsset'/Game/DataAssets/DA_EricaRoss.DA_EricaRoss'"));
 	if (DA_EricaRoss.Succeeded())
 	{
-		DataAsset = DA_EricaRoss.Object;
+		EricaRossDataAsset = DA_EricaRoss.Object;
 	}
 
 	if (GetCapsuleComponent())
@@ -28,16 +28,16 @@ ACEricaRossCharacter::ACEricaRossCharacter()
 		GetCapsuleComponent()->InitCapsuleSize(1.f, 77.f);
 	}
 
-	if (GetMesh() && DataAsset)
+	if (GetMesh() && EricaRossDataAsset)
 	{
-		GetMesh()->SetSkeletalMesh(DataAsset->GetMesh());
+		GetMesh()->SetSkeletalMesh(EricaRossDataAsset->GetMesh());
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
 
 	if (GetCharacterMovement())
 	{
-		GetCharacterMovement()->bUseControllerDesiredRotation = true;
+		// GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->BrakingFriction = 1.f;
 		GetCharacterMovement()->MaxAcceleration = 999999.f;
 		// 파라미터화 필요
@@ -79,8 +79,8 @@ void ACEricaRossCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		RETURN_IF_INVALID(DataAsset)
-		EnhancedInputComponent->BindAction(DataAsset->GetMoveInputAction(), ETriggerEvent::Triggered, this, &ACEricaRossCharacter::Move);
+		RETURN_IF_INVALID(EricaRossDataAsset)
+		EnhancedInputComponent->BindAction(EricaRossDataAsset->GetMoveInputAction(), ETriggerEvent::Triggered, this, &ACEricaRossCharacter::Move);
 	}
 }
 
@@ -161,7 +161,6 @@ void ACEricaRossCharacter::RapidShoot()
 	FVector MouseDirection = CachedEricaRossPlayerController->GetMouseDirection();
 
 	UE_LOG(LogTemp, Warning, TEXT("RapidShoot to %s"), *MouseDirection.ToString());
-
 }
 void ACEricaRossCharacter::BuckshotShoot()
 {

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "GameFramework/GameModeBase.h"
 #include "CGameModeBase.generated.h"
 

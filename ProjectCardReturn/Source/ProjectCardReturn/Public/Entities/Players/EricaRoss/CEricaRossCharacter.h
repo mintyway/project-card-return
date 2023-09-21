@@ -50,7 +50,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	TObjectPtr<UCEricaRossDataAsset> DataAsset;
+	TObjectPtr<UCEricaRossDataAsset> EricaRossDataAsset;
 	TObjectPtr<ACEricaRossPlayerController> CachedEricaRossPlayerController;
 	ShootMode CurrentShootMode;
 };
