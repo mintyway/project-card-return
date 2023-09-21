@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CBaseProjectile.generated.h"
 
+class UCProjectileDataAsset;
 class UProjectileMovementComponent;
 
 /**
@@ -29,4 +30,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
+
+	TObjectPtr<UCProjectileDataAsset> ProjectileDataAsset;
 };

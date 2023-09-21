@@ -14,7 +14,10 @@ class PROJECTCARDRETURN_API UCProjectileDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 
+public:
+	FORCEINLINE TObjectPtr<UStaticMesh> GetEricaCardMesh() const { return EricaCardMesh; }
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	TObjectPtr<UStaticMesh> CardMesh;
+	TObjectPtr<UStaticMesh> EricaCardMesh;
 };
