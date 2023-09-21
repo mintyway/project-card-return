@@ -4,20 +4,21 @@
 
 #include "ProjectCardReturn.h"
 #include "Engine/DataAsset.h"
-#include "CEricaRossDataAsset.generated.h"
+#include "CEricaDataAsset.generated.h"
 
 class UInputAction;
 class UInputMappingContext;
+
 /**
  * 메인 플레이어블 캐릭터 에리카 로스에 필요한 에셋 모음입니다.
  */
 UCLASS()
-class PROJECTCARDRETURN_API UCEricaRossDataAsset : public UDataAsset
+class PROJECTCARDRETURN_API UCEricaDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE TObjectPtr<USkeletalMesh> GetMesh() const { return Mesh; }
+	FORCEINLINE TObjectPtr<USkeletalMesh> GetSkeletalMesh() const { return SkeletalMesh; }
 	FORCEINLINE TObjectPtr<UInputMappingContext> GetDefaultInputMappingContext() const { return DefaultInputMappingContext; }
 	FORCEINLINE TObjectPtr<UInputAction> GetMoveInputAction() const { return MoveInputAction; }
 	FORCEINLINE TObjectPtr<UInputAction> GetShootInputAction() const { return ShootInputAction; }
@@ -25,7 +26,7 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
-	TObjectPtr<USkeletalMesh> Mesh;
+	TObjectPtr<USkeletalMesh> SkeletalMesh;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;

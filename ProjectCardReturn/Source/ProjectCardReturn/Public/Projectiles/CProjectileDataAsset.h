@@ -13,5 +13,8 @@ UCLASS()
 class PROJECTCARDRETURN_API UCProjectileDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
-	
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	TObjectPtr<UStaticMesh> CardMesh;
 };

@@ -4,20 +4,20 @@
 
 #include "ProjectCardReturn.h"
 #include "GameFramework/PlayerController.h"
-#include "CEricaRossPlayerController.generated.h"
+#include "CEricaPlayerController.generated.h"
 
-class ACEricaRossCharacter;
-class UCEricaRossDataAsset;
+class ACEricaCharacter;
+class UCEricaDataAsset;
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API ACEricaRossPlayerController : public APlayerController
+class PROJECTCARDRETURN_API ACEricaPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	ACEricaRossPlayerController();
+	ACEricaPlayerController();
 
 protected:
 	virtual void SetupInputComponent() override;
@@ -32,6 +32,6 @@ private:
 	void Shoot();
 	void Return();
 
-	TObjectPtr<UCEricaRossDataAsset> DataAsset;
-	TObjectPtr<ACEricaRossCharacter> CachedEricaRossCharacter;
+	TObjectPtr<UCEricaDataAsset> DataAsset;
+	TObjectPtr<ACEricaCharacter> CachedEricaCharacter;
 };

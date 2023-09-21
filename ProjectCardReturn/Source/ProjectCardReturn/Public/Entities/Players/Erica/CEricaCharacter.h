@@ -5,10 +5,10 @@
 #include "InputActionValue.h"
 #include "ProjectCardReturn.h"
 #include "GameFramework/Character.h"
-#include "CEricaRossCharacter.generated.h"
+#include "CEricaCharacter.generated.h"
 
-class ACEricaRossPlayerController;
-class UCEricaRossDataAsset;
+class ACEricaPlayerController;
+class UCEricaDataAsset;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -22,12 +22,12 @@ enum class ShootMode
 };
 
 UCLASS()
-class PROJECTCARDRETURN_API ACEricaRossCharacter : public ACharacter
+class PROJECTCARDRETURN_API ACEricaCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	ACEricaRossCharacter();
+	ACEricaCharacter();
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -50,7 +50,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	TObjectPtr<UCEricaRossDataAsset> EricaRossDataAsset;
-	TObjectPtr<ACEricaRossPlayerController> CachedEricaRossPlayerController;
+	TObjectPtr<UCEricaDataAsset> EricaDataAsset;
+	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
 	ShootMode CurrentShootMode;
 };

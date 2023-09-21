@@ -3,11 +3,11 @@
 
 #include "Game/CGameModeBase.h"
 
-#include "Entities/Players/EricaRoss/CEricaRossCharacter.h"
-#include "Entities/Players/EricaRoss/CEricaRossPlayerController.h"
+#include "Entities/Players/Erica/CEricaCharacter.h"
+#include "Entities/Players/Erica/CEricaPlayerController.h"
 
 ACGameModeBase::ACGameModeBase()
 {
-	DefaultPawnClass = ACEricaRossCharacter::StaticClass();
-	PlayerControllerClass = ACEricaRossPlayerController::StaticClass();
+	DefaultPawnClass = ACEricaCharacter::StaticClass();
+	PlayerControllerClass = ACEricaPlayerController::StaticClass();
 }
