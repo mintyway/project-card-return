@@ -11,7 +11,7 @@
 
 ACEricaCardProjectile::ACEricaCardProjectile()
 {
-	Speed = 3000.f;
+	ProjectileSpeed = 3000.f;
 	ReturnSpeed = 6000.f;
 	Range = 1000.f;
 	ReturnRange = 50.f;
@@ -30,11 +30,11 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 	if (GetProjectileMovementComponent())
 	{
 		GetProjectileMovementComponent()->InitialSpeed = 0;
-		GetProjectileMovementComponent()->MaxSpeed = Speed;
+		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
 	}
 }
 
-void ACEricaCardProjectile::Init(AActor* Shooter, AActor* Pool)
+void ACEricaCardProjectile::Init(AActor* Shooter, ACBaseProjectilePool* Pool)
 {
 	Super::Init(Shooter, Pool);
 
@@ -45,9 +45,6 @@ void ACEricaCardProjectile::Init(AActor* Shooter, AActor* Pool)
 void ACEricaCardProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	RETURN_IF_INVALID(GetOwner());
-	UE_LOG(LogTemp, Warning, TEXT("Owner Address: %s"), *GetOwner()->GetName());
 }
 
 void ACEricaCardProjectile::Tick(float DeltaSeconds)
@@ -62,27 +59,48 @@ void ACEricaCardProjectile::Tick(float DeltaSeconds)
 	{
 		CheckCardRangeAndStop(DeltaSeconds);
 	}
-
-	// UE_LOG(LogTemp, Warning, TEXT("%f"), GetProjectileMovementComponent()->Velocity.Size());
 }
 
 /**
  * 카드를 발사시킵니다.
  * @param Direction 카드의 진행방향
  */
-void ACEricaCardProjectile::ShootCard(const FVector& Direction)
-{
-	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * Speed;
-	bIsShooting = true;
-}
-
-void ACEricaCardProjectile::ReturnCard()
+void ACEricaCardProjectile::Shoot(const FVector& Direction)
 {
 	SIMPLE_LOG;
 
+	Super::Shoot(Direction);
+	
+	bIsShooting = true;
+}
+
+/**
+ * 카드의 활성화 여부를 설정합니다.
+ */
+void ACEricaCardProjectile::SetCardEnable(bool bIsEnable)
+{
+	SIMPLE_LOG;
+
+	if (bIsEnable)
+	{
+		SetActorTickEnabled(true);
+		GetProjectileMovementComponent()->Activate();
+	}
+	else
+	{
+		SetActorTickEnabled(false);
+		GetProjectileMovementComponent()->Deactivate();
+	}
+}
+
+/**
+ * 카드를 플레이어에게로 복귀하는 상태로 바꿉니다.
+ */
+void ACEricaCardProjectile::ReturnCard()
+{
+	SIMPLE_LOG;
 	bIsReturning = true;
-	SetActorTickEnabled(true);
-	GetProjectileMovementComponent()->Activate();
+	SetCardEnable(true);
 }
 
 /**
@@ -101,7 +119,7 @@ void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
 	{
 		bIsReturning = false;
 		ACEricaCardProjectilePool* Pool = Cast<ACEricaCardProjectilePool>(GetOwnerPool());
-		Pool->ReturnCard(this);
+		ReturnToProjectilePool();
 	}
 }
 
@@ -113,8 +131,9 @@ void ACEricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 	float Distance = FVector::DistSquared(GetShootLocation(), GetActorLocation());
 	if (Distance >= (Range * Range))
 	{
-		GetProjectileMovementComponent()->Deactivate();
-		SetActorTickEnabled(false);
+		SIMPLE_LOG;
+
 		bIsShooting = false;
+		SetCardEnable(false);
 	}
 }

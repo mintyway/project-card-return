@@ -56,7 +56,6 @@ private:
 	TObjectPtr<ACEricaCardProjectilePool> CardPool;
 	TObjectPtr<UCEricaDataAsset> EricaDataAsset;
 	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
-	TQueue<TObjectPtr<ACEricaCardProjectile>> CardQueue;
 	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileArray;
 	ShootMode CurrentShootMode;
 	bool bCanRapidShoot;

@@ -96,7 +96,7 @@ void ACEricaCharacter::PostInitializeComponents()
 	RETURN_IF_INVALID(IsValid(GetWorld()));
 	CardPool = GetWorld()->SpawnActor<ACEricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
 	RETURN_IF_INVALID(IsValid(CardPool));
-	CardPool->InitCard(this);
+	CardPool->InitProjectilePool(ACEricaCardProjectile::StaticClass(), this);
 }
 
 void ACEricaCharacter::PossessedBy(AController* NewController)
@@ -192,9 +192,11 @@ void ACEricaCharacter::RapidShoot()
 		FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
 
 		RETURN_IF_INVALID(CardPool);
-		ACEricaCardProjectile* CardProjectile = CardPool->GetCard(GetActorLocation(), MouseDirectionRotator);
+		ACEricaCardProjectile* CardProjectile = Cast<ACEricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
 		RETURN_IF_INVALID(IsValid(CardProjectile));
 		CardProjectileArray.Insert(CardProjectile, 0);
+		UE_LOG(LogTemp, Warning, TEXT("%d"), CardProjectileArray.Num());
+		CardProjectile->Shoot(MouseDirectionRotator.Vector());
 	}
 }
 

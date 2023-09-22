@@ -9,7 +9,7 @@
 class UBoxComponent;
 class UCProjectileDataAsset;
 class UProjectileMovementComponent;
-class ACEricaCardProjectilePool;
+class ACBaseProjectilePool;
 
 /**
  * 기본 베이스 투사체 클래스입니다.
@@ -23,19 +23,25 @@ public:
 	ACBaseProjectile();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual void Init(AActor* Shooter, AActor* Pool = nullptr);
+	virtual void Init(AActor* Shooter, ACBaseProjectilePool* Pool);
+	virtual void Shoot(const FVector& Direction);
+	void ReturnToProjectilePool();
 	
-	FORCEINLINE TObjectPtr<UBoxComponent> GetBoxComponent() const { return BoxComponent; }
-	FORCEINLINE TObjectPtr<UProjectileMovementComponent> GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
-	FORCEINLINE TObjectPtr<UStaticMeshComponent> GetStaticMeshComponent() const { return StaticMeshComponent; }
-	FORCEINLINE TObjectPtr<UCProjectileDataAsset> GetProjectileDataAsset() const { return ProjectileDataAsset; }
+	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent; }
+	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
+	FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
+	FORCEINLINE UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
+	FORCEINLINE ACBaseProjectilePool* GetOwnerPool() const { return OwnerPool; }
 	FORCEINLINE FVector GetShootLocation() const { return ShootLocation; }
-	FORCEINLINE void SetShootLocation(const FVector& NewLocation) { ShootLocation = NewLocation; }
-	FORCEINLINE TObjectPtr<AActor> GetOwnerPool() const { return OwnerPool; }
+
+protected:
+	FVector ShootLocation;
+	float ProjectileSpeed;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
@@ -46,9 +52,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
+	
+	UPROPERTY()
+	TObjectPtr<ACBaseProjectilePool> OwnerPool;
 
 	TObjectPtr<UCProjectileDataAsset> ProjectileDataAsset;
-	FVector ShootLocation;
-
-	TObjectPtr<AActor> OwnerPool;
 };
