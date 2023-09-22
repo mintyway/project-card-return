@@ -75,7 +75,7 @@ ACEricaCharacter::ACEricaCharacter()
 	bUseControllerRotationYaw = false;
 	CurrentShootMode = ShootMode::Rapid;
 	bCanRapidShoot = true;
-	RapidShootCoolTime = 0.3f;
+	RapidShootCoolTime = 0.0f;
 }
 
 void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
