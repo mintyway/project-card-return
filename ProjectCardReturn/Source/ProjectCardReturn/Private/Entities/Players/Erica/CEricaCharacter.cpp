@@ -7,6 +7,8 @@
 #include "Entities/Players/Erica/CEricaDataAsset.h"
 #include "Entities/Players/Erica/CEricaPlayerController.h"
 #include "Entities/Projectiles/CEricaCardProjectile.h"
+#include "Entities/Projectiles/CEricaCardProjectilePool.h"
+#include "Game/CGameInstance.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -39,7 +41,6 @@ ACEricaCharacter::ACEricaCharacter()
 
 	if (GetCharacterMovement())
 	{
-		// GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->BrakingFriction = 1.f;
 		GetCharacterMovement()->MaxAcceleration = 999999.f;
 		// 파라미터화 필요
@@ -58,7 +59,7 @@ ACEricaCharacter::ACEricaCharacter()
 		CameraBoom->bDoCollisionTest = false;
 		CameraBoom->bEnableCameraLag = true;
 		// 파라미터화 필요
-		CameraBoom->TargetArmLength = 800.f;
+		CameraBoom->TargetArmLength = 1000.f;
 		// 파라미터화 필요
 		CameraBoom->CameraLagSpeed = 10.f;
 		// 파라미터화 필요
@@ -73,6 +74,7 @@ ACEricaCharacter::ACEricaCharacter()
 
 	bUseControllerRotationYaw = false;
 	CurrentShootMode = ShootMode::Rapid;
+	bCanRapidShoot = true;
 }
 
 void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -86,10 +88,22 @@ void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+void ACEricaCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	// 카드 풀을 생성하는 코드입니다.
+	RETURN_IF_INVALID(IsValid(GetWorld()));
+	CardPool = GetWorld()->SpawnActor<ACEricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
+	RETURN_IF_INVALID(IsValid(CardPool));
+	CardPool->InitCard(this);
+}
+
 void ACEricaCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
+	
+	// 사용중인 컨트롤러를 캐싱해두는 코드입니다.
 	CachedEricaPlayerController = Cast<ACEricaPlayerController>(NewController);
 	RETURN_IF_INVALID(CachedEricaPlayerController);
 }
@@ -97,6 +111,7 @@ void ACEricaCharacter::PossessedBy(AController* NewController)
 void ACEricaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void ACEricaCharacter::Tick(float DeltaTime)
@@ -108,7 +123,7 @@ void ACEricaCharacter::Tick(float DeltaTime)
  * 필드에 카드를 발사합니다.
  * CurrentShootMode의 값에따라 발사모드가 달라집니다.
  */
-void ACEricaCharacter::Shoot()
+void ACEricaCharacter::ShootCard()
 {
 	switch (CurrentShootMode)
 	{
@@ -134,14 +149,12 @@ void ACEricaCharacter::Shoot()
 /**
  * 필드에 발사된 카드를 회수합니다.
  */
-void ACEricaCharacter::Return()
+void ACEricaCharacter::ReturnCard()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Return!"));
-
-	while ((CardProjectileQueue.Num() >= 1) && (!CardProjectileQueue.Last()->IsShooting()))
+	while (!CardProjectileArray.IsEmpty() && !CardProjectileArray.Last()->IsShooting())
 	{
-		ACEricaCardProjectile* ReturningCard = CardProjectileQueue.Pop();
-		ReturningCard->CardReturn();
+		ACEricaCardProjectile* ReturningCard = CardProjectileArray.Pop();
+		ReturningCard->ReturnCard();
 	}
 }
 
@@ -165,17 +178,24 @@ void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 
 void ACEricaCharacter::RapidShoot()
 {
-	FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-	FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
+	if (bCanRapidShoot)
+	{
+		bCanRapidShoot = false;
+		
+		FTimerHandle CoolTimeHandle;
+		GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
+		{
+			bCanRapidShoot = true;
+		}), 0.3f, false);
+		
+		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
 
-	ACEricaCardProjectile* CardProjectile = GetWorld()->SpawnActor<ACEricaCardProjectile>(GetActorLocation(), MouseDirectionRotator);
-	CardProjectileQueue.Insert(CardProjectile, 0);
-	CardProjectileQueue[0]->Init(this);
-
-	// FTimerHandle CoolTimeHandle;
-	// GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::)
-
-	UE_LOG(LogTemp, Warning, TEXT("RapidShoot to %s"), *MouseDirection.ToString());
+		RETURN_IF_INVALID(CardPool);
+		ACEricaCardProjectile* CardProjectile = CardPool->GetCard(GetActorLocation(), MouseDirectionRotator);
+		RETURN_IF_INVALID(IsValid(CardProjectile));
+		CardProjectileArray.Insert(CardProjectile, 0);
+	}
 }
 
 void ACEricaCharacter::BuckshotShoot()

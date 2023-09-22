@@ -13,5 +13,9 @@ UCLASS()
 class PROJECTCARDRETURN_API UCParameterDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
+
+public:
+
+private:
 	
 };

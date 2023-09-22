@@ -27,8 +27,8 @@ void ACEricaPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		RETURN_IF_INVALID(DataAsset);
-		EnhancedInputComponent->BindAction(DataAsset->GetShootInputAction(), ETriggerEvent::Started, this, &ACEricaPlayerController::Shoot);
-		EnhancedInputComponent->BindAction(DataAsset->GetReturnInputAction(), ETriggerEvent::Started, this, &ACEricaPlayerController::Return);
+		EnhancedInputComponent->BindAction(DataAsset->GetShootInputAction(), ETriggerEvent::Triggered, this, &ACEricaPlayerController::Shoot);
+		EnhancedInputComponent->BindAction(DataAsset->GetReturnInputAction(), ETriggerEvent::Triggered, this, &ACEricaPlayerController::Return);
 	}
 }
 
@@ -87,10 +87,10 @@ FVector ACEricaPlayerController::GetMouseDirection()
 void ACEricaPlayerController::Shoot()
 {
 	GetMouseDirection();
-	CachedEricaCharacter->Shoot();
+	CachedEricaCharacter->ShootCard();
 }
 
 void ACEricaPlayerController::Return()
 {
-	CachedEricaCharacter->Return();
+	CachedEricaCharacter->ReturnCard();
 }

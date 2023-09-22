@@ -22,12 +22,20 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	virtual void Init(AActor* InitShooter) override;
-	
-	bool IsShooting();
-	void CardReturn();
+	virtual void Init(AActor* Shooter, AActor* Pool) override;
+
+	void ShootCard(const FVector& Direction);
+	void ReturnCard();
+	bool IsShooting() const { return bIsShooting; }
 
 private:
+	void CardReturnMovement(float DeltaSeconds);
+	void CheckCardRangeAndStop(float DeltaSeconds);
+	
+	float Speed;
+	float ReturnSpeed;
+	float Range;
+	float ReturnRange;
 	bool bIsShooting;
 	bool bIsReturning;
 };

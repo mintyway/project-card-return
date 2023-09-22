@@ -40,8 +40,6 @@ ACBaseProjectile::ACBaseProjectile()
 		ProjectileMovementComponent->InitialSpeed = 1000.f;
 		ProjectileMovementComponent->MaxSpeed = 1000.f;
 	}
-
-	Shooter = nullptr;
 }
 
 void ACBaseProjectile::BeginPlay()
@@ -56,9 +54,15 @@ void ACBaseProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACBaseProjectile::Init(AActor* InitShooter)
+/**
+ * 투사체에 필요한 정보를 초기화 해줍니다. 투사체 사용전에 호출해줘야합니다. 하지만 보통 풀에서 생성 시 호출합니다.
+ * @param Shooter 사용자의 포인터
+ * @param Pool 풀의 포인터(풀을 사용시 넣어주세요)
+ */
+void ACBaseProjectile::Init(AActor* Shooter, AActor* Pool)
 {
-	Shooter = InitShooter;
-	StartLocation = Shooter->GetActorLocation();
+	SetOwner(Shooter);
+	OwnerPool = Pool;
+	ShootLocation = GetOwner()->GetActorLocation();
 	SetActorTickEnabled(true);
 }

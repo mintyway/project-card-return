@@ -9,6 +9,7 @@
 class UBoxComponent;
 class UCProjectileDataAsset;
 class UProjectileMovementComponent;
+class ACEricaCardProjectilePool;
 
 /**
  * 기본 베이스 투사체 클래스입니다.
@@ -26,14 +27,15 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual void Init(AActor* InitShooter);
+	virtual void Init(AActor* Shooter, AActor* Pool = nullptr);
 	
 	FORCEINLINE TObjectPtr<UBoxComponent> GetBoxComponent() const { return BoxComponent; }
 	FORCEINLINE TObjectPtr<UProjectileMovementComponent> GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
 	FORCEINLINE TObjectPtr<UStaticMeshComponent> GetStaticMeshComponent() const { return StaticMeshComponent; }
 	FORCEINLINE TObjectPtr<UCProjectileDataAsset> GetProjectileDataAsset() const { return ProjectileDataAsset; }
-	FORCEINLINE TObjectPtr<AActor> GetShooter() const { return Shooter; }
-	FORCEINLINE FVector GetStartLocation() const { return StartLocation; }
+	FORCEINLINE FVector GetShootLocation() const { return ShootLocation; }
+	FORCEINLINE void SetShootLocation(const FVector& NewLocation) { ShootLocation = NewLocation; }
+	FORCEINLINE TObjectPtr<AActor> GetOwnerPool() const { return OwnerPool; }
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
@@ -45,9 +47,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Owner")
-	TObjectPtr<AActor> Shooter;
-
 	TObjectPtr<UCProjectileDataAsset> ProjectileDataAsset;
-	FVector StartLocation;
+	FVector ShootLocation;
+
+	TObjectPtr<AActor> OwnerPool;
 };
