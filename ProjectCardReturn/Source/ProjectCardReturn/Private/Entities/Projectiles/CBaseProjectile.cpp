@@ -39,7 +39,7 @@ ACBaseProjectile::ACBaseProjectile()
 	{
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
-		ProjectileMovementComponent->InitialSpeed = ProjectileSpeed;
+		ProjectileMovementComponent->InitialSpeed = 0.f;
 		ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
 		ProjectileMovementComponent->Deactivate();
 	}
@@ -82,6 +82,7 @@ void ACBaseProjectile::Init(AActor* Shooter, ACBaseProjectilePool* Pool)
 void ACBaseProjectile::Shoot(const FVector& Direction)
 {
 	ShootLocation = GetOwner()->GetActorLocation();
+	SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());
 	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
 }
 

@@ -33,11 +33,10 @@ public:
 	void ReturnToProjectilePool();
 	
 	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent; }
-	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
 	FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
-	FORCEINLINE UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
+	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
 	FORCEINLINE ACBaseProjectilePool* GetOwnerPool() const { return OwnerPool; }
-	FORCEINLINE FVector GetShootLocation() const { return ShootLocation; }
+	FORCEINLINE UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
 
 protected:
 	FVector ShootLocation;

@@ -29,7 +29,6 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 
 	if (GetProjectileMovementComponent())
 	{
-		GetProjectileMovementComponent()->InitialSpeed = 0;
 		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
 	}
 }
@@ -67,8 +66,6 @@ void ACEricaCardProjectile::Tick(float DeltaSeconds)
  */
 void ACEricaCardProjectile::Shoot(const FVector& Direction)
 {
-	SIMPLE_LOG;
-
 	Super::Shoot(Direction);
 	
 	bIsShooting = true;
@@ -79,8 +76,6 @@ void ACEricaCardProjectile::Shoot(const FVector& Direction)
  */
 void ACEricaCardProjectile::SetCardEnable(bool bIsEnable)
 {
-	SIMPLE_LOG;
-
 	if (bIsEnable)
 	{
 		SetActorTickEnabled(true);
@@ -98,7 +93,6 @@ void ACEricaCardProjectile::SetCardEnable(bool bIsEnable)
  */
 void ACEricaCardProjectile::ReturnCard()
 {
-	SIMPLE_LOG;
 	bIsReturning = true;
 	SetCardEnable(true);
 }
@@ -110,10 +104,14 @@ void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
 {
 	RETURN_IF_INVALID(IsValid(GetOwner()));
 	FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-	FVector NewLocation = GetActorLocation() + MoveDirection * ReturnSpeed * DeltaSeconds;
-		
-	SetActorLocation(NewLocation);
-
+	
+	FVector NewLocation = GetActorLocation() + (MoveDirection * ReturnSpeed * DeltaSeconds);
+	SetActorLocationAndRotation(NewLocation, FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+	
+	// GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
+	// SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+	
+	UE_LOG(LogTemp, Warning, TEXT("%f"), GetProjectileMovementComponent()->Velocity.Size());
 	float ShooterDistance = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
 	if (ShooterDistance <= (ReturnRange * ReturnRange))
 	{
@@ -128,11 +126,9 @@ void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
  */
 void ACEricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 {
-	float Distance = FVector::DistSquared(GetShootLocation(), GetActorLocation());
+	float Distance = FVector::DistSquared(ShootLocation, GetActorLocation());
 	if (Distance >= (Range * Range))
 	{
-		SIMPLE_LOG;
-
 		bIsShooting = false;
 		SetCardEnable(false);
 	}

@@ -75,6 +75,7 @@ ACEricaCharacter::ACEricaCharacter()
 	bUseControllerRotationYaw = false;
 	CurrentShootMode = ShootMode::Rapid;
 	bCanRapidShoot = true;
+	RapidShootCoolTime = 0.3f;
 }
 
 void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -171,7 +172,6 @@ void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 
 	AddMovementInput(FrontDirection, static_cast<float>(MoveScalar.X));
 	AddMovementInput(SideDirection, static_cast<float>(MoveScalar.Y));
-
 	FVector MoveDirection = (FrontDirection * MoveScalar.X) + (SideDirection * MoveScalar.Y);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 }
@@ -180,13 +180,16 @@ void ACEricaCharacter::RapidShoot()
 {
 	if (bCanRapidShoot)
 	{
-		bCanRapidShoot = false;
-		
-		FTimerHandle CoolTimeHandle;
-		GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
+		if (RapidShootCoolTime > SMALL_NUMBER)
 		{
-			bCanRapidShoot = true;
-		}), 0.3f, false);
+			bCanRapidShoot = false;
+		
+			FTimerHandle CoolTimeHandle;
+			GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
+			{
+				bCanRapidShoot = true;
+			}), RapidShootCoolTime, false);
+		}
 		
 		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();

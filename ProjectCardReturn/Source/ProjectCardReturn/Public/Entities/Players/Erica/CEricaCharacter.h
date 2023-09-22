@@ -59,4 +59,5 @@ private:
 	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileArray;
 	ShootMode CurrentShootMode;
 	bool bCanRapidShoot;
+	float RapidShootCoolTime;
 };
