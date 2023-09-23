@@ -6,6 +6,7 @@
 #include "Entities/Projectiles/CEricaCardProjectilePool.h"
 
 #include "Components/BoxComponent.h"
+#include "Entities/Players/Erica/CEricaCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Entities/Projectiles/CProjectileDataAsset.h"
 
@@ -15,13 +16,13 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 	ReturnSpeed = 6000.f;
 	Range = 1000.f;
 	ReturnRange = 50.f;
-	
+
 	if (GetBoxComponent())
 	{
 		GetBoxComponent()->InitBoxExtent(FVector(4.4, 3.1, 1.0));
 		GetBoxComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 7.0));
 	}
-	
+
 	if (GetStaticMeshComponent() && GetProjectileDataAsset())
 	{
 		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->GetEricaCardMesh());
@@ -67,7 +68,7 @@ void ACEricaCardProjectile::Tick(float DeltaSeconds)
 void ACEricaCardProjectile::Shoot(const FVector& Direction)
 {
 	Super::Shoot(Direction);
-	
+
 	bIsShooting = true;
 }
 
@@ -104,19 +105,14 @@ void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
 {
 	RETURN_IF_INVALID(IsValid(GetOwner()));
 	FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-	
-	FVector NewLocation = GetActorLocation() + (MoveDirection * ReturnSpeed * DeltaSeconds);
-	SetActorLocationAndRotation(NewLocation, FRotationMatrix::MakeFromX(MoveDirection).Rotator());
-	
-	// GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
-	// SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
-	
-	UE_LOG(LogTemp, Warning, TEXT("%f"), GetProjectileMovementComponent()->Velocity.Size());
+
+	GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
+	SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+
 	float ShooterDistance = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
 	if (ShooterDistance <= (ReturnRange * ReturnRange))
 	{
 		bIsReturning = false;
-		ACEricaCardProjectilePool* Pool = Cast<ACEricaCardProjectilePool>(GetOwnerPool());
 		ReturnToProjectilePool();
 	}
 }

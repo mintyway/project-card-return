@@ -30,6 +30,7 @@ protected:
 public:
 	virtual void Init(AActor* Shooter, ACBaseProjectilePool* Pool);
 	virtual void Shoot(const FVector& Direction);
+	virtual void SetCollision();
 	void ReturnToProjectilePool();
 	
 	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent; }

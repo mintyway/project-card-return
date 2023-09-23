@@ -86,6 +86,11 @@ void ACBaseProjectile::Shoot(const FVector& Direction)
 	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
 }
 
+void ACBaseProjectile::SetCollision()
+{
+	BoxComponent->SetCollisionProfileName("NoCollision");
+}
+
 /**
  * 투사체 풀로 반환합니다.
  */

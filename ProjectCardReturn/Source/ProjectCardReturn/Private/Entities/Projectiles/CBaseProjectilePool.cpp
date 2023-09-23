@@ -51,7 +51,7 @@ ACBaseProjectile* ACBaseProjectilePool::GetProjectile(const FVector& Location)
 	AvailableCard->SetActorHiddenInGame(false);
 	AvailableCard->SetActorTickEnabled(true);
 	AvailableCard->SetActorLocation(Location);
-	AvailableCard->GetBoxComponent()->SetCollisionProfileName("OverlapAll");
+	AvailableCard->SetCollision();
 	AvailableCard->GetProjectileMovementComponent()->Activate();
 	return AvailableCard;
 }
