@@ -4,6 +4,7 @@
 #include "Entities/Projectiles/CBaseProjectilePool.h"
 
 #include "Entities/Projectiles/CBaseProjectile.h"
+#include "Entities/Players/Erica/CEricaCharacter.h"
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"

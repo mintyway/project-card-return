@@ -18,11 +18,13 @@ class PROJECTCARDRETURN_API UCEricaDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE TObjectPtr<USkeletalMesh> GetSkeletalMesh() const { return SkeletalMesh; }
-	FORCEINLINE TObjectPtr<UInputMappingContext> GetDefaultInputMappingContext() const { return DefaultInputMappingContext; }
-	FORCEINLINE TObjectPtr<UInputAction> GetMoveInputAction() const { return MoveInputAction; }
-	FORCEINLINE TObjectPtr<UInputAction> GetShootInputAction() const { return ShootInputAction; }
-	FORCEINLINE TObjectPtr<UInputAction> GetReturnInputAction() const { return ReturnInputAction; }
+	FORCEINLINE USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
+	FORCEINLINE UInputMappingContext* GetDefaultInputMappingContext() const { return DefaultInputMappingContext; }
+	FORCEINLINE UInputAction* GetMoveInputAction() const { return MoveInputAction; }
+	FORCEINLINE UInputAction* GetShootInputAction() const { return ShootInputAction; }
+	FORCEINLINE UInputAction* GetReturnInputAction() const { return ReturnInputAction; }
+	FORCEINLINE UInputAction* GetDashInputAction() const { return DashInputAction; }
+	FORCEINLINE UInputAction* GetChangeInputAction() const { return ChangeInputAction; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
@@ -39,4 +41,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> ReturnInputAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> DashInputAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> ChangeInputAction;
 };

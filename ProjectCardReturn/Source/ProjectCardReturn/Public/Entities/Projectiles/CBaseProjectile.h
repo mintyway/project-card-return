@@ -11,6 +11,8 @@ class UCProjectileDataAsset;
 class UProjectileMovementComponent;
 class ACBaseProjectilePool;
 
+DECLARE_MULTICAST_DELEGATE(FOnShootCardDelegate);
+
 /**
  * 기본 베이스 투사체 클래스입니다.
  */
@@ -38,6 +40,8 @@ public:
 	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
 	FORCEINLINE ACBaseProjectilePool* GetOwnerPool() const { return OwnerPool; }
 	FORCEINLINE UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
+
+	FOnShootCardDelegate OnShootCard;
 
 protected:
 	FVector ShootLocation;

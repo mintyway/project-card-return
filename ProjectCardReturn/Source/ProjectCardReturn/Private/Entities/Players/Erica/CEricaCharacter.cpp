@@ -74,19 +74,10 @@ ACEricaCharacter::ACEricaCharacter()
 
 	bUseControllerRotationYaw = false;
 	CurrentShootMode = ShootMode::Rapid;
-	bCanRapidShoot = true;
-	RapidShootCoolTime = 0.0f;
-}
-
-void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		RETURN_IF_INVALID(EricaDataAsset)
-		EnhancedInputComponent->BindAction(EricaDataAsset->GetMoveInputAction(), ETriggerEvent::Triggered, this, &ACEricaCharacter::Move);
-	}
+	bCanRapidShot = true;
+	RapidShotCoolTime = 0.3f;
+	bCanBuckShot = true;
+	BuckShotCoolTime = 1.f;
 }
 
 void ACEricaCharacter::PostInitializeComponents()
@@ -100,10 +91,23 @@ void ACEricaCharacter::PostInitializeComponents()
 	CardPool->InitProjectilePool(ACEricaCardProjectile::StaticClass(), this);
 }
 
+void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		RETURN_IF_INVALID(EricaDataAsset)
+		EnhancedInputComponent->BindAction(EricaDataAsset->GetMoveInputAction(), ETriggerEvent::Triggered, this, &ACEricaCharacter::Move);
+		EnhancedInputComponent->BindAction(EricaDataAsset->GetDashInputAction(), ETriggerEvent::Started, this, &ACEricaCharacter::Dash);
+		EnhancedInputComponent->BindAction(EricaDataAsset->GetChangeInputAction(), ETriggerEvent::Started, this, &ACEricaCharacter::Change);
+	}
+}
+
 void ACEricaCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	
+
 	// 사용중인 컨트롤러를 캐싱해두는 코드입니다.
 	CachedEricaPlayerController = Cast<ACEricaPlayerController>(NewController);
 	RETURN_IF_INVALID(CachedEricaPlayerController);
@@ -112,7 +116,6 @@ void ACEricaCharacter::PossessedBy(AController* NewController)
 void ACEricaCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void ACEricaCharacter::Tick(float DeltaTime)
@@ -130,13 +133,13 @@ void ACEricaCharacter::ShootCard()
 	{
 		case ShootMode::Rapid:
 		{
-			RapidShoot();
+			RapidShot();
 
 			break;
 		}
 		case ShootMode::Buckshot:
 		{
-			BuckshotShoot();
+			BuckShot();
 
 			break;
 		}
@@ -176,34 +179,101 @@ void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 }
 
-void ACEricaCharacter::RapidShoot()
+void ACEricaCharacter::RapidShot()
 {
-	if (bCanRapidShoot)
+	if (bCanRapidShot)
 	{
-		if (RapidShootCoolTime > SMALL_NUMBER)
+		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
+		if (RapidShotCoolTime > SMALL_NUMBER)
 		{
-			bCanRapidShoot = false;
-		
+			bCanRapidShot = false;
+			bCanBuckShot = false;
+
 			FTimerHandle CoolTimeHandle;
 			GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
 			{
-				bCanRapidShoot = true;
-			}), RapidShootCoolTime, false);
+				bCanRapidShot = true;
+				bCanBuckShot = true;
+			}), RapidShotCoolTime, false);
 		}
-		
+
 		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
 
-		RETURN_IF_INVALID(CardPool);
+		RETURN_IF_INVALID(IsValid(CardPool));
 		ACEricaCardProjectile* CardProjectile = Cast<ACEricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
 		RETURN_IF_INVALID(IsValid(CardProjectile));
 		CardProjectileArray.Insert(CardProjectile, 0);
-		UE_LOG(LogTemp, Warning, TEXT("%d"), CardProjectileArray.Num());
 		CardProjectile->Shoot(MouseDirectionRotator.Vector());
 	}
 }
 
-void ACEricaCharacter::BuckshotShoot()
+void ACEricaCharacter::BuckShot()
 {
 	UE_LOG(LogTemp, Warning, TEXT("BuckshotShoot!"));
+
+	if (bCanBuckShot)
+	{
+		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
+		if (BuckShotCoolTime > SMALL_NUMBER)
+		{
+			bCanRapidShot = false;
+			bCanBuckShot = false;
+
+			FTimerHandle CoolTimeHandle;
+			GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
+			{
+				bCanRapidShot = true;
+				bCanBuckShot = true;
+			}), BuckShotCoolTime, false);
+		}
+
+		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		int32 ProjectileCount = 5;
+		float TotalDegrees = 90.f;
+		float DegreeInterval = TotalDegrees / (ProjectileCount - 1);
+
+		for (int32 i = 0; i < ProjectileCount; ++i)
+		{
+			float CurrentRotation = -TotalDegrees / 2 + DegreeInterval * i;
+    
+			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
+			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
+
+			RETURN_IF_INVALID(IsValid(CardPool));
+			ACEricaCardProjectile* CardProjectile = Cast<ACEricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
+			RETURN_IF_INVALID(IsValid(CardProjectile));
+			CardProjectileArray.Insert(CardProjectile, 0);
+			CardProjectile->Shoot(CurrentDirection);
+		}
+	}
+}
+
+void ACEricaCharacter::Dash()
+{
+	SIMPLE_LOG;
+}
+
+void ACEricaCharacter::Change()
+{
+	SIMPLE_LOG;
+
+	switch (CurrentShootMode)
+	{
+		case ShootMode::Rapid:
+		{
+			CurrentShootMode = ShootMode::Buckshot;
+			break;
+		}
+		case ShootMode::Buckshot:
+		{
+			CurrentShootMode = ShootMode::Rapid;
+			break;
+		}
+		default:
+		{
+			CurrentShootMode = ShootMode::Rapid;
+			break;
+		}
+	}
 }

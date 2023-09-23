@@ -6,7 +6,6 @@
 #include "Entities/Projectiles/CEricaCardProjectilePool.h"
 
 #include "Components/BoxComponent.h"
-#include "Entities/Players/Erica/CEricaCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Entities/Projectiles/CProjectileDataAsset.h"
 
@@ -20,7 +19,7 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 	if (GetBoxComponent())
 	{
 		GetBoxComponent()->InitBoxExtent(FVector(4.4, 3.1, 1.0));
-		GetBoxComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 7.0));
+		GetBoxComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
 	}
 
 	if (GetStaticMeshComponent() && GetProjectileDataAsset())
@@ -32,6 +31,21 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 	{
 		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
 	}
+}
+
+void ACEricaCardProjectile::ActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	SIMPLE_LOG;
+	bIsShooting = false;
+	SetCardEnable(false);
+	// GetBoxComponent()->SetCollisionProfileName("NoCollision");
+}
+
+void ACEricaCardProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	OnActorHit.AddDynamic(this, &ACEricaCardProjectile::ActorHit);
 }
 
 void ACEricaCardProjectile::Init(AActor* Shooter, ACBaseProjectilePool* Pool)
@@ -96,6 +110,8 @@ void ACEricaCardProjectile::ReturnCard()
 {
 	bIsReturning = true;
 	SetCardEnable(true);
+	
+	OnReturnCardBegin.Broadcast();
 }
 
 /**
@@ -106,14 +122,17 @@ void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
 	RETURN_IF_INVALID(IsValid(GetOwner()));
 	FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-	GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
-	SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+	// GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
+	// SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+	SetActorLocationAndRotation(GetActorLocation() + (MoveDirection * ReturnSpeed * DeltaSeconds), MoveDirection.Rotation());
 
 	float ShooterDistance = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
 	if (ShooterDistance <= (ReturnRange * ReturnRange))
 	{
 		bIsReturning = false;
 		ReturnToProjectilePool();
+		
+		OnReturnCardEnd.Broadcast();
 	}
 }
 

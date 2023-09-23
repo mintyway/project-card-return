@@ -32,8 +32,8 @@ public:
 	ACEricaCharacter();
 
 protected:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -44,8 +44,11 @@ public:
 	
 private:
 	void Move(const FInputActionValue& InputActionValue);
-	void RapidShoot();
-	void BuckshotShoot();
+	void RapidShot();
+	void BuckShot();
+	void Dash();
+	void Change();
+
 	
 	UPROPERTY()
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -58,6 +61,8 @@ private:
 	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
 	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileArray;
 	ShootMode CurrentShootMode;
-	bool bCanRapidShoot;
-	float RapidShootCoolTime;
+	bool bCanRapidShot;
+	float RapidShotCoolTime;
+	bool bCanBuckShot;
+	float BuckShotCoolTime;
 };

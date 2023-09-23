@@ -24,7 +24,6 @@ ACBaseProjectile::ACBaseProjectile()
 	if (BoxComponent)
 	{
 		RootComponent = BoxComponent;
-		BoxComponent->SetCollisionProfileName("NoCollision");
 	}
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
@@ -49,6 +48,7 @@ void ACBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	SetCollision();
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
 }
@@ -56,7 +56,6 @@ void ACBaseProjectile::PostInitializeComponents()
 void ACBaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ACBaseProjectile::Tick(float DeltaTime)
@@ -84,11 +83,19 @@ void ACBaseProjectile::Shoot(const FVector& Direction)
 	ShootLocation = GetOwner()->GetActorLocation();
 	SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());
 	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
+	
+	OnShootCard.Broadcast();
 }
 
 void ACBaseProjectile::SetCollision()
 {
-	BoxComponent->SetCollisionProfileName("NoCollision");
+	if (BoxComponent)
+	{
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
+		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
+	}
 }
 
 /**
