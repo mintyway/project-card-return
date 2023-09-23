@@ -26,7 +26,6 @@ void ACBaseProjectilePool::InitProjectilePool(UClass* ProjectileClass, AActor* S
 	RETURN_IF_INVALID(IsValid(GetWorld()));
 	for (int32 i = 0; i < ProjectilePoolSize; ++i)
 	{
-		auto test = ACBaseProjectile::StaticClass();
 		ACBaseProjectile* NewProjectile = GetWorld()->SpawnActor<ACBaseProjectile>(ProjectileClass, FVector::ZeroVector, FRotator::ZeroRotator);
 		NewProjectile->Init(Shooter, this);
 		ProjectilePool.Push(NewProjectile);

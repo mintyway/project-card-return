@@ -234,15 +234,17 @@ void ACEricaCharacter::BuckShot()
 		for (int32 i = 0; i < ProjectileCount; ++i)
 		{
 			float CurrentRotation = -TotalDegrees / 2 + DegreeInterval * i;
-    
+
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
 
 			RETURN_IF_INVALID(IsValid(CardPool));
 			ACEricaCardProjectile* CardProjectile = Cast<ACEricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
-			RETURN_IF_INVALID(IsValid(CardProjectile));
-			CardProjectileArray.Insert(CardProjectile, 0);
-			CardProjectile->Shoot(CurrentDirection);
+			if (IsValid(CardProjectile))
+			{
+				CardProjectileArray.Insert(CardProjectile, 0);
+				CardProjectile->Shoot(CurrentDirection);
+			}
 		}
 	}
 }
