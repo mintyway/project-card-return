@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
-#include "Entities/Projectiles/CBaseProjectile.h"
+#include "Entities/Projectiles/Base/CBaseProjectile.h"
 #include "CEricaCardProjectile.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnReturnCardBeginDelegate);
@@ -21,8 +21,6 @@ public:
 	ACEricaCardProjectile();
 
 protected:
-	UFUNCTION()
-	void ActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -39,6 +37,9 @@ public:
 	bool IsShooting() const { return bIsShooting; }
 
 private:
+	UFUNCTION()
+	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	
 	void CardReturnMovement(float DeltaSeconds);
 	void CheckCardRangeAndStop(float DeltaSeconds);
 

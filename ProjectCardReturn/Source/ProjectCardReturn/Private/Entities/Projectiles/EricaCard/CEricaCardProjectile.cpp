@@ -1,13 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Projectiles/CEricaCardProjectile.h"
+#include "Entities/Projectiles/EricaCard/CEricaCardProjectile.h"
 
-#include "Entities/Projectiles/CEricaCardProjectilePool.h"
+#include "Entities/Projectiles/EricaCard/CEricaCardProjectilePool.h"
+#include "Entities/Players/Erica/CEricaCharacter.h"
+#include "Entities/Projectiles/Base/CProjectileDataAsset.h"
 
 #include "Components/BoxComponent.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Entities/Projectiles/CProjectileDataAsset.h"
+#include "GameFramework/Character.h"
 
 ACEricaCardProjectile::ACEricaCardProjectile()
 {
@@ -33,27 +36,11 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 	}
 }
 
-void ACEricaCardProjectile::ActorHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-	SIMPLE_LOG;
-	bIsShooting = false;
-	SetCardEnable(false);
-	// GetBoxComponent()->SetCollisionProfileName("NoCollision");
-}
-
 void ACEricaCardProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	OnActorHit.AddDynamic(this, &ACEricaCardProjectile::ActorHit);
-}
-
-void ACEricaCardProjectile::Init(AActor* Shooter, ACBaseProjectilePool* Pool)
-{
-	Super::Init(Shooter, Pool);
-
-	bIsShooting = false;
-	bIsReturning = false;
+	OnActorBeginOverlap.AddDynamic(this, &ACEricaCardProjectile::HandleBeginOverlap);
 }
 
 void ACEricaCardProjectile::BeginPlay()
@@ -69,10 +56,19 @@ void ACEricaCardProjectile::Tick(float DeltaSeconds)
 	{
 		CardReturnMovement(DeltaSeconds);
 	}
+
 	else
 	{
 		CheckCardRangeAndStop(DeltaSeconds);
 	}
+}
+
+void ACEricaCardProjectile::Init(AActor* Shooter, ACBaseProjectilePool* Pool)
+{
+	Super::Init(Shooter, Pool);
+
+	bIsShooting = false;
+	bIsReturning = false;
 }
 
 /**
@@ -112,6 +108,34 @@ void ACEricaCardProjectile::ReturnCard()
 	SetCardEnable(true);
 	
 	OnReturnCardBegin.Broadcast();
+}
+
+void ACEricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
+	RETURN_IF_INVALID(IsValid(OtherCharacter));
+	
+	FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
+	FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
+
+	float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
+	if (DotResult < 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("정면 충돌"));
+		// TODO: 현재는 해당 액터가 밀리면서 여러번 오버랩될 수 있는 상황입니다. 나중에 충돌 당하는 액터에게 오버랩 쿨타임을 구현해 이를 막아야합니다.
+		// OtherCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 500.f, false, false);
+		
+		ACEricaCharacter* EricaCharacter = Cast<ACEricaCharacter>(GetOwner());
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(EricaCharacter->GetAttackPower() / 5, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("후면 충돌"));
+		ACEricaCharacter* EricaCharacter = Cast<ACEricaCharacter>(GetOwner());
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), EricaCharacter);
+	}
 }
 
 /**

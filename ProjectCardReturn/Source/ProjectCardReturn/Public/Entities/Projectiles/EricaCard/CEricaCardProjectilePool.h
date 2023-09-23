@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
-#include "CBaseProjectilePool.h"
+#include "Entities/Projectiles/Base/CBaseProjectilePool.h"
 #include "GameFramework/Actor.h"
 #include "CEricaCardProjectilePool.generated.h"
 

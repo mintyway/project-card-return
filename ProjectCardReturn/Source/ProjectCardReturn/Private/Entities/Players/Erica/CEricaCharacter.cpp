@@ -6,8 +6,8 @@
 
 #include "Entities/Players/Erica/CEricaDataAsset.h"
 #include "Entities/Players/Erica/CEricaPlayerController.h"
-#include "Entities/Projectiles/CEricaCardProjectile.h"
-#include "Entities/Projectiles/CEricaCardProjectilePool.h"
+#include "Entities/Projectiles/EricaCard/CEricaCardProjectile.h"
+#include "Entities/Projectiles/EricaCard/CEricaCardProjectilePool.h"
 #include "Game/CGameInstance.h"
 
 #include "Components/CapsuleComponent.h"
@@ -74,6 +74,7 @@ ACEricaCharacter::ACEricaCharacter()
 
 	bUseControllerRotationYaw = false;
 	CurrentShootMode = ShootMode::Rapid;
+	AttackPower = 50.f;
 	bCanRapidShot = true;
 	RapidShotCoolTime = 0.3f;
 	bCanBuckShot = true;
@@ -210,8 +211,6 @@ void ACEricaCharacter::RapidShot()
 
 void ACEricaCharacter::BuckShot()
 {
-	UE_LOG(LogTemp, Warning, TEXT("BuckshotShoot!"));
-
 	if (bCanBuckShot)
 	{
 		// 연사속도를 0으로 주면 쿨타임을 제거합니다.

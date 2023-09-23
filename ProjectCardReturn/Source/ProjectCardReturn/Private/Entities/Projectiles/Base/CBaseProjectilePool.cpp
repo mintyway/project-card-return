@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Projectiles/CBaseProjectilePool.h"
+#include "Entities/Projectiles/Base/CBaseProjectilePool.h"
 
-#include "Entities/Projectiles/CBaseProjectile.h"
+#include "Entities/Projectiles/Base/CBaseProjectile.h"
 #include "Entities/Players/Erica/CEricaCharacter.h"
 
 #include "Components/BoxComponent.h"

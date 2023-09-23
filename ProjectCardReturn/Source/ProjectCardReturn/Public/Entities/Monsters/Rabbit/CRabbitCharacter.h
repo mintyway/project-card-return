@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
-#include "Entities/Monsters/CMonsterBaseCharacter.h"
+#include "Entities/Monsters/Base/CMonsterBaseCharacter.h"
 #include "CRabbitCharacter.generated.h"
 
 /**
@@ -20,7 +20,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Attack() override;
-	virtual void Dead() override;
+	virtual void HandleDead() override;
 
 public:
 	virtual void Tick(float DeltaSeconds) override;

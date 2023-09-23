@@ -2,7 +2,6 @@
 
 
 #include "Game/CGameInstance.h"
-#include "Entities/Projectiles/CEricaCardProjectilePool.h"
 
 void UCGameInstance::Init()
 {

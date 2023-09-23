@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/CRabbitCharacter.h"
+#include "Entities/Monsters/Rabbit/CRabbitCharacter.h"
 
-#include "Entities/Monsters/CMonsterDataAsset.h"
+#include "Entities/Monsters/Base/CMonsterDataAsset.h"
 #include "UI/CUIDataAsset.h"
 
 #include "Components/CapsuleComponent.h"
@@ -71,9 +71,9 @@ void ACRabbitCharacter::Attack()
  * TODO: 부모 클래스로 인공지능 정지 기능을 넘길 것
  * 죽으면 인공지능을 정지합니다.
  */
-void ACRabbitCharacter::Dead()
+void ACRabbitCharacter::HandleDead()
 {
-	Super::Dead();
+	Super::HandleDead();
 
 	// auto RabbitAIController = Cast<AAIController>(GetController());
 	// RETURN_IF_INVALID(RabbitAIController);

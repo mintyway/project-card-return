@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Projectiles/CBaseProjectile.h"
+#include "Entities/Projectiles/Base/CBaseProjectile.h"
 
-#include "Entities/Projectiles/CProjectileDataAsset.h"
+#include "Entities/Projectiles/Base/CProjectileDataAsset.h"
 
 #include "Components/BoxComponent.h"
-#include "Entities/Projectiles/CBaseProjectilePool.h"
+#include "Entities/Projectiles/Base/CBaseProjectilePool.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 ACBaseProjectile::ACBaseProjectile()
@@ -91,10 +91,10 @@ void ACBaseProjectile::SetCollision()
 {
 	if (BoxComponent)
 	{
-		BoxComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
 	}
 }
 

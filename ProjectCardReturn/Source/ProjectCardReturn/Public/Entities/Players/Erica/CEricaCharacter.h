@@ -40,6 +40,8 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	float GetAttackPower() const { return AttackPower; }
+
 	void ShootCard();
 	void ReturnCard();
 	
@@ -66,4 +68,5 @@ private:
 	float RapidShotCoolTime;
 	bool bCanBuckShot;
 	float BuckShotCoolTime;
+	float AttackPower;
 };

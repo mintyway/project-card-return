@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/CMonsterBaseCharacter.h"
+#include "Entities/Monsters/Base/CMonsterBaseCharacter.h"
 
-#include "Entities/Monsters/CMonsterDataAsset.h"
+#include "Entities/Monsters/Base/CMonsterDataAsset.h"
 #include "UI/CUIDataAsset.h"
 
 #include "Components/CapsuleComponent.h"
@@ -56,19 +56,25 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 	}
 }
 
+void ACMonsterBaseCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	OnHPChange.AddUObject(this, &ACMonsterBaseCharacter::HandleHPChange);
+	OnDead.AddUObject(this, &ACMonsterBaseCharacter::HandleDead);
+}
+
 void ACMonsterBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	OnHPChange.AddUObject(this, &ACMonsterBaseCharacter::HPChange);
-	OnDead.AddUObject(this, &ACMonsterBaseCharacter::Dead);
 
 	UUserWidget* HPBarWidgetInstance = HPBarWidgetComponent->GetUserWidgetObject();
 	RETURN_IF_INVALID(HPBarWidgetInstance);
 	HPProgressBar = Cast<UProgressBar>(HPBarWidgetInstance->GetWidgetFromName(TEXT("PB_HPBar")));
 	RETURN_IF_INVALID(HPProgressBar);
 
-	HPChange();
+	// HP초기화를 위해 호출
+	HandleHPChange();
 }
 
 void ACMonsterBaseCharacter::Tick(float DeltaTime)
@@ -86,7 +92,7 @@ void ACMonsterBaseCharacter::Attack()
 }
 
 /**
- * 공격을 받을 시 호출됩니다.
+ * 몬스터가 공격을 받을 시 호출됩니다.
  * @param DamageAmount 받은 데미지량
  * @param DamageEvent 데미지 유형
  * @param EventInstigator 데미지를 가한 컨트롤러
@@ -99,7 +105,6 @@ float ACMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const&
 
 	UE_LOG(LogTemp, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	HealthPoint -= Damage;
-	UE_LOG(LogTemp, Warning, TEXT("남은 체력: %f"), HealthPoint);
 
 	OnHPChange.Broadcast();
 	return Damage;
@@ -109,24 +114,25 @@ float ACMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const&
  * 데미지를 받아 체력이 변할때 호출되며 실시간으로 현재 체력과 HPBar를 동기화 해줍니다.\n
  * 호출시점은 TakeDamage 내부 참조하세요.
  */
-void ACMonsterBaseCharacter::HPChange()
+void ACMonsterBaseCharacter::HandleHPChange()
 {
 	if (HealthPoint <= 0.f)
 	{
 		HealthPoint = 0.f;
 		OnDead.Broadcast();
 	}
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
 	float HPRatio = HealthPoint / MaxHealthPoint;
 	HPProgressBar->SetPercent(HPRatio);
 }
 
 /**
- * 죽으면 호출되며 몬스터를 지정된 시간 이후에 .
+ * 몬스터가 죽으면 호출되며 몬스터를 지정된 시간 이후에 제거합니다.\n
  * 호출시점은 HPChange 내부 참조하세요.
  */
-void ACMonsterBaseCharacter::Dead()
+void ACMonsterBaseCharacter::HandleDead()
 {
 	IsAlive = false;
 

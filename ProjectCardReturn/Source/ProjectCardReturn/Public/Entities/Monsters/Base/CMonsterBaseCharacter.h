@@ -23,6 +23,7 @@ public:
 	ACMonsterBaseCharacter();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
@@ -40,8 +41,8 @@ public:
 protected:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-	virtual void HPChange();
-	virtual void Dead();
+	virtual void HandleHPChange();
+	virtual void HandleDead();
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;

@@ -1,5 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/CMonsterDataAsset.h"
+#include "Entities/Projectiles/Base/CProjectileDataAsset.h"
 
