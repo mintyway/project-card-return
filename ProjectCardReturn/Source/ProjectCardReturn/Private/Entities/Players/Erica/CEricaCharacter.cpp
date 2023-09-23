@@ -219,7 +219,6 @@ void ACEricaCharacter::BuckShot()
 		{
 			bCanRapidShot = false;
 			bCanBuckShot = false;
-
 			FTimerHandle CoolTimeHandle;
 			GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
 			{

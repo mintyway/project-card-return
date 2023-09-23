@@ -9,5 +9,4 @@
 ACEricaCardProjectilePool::ACEricaCardProjectilePool()
 {
 	ProjectilePoolSize = 30;
-	UE_LOG(LogTemp, Warning, TEXT("%d"), ProjectilePoolSize);
 }

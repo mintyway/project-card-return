@@ -10,10 +10,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 
 ACBaseProjectilePool::ACBaseProjectilePool()
-	: ProjectilePoolSize(100), ProjectilePoolSizeLimit(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	UE_LOG(LogTemp, Warning, TEXT("%d"), ProjectilePoolSize);
+	ProjectilePoolSize = 100;
+	ProjectilePoolSizeLimit = false;
 }
 
 /**
