@@ -47,11 +47,12 @@ public:
 	
 private:
 	void Move(const FInputActionValue& InputActionValue);
+	void Dash();
+	void HandleDash(float DeltaTime);
+	
 	void RapidShot();
 	void BuckShot();
-	void Dash();
 	void Change();
-
 	
 	UPROPERTY()
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -63,10 +64,25 @@ private:
 	TObjectPtr<UCEricaDataAsset> EricaDataAsset;
 	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
 	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileArray;
+
+	float AttackPower;
+
+	TArray<FKey> MovementKeys;
+	FVector LastInputMoveDirection;
+	
+	bool bCanDash;
+	bool bIsDashing;
+	float DashCoolTime;
+	float TotalDashTime;
+	float ElapsedDashTime;
+	float DashDistance;
+	FVector CachedDashStartLocation;
+	FVector CachedDashDirection;
+	
 	ShootMode CurrentShootMode;
 	bool bCanRapidShot;
 	float RapidShotCoolTime;
 	bool bCanBuckShot;
 	float BuckShotCoolTime;
-	float AttackPower;
+	
 };

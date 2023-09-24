@@ -27,13 +27,23 @@ ACRabbitCharacter::ACRabbitCharacter()
 
 	if (GetCapsuleComponent())
 	{
-		GetCapsuleComponent()->InitCapsuleSize(45.f, 86.5f);
+		GetCapsuleComponent()->InitCapsuleSize(50.f, 50.f);
 	}
-	
-	if (GetMesh() && GetMonsterDataAsset())
+
+	// TODO: 모델링 작업 완료되면 활성화
+	// if (GetMesh() && GetMonsterDataAsset())
+	// {
+	// 	GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->GetRabbitMesh());
+	// 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
+	// }
+
+	// TODO: 더미 모델링 임시 적용: 모델링 작업 완료되면 제거
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Cube(TEXT("/Script/Engine.StaticMesh'/Game/Dummy/SM_Cube.SM_Cube'"));
+	DummyMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMeshComponent"));
+	if (DummyMeshComponent && SM_Cube.Succeeded())
 	{
-		GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->GetRabbitMesh());
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
+		DummyMeshComponent->SetupAttachment(RootComponent);
+		DummyMeshComponent->SetStaticMesh(SM_Cube.Object);
 	}
 
 	if (GetCharacterMovement())
@@ -62,7 +72,7 @@ void ACRabbitCharacter::Attack()
 			SIMPLE_LOG;
 			bCanAttack = true;
 		}), 1.f/*TODO: 파라미터화 필요*/, false);
-		
+
 		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 	}
 }

@@ -61,8 +61,8 @@ void ACEricaPlayerController::Tick(float DeltaSeconds)
 }
 
 /**
- * 현재 마우스 커서의 위치를 반환합니다.\n
- * 실패 시 FVector::UnitX()를 반환합니다.
+ * 현재 마우스 커서의 위치를 향하는 방향 벡터를 반환합니다.\n
+ * 실패 시 FVector::ZeroVector를 반환합니다.
  * @return 현재 마우스 커서의 위치
  */
 FVector ACEricaPlayerController::GetMouseDirection()
@@ -72,16 +72,16 @@ FVector ACEricaPlayerController::GetMouseDirection()
 	{
 		FVector MouseClickedLocation = MouseClickedResult.Location;
 		MouseClickedLocation.Z = 0.0;
-
-		RETURN_IF_INVALID(CachedEricaCharacter, FVector::UnitX());
+	
+		RETURN_IF_INVALID(CachedEricaCharacter, FVector::ZeroVector);
 		FVector EricaRossLocation = CachedEricaCharacter->GetActorLocation();
 		EricaRossLocation.Z = 0.0;
-
+	
 		FVector MouseDirection = (MouseClickedLocation - EricaRossLocation).GetSafeNormal();
 		return MouseDirection;
 	}
 
-	return FVector::UnitX();
+	return FVector::ZeroVector;
 }
 
 void ACEricaPlayerController::Shoot()

@@ -15,10 +15,33 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ACEricaCharacter::ACEricaCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bUseControllerRotationYaw = false;
+
+	AttackPower = 50.f;
+
+	MovementKeys = {EKeys::W, EKeys::S, EKeys::D, EKeys::A};
+	CurrentShootMode = ShootMode::Rapid;
+	bCanRapidShot = true;
+	// TODO: 파라미터화 필요
+	RapidShotCoolTime = 0.3f;
+	bCanBuckShot = true;
+	// TODO: 파라미터화 필요
+	BuckShotCoolTime = 1.f;
+
+	bCanDash = true;
+	bIsDashing = false;
+	// TODO: 파라미터화 필요
+	DashCoolTime = 1.f;
+	// TODO: 파라미터화 필요
+	TotalDashTime = 0.25f;
+	ElapsedDashTime = 0.f;
+	// TODO: 파라미터화 필요
+	DashDistance = 500.f;
 
 	static ConstructorHelpers::FObjectFinder<UCEricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.CEricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -43,7 +66,7 @@ ACEricaCharacter::ACEricaCharacter()
 	{
 		GetCharacterMovement()->BrakingFriction = 1.f;
 		GetCharacterMovement()->MaxAcceleration = 999999.f;
-		// 파라미터화 필요
+		// TODO: 파라미터화 필요
 		GetCharacterMovement()->MaxWalkSpeed = 500.f;
 		GetCharacterMovement()->RotationRate = FRotator(0.0, 720.0, 0.0);
 	}
@@ -58,11 +81,11 @@ ACEricaCharacter::ACEricaCharacter()
 		CameraBoom->bInheritRoll = false;
 		CameraBoom->bDoCollisionTest = false;
 		CameraBoom->bEnableCameraLag = true;
-		// 파라미터화 필요
+		// TODO: 파라미터화 필요
 		CameraBoom->TargetArmLength = 1000.f;
-		// 파라미터화 필요
+		// TODO: 파라미터화 필요
 		CameraBoom->CameraLagSpeed = 10.f;
-		// 파라미터화 필요
+		// TODO: 파라미터화 필요
 		CameraBoom->CameraLagMaxDistance = 100.f;
 	}
 
@@ -71,14 +94,6 @@ ACEricaCharacter::ACEricaCharacter()
 	{
 		FollowCamera->SetupAttachment(CameraBoom);
 	}
-
-	bUseControllerRotationYaw = false;
-	CurrentShootMode = ShootMode::Rapid;
-	AttackPower = 50.f;
-	bCanRapidShot = true;
-	RapidShotCoolTime = 0.3f;
-	bCanBuckShot = true;
-	BuckShotCoolTime = 1.f;
 }
 
 void ACEricaCharacter::PostInitializeComponents()
@@ -122,6 +137,11 @@ void ACEricaCharacter::BeginPlay()
 void ACEricaCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bIsDashing)
+	{
+		HandleDash(DeltaTime);
+	}
 }
 
 /**
@@ -163,6 +183,10 @@ void ACEricaCharacter::ReturnCard()
 	}
 }
 
+/**
+ * 플레이어를 움직입니다.
+ * @param InputActionValue 입력된 키 정보
+ */
 void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 {
 	FVector2D MoveScalar = InputActionValue.Get<FVector2D>();
@@ -176,10 +200,13 @@ void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 
 	AddMovementInput(FrontDirection, static_cast<float>(MoveScalar.X));
 	AddMovementInput(SideDirection, static_cast<float>(MoveScalar.Y));
-	FVector MoveDirection = (FrontDirection * MoveScalar.X) + (SideDirection * MoveScalar.Y);
-	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
+	LastInputMoveDirection = (FrontDirection * MoveScalar.X) + (SideDirection * MoveScalar.Y);
+	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(LastInputMoveDirection).Rotator());
 }
 
+/**
+ * 연발 모드의 발사입니다.
+ */
 void ACEricaCharacter::RapidShot()
 {
 	if (bCanRapidShot)
@@ -198,6 +225,7 @@ void ACEricaCharacter::RapidShot()
 			}), RapidShotCoolTime, false);
 		}
 
+		RETURN_IF_INVALID(CachedEricaPlayerController);
 		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
 
@@ -209,6 +237,9 @@ void ACEricaCharacter::RapidShot()
 	}
 }
 
+/**
+ * 벅샷 모드의 발사입니다.
+ */
 void ACEricaCharacter::BuckShot()
 {
 	if (bCanBuckShot)
@@ -249,9 +280,67 @@ void ACEricaCharacter::BuckShot()
 	}
 }
 
+/**
+ * 대시에 필요한 정보를 할당하고 대시 상태로 전환합니다.
+ */
 void ACEricaCharacter::Dash()
 {
 	SIMPLE_LOG;
+
+	if (bCanDash)
+	{
+		bCanDash = false;
+		bIsDashing = true;
+
+		FTimerHandle DashCoolTimeHandle;
+		GetWorldTimerManager().SetTimer(DashCoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
+		{
+			bCanDash = true;
+		}), DashCoolTime, false);
+
+		FTimerHandle TotalDashTimeHandle;
+		GetWorldTimerManager().SetTimer(TotalDashTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
+		{
+			ElapsedDashTime = 0.f;
+			bIsDashing = false;
+		}), TotalDashTime, false);
+
+		CachedDashStartLocation = GetActorLocation();
+
+		RETURN_IF_INVALID(IsValid(CachedEricaPlayerController));
+		bool bAnyMovementKeyDown = false;
+		for (const auto& MovementKey : MovementKeys)
+		{
+			if (CachedEricaPlayerController->IsInputKeyDown(MovementKey))
+			{
+				bAnyMovementKeyDown = true;
+				break;
+			}
+		}
+
+		if (bAnyMovementKeyDown)
+		{
+			CachedDashDirection = LastInputMoveDirection;
+		}
+		else
+		{
+			CachedDashDirection = CachedEricaPlayerController->GetMouseDirection();
+		}
+
+		SetActorRotation(FRotationMatrix::MakeFromX(CachedDashDirection).Rotator());
+	}
+}
+
+void ACEricaCharacter::HandleDash(float DeltaTime)
+{
+	ElapsedDashTime += DeltaTime;
+	float Alpha = FMath::Clamp(ElapsedDashTime / TotalDashTime, 0.f, 1.0f);
+	FVector NewLocation = FMath::Lerp(CachedDashStartLocation, CachedDashStartLocation + CachedDashDirection * DashDistance, Alpha);
+	if (!SetActorLocation(NewLocation, true))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Blocking"));
+		bIsDashing = false;
+	}
 }
 
 void ACEricaCharacter::Change()

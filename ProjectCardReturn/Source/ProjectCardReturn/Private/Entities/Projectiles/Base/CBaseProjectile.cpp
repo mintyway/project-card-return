@@ -24,6 +24,7 @@ ACBaseProjectile::ACBaseProjectile()
 	if (BoxComponent)
 	{
 		RootComponent = BoxComponent;
+		BoxComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
@@ -48,7 +49,7 @@ void ACBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	SetCollision();
+	// SetCollision();
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
 }
