@@ -36,6 +36,7 @@ public:
 	FORCEINLINE UCMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 	FORCEINLINE UCParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE UCUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
+	FORCEINLINE bool IsAlive() const { return bIsAlive; }
 
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
@@ -55,7 +56,7 @@ protected:
 	float MaxHealthPoint;
 	float HealthPoint;
 	float AttackPower;
-	bool IsAlive;
+	bool bIsAlive;
 	float MoveSpeed;
 	float DetectRange;
 	float AttackRange;

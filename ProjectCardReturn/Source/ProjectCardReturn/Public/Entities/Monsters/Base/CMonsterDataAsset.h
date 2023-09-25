@@ -18,16 +18,16 @@ class PROJECTCARDRETURN_API UCMonsterDataAsset : public UDataAsset
 
 public:
 	FORCEINLINE USkeletalMesh* GetRabbitMesh() const { return RabbitMesh; }
-	FORCEINLINE UBehaviorTree* GetRabbitBehaviorTree() const { return RabbitBehaviorTree; }
-	FORCEINLINE UBlackboardData* GetRabbitBlackBoard() const { return RabbitBlackBoard; }
+	FORCEINLINE UBehaviorTree* GetDefaultBehaviorTree() const { return DefaultBehaviorTree; }
+	FORCEINLINE UBlackboardData* GetDefaultBlackBoard() const { return DefaultBlackBoard; }
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TObjectPtr<UBehaviorTree> DefaultBehaviorTree;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TObjectPtr<UBlackboardData> DefaultBlackBoard;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
-	TObjectPtr<UBehaviorTree> RabbitBehaviorTree;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
-	TObjectPtr<UBlackboardData> RabbitBlackBoard;
 };
