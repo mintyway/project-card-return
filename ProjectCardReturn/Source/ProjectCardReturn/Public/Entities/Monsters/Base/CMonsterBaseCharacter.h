@@ -30,14 +30,14 @@ protected:
 
 public:
 	virtual void Attack();
-	virtual float GetDetectRange() const { return DetectRange; };
-	virtual float GetAttackRange() const { return AttackRange; };
 
 	FORCEINLINE UCMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 	FORCEINLINE UCParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE UCUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
 	FORCEINLINE bool IsAlive() const { return bIsAlive; }
+	FORCEINLINE float GetAttackRange() const { return AttackRange; };
 
+	
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
 
@@ -58,8 +58,8 @@ protected:
 	float AttackPower;
 	bool bIsAlive;
 	float MoveSpeed;
-	float DetectRange;
 	float AttackRange;
+	float AttackSpeed;
 	
 private:
 	TObjectPtr<UCMonsterDataAsset> MonsterDataAsset;

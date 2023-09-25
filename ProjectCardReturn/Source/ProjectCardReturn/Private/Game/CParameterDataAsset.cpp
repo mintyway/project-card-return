@@ -22,6 +22,7 @@ UCParameterDataAsset::UCParameterDataAsset()
 	RabbitMaxHealthPoint = 100.f;
 	RabbitAttackPower = 3.f;
 	RabbitMoveSpeed = 300.f;
+	RabbitAttackRange = 300.f;
 	RabbitAttackSpeed = 1.f;
 
 	ProjectilePoolSize = 100;

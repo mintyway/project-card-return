@@ -35,6 +35,7 @@ public:
 	FORCEINLINE float GetRabbitMaxHealthPoint() const { return RabbitMaxHealthPoint; }
 	FORCEINLINE float GetRabbitAttackPower() const { return RabbitAttackPower; }
 	FORCEINLINE float GetRabbitMoveSpeed() const { return RabbitMoveSpeed; }
+	FORCEINLINE float GetRabbitAttackRange() const { return RabbitAttackRange; }
 	FORCEINLINE float GetRabbitAttackSpeed() const { return RabbitAttackSpeed; }
 
 	FORCEINLINE int32 GetProjectilePoolSize() const { return ProjectilePoolSize; }
@@ -90,6 +91,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveSpeed;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitAttackRange;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitAttackSpeed;

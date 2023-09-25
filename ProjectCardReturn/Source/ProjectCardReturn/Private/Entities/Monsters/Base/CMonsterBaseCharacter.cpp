@@ -21,8 +21,7 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 	AttackPower = 3.f;
 	bIsAlive = true;
 	MoveSpeed = 300.f;
-	DetectRange = 500.f;
-	AttackRange = 100.f;
+	AttackRange = 300.f;
 
 	bUseControllerRotationYaw = false;
 

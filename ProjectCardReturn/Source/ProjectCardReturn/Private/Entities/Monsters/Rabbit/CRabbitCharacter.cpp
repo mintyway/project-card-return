@@ -23,6 +23,7 @@ ACRabbitCharacter::ACRabbitCharacter()
 		MaxHealthPoint = GetParameterDataAsset()->GetRabbitMaxHealthPoint();
 		HealthPoint = MaxHealthPoint;
 		AttackPower = GetParameterDataAsset()->GetRabbitAttackPower();
+		AttackRange = GetParameterDataAsset()->GetRabbitAttackRange();
 		AttackSpeed = GetParameterDataAsset()->GetRabbitAttackSpeed();
 	}
 
