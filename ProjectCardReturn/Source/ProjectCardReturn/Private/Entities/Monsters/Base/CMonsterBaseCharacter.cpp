@@ -6,6 +6,7 @@
 #include "Entities/Monsters/Base/CMonsterDataAsset.h"
 #include "Game/CParameterDataAsset.h"
 #include "UI/CUIDataAsset.h"
+#include "Entities/Monsters/Base/CMonsterBaseAIController.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/ProgressBar.h"
@@ -18,12 +19,14 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 	MaxHealthPoint = 100.f;
 	HealthPoint = MaxHealthPoint;
 	AttackPower = 3.f;
-	IsAlive = true;
+	bIsAlive = true;
 	MoveSpeed = 300.f;
-	DetectRange = 500.f;
-	AttackRange = 100.f;
+	AttackRange = 300.f;
 
 	bUseControllerRotationYaw = false;
+
+	AIControllerClass = ACMonsterBaseAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	static ConstructorHelpers::FObjectFinder<UCMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.CMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_Monster.Succeeded())
@@ -140,7 +143,7 @@ void ACMonsterBaseCharacter::HandleHPChange()
  */
 void ACMonsterBaseCharacter::HandleDead()
 {
-	IsAlive = false;
+	bIsAlive = false;
 
 	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
 	FTimerHandle UnusedHandle;

@@ -4,8 +4,10 @@
 #include "Entities/Monsters/Rabbit/CRabbitCharacter.h"
 
 #include "Entities/Monsters/Base/CMonsterDataAsset.h"
+#include "Entities/Monsters/Base/CMonsterBaseAIController.h"
 #include "UI/CUIDataAsset.h"
 
+#include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Game/CParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -16,15 +18,12 @@ ACRabbitCharacter::ACRabbitCharacter()
 
 	SetActorScale3D(FVector(0.8, 0.8, 0.8));
 
-	// TODO: AI컨트롤러 추가
-	// AIControllerClass = ;
-	// AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	if (IsValid(GetParameterDataAsset()))
 	{
 		MaxHealthPoint = GetParameterDataAsset()->GetRabbitMaxHealthPoint();
 		HealthPoint = MaxHealthPoint;
 		AttackPower = GetParameterDataAsset()->GetRabbitAttackPower();
+		AttackRange = GetParameterDataAsset()->GetRabbitAttackRange();
 		AttackSpeed = GetParameterDataAsset()->GetRabbitAttackSpeed();
 	}
 
@@ -88,11 +87,13 @@ void ACRabbitCharacter::HandleDead()
 {
 	Super::HandleDead();
 
-	// auto RabbitAIController = Cast<AAIController>(GetController());
-	// RETURN_IF_INVALID(RabbitAIController);
-	// RabbitAIController->StopMovement();
-	// RETURN_IF_INVALID(RabbitAIController->GetBrainComponent());
-	// RabbitAIController->GetBrainComponent()->StopLogic("Rabbit is Dead");
+	bIsAlive = false;
+	
+	auto MonsterMonsterAIController = Cast<ACMonsterBaseAIController>(GetController());
+	RETURN_IF_INVALID(MonsterMonsterAIController);
+	MonsterMonsterAIController->StopMovement();
+	RETURN_IF_INVALID(MonsterMonsterAIController->GetBrainComponent());
+	MonsterMonsterAIController->GetBrainComponent()->StopLogic("Rabbit is Dead");
 }
 
 void ACRabbitCharacter::Tick(float DeltaSeconds)
