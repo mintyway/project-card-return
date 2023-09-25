@@ -4,6 +4,7 @@
 #include "Entities/Monsters/Base/CMonsterBaseCharacter.h"
 
 #include "Entities/Monsters/Base/CMonsterDataAsset.h"
+#include "Game/CParameterDataAsset.h"
 #include "UI/CUIDataAsset.h"
 
 #include "Components/CapsuleComponent.h"
@@ -30,6 +31,12 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 		MonsterDataAsset = DA_Monster.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UCParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.CParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	if (DA_Parameter.Succeeded())
+	{
+		ParameterDataAsset = DA_Parameter.Object;
+	}
+
 	static ConstructorHelpers::FObjectFinder<UCUIDataAsset> DA_UI(TEXT("/Script/ProjectCardReturn.CUIDataAsset'/Game/DataAssets/DA_UI.DA_UI'"));
 	if (DA_UI.Succeeded())
 	{
@@ -37,7 +44,7 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 	}
 
 	HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComponent"));
-	if (IsValid(HPBarWidgetComponent) && UIDataAsset)
+	if (IsValid(HPBarWidgetComponent) && IsValid(UIDataAsset))
 	{
 		HPBarWidgetComponent->SetupAttachment(RootComponent);
 		HPBarWidgetComponent->SetRelativeLocation(FVector(0.0, 0.0, 200.0));
@@ -50,7 +57,7 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 		}
 	}
 
-	if (GetCapsuleComponent())
+	if (IsValid(GetCapsuleComponent()))
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	}
@@ -59,9 +66,6 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 void ACMonsterBaseCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	OnHPChange.AddUObject(this, &ACMonsterBaseCharacter::HandleHPChange);
-	OnDead.AddUObject(this, &ACMonsterBaseCharacter::HandleDead);
 }
 
 void ACMonsterBaseCharacter::BeginPlay()
@@ -80,11 +84,11 @@ void ACMonsterBaseCharacter::BeginPlay()
 void ACMonsterBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 /**
  * 공격합니다.
+ * TODO: 구현 필요
  */
 void ACMonsterBaseCharacter::Attack()
 {
@@ -106,40 +110,47 @@ float ACMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const&
 	UE_LOG(LogTemp, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	HealthPoint -= Damage;
 
-	OnHPChange.Broadcast();
+	HandleHPChange();
 	return Damage;
 }
 
 /**
  * 데미지를 받아 체력이 변할때 호출되며 실시간으로 현재 체력과 HPBar를 동기화 해줍니다.\n
- * 호출시점은 TakeDamage 내부 참조하세요.
+ * 이벤트가 존재합니다.
  */
 void ACMonsterBaseCharacter::HandleHPChange()
 {
 	if (HealthPoint <= 0.f)
 	{
 		HealthPoint = 0.f;
-		OnDead.Broadcast();
+		HandleDead();
 	}
 	
 	UE_LOG(LogTemp, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
 	float HPRatio = HealthPoint / MaxHealthPoint;
 	HPProgressBar->SetPercent(HPRatio);
+
+	OnHPChange.Broadcast();
 }
 
 /**
  * 몬스터가 죽으면 호출되며 몬스터를 지정된 시간 이후에 제거합니다.\n
- * 호출시점은 HPChange 내부 참조하세요.
+ * 이벤트가 존재합니다.
  */
 void ACMonsterBaseCharacter::HandleDead()
 {
 	IsAlive = false;
 
+	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() -> void
 	{
 		Destroy();
-	}),1.f /*TODO: 파라미터화 필요*/, false);
+	}),ParameterDataAsset->GetDeadAfterDestroyTime(), false);
+
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
+	
+	OnDead.Broadcast();
 }
 

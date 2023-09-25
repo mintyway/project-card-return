@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CBaseProjectilePool.generated.h"
 
+class UCParameterDataAsset;
 class ACBaseProjectile;
 UCLASS()
 class PROJECTCARDRETURN_API ACBaseProjectilePool : public AActor
@@ -20,8 +21,13 @@ public:
 	virtual ACBaseProjectile* GetProjectile(const FVector& Location);
 	virtual void ReturnProjectile(ACBaseProjectile* Projectile);
 
+	FORCEINLINE TObjectPtr<UCParameterDataAsset> GetParameterDataAsset() const { return ParameterDataAsset; }
+
 protected:
 	TArray<TObjectPtr<ACBaseProjectile>> ProjectilePool;
 	int32 ProjectilePoolSize;
 	bool ProjectilePoolSizeLimit;
+	
+private:
+	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
 };

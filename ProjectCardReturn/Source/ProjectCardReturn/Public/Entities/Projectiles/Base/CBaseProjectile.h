@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "CBaseProjectile.generated.h"
 
+class UCParameterDataAsset;
 class UBoxComponent;
 class UCProjectileDataAsset;
 class UProjectileMovementComponent;
@@ -41,6 +42,8 @@ public:
 	FORCEINLINE ACBaseProjectilePool* GetOwnerPool() const { return OwnerPool; }
 	FORCEINLINE UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
 
+	FORCEINLINE TObjectPtr<UCParameterDataAsset> GetParameterDataAsset() const { return ParameterDataAsset; }
+
 	FOnShootCardDelegate OnShootCard;
 
 protected:
@@ -61,4 +64,5 @@ private:
 	TObjectPtr<ACBaseProjectilePool> OwnerPool;
 
 	TObjectPtr<UCProjectileDataAsset> ProjectileDataAsset;
+	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
 };

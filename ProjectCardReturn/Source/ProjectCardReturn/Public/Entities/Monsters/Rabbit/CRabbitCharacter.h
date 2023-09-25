@@ -31,4 +31,5 @@ private:
 	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
 	
 	bool bCanAttack;
+	float AttackSpeed;
 };

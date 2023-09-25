@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "CEricaCharacter.generated.h"
 
+class UCParameterDataAsset;
 class ACEricaCardProjectile;
 class ACEricaPlayerController;
 class UCEricaDataAsset;
@@ -62,6 +63,7 @@ private:
 	
 	TObjectPtr<ACEricaCardProjectilePool> CardPool;
 	TObjectPtr<UCEricaDataAsset> EricaDataAsset;
+	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
 	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileArray;
 
@@ -69,9 +71,12 @@ private:
 
 	TArray<FKey> MovementKeys;
 	FVector LastInputMoveDirection;
-	
-	bool bCanDash;
-	bool bIsDashing;
+
+	uint8 bCanDash:1;
+	uint8 bIsDashing:1;
+	uint8 bCanRapidShot:1;
+	uint8 bCanBuckShot:1;
+
 	float DashCoolTime;
 	float TotalDashTime;
 	float ElapsedDashTime;
@@ -80,9 +85,7 @@ private:
 	FVector CachedDashDirection;
 	
 	ShootMode CurrentShootMode;
-	bool bCanRapidShot;
 	float RapidShotCoolTime;
-	bool bCanBuckShot;
 	float BuckShotCoolTime;
 	
 };

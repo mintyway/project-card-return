@@ -6,6 +6,7 @@
 #include "Entities/Projectiles/EricaCard/CEricaCardProjectilePool.h"
 #include "Entities/Players/Erica/CEricaCharacter.h"
 #include "Entities/Projectiles/Base/CProjectileDataAsset.h"
+#include "Game/CParameterDataAsset.h"
 
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
@@ -14,23 +15,26 @@
 
 ACEricaCardProjectile::ACEricaCardProjectile()
 {
-	ProjectileSpeed = 3000.f;
-	ReturnSpeed = 6000.f;
-	Range = 1000.f;
-	ReturnRange = 50.f;
-
-	if (GetBoxComponent())
+	if (IsValid(GetParameterDataAsset()))
+	{
+		ProjectileSpeed = GetParameterDataAsset()->GetEricaCardSpeed();
+		ReturnSpeed = GetParameterDataAsset()->GetEricaCardReturnSpeed();
+		Range = GetParameterDataAsset()->GetEricaCardRange();
+		ReturnRange = GetParameterDataAsset()->GetEricaCardReturnRange();
+	}
+	
+	if (IsValid(GetBoxComponent()))
 	{
 		GetBoxComponent()->InitBoxExtent(FVector(4.4, 3.1, 1.0));
 		GetBoxComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
 	}
 
-	if (GetStaticMeshComponent() && GetProjectileDataAsset())
+	if (IsValid(GetStaticMeshComponent()) && IsValid(GetProjectileDataAsset()))
 	{
 		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->GetEricaCardMesh());
 	}
 
-	if (GetProjectileMovementComponent())
+	if (IsValid(GetProjectileMovementComponent()))
 	{
 		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
 	}

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CMonsterBaseCharacter.generated.h"
 
+class UCParameterDataAsset;
 class UProgressBar;
 class UCUIDataAsset;
 class UWidgetComponent;
@@ -33,6 +34,7 @@ public:
 	virtual float GetAttackRange() const { return AttackRange; };
 
 	FORCEINLINE UCMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
+	FORCEINLINE UCParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE UCUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
 
 	FOnHPChangeDelegate OnHPChange;
@@ -57,8 +59,11 @@ protected:
 	float MoveSpeed;
 	float DetectRange;
 	float AttackRange;
-
+	
 private:
 	TObjectPtr<UCMonsterDataAsset> MonsterDataAsset;
+	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<UCUIDataAsset> UIDataAsset;
+
+	float DeadAfterDestroyTime;
 };

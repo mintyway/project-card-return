@@ -9,6 +9,7 @@
 #include "Entities/Projectiles/EricaCard/CEricaCardProjectile.h"
 #include "Entities/Projectiles/EricaCard/CEricaCardProjectilePool.h"
 #include "Game/CGameInstance.h"
+#include "Game/CParameterDataAsset.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -22,26 +23,15 @@ ACEricaCharacter::ACEricaCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
 
-	AttackPower = 50.f;
-
 	MovementKeys = {EKeys::W, EKeys::S, EKeys::D, EKeys::A};
 	CurrentShootMode = ShootMode::Rapid;
 	bCanRapidShot = true;
-	// TODO: 파라미터화 필요
-	RapidShotCoolTime = 0.3f;
 	bCanBuckShot = true;
-	// TODO: 파라미터화 필요
-	BuckShotCoolTime = 1.f;
 
 	bCanDash = true;
 	bIsDashing = false;
-	// TODO: 파라미터화 필요
-	DashCoolTime = 1.f;
-	// TODO: 파라미터화 필요
-	TotalDashTime = 0.25f;
+
 	ElapsedDashTime = 0.f;
-	// TODO: 파라미터화 필요
-	DashDistance = 500.f;
 
 	static ConstructorHelpers::FObjectFinder<UCEricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.CEricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -49,30 +39,45 @@ ACEricaCharacter::ACEricaCharacter()
 		EricaDataAsset = DA_Erica.Object;
 	}
 
-	if (GetCapsuleComponent())
+	static ConstructorHelpers::FObjectFinder<UCParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.CParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	if (DA_Parameter.Succeeded())
+	{
+		ParameterDataAsset = DA_Parameter.Object;
+	}
+
+	if (IsValid(ParameterDataAsset))
+	{
+		AttackPower = ParameterDataAsset->GetEricaAttackPower();
+		RapidShotCoolTime = ParameterDataAsset->GetEricaRapidShotCoolTime();
+		BuckShotCoolTime = ParameterDataAsset->GetEricaBuckShotCoolTime();
+		DashCoolTime = ParameterDataAsset->GetEricaDashCoolTime();
+		TotalDashTime = ParameterDataAsset->GetEricaTotalDashTime();
+		DashDistance = ParameterDataAsset->GetEricaDashDistance();
+	}
+
+	if (IsValid(GetCapsuleComponent()))
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		GetCapsuleComponent()->InitCapsuleSize(1.f, 77.f);
 	}
 
-	if (GetMesh() && EricaDataAsset)
+	if (IsValid(GetMesh()) && IsValid(EricaDataAsset))
 	{
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->GetSkeletalMesh());
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
 
-	if (GetCharacterMovement())
+	if (IsValid(GetCharacterMovement()) && IsValid(ParameterDataAsset))
 	{
 		GetCharacterMovement()->BrakingFriction = 1.f;
 		GetCharacterMovement()->MaxAcceleration = 999999.f;
-		// TODO: 파라미터화 필요
-		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->GetEricaMoveSpeed();
 		GetCharacterMovement()->RotationRate = FRotator(0.0, 720.0, 0.0);
 	}
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	if (CameraBoom)
+	if (IsValid(CameraBoom) && IsValid(ParameterDataAsset))
 	{
 		CameraBoom->SetupAttachment(GetCapsuleComponent());
 		CameraBoom->SetRelativeRotation(FRotator(-45.0, 0.0, 0.0));
@@ -81,16 +86,13 @@ ACEricaCharacter::ACEricaCharacter()
 		CameraBoom->bInheritRoll = false;
 		CameraBoom->bDoCollisionTest = false;
 		CameraBoom->bEnableCameraLag = true;
-		// TODO: 파라미터화 필요
-		CameraBoom->TargetArmLength = 1000.f;
-		// TODO: 파라미터화 필요
-		CameraBoom->CameraLagSpeed = 10.f;
-		// TODO: 파라미터화 필요
-		CameraBoom->CameraLagMaxDistance = 100.f;
+		CameraBoom->TargetArmLength = ParameterDataAsset->GetCameraDistance();
+		CameraBoom->CameraLagSpeed = ParameterDataAsset->GetCameraLagSpeed();
+		CameraBoom->CameraLagMaxDistance = ParameterDataAsset->GetCameraLagMaxDistance();
 	}
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	if (FollowCamera)
+	if (IsValid(FollowCamera))
 	{
 		FollowCamera->SetupAttachment(CameraBoom);
 	}
@@ -155,13 +157,11 @@ void ACEricaCharacter::ShootCard()
 		case ShootMode::Rapid:
 		{
 			RapidShot();
-
 			break;
 		}
 		case ShootMode::Buckshot:
 		{
 			BuckShot();
-
 			break;
 		}
 		default:

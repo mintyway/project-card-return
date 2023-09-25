@@ -4,6 +4,7 @@
 #include "Entities/Projectiles/Base/CBaseProjectile.h"
 
 #include "Entities/Projectiles/Base/CProjectileDataAsset.h"
+#include "Game/CParameterDataAsset.h"
 
 #include "Components/BoxComponent.h"
 #include "Entities/Projectiles/Base/CBaseProjectilePool.h"
@@ -12,12 +13,22 @@
 ACBaseProjectile::ACBaseProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	ProjectileSpeed = 1000.f;
 
 	static ConstructorHelpers::FObjectFinder<UCProjectileDataAsset> DA_Projectile(TEXT("/Script/ProjectCardReturn.CProjectileDataAsset'/Game/DataAssets/DA_Projectile.DA_Projectile'"));
 	if (DA_Projectile.Succeeded())
 	{
 		ProjectileDataAsset = DA_Projectile.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UCParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.CParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	if (DA_Parameter.Succeeded())
+	{
+		ParameterDataAsset = DA_Parameter.Object;
+	}
+
+	if (IsValid(ParameterDataAsset))
+	{
+		ProjectileSpeed = ParameterDataAsset->GetProjectileSpeed();
 	}
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));

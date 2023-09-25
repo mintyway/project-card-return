@@ -4,9 +4,13 @@
 #include "Entities/Projectiles/EricaCard/CEricaCardProjectilePool.h"
 
 #include "Entities/Projectiles/EricaCard/CEricaCardProjectile.h"
+#include "Game/CParameterDataAsset.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 ACEricaCardProjectilePool::ACEricaCardProjectilePool()
 {
-	ProjectilePoolSize = 30;
+	if (IsValid(GetParameterDataAsset()))
+	{
+		ProjectilePoolSize = GetParameterDataAsset()->GetEricaCardPoolSize();
+	}
 }
