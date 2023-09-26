@@ -14,7 +14,7 @@ ACMonsterBaseAIController::ACMonsterBaseAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<UCMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.CMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
+	static ConstructorHelpers::FObjectFinder<UCMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.CMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_Monster.Succeeded())
 	{
 		MonsterDataAsset = DA_Monster.Object;
@@ -33,6 +33,12 @@ void ACMonsterBaseAIController::OnPossess(APawn* InPawn)
 		{
 			UE_LOG(RuntimeLog, Error, TEXT("AIController couldn't run behavior tree!"));
 		}
+
+		RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
+		const AController* PlayerController = IsValid(GetWorld()) ? GetWorld()->GetFirstPlayerController() : nullptr;
+		RETURN_IF_INVALID(IsValid(PlayerController));
+		GetBlackboardComponent()->SetValueAsObject(ACMonsterBaseAIController::TargetKey, PlayerController->GetPawn());
+		const AActor* Test = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(ACMonsterBaseAIController::TargetKey));
 	}
 }
 
@@ -40,10 +46,6 @@ void ACMonsterBaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
-	AController* PlayerController = IsValid(GetWorld()) ? GetWorld()->GetFirstPlayerController() : nullptr;
-	RETURN_IF_INVALID(PlayerController);
-	GetBlackboardComponent()->SetValueAsObject(TargetKey, PlayerController->GetPawn());
 }
 
 void ACMonsterBaseAIController::Tick(float DeltaSeconds)
@@ -56,7 +58,7 @@ void ACMonsterBaseAIController::Tick(float DeltaSeconds)
 	if (ControllingMonster->IsAlive())
 	{
 		RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
-		AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(TargetKey));
+		AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(ACMonsterBaseAIController::TargetKey));
 		RETURN_IF_INVALID(Target)
 		FVector TargetLocation = Target->GetActorLocation();
 		FVector TargetDirection = (TargetLocation - ControllingMonster->GetActorLocation()).GetSafeNormal();

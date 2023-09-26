@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "CGameModeBase.generated.h"
 
+class ACMonsterBaseGenerator;
 /**
  * 
  */
@@ -16,4 +17,10 @@ class PROJECTCARDRETURN_API ACGameModeBase : public AGameModeBase
 
 public:
 	ACGameModeBase();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	TObjectPtr<ACMonsterBaseGenerator> MonsterGenerator;
 };

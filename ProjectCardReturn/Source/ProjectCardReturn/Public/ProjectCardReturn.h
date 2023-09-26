@@ -7,6 +7,9 @@
 #include <chrono>
 
 DECLARE_LOG_CATEGORY_EXTERN(RuntimeLog, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(CharacterLog, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MonsterLog, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(MonsterGeneratorLog, Log, All);
 
 #define SIMPLE_LOG \
 {\
