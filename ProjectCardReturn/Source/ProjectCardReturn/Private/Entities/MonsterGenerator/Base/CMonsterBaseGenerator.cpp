@@ -12,6 +12,12 @@ ACMonsterBaseGenerator::ACMonsterBaseGenerator()
 	CurrentGenerateMonster = nullptr;
 	GenerateInterval = 0.f;
 	SpawnRangeRadius = 300.f;
+
+	RootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
+	if (RootSceneComponent)
+	{
+		RootComponent = RootSceneComponent;
+	}
 }
 
 void ACMonsterBaseGenerator::BeginPlay()

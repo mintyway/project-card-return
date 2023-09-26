@@ -233,6 +233,7 @@ void ACEricaCharacter::RapidShot()
 		ACEricaCardProjectile* CardProjectile = Cast<ACEricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
 		RETURN_IF_INVALID(IsValid(CardProjectile));
 		CardProjectileArray.Insert(CardProjectile, 0);
+		CardProjectile->SetRange(1000.f/*TODO: 파라미터화 필요*/);
 		CardProjectile->Shoot(MouseDirectionRotator.Vector());
 	}
 }
@@ -259,7 +260,7 @@ void ACEricaCharacter::BuckShot()
 
 		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		int32 ProjectileCount = 5;
-		float TotalDegrees = 90.f;
+		float TotalDegrees = 60.f;
 		float DegreeInterval = TotalDegrees / (ProjectileCount - 1);
 
 		for (int32 i = 0; i < ProjectileCount; ++i)
@@ -274,6 +275,7 @@ void ACEricaCharacter::BuckShot()
 			if (IsValid(CardProjectile))
 			{
 				CardProjectileArray.Insert(CardProjectile, 0);
+				CardProjectile->SetRange(750.f/*TODO: 파라미터화 필요*/);
 				CardProjectile->Shoot(CurrentDirection);
 			}
 		}
@@ -291,6 +293,7 @@ void ACEricaCharacter::Dash()
 	{
 		bCanDash = false;
 		bIsDashing = true;
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
 
 		FTimerHandle DashCoolTimeHandle;
 		GetWorldTimerManager().SetTimer(DashCoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
@@ -303,6 +306,7 @@ void ACEricaCharacter::Dash()
 		{
 			ElapsedDashTime = 0.f;
 			bIsDashing = false;
+			GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		}), TotalDashTime, false);
 
 		CachedDashStartLocation = GetActorLocation();
@@ -340,6 +344,7 @@ void ACEricaCharacter::HandleDash(float DeltaTime)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Blocking"));
 		bIsDashing = false;
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 }
 

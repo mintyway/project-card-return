@@ -62,7 +62,7 @@ ACBaseProjectile* ACBaseProjectilePool::GetProjectile(const FVector& Location)
 	AvailableCard->SetActorHiddenInGame(false);
 	AvailableCard->SetActorTickEnabled(true);
 	AvailableCard->SetActorLocation(Location);
-	AvailableCard->SetCollision();
+	AvailableCard->SetCollision(true);
 	AvailableCard->GetProjectileMovementComponent()->Activate();
 	return AvailableCard;
 }

@@ -35,11 +35,12 @@ public:
 	void ReturnCard();
 	void SetCardEnable(bool bIsEnable = true);
 	bool IsShooting() const { return bIsShooting; }
+	void SetRange(float NewRange) { Range = NewRange; }
 
 private:
 	UFUNCTION()
 	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
-	
+
 	void CardReturnMovement(float DeltaSeconds);
 	void CheckCardRangeAndStop(float DeltaSeconds);
 

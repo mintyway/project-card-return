@@ -29,5 +29,6 @@ public:
 	static const FName TargetKey;
 
 private:
+	void SetTarget();
 	TObjectPtr<UCMonsterDataAsset> MonsterDataAsset;
 };

@@ -19,7 +19,13 @@ void ACGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	RETURN_IF_INVALID(IsValid(GetWorld()));
-	MonsterGenerator = GetWorld()->SpawnActor<ACMonsterBaseGenerator>(FVector(0.0, 1000.0, 0.0), FRotator::ZeroRotator);
+	MonsterGenerator1 = GetWorld()->SpawnActor<ACMonsterBaseGenerator>(FVector(2000.0, 0.0, 0.0), FRotator::ZeroRotator);
+	MonsterGenerator2 = GetWorld()->SpawnActor<ACMonsterBaseGenerator>(FVector(-2000.0, 0.0, 0.0), FRotator::ZeroRotator);
+	MonsterGenerator3 = GetWorld()->SpawnActor<ACMonsterBaseGenerator>(FVector(0.0, 2000.0, 0.0), FRotator::ZeroRotator);
+	MonsterGenerator4 = GetWorld()->SpawnActor<ACMonsterBaseGenerator>(FVector(0.0, -2000.0, 0.0), FRotator::ZeroRotator);
 
-	MonsterGenerator->Start(ACRabbitCharacter::StaticClass(), 1.f);
+	MonsterGenerator1->Start(ACRabbitCharacter::StaticClass(), 1.f);
+	MonsterGenerator2->Start(ACRabbitCharacter::StaticClass(), 1.f);
+	MonsterGenerator3->Start(ACRabbitCharacter::StaticClass(), 1.f);
+	MonsterGenerator4->Start(ACRabbitCharacter::StaticClass(), 1.f);
 }

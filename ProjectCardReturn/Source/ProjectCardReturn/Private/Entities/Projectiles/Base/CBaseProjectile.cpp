@@ -99,14 +99,24 @@ void ACBaseProjectile::Shoot(const FVector& Direction)
 	OnShootCard.Broadcast();
 }
 
-void ACBaseProjectile::SetCollision()
+void ACBaseProjectile::SetCollision(bool bIsEnable)
 {
-	if (BoxComponent)
+	if (bIsEnable)
 	{
-		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
-		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+		if (BoxComponent)
+		{
+			BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
+			BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+			BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+		}
+	}
+	else
+	{
+		if (BoxComponent)
+		{
+			BoxComponent->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
+		}
 	}
 }
 

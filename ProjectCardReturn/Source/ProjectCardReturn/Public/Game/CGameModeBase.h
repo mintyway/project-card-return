@@ -22,5 +22,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	TObjectPtr<ACMonsterBaseGenerator> MonsterGenerator;
+	TObjectPtr<ACMonsterBaseGenerator> MonsterGenerator1;
+	TObjectPtr<ACMonsterBaseGenerator> MonsterGenerator2;
+	TObjectPtr<ACMonsterBaseGenerator> MonsterGenerator3;
+	TObjectPtr<ACMonsterBaseGenerator> MonsterGenerator4;
 };

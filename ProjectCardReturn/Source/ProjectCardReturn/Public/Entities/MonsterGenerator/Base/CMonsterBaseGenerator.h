@@ -25,6 +25,9 @@ public:
 	void Stop();
 
 private:
+	UPROPERTY(VisibleAnywhere, Category = "Root")
+	TObjectPtr<USceneComponent> RootSceneComponent;
+	
 	void SpawnMonster(UClass* MonsterClass);
 	
 	TObjectPtr<ACMonsterBaseCharacter> CurrentGenerateMonster;
