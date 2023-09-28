@@ -18,15 +18,6 @@ class PROJECTCARDRETURN_API UCEricaDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE USkeletalMesh* GetSkeletalMesh() const { return SkeletalMesh; }
-	FORCEINLINE UInputMappingContext* GetDefaultInputMappingContext() const { return DefaultInputMappingContext; }
-	FORCEINLINE UInputAction* GetMoveInputAction() const { return MoveInputAction; }
-	FORCEINLINE UInputAction* GetShootInputAction() const { return ShootInputAction; }
-	FORCEINLINE UInputAction* GetReturnInputAction() const { return ReturnInputAction; }
-	FORCEINLINE UInputAction* GetDashInputAction() const { return DashInputAction; }
-	FORCEINLINE UInputAction* GetChangeInputAction() const { return ChangeInputAction; }
-
-private:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> SkeletalMesh;
 	

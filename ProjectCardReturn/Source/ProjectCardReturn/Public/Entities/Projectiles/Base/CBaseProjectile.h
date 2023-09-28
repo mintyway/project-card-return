@@ -40,9 +40,9 @@ public:
 	FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
 	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
 	FORCEINLINE ACBaseProjectilePool* GetOwnerPool() const { return OwnerPool; }
-	FORCEINLINE UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
-
-	FORCEINLINE TObjectPtr<UCParameterDataAsset> GetParameterDataAsset() const { return ParameterDataAsset; }
+	
+	FORCEINLINE const UCProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
+	FORCEINLINE const UCParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 
 	FOnShootCardDelegate OnShootCard;
 
@@ -63,6 +63,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<ACBaseProjectilePool> OwnerPool;
 
-	TObjectPtr<UCProjectileDataAsset> ProjectileDataAsset;
-	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
+	TObjectPtr<const UCProjectileDataAsset> ProjectileDataAsset;
+	TObjectPtr<const UCParameterDataAsset> ParameterDataAsset;
 };

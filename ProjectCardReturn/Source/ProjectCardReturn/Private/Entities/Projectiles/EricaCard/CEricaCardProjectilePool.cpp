@@ -11,6 +11,6 @@ ACEricaCardProjectilePool::ACEricaCardProjectilePool()
 {
 	if (IsValid(GetParameterDataAsset()))
 	{
-		ProjectilePoolSize = GetParameterDataAsset()->GetEricaCardPoolSize();
+		ProjectilePoolSize = GetParameterDataAsset()->EricaCardCount;
 	}
 }

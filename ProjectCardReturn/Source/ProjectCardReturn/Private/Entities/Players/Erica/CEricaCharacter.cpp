@@ -47,12 +47,12 @@ ACEricaCharacter::ACEricaCharacter()
 
 	if (IsValid(ParameterDataAsset))
 	{
-		AttackPower = ParameterDataAsset->GetEricaAttackPower();
-		RapidShotCoolTime = ParameterDataAsset->GetEricaRapidShotCoolTime();
-		BuckShotCoolTime = ParameterDataAsset->GetEricaBuckShotCoolTime();
-		DashCoolTime = ParameterDataAsset->GetEricaDashCoolTime();
-		TotalDashTime = ParameterDataAsset->GetEricaTotalDashTime();
-		DashDistance = ParameterDataAsset->GetEricaDashDistance();
+		AttackPower = ParameterDataAsset->EricaAttackPower;
+		RapidShotCoolTime = ParameterDataAsset->EricaRapidShotCoolTime;
+		BuckShotCoolTime = ParameterDataAsset->EricaBuckShotCoolTime;
+		DashCoolTime = ParameterDataAsset->EricaDashCoolTime;
+		TotalDashTime = ParameterDataAsset->EricaTotalDashTime;
+		DashDistance = ParameterDataAsset->EricaDashDistance;
 	}
 
 	if (IsValid(GetCapsuleComponent()))
@@ -63,7 +63,7 @@ ACEricaCharacter::ACEricaCharacter()
 
 	if (IsValid(GetMesh()) && IsValid(EricaDataAsset))
 	{
-		GetMesh()->SetSkeletalMesh(EricaDataAsset->GetSkeletalMesh());
+		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
@@ -72,7 +72,7 @@ ACEricaCharacter::ACEricaCharacter()
 	{
 		GetCharacterMovement()->BrakingFriction = 1.f;
 		GetCharacterMovement()->MaxAcceleration = 999999.f;
-		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->GetEricaMoveSpeed();
+		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->EricaMoveSpeed;
 		GetCharacterMovement()->RotationRate = FRotator(0.0, 720.0, 0.0);
 	}
 
@@ -80,21 +80,23 @@ ACEricaCharacter::ACEricaCharacter()
 	if (IsValid(CameraBoom) && IsValid(ParameterDataAsset))
 	{
 		CameraBoom->SetupAttachment(GetCapsuleComponent());
-		CameraBoom->SetRelativeRotation(FRotator(-45.0, 0.0, 0.0));
+		CameraBoom->SetRelativeRotation(FRotator(-ParameterDataAsset->CameraPitch, 0.0, 0.0));
 		CameraBoom->bInheritPitch = false;
 		CameraBoom->bInheritYaw = false;
 		CameraBoom->bInheritRoll = false;
 		CameraBoom->bDoCollisionTest = false;
 		CameraBoom->bEnableCameraLag = true;
-		CameraBoom->TargetArmLength = ParameterDataAsset->GetCameraDistance();
-		CameraBoom->CameraLagSpeed = ParameterDataAsset->GetCameraLagSpeed();
-		CameraBoom->CameraLagMaxDistance = ParameterDataAsset->GetCameraLagMaxDistance();
+		CameraBoom->TargetArmLength = ParameterDataAsset->CameraDistance;
+		CameraBoom->TargetOffset = FVector(ParameterDataAsset->CameraOffset, 0.0, 0.0);
+		CameraBoom->CameraLagSpeed = ParameterDataAsset->CameraLagSpeed;
+		CameraBoom->CameraLagMaxDistance = ParameterDataAsset->CameraLagMaxDistance;
 	}
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	if (IsValid(FollowCamera))
+	if (IsValid(FollowCamera) && IsValid(ParameterDataAsset))
 	{
 		FollowCamera->SetupAttachment(CameraBoom);
+		FollowCamera->SetFieldOfView(ParameterDataAsset->CameraFOV);
 	}
 }
 
@@ -116,9 +118,9 @@ void ACEricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		RETURN_IF_INVALID(EricaDataAsset)
-		EnhancedInputComponent->BindAction(EricaDataAsset->GetMoveInputAction(), ETriggerEvent::Triggered, this, &ACEricaCharacter::Move);
-		EnhancedInputComponent->BindAction(EricaDataAsset->GetDashInputAction(), ETriggerEvent::Started, this, &ACEricaCharacter::Dash);
-		EnhancedInputComponent->BindAction(EricaDataAsset->GetChangeInputAction(), ETriggerEvent::Started, this, &ACEricaCharacter::Change);
+		EnhancedInputComponent->BindAction(EricaDataAsset->MoveInputAction, ETriggerEvent::Triggered, this, &ACEricaCharacter::Move);
+		EnhancedInputComponent->BindAction(EricaDataAsset->DashInputAction, ETriggerEvent::Started, this, &ACEricaCharacter::Dash);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ChangeInputAction, ETriggerEvent::Started, this, &ACEricaCharacter::Change);
 	}
 }
 
@@ -195,8 +197,8 @@ void ACEricaCharacter::Move(const FInputActionValue& InputActionValue)
 	FRotator CameraRotation = CameraBoom->GetRelativeRotation();
 	CameraRotation.Pitch = 0.0;
 
-	FVector FrontDirection = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
-	FVector SideDirection = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
+	const FVector FrontDirection = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
+	const FVector SideDirection = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
 
 	AddMovementInput(FrontDirection, static_cast<float>(MoveScalar.X));
 	AddMovementInput(SideDirection, static_cast<float>(MoveScalar.Y));
@@ -226,14 +228,14 @@ void ACEricaCharacter::RapidShot()
 		}
 
 		RETURN_IF_INVALID(CachedEricaPlayerController);
-		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
+		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
 
 		RETURN_IF_INVALID(IsValid(CardPool));
 		ACEricaCardProjectile* CardProjectile = Cast<ACEricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
 		RETURN_IF_INVALID(IsValid(CardProjectile));
 		CardProjectileArray.Insert(CardProjectile, 0);
-		CardProjectile->SetRange(1000.f/*TODO: 파라미터화 필요*/);
+		CardProjectile->SetRange(ParameterDataAsset->EricaCardRapidShotRange);
 		CardProjectile->Shoot(MouseDirectionRotator.Vector());
 	}
 }
@@ -258,14 +260,14 @@ void ACEricaCharacter::BuckShot()
 			}), BuckShotCoolTime, false);
 		}
 
-		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		int32 ProjectileCount = 5;
-		float TotalDegrees = 60.f;
-		float DegreeInterval = TotalDegrees / (ProjectileCount - 1);
+		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		const int32 ProjectileCount = 5;
+		const float TotalDegrees = 60.f;
+		const float DegreeInterval = TotalDegrees / (ProjectileCount - 1);
 
 		for (int32 i = 0; i < ProjectileCount; ++i)
 		{
-			float CurrentRotation = -TotalDegrees / 2 + DegreeInterval * i;
+			const float CurrentRotation = -TotalDegrees / 2 + DegreeInterval * i;
 
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
@@ -275,7 +277,7 @@ void ACEricaCharacter::BuckShot()
 			if (IsValid(CardProjectile))
 			{
 				CardProjectileArray.Insert(CardProjectile, 0);
-				CardProjectile->SetRange(750.f/*TODO: 파라미터화 필요*/);
+				CardProjectile->SetRange(ParameterDataAsset->EricaCardBuckShotRange);
 				CardProjectile->Shoot(CurrentDirection);
 			}
 		}
@@ -338,8 +340,8 @@ void ACEricaCharacter::Dash()
 void ACEricaCharacter::HandleDash(float DeltaTime)
 {
 	ElapsedDashTime += DeltaTime;
-	float Alpha = FMath::Clamp(ElapsedDashTime / TotalDashTime, 0.f, 1.0f);
-	FVector NewLocation = FMath::Lerp(CachedDashStartLocation, CachedDashStartLocation + CachedDashDirection * DashDistance, Alpha);
+	const float Alpha = FMath::Clamp(ElapsedDashTime / TotalDashTime, 0.f, 1.0f);
+	const FVector NewLocation = FMath::Lerp(CachedDashStartLocation, CachedDashStartLocation + CachedDashDirection * DashDistance, Alpha);
 	if (!SetActorLocation(NewLocation, true))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Blocking"));

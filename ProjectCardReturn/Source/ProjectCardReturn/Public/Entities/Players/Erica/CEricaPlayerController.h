@@ -26,12 +26,15 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	FVector GetMouseDirection();
+	FVector GetMouseDirection() const;
 
 private:
 	void Shoot();
 	void Return();
 
-	TObjectPtr<UCEricaDataAsset> DataAsset;
+	UPROPERTY()
+	TObjectPtr<const UCEricaDataAsset> DataAsset;
+
+	UPROPERTY()
 	TObjectPtr<ACEricaCharacter> CachedEricaCharacter;
 };

@@ -20,11 +20,11 @@ ACRabbitCharacter::ACRabbitCharacter()
 
 	if (IsValid(GetParameterDataAsset()))
 	{
-		MaxHealthPoint = GetParameterDataAsset()->GetRabbitMaxHealthPoint();
+		MaxHealthPoint = GetParameterDataAsset()->RabbitMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
-		AttackPower = GetParameterDataAsset()->GetRabbitAttackPower();
-		AttackRange = GetParameterDataAsset()->GetRabbitAttackRange();
-		AttackSpeed = GetParameterDataAsset()->GetRabbitAttackSpeed();
+		AttackPower = GetParameterDataAsset()->RabbitAttackPower;
+		AttackRange = GetParameterDataAsset()->RabbitAttackRange;
+		AttackSpeed = GetParameterDataAsset()->RabbitAttackSpeed;
 	}
 
 	if (IsValid(GetCapsuleComponent()))
@@ -52,7 +52,7 @@ ACRabbitCharacter::ACRabbitCharacter()
 	if (IsValid(GetCharacterMovement()) && IsValid(GetParameterDataAsset()))
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->GetRabbitMoveSpeed();
+		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->RabbitMoveSpeed;
 	}
 }
 
@@ -88,12 +88,12 @@ void ACRabbitCharacter::HandleDead()
 	Super::HandleDead();
 
 	bIsAlive = false;
-	
-	auto MonsterMonsterAIController = Cast<ACMonsterBaseAIController>(GetController());
-	RETURN_IF_INVALID(MonsterMonsterAIController);
-	MonsterMonsterAIController->StopMovement();
-	RETURN_IF_INVALID(MonsterMonsterAIController->GetBrainComponent());
-	MonsterMonsterAIController->GetBrainComponent()->StopLogic("Rabbit is Dead");
+
+	const auto MonsterBaseAIController = Cast<ACMonsterBaseAIController>(GetController());
+	RETURN_IF_INVALID(MonsterBaseAIController);
+	MonsterBaseAIController->StopMovement();
+	RETURN_IF_INVALID(MonsterBaseAIController->GetBrainComponent());
+	MonsterBaseAIController->GetBrainComponent()->StopLogic("Rabbit is Dead");
 }
 
 void ACRabbitCharacter::Tick(float DeltaSeconds)

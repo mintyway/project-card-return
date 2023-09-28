@@ -55,15 +55,15 @@ private:
 	void BuckShot();
 	void Change();
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
 	
+	TObjectPtr<const UCEricaDataAsset> EricaDataAsset;
+	TObjectPtr<const UCParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<ACEricaCardProjectilePool> CardPool;
-	TObjectPtr<UCEricaDataAsset> EricaDataAsset;
-	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<ACEricaPlayerController> CachedEricaPlayerController;
 	TArray<TObjectPtr<ACEricaCardProjectile>> CardProjectileArray;
 

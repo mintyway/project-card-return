@@ -13,17 +13,13 @@
 ACBaseProjectilePool::ACBaseProjectilePool()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	ProjectilePoolSize = 100;
 	ProjectilePoolSizeLimit = false;
 
 	static ConstructorHelpers::FObjectFinder<UCParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.CParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
 	if (DA_Parameter.Succeeded())
 	{
 		ParameterDataAsset = DA_Parameter.Object;
-	}
-
-	if (IsValid(ParameterDataAsset))
-	{
-		ProjectilePoolSize = ParameterDataAsset->GetProjectilePoolSize();
 	}
 }
 

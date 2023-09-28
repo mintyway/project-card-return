@@ -28,7 +28,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Root")
 	TObjectPtr<USceneComponent> RootSceneComponent;
 	
-	void SpawnMonster(UClass* MonsterClass);
+	void SpawnMonster(UClass* MonsterClass) const;
 	
 	TObjectPtr<ACMonsterBaseCharacter> CurrentGenerateMonster;
 	FTimerHandle SpawnTimerHandle;

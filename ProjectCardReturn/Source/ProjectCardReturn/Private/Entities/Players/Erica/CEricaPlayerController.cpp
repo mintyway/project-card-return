@@ -27,8 +27,8 @@ void ACEricaPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		RETURN_IF_INVALID(DataAsset);
-		EnhancedInputComponent->BindAction(DataAsset->GetShootInputAction(), ETriggerEvent::Triggered, this, &ACEricaPlayerController::Shoot);
-		EnhancedInputComponent->BindAction(DataAsset->GetReturnInputAction(), ETriggerEvent::Triggered, this, &ACEricaPlayerController::Return);
+		EnhancedInputComponent->BindAction(DataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &ACEricaPlayerController::Shoot);
+		EnhancedInputComponent->BindAction(DataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &ACEricaPlayerController::Return);
 	}
 }
 
@@ -47,7 +47,7 @@ void ACEricaPlayerController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		RETURN_IF_INVALID(IsValid(DataAsset));
-		Subsystem->AddMappingContext(DataAsset->GetDefaultInputMappingContext(), 0);
+		Subsystem->AddMappingContext(DataAsset->DefaultInputMappingContext, 0);
 	}
 }
 
@@ -55,7 +55,7 @@ void ACEricaPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
+	const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
 	RETURN_IF_INVALID(IsValid(CachedEricaCharacter));
 	CachedEricaCharacter->SetActorRotation(MouseDirectionRotator);
 }
@@ -65,7 +65,7 @@ void ACEricaPlayerController::Tick(float DeltaSeconds)
  * 실패 시 FVector::ZeroVector를 반환합니다.
  * @return 현재 마우스 커서의 위치
  */
-FVector ACEricaPlayerController::GetMouseDirection()
+FVector ACEricaPlayerController::GetMouseDirection() const
 {
 	FHitResult MouseClickedResult;
 	if (GetHitResultUnderCursor(ECC_Visibility, false, MouseClickedResult))
@@ -86,7 +86,6 @@ FVector ACEricaPlayerController::GetMouseDirection()
 
 void ACEricaPlayerController::Shoot()
 {
-	GetMouseDirection();
 	CachedEricaCharacter->ShootCard();
 }
 

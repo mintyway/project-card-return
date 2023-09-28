@@ -38,11 +38,11 @@ void ACMonsterBaseGenerator::Stop()
 	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 }
 
-void ACMonsterBaseGenerator::SpawnMonster(UClass* MonsterClass)
+void ACMonsterBaseGenerator::SpawnMonster(UClass* MonsterClass) const
 {
-	FVector2D RandomLocation2D = FMath::RandPointInCircle(SpawnRangeRadius);
-	FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
-	FVector SpawnLocation = GetActorLocation() + RandomLocation;
+	const FVector2D RandomLocation2D = FMath::RandPointInCircle(SpawnRangeRadius);
+	const FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
+	const FVector SpawnLocation = GetActorLocation() + RandomLocation;
 
 	UE_LOG(MonsterGeneratorLog, Warning, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
 	GetWorld()->SpawnActor<ACMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator);

@@ -17,10 +17,10 @@ ACEricaCardProjectile::ACEricaCardProjectile()
 {
 	if (IsValid(GetParameterDataAsset()))
 	{
-		ProjectileSpeed = GetParameterDataAsset()->GetEricaCardSpeed();
-		ReturnSpeed = GetParameterDataAsset()->GetEricaCardReturnSpeed();
-		Range = GetParameterDataAsset()->GetEricaCardRange();
-		ReturnRange = GetParameterDataAsset()->GetEricaCardReturnRange();
+		ProjectileSpeed = GetParameterDataAsset()->EricaCardSpeed;
+		ReturnSpeed = GetParameterDataAsset()->EricaCardReturnSpeed;
+		Range = GetParameterDataAsset()->EricaCardRapidShotRange;
+		ReturnRange = GetParameterDataAsset()->EricaCardReturnRange;
 	}
 	
 	if (IsValid(GetBoxComponent()))
@@ -60,7 +60,6 @@ void ACEricaCardProjectile::Tick(float DeltaSeconds)
 	{
 		CardReturnMovement(DeltaSeconds);
 	}
-
 	else
 	{
 		CheckCardRangeAndStop(DeltaSeconds);
@@ -120,11 +119,11 @@ void ACEricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* 
 {
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
 	RETURN_IF_INVALID(IsValid(OtherCharacter));
-	
-	FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
-	FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
 
-	float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
+	const FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
+	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
+
+	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
 	if (DotResult < 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("정면 충돌"));
@@ -132,14 +131,14 @@ void ACEricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* 
 		OtherCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 500.f, false, false);
 		
 		ACEricaCharacter* EricaCharacter = Cast<ACEricaCharacter>(GetOwner());
-		FDamageEvent DamageEvent;
+		const FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(EricaCharacter->GetAttackPower() / 5, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("후면 충돌"));
 		ACEricaCharacter* EricaCharacter = Cast<ACEricaCharacter>(GetOwner());
-		FDamageEvent DamageEvent;
+		const FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
 }
@@ -150,13 +149,13 @@ void ACEricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* 
 void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
 {
 	RETURN_IF_INVALID(IsValid(GetOwner()));
-	FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	const FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 	// GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
 	// SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
 	SetActorLocationAndRotation(GetActorLocation() + (MoveDirection * ReturnSpeed * DeltaSeconds), MoveDirection.Rotation());
 
-	float ShooterDistance = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
+	const float ShooterDistance = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
 	if (ShooterDistance <= (ReturnRange * ReturnRange))
 	{
 		bIsReturning = false;
@@ -171,7 +170,7 @@ void ACEricaCardProjectile::CardReturnMovement(float DeltaSeconds)
  */
 void ACEricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 {
-	float Distance = FVector::DistSquared(ShootLocation, GetActorLocation());
+	const float Distance = FVector::DistSquared(ShootLocation, GetActorLocation());
 	if (Distance >= (Range * Range))
 	{
 		bIsShooting = false;

@@ -27,9 +27,9 @@ void ACMonsterBaseAIController::OnPossess(APawn* InPawn)
 
 	RETURN_IF_INVALID(IsValid(MonsterDataAsset));
 	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
-	if (UseBlackboard(GetMonsterDataAsset()->GetDefaultBlackBoard(), BlackboardComponent))
+	if (UseBlackboard(MonsterDataAsset->DefaultBlackBoard, BlackboardComponent))
 	{
-		if (!RunBehaviorTree(GetMonsterDataAsset()->GetDefaultBehaviorTree()))
+		if (!RunBehaviorTree(MonsterDataAsset->DefaultBehaviorTree))
 		{
 			UE_LOG(RuntimeLog, Error, TEXT("AIController couldn't run behavior tree!"));
 		}
@@ -57,10 +57,10 @@ void ACMonsterBaseAIController::Tick(float DeltaSeconds)
 	if (ControllingMonster->IsAlive())
 	{
 		RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
-		AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(ACMonsterBaseAIController::TargetKey));
+		const AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(ACMonsterBaseAIController::TargetKey));
 		RETURN_IF_INVALID(Target)
-		FVector TargetLocation = Target->GetActorLocation();
-		FVector TargetDirection = (TargetLocation - ControllingMonster->GetActorLocation()).GetSafeNormal();
+		const FVector TargetLocation = Target->GetActorLocation();
+		const FVector TargetDirection = (TargetLocation - ControllingMonster->GetActorLocation()).GetSafeNormal();
 		ControllingMonster->SetActorRotation(FRotationMatrix::MakeFromX(TargetDirection).Rotator());
 	}
 }

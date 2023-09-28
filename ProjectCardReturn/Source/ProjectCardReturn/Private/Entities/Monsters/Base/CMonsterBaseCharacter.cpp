@@ -53,7 +53,7 @@ ACMonsterBaseCharacter::ACMonsterBaseCharacter()
 		HPBarWidgetComponent->SetRelativeLocation(FVector(0.0, 0.0, 200.0));
 		HPBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 
-		if (TSubclassOf<UUserWidget> HPBarClass = UIDataAsset->GetHPBar().LoadSynchronous())
+		if (const TSubclassOf<UUserWidget> HPBarClass = UIDataAsset->GetHPBar().LoadSynchronous())
 		{
 			HPBarWidgetComponent->SetWidgetClass(HPBarClass);
 			HPBarWidgetComponent->SetDrawSize(FVector2D(150.0, 15.0));
@@ -75,7 +75,7 @@ void ACMonsterBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UUserWidget* HPBarWidgetInstance = HPBarWidgetComponent->GetUserWidgetObject();
+	const UUserWidget* HPBarWidgetInstance = HPBarWidgetComponent->GetUserWidgetObject();
 	RETURN_IF_INVALID(HPBarWidgetInstance);
 	HPProgressBar = Cast<UProgressBar>(HPBarWidgetInstance->GetWidgetFromName(TEXT("PB_HPBar")));
 	RETURN_IF_INVALID(HPProgressBar);
@@ -108,7 +108,7 @@ void ACMonsterBaseCharacter::Attack()
  */
 float ACMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float Damage =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	const float Damage =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	UE_LOG(LogTemp, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	HealthPoint -= Damage;
@@ -131,7 +131,7 @@ void ACMonsterBaseCharacter::HandleHPChange()
 	
 	UE_LOG(LogTemp, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
-	float HPRatio = HealthPoint / MaxHealthPoint;
+	const float HPRatio = HealthPoint / MaxHealthPoint;
 	HPProgressBar->SetPercent(HPRatio);
 
 	OnHPChange.Broadcast();
@@ -150,7 +150,7 @@ void ACMonsterBaseCharacter::HandleDead()
 	GetWorldTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() -> void
 	{
 		Destroy();
-	}),ParameterDataAsset->GetDeadAfterDestroyTime(), false);
+	}),ParameterDataAsset->DeadAfterDestroyTime, false);
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
 	

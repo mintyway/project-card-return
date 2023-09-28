@@ -24,11 +24,11 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 	
 public:
-	FORCEINLINE TObjectPtr<UCMonsterDataAsset> GetMonsterDataAsset() const { return MonsterDataAsset; }
+	FORCEINLINE const UCMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 
 	static const FName TargetKey;
 
 private:
 	void SetTarget();
-	TObjectPtr<UCMonsterDataAsset> MonsterDataAsset;
+	TObjectPtr<const UCMonsterDataAsset> MonsterDataAsset;
 };

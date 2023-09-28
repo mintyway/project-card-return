@@ -13,6 +13,7 @@
 ACBaseProjectile::ACBaseProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	ProjectileSpeed = 1000.f;
 
 	static ConstructorHelpers::FObjectFinder<UCProjectileDataAsset> DA_Projectile(TEXT("/Script/ProjectCardReturn.CProjectileDataAsset'/Game/DataAssets/DA_Projectile.DA_Projectile'"));
 	if (DA_Projectile.Succeeded())
@@ -24,11 +25,6 @@ ACBaseProjectile::ACBaseProjectile()
 	if (DA_Parameter.Succeeded())
 	{
 		ParameterDataAsset = DA_Parameter.Object;
-	}
-
-	if (IsValid(ParameterDataAsset))
-	{
-		ProjectileSpeed = ParameterDataAsset->GetProjectileSpeed();
 	}
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));

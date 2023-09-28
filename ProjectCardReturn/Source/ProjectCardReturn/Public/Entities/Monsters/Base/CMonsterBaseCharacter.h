@@ -31,13 +31,12 @@ protected:
 public:
 	virtual void Attack();
 
-	FORCEINLINE UCMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
-	FORCEINLINE UCParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
-	FORCEINLINE UCUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
+	FORCEINLINE const UCMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
+	FORCEINLINE const UCParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
+	FORCEINLINE const UCUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
 	FORCEINLINE bool IsAlive() const { return bIsAlive; }
-	FORCEINLINE float GetAttackRange() const { return AttackRange; };
+	FORCEINLINE float GetAttackRange() const { return AttackRange; }
 
-	
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
 
@@ -62,9 +61,9 @@ protected:
 	float AttackSpeed;
 	
 private:
-	TObjectPtr<UCMonsterDataAsset> MonsterDataAsset;
-	TObjectPtr<UCParameterDataAsset> ParameterDataAsset;
-	TObjectPtr<UCUIDataAsset> UIDataAsset;
+	TObjectPtr<const UCMonsterDataAsset> MonsterDataAsset;
+	TObjectPtr<const UCParameterDataAsset> ParameterDataAsset;
+	TObjectPtr<const UCUIDataAsset> UIDataAsset;
 
 	float DeadAfterDestroyTime;
 };
