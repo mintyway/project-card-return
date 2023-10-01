@@ -3,8 +3,8 @@
 
 #include "BT/BTDecorator_IsTargetInMonsterAttackRange.h"
 
-#include "Entities/Monsters/Base/CMonsterBaseCharacter.h"
-#include "Entities/Monsters/Base/CMonsterBaseAIController.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseAIController.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -17,11 +17,11 @@ bool UBTDecorator_IsTargetInMonsterAttackRange::CalculateRawConditionValue(UBeha
 {
 	Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	ACMonsterBaseCharacter* ControllingMonster = OwnerComp.GetAIOwner() ? Cast<ACMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn()) : nullptr;
+	APCRMonsterBaseCharacter* ControllingMonster = OwnerComp.GetAIOwner() ? Cast<APCRMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn()) : nullptr;
 	RETURN_IF_INVALID(ControllingMonster, false);
 
 	RETURN_IF_INVALID(OwnerComp.GetBlackboardComponent(), false);
-	auto TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ACMonsterBaseAIController::TargetKey));
+	auto TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(APCRMonsterBaseAIController::TargetKey));
 	RETURN_IF_INVALID(TargetActor, false);
 	
 	float DistanceSquared = (TargetActor->GetActorLocation() - ControllingMonster->GetActorLocation()).SizeSquared();
