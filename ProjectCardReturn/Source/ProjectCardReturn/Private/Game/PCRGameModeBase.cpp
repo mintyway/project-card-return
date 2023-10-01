@@ -23,7 +23,7 @@ void APCRGameModeBase::BeginPlay()
 	MonsterGenerator2 = GetWorld()->SpawnActor<APCRMonsterBaseGenerator>(FVector(-2000.0, 0.0, 0.0), FRotator::ZeroRotator);
 	MonsterGenerator3 = GetWorld()->SpawnActor<APCRMonsterBaseGenerator>(FVector(0.0, 2000.0, 0.0), FRotator::ZeroRotator);
 	MonsterGenerator4 = GetWorld()->SpawnActor<APCRMonsterBaseGenerator>(FVector(0.0, -2000.0, 0.0), FRotator::ZeroRotator);
-
+	
 	MonsterGenerator1->Start(APCRRabbitCharacter::StaticClass(), 1.f);
 	MonsterGenerator2->Start(APCRRabbitCharacter::StaticClass(), 1.f);
 	MonsterGenerator3->Start(APCRRabbitCharacter::StaticClass(), 1.f);

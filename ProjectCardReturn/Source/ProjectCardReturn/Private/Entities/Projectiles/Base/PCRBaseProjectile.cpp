@@ -15,13 +15,13 @@ APCRBaseProjectile::APCRBaseProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	ProjectileSpeed = 1000.f;
 
-	static ConstructorHelpers::FObjectFinder<UPCRProjectileDataAsset> DA_Projectile(TEXT("/Script/ProjectCardReturn.CProjectileDataAsset'/Game/DataAssets/DA_Projectile.DA_Projectile'"));
+	static ConstructorHelpers::FObjectFinder<UPCRProjectileDataAsset> DA_Projectile(TEXT("/Script/ProjectCardReturn.PCRProjectileDataAsset'/Game/DataAssets/DA_Projectile.DA_Projectile'"));
 	if (DA_Projectile.Succeeded())
 	{
 		ProjectileDataAsset = DA_Projectile.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.CParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
 	if (DA_Parameter.Succeeded())
 	{
 		ParameterDataAsset = DA_Parameter.Object;
