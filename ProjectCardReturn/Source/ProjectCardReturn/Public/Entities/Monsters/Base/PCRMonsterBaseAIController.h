@@ -7,6 +7,9 @@
 #include "PCRMonsterBaseAIController.generated.h"
 
 class UPCRMonsterDataAsset;
+
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseAIController, Log, All);
+
 /**
  * 
  */

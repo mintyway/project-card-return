@@ -16,6 +16,8 @@ class USpringArmComponent;
 class APCREricaCardProjectilePool;
 class UPCRGameInstance;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCharacter, Log, All);
+
 /**
  * 캐릭터의 공격 모드를 설정합니다.
  */

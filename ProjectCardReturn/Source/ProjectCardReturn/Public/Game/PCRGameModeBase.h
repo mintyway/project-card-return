@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameModeBase, Log, All);
+
 class APCRMonsterBaseGenerator;
 /**
  * 

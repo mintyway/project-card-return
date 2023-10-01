@@ -6,15 +6,12 @@
 
 #include <chrono>
 
-DECLARE_LOG_CATEGORY_EXTERN(RuntimeLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(CharacterLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(MonsterLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(MonsterGeneratorLog, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogRuntime, Log, All);
 
 #define SIMPLE_LOG \
 {\
 FString CallInformation = FString::Printf(TEXT("[%s](%d)"), *FString(__FUNCTION__), __LINE__);\
-UE_LOG(LogTemp, Warning, TEXT("%s"), *CallInformation);\
+UE_LOG(PCRLogRuntime, Warning, TEXT("%s"), *CallInformation);\
 }
 
 #define RETURN_IF_INVALID(Expression, ...)\
@@ -22,7 +19,7 @@ if (!Expression)\
 {\
 FString CallInformation = FString::Printf(TEXT("[%s](%d)"), *FString(__FUNCTION__), __LINE__);\
 FString ExpressionName = FString(#Expression);\
-UE_LOG(RuntimeLog, Error, TEXT("%s Assertion: %s"), *CallInformation, *ExpressionName);\
+UE_LOG(PCRLogRuntime, Error, TEXT("%s Assertion: %s"), *CallInformation, *ExpressionName);\
 return __VA_ARGS__;\
 }
 

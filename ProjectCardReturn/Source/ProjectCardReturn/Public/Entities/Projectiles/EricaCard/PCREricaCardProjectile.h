@@ -9,6 +9,8 @@
 DECLARE_MULTICAST_DELEGATE(FOnReturnCardBeginDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnReturnCardEndDelegate);
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCardProjectile, Log, All);
+
 /**
  * 
  */

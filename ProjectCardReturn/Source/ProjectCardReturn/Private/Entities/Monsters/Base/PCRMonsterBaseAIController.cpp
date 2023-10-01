@@ -8,6 +8,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 
+DEFINE_LOG_CATEGORY(PCRLogMonsterBaseAIController);
+
 const FName APCRMonsterBaseAIController::TargetKey(TEXT("Target"));
 
 APCRMonsterBaseAIController::APCRMonsterBaseAIController()
@@ -31,7 +33,7 @@ void APCRMonsterBaseAIController::OnPossess(APawn* InPawn)
 	{
 		if (!RunBehaviorTree(MonsterDataAsset->DefaultBehaviorTree))
 		{
-			UE_LOG(RuntimeLog, Error, TEXT("AIController couldn't run behavior tree!"));
+			UE_LOG(PCRLogMonsterBaseAIController, Error, TEXT("AIController couldn't run behavior tree!"));
 		}
 
 		SetTarget();

@@ -10,6 +10,8 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
+DEFINE_LOG_CATEGORY(PCRLogBaseProjectilePool);
+
 APCRBaseProjectilePool::APCRBaseProjectilePool()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -48,7 +50,7 @@ APCRBaseProjectile* APCRBaseProjectilePool::GetProjectile(const FVector& Locatio
 {
 	if (ProjectilePool.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CardPool Is Empty!"));
+		UE_LOG(PCRLogBaseProjectilePool, Warning, TEXT("카드가 바닥났습니다!"));
 
 		return nullptr;
 	}

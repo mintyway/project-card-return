@@ -13,6 +13,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/Character.h"
 
+DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
+
 APCREricaCardProjectile::APCREricaCardProjectile()
 {
 	if (IsValid(GetParameterDataAsset()))
@@ -126,7 +128,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
 	if (DotResult < 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("정면 충돌"));
+		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("정면 충돌"));
 		// TODO: 현재는 해당 액터가 밀리면서 여러번 오버랩될 수 있는 상황입니다. 나중에 충돌 당하는 액터에게 오버랩 쿨타임을 구현해 이를 막아야합니다.
 		OtherCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 500.f, false, false);
 		
@@ -136,7 +138,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("후면 충돌"));
+		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("후면 충돌"));
 		APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), EricaCharacter);

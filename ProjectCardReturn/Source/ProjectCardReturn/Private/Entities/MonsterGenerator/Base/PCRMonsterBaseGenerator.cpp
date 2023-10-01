@@ -5,6 +5,8 @@
 
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 
+DEFINE_LOG_CATEGORY(PCRLogMonsterBaseGenerator);
+
 APCRMonsterBaseGenerator::APCRMonsterBaseGenerator()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,6 +25,8 @@ APCRMonsterBaseGenerator::APCRMonsterBaseGenerator()
 void APCRMonsterBaseGenerator::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UE_LOG(PCRLogMonsterBaseGenerator, Warning, TEXT("%s이(가) 성공적으로 생성되었습니다."), *GetName());
 }
 
 void APCRMonsterBaseGenerator::Start(UClass* MonsterClass, float Interval)
@@ -31,6 +35,8 @@ void APCRMonsterBaseGenerator::Start(UClass* MonsterClass, float Interval)
 	{
 		SpawnMonster(MonsterClass);
 	}), Interval, true);
+
+	UE_LOG(PCRLogMonsterBaseGenerator, Warning, TEXT("%s이(가) 활성화되었습니다."), *GetName());
 }
 
 void APCRMonsterBaseGenerator::Stop()
@@ -44,6 +50,6 @@ void APCRMonsterBaseGenerator::SpawnMonster(UClass* MonsterClass) const
 	const FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
 	const FVector SpawnLocation = GetActorLocation() + RandomLocation;
 
-	UE_LOG(MonsterGeneratorLog, Warning, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
+	UE_LOG(PCRLogMonsterBaseGenerator, Warning, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
 	GetWorld()->SpawnActor<APCRMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator);
 }

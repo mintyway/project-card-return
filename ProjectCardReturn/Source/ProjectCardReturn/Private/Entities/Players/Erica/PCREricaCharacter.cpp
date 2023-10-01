@@ -18,6 +18,8 @@
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
+
 APCREricaCharacter::APCREricaCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -233,10 +235,12 @@ void APCREricaCharacter::RapidShot()
 
 		RETURN_IF_INVALID(IsValid(CardPool));
 		APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
-		RETURN_IF_INVALID(IsValid(CardProjectile));
-		CardProjectileArray.Insert(CardProjectile, 0);
-		CardProjectile->SetRange(ParameterDataAsset->EricaCardRapidShotRange);
-		CardProjectile->Shoot(MouseDirectionRotator.Vector());
+		if (IsValid(CardProjectile))
+		{
+			CardProjectileArray.Insert(CardProjectile, 0);
+			CardProjectile->SetRange(ParameterDataAsset->EricaCardRapidShotRange);
+			CardProjectile->Shoot(MouseDirectionRotator.Vector());
+		}
 	}
 }
 

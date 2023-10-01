@@ -8,6 +8,8 @@
 
 class APCRMonsterBaseCharacter;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseGenerator, Log, All);
+
 // TODO: 몬스터 이벤트 추적, 몬스터 개수 파악, 몬스터 스폰 개수 제한
 UCLASS()
 class PROJECTCARDRETURN_API APCRMonsterBaseGenerator : public AActor

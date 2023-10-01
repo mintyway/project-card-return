@@ -12,6 +12,8 @@ class UPCRUIDataAsset;
 class UWidgetComponent;
 class UPCRMonsterDataAsset;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseCharacter, Log, All);
+
 DECLARE_MULTICAST_DELEGATE(FOnHPChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnDeadDelegate);
 

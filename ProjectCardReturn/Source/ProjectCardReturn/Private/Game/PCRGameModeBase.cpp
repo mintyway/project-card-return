@@ -8,6 +8,8 @@
 #include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
 #include "Entities/MonsterGenerator/Base/PCRMonsterBaseGenerator.h"
 
+DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
+
 APCRGameModeBase::APCRGameModeBase()
 {
 	DefaultPawnClass = APCREricaCharacter::StaticClass();

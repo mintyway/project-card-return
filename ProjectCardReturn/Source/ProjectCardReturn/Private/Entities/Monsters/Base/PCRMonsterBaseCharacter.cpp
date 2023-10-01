@@ -12,6 +12,8 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 
+DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
+
 APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -110,7 +112,7 @@ float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 {
 	const float Damage =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	UE_LOG(LogTemp, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
+	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	HealthPoint -= Damage;
 
 	HandleHPChange();
@@ -129,7 +131,7 @@ void APCRMonsterBaseCharacter::HandleHPChange()
 		HandleDead();
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("남은 체력: %f"), HealthPoint);
+	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
 	const float HPRatio = HealthPoint / MaxHealthPoint;
 	HPProgressBar->SetPercent(HPRatio);

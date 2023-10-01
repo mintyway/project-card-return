@@ -8,6 +8,9 @@
 
 class UPCRParameterDataAsset;
 class APCRBaseProjectile;
+
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogBaseProjectilePool, Log, All);
+
 UCLASS()
 class PROJECTCARDRETURN_API APCRBaseProjectilePool : public AActor
 {
