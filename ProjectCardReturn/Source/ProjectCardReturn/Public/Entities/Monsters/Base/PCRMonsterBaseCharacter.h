@@ -33,6 +33,8 @@ protected:
 public:
 	virtual void Attack();
 
+	void ChangeHP(float Amount);
+
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE const UPCRUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
@@ -44,9 +46,6 @@ public:
 
 protected:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
-	virtual void HandleHPChange();
-	virtual void HandleDead();
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
@@ -63,6 +62,9 @@ protected:
 	float AttackSpeed;
 	
 private:
+	virtual void HandleChangeHP();
+	virtual void HandleDead();
+	
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;

@@ -77,13 +77,14 @@ void APCRMonsterBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 위젯의 포인터를 멤버변수로 가져오는 코드입니다.
 	const UUserWidget* HPBarWidgetInstance = HPBarWidgetComponent->GetUserWidgetObject();
 	RETURN_IF_INVALID(HPBarWidgetInstance);
 	HPProgressBar = Cast<UProgressBar>(HPBarWidgetInstance->GetWidgetFromName(TEXT("PB_HPBar")));
 	RETURN_IF_INVALID(HPProgressBar);
 
-	// HP초기화를 위해 호출
-	HandleHPChange();
+	// HP초기화를 위해 호출합니다.
+	HandleChangeHP();
 }
 
 void APCRMonsterBaseCharacter::Tick(float DeltaTime)
@@ -101,6 +102,16 @@ void APCRMonsterBaseCharacter::Attack()
 }
 
 /**
+ * 매개변수 값에 따라 HP에 더하거나 빼며 변경시킵니다.
+ * @param Amount 수정할 HP량(-30인 경우 HP30감소, 20인경우 HP20증가)
+ */
+void APCRMonsterBaseCharacter::ChangeHP(float Amount)
+{
+	HealthPoint += Amount;
+	HandleChangeHP();
+}
+
+/**
  * 몬스터가 공격을 받을 시 호출됩니다.
  * @param DamageAmount 받은 데미지량
  * @param DamageEvent 데미지 유형
@@ -110,27 +121,25 @@ void APCRMonsterBaseCharacter::Attack()
  */
 float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	const float Damage =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
+	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
-	HealthPoint -= Damage;
 
-	HandleHPChange();
-	return Damage;
+	ChangeHP(-ActualDamage);
+	return ActualDamage;
 }
 
 /**
- * 데미지를 받아 체력이 변할때 호출되며 실시간으로 현재 체력과 HPBar를 동기화 해줍니다.\n
+* 데미지를 받아 체력이 변할때 호출되며 실시간으로 현재 체력과 HPBar를 동기화 해줍니다. HP변경 후 무조건 이 함수를 호출하도록 설계해야합니다.\n
  * 이벤트가 존재합니다.
  */
-void APCRMonsterBaseCharacter::HandleHPChange()
+void APCRMonsterBaseCharacter::HandleChangeHP()
 {
 	if (HealthPoint <= 0.f)
 	{
 		HealthPoint = 0.f;
 		HandleDead();
 	}
-	
+
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
 	const float HPRatio = HealthPoint / MaxHealthPoint;
@@ -140,7 +149,7 @@ void APCRMonsterBaseCharacter::HandleHPChange()
 }
 
 /**
- * 몬스터가 죽으면 호출되며 몬스터를 지정된 시간 이후에 제거합니다.\n
+ * 몬스터가 죽을때 호출되며 몬스터를 지정된 시간 이후에 제거합니다.\n
  * 이벤트가 존재합니다.
  */
 void APCRMonsterBaseCharacter::HandleDead()
@@ -152,10 +161,9 @@ void APCRMonsterBaseCharacter::HandleDead()
 	GetWorldTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() -> void
 	{
 		Destroy();
-	}),ParameterDataAsset->DeadAfterDestroyTime, false);
+	}), ParameterDataAsset->DeadAfterDestroyTime, false);
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-	
+
 	OnDead.Broadcast();
 }
-

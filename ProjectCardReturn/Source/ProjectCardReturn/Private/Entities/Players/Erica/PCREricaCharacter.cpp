@@ -151,28 +151,11 @@ void APCREricaCharacter::Tick(float DeltaTime)
 }
 
 /**
- * 필드에 카드를 발사합니다.
- * CurrentShootMode의 값에따라 발사모드가 달라집니다.
+ * 카드를 발사합니다.
  */
 void APCREricaCharacter::ShootCard()
 {
-	switch (CurrentShootMode)
-	{
-		case ShootMode::Rapid:
-		{
-			RapidShot();
-			break;
-		}
-		case ShootMode::Buckshot:
-		{
-			BuckShot();
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+	HandleShootMode();
 }
 
 /**
@@ -206,6 +189,30 @@ void APCREricaCharacter::Move(const FInputActionValue& InputActionValue)
 	AddMovementInput(SideDirection, static_cast<float>(MoveScalar.Y));
 	LastInputMoveDirection = (FrontDirection * MoveScalar.X) + (SideDirection * MoveScalar.Y);
 	GetController()->SetControlRotation(FRotationMatrix::MakeFromX(LastInputMoveDirection).Rotator());
+}
+
+/**
+ * 현재 발사모드를 확인하고 이에 맞는 발사로직을 호출해줍니다.
+ */
+void APCREricaCharacter::HandleShootMode()
+{
+	switch (CurrentShootMode)
+	{
+		case ShootMode::Rapid:
+		{
+			RapidShot();
+			break;
+		}
+		case ShootMode::Buckshot:
+		{
+			BuckShot();
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
 /**
@@ -276,15 +283,20 @@ void APCREricaCharacter::BuckShot()
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
 
-			RETURN_IF_INVALID(IsValid(CardPool));
-			APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
-			if (IsValid(CardProjectile))
-			{
-				CardProjectileArray.Insert(CardProjectile, 0);
-				CardProjectile->SetRange(ParameterDataAsset->EricaCardBuckShotRange);
-				CardProjectile->Shoot(CurrentDirection);
-			}
+			HandleShootCard(CurrentDirection, ParameterDataAsset->EricaCardBuckShotRange);
 		}
+	}
+}
+
+void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
+{
+	RETURN_IF_INVALID(IsValid(CardPool));
+	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
+	if (IsValid(CardProjectile))
+	{
+		CardProjectileArray.Insert(CardProjectile, 0);
+		CardProjectile->SetRange(Range);
+		CardProjectile->Shoot(Direction);
 	}
 }
 

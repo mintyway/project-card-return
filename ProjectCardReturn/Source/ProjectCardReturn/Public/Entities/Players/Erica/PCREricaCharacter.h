@@ -18,6 +18,8 @@ class UPCRGameInstance;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCharacter, Log, All);
 
+DECLARE_MULTICAST_DELEGATE(FAttackSignature);
+
 /**
  * 캐릭터의 공격 모드를 설정합니다.
  */
@@ -47,14 +49,19 @@ public:
 
 	void ShootCard();
 	void ReturnCard();
+
+	FAttackSignature OnCardShoot;
+	FAttackSignature OnCardReturn;
 	
 private:
 	void Move(const FInputActionValue& InputActionValue);
 	void Dash();
 	void HandleDash(float DeltaTime);
-	
+
+	void HandleShootMode();
 	void RapidShot();
 	void BuckShot();
+	void HandleShootCard(const FVector& Direction, float Range);
 	void Change();
 	
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
