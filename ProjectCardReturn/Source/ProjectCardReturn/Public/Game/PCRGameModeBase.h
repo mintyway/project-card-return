@@ -28,4 +28,6 @@ public:
 	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator2;
 	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator3;
 	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator4;
+	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator5;
+	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator6;
 };

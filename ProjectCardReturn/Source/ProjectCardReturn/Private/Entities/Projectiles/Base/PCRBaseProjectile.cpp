@@ -3,11 +3,11 @@
 
 #include "Entities/Projectiles/Base/PCRBaseProjectile.h"
 
+#include "SimpleElementShaders.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
 
 #include "Components/BoxComponent.h"
-#include "Entities/Projectiles/Base/PCRBaseProjectilePool.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 APCRBaseProjectile::APCRBaseProjectile()
@@ -48,83 +48,76 @@ APCRBaseProjectile::APCRBaseProjectile()
 		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 		ProjectileMovementComponent->InitialSpeed = 0.f;
 		ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
-		ProjectileMovementComponent->Deactivate();
 	}
 }
 
 void APCRBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	// SetCollision();
+	
 	SetActorHiddenInGame(true);
-	SetActorTickEnabled(false);
-}
-
-void APCRBaseProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void APCRBaseProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	DisableProjectile();
 }
 
 /**
- * 투사체에 필요한 정보를 초기화 해줍니다. 투사체 사용전에 호출해줘야합니다. 하지만 대개 생성을 담당하는 풀에서 호출합니다.
- * @param Shooter 사용자의 포인터
- * @param Pool 풀의 포인터(풀을 사용시 넣어주세요)
- */
-void APCRBaseProjectile::Init(AActor* Shooter, APCRBaseProjectilePool* Pool)
-{
-	SetOwner(Shooter);
-	OwnerPool = Pool;
-}
-
-/**
- * 투사체를 발사합니다.
+ * 투사체를 활성화하고 발사합니다. 
+ * @param NewOwner 이 투사체를 사용하는 객체의 포인터
+ * @param StartLocation 투사체의 시작 위치 
  * @param Direction 투사체의 발사 방향
  */
-void APCRBaseProjectile::Shoot(const FVector& Direction)
+void APCRBaseProjectile::LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
-	ShootLocation = GetOwner()->GetActorLocation();
-	SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());
-	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
+	SetOwner(NewOwner);
+	ShootLocation = StartLocation;
 	
-	OnShootCard.Broadcast();
+	SetActorLocationAndRotation(ShootLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
+	SetActorHiddenInGame(false);
+	EnableProjectile();
+	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
+
+	OnLaunchProjectile.Broadcast();
 }
 
-void APCRBaseProjectile::SetCollision(bool bIsEnable)
+/**
+ * 투사체를 활성화합니다.
+ */
+void APCRBaseProjectile::EnableProjectile()
 {
-	if (bIsEnable)
+	SetActorTickEnabled(true);
+	EnableCollisionDetection();
+	RETURN_IF_INVALID(ProjectileMovementComponent);
+	ProjectileMovementComponent->Activate();
+}
+
+/**
+ * 투사체를 비활성화합니다.
+ */
+void APCRBaseProjectile::DisableProjectile()
+{
+	SetActorTickEnabled(false);
+	DisableCollisionDetection();
+	RETURN_IF_INVALID(ProjectileMovementComponent);
+	ProjectileMovementComponent->Deactivate();
+}
+
+/**
+ * 투사체의 충돌판정을 비활성화합니다.
+ */
+void APCRBaseProjectile::DisableCollisionDetection()
+{
+	if (BoxComponent)
 	{
-		if (BoxComponent)
-		{
-			BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
-			BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-			BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
-		}
-	}
-	else
-	{
-		if (BoxComponent)
-		{
-			BoxComponent->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-		}
+		BoxComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 }
 
 /**
  * 투사체 풀로 반환합니다.
  */
-void APCRBaseProjectile::ReturnToProjectilePool()
+void APCRBaseProjectile::ReleaseToProjectilePool()
 {
 	SetActorHiddenInGame(true);
-	SetActorTickEnabled(false);
-	BoxComponent->SetCollisionProfileName("NoCollision");
-	ProjectileMovementComponent->Deactivate();
-	RETURN_IF_INVALID(IsValid(OwnerPool));
-	OwnerPool->ReturnProjectile(this);
+	DisableProjectile();
+	
+	OnReleaseProjectile.Broadcast(this);
 }

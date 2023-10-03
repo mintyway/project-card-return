@@ -4,7 +4,6 @@
 #include "Entities/Projectiles/Base/PCRBaseProjectilePool.h"
 
 #include "Entities/Projectiles/Base/PCRBaseProjectile.h"
-#include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
 
 #include "Components/BoxComponent.h"
@@ -16,7 +15,6 @@ APCRBaseProjectilePool::APCRBaseProjectilePool()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	ProjectilePoolSize = 100;
-	ProjectilePoolSizeLimit = false;
 
 	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
 	if (DA_Parameter.Succeeded())
@@ -28,44 +26,51 @@ APCRBaseProjectilePool::APCRBaseProjectilePool()
 /**
  * 투사체를 생성하고 초기화합니다.
  * @param ProjectileClass 투사체 클래스
- * @param Shooter 투사체를 사용하는 액터
  */
-void APCRBaseProjectilePool::InitProjectilePool(UClass* ProjectileClass, AActor* Shooter)
+void APCRBaseProjectilePool::InitProjectilePool(UClass* ProjectileClass)
 {
 	RETURN_IF_INVALID(IsValid(GetWorld()));
 	for (int32 i = 0; i < ProjectilePoolSize; ++i)
 	{
 		APCRBaseProjectile* NewProjectile = GetWorld()->SpawnActor<APCRBaseProjectile>(ProjectileClass, FVector::ZeroVector, FRotator::ZeroRotator);
-		NewProjectile->Init(Shooter, this);
-		ProjectilePool.Push(NewProjectile);
+		ProjectilePool.Enqueue(NewProjectile);
 	}
 }
 
 /**
  * 풀로부터 투사체를 가져옵니다.
- * @param Location 투사체를 생성할 위치
  * @return 생성된 투사체 또는 nullptr
  */
-APCRBaseProjectile* APCRBaseProjectilePool::GetProjectile(const FVector& Location)
+APCRBaseProjectile* APCRBaseProjectilePool::Acquire()
 {
-	if (ProjectilePool.IsEmpty())
+	TObjectPtr<APCRBaseProjectile> AcquireProjectile;
+	if (ProjectilePool.Dequeue(AcquireProjectile))
 	{
-		UE_LOG(PCRLogBaseProjectilePool, Warning, TEXT("카드가 바닥났습니다!"));
-
-		return nullptr;
+		const FDelegateHandle NewHandle = AcquireProjectile->OnReleaseProjectile.AddUObject(this, &APCRBaseProjectilePool::Release);
+		OnReleaseProjectileDelegateMap.Add(AcquireProjectile, NewHandle);
+		return AcquireProjectile;
 	}
-
-	APCRBaseProjectile* AvailableCard = ProjectilePool.Pop();
-	RETURN_IF_INVALID(AvailableCard, nullptr);
-	AvailableCard->SetActorHiddenInGame(false);
-	AvailableCard->SetActorTickEnabled(true);
-	AvailableCard->SetActorLocation(Location);
-	AvailableCard->SetCollision(true);
-	AvailableCard->GetProjectileMovementComponent()->Activate();
-	return AvailableCard;
+	else
+	{
+		return HandleEmptyPool();
+	}
 }
 
-void APCRBaseProjectilePool::ReturnProjectile(APCRBaseProjectile* Projectile)
+/**
+ * 풀로 투사체를 반환합니다. 이 함수는 델리게이트로 호출합니다.
+ * @param Projectile 풀로 반환할 투사체
+ */
+void APCRBaseProjectilePool::Release(APCRBaseProjectile* Projectile)
 {
-	ProjectilePool.Push(Projectile);
+	ProjectilePool.Enqueue(Projectile);
+	const FDelegateHandle* ExistingHandle = OnReleaseProjectileDelegateMap.Find(Projectile);
+	if (ExistingHandle)
+	{
+		Projectile->OnReleaseProjectile.Remove(*ExistingHandle);
+	}
+}
+
+APCRBaseProjectile* APCRBaseProjectilePool::HandleEmptyPool()
+{
+	return nullptr;
 }

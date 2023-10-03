@@ -69,12 +69,16 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = "Aim")
+	TObjectPtr<UStaticMeshComponent> AimingPlane;
 	
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<APCREricaCardProjectilePool> CardPool;
 	TObjectPtr<APCREricaPlayerController> CachedEricaPlayerController;
-	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectileArray;
+
+	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
 
 	float AttackPower;
 

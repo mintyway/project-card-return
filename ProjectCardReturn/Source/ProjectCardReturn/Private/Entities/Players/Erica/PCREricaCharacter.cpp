@@ -47,7 +47,7 @@ APCREricaCharacter::APCREricaCharacter()
 		ParameterDataAsset = DA_Parameter.Object;
 	}
 
-	if (IsValid(ParameterDataAsset))
+	if (ParameterDataAsset)
 	{
 		AttackPower = ParameterDataAsset->EricaAttackPower;
 		RapidShotCoolTime = ParameterDataAsset->EricaRapidShotCoolTime;
@@ -57,20 +57,20 @@ APCREricaCharacter::APCREricaCharacter()
 		DashDistance = ParameterDataAsset->EricaDashDistance;
 	}
 
-	if (IsValid(GetCapsuleComponent()))
+	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		GetCapsuleComponent()->InitCapsuleSize(1.f, 77.f);
 	}
 
-	if (IsValid(GetMesh()) && IsValid(EricaDataAsset))
+	if (GetMesh() && EricaDataAsset)
 	{
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	}
 
-	if (IsValid(GetCharacterMovement()) && IsValid(ParameterDataAsset))
+	if (GetCharacterMovement() && ParameterDataAsset)
 	{
 		GetCharacterMovement()->BrakingFriction = 1.f;
 		GetCharacterMovement()->MaxAcceleration = 999999.f;
@@ -79,7 +79,7 @@ APCREricaCharacter::APCREricaCharacter()
 	}
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	if (IsValid(CameraBoom) && IsValid(ParameterDataAsset))
+	if (CameraBoom && ParameterDataAsset)
 	{
 		CameraBoom->SetupAttachment(GetCapsuleComponent());
 		CameraBoom->SetRelativeRotation(FRotator(-ParameterDataAsset->CameraPitch, 0.0, 0.0));
@@ -95,10 +95,22 @@ APCREricaCharacter::APCREricaCharacter()
 	}
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	if (IsValid(FollowCamera) && IsValid(ParameterDataAsset))
+	if (FollowCamera && ParameterDataAsset)
 	{
 		FollowCamera->SetupAttachment(CameraBoom);
 		FollowCamera->SetFieldOfView(ParameterDataAsset->CameraFOV);
+	}
+
+	AimingPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AimingPlane"));
+	if (AimingPlane && EricaDataAsset)
+	{
+		AimingPlane->SetupAttachment(GetCapsuleComponent());
+		AimingPlane->SetStaticMesh(EricaDataAsset->AimingPlane);
+		AimingPlane->SetRelativeScale3D(FVector(50.0, 50.0, 1.0));
+		AimingPlane->SetCollisionObjectType(ECC_GameTraceChannel4);
+		AimingPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
+		AimingPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel5, ECR_Block);
+		AimingPlane->SetHiddenInGame(true);
 	}
 }
 
@@ -110,7 +122,7 @@ void APCREricaCharacter::PostInitializeComponents()
 	RETURN_IF_INVALID(IsValid(GetWorld()));
 	CardPool = GetWorld()->SpawnActor<APCREricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
 	RETURN_IF_INVALID(IsValid(CardPool));
-	CardPool->InitProjectilePool(APCREricaCardProjectile::StaticClass(), this);
+	CardPool->InitProjectilePool(APCREricaCardProjectile::StaticClass());
 }
 
 void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -163,10 +175,32 @@ void APCREricaCharacter::ShootCard()
  */
 void APCREricaCharacter::ReturnCard()
 {
-	while (!CardProjectileArray.IsEmpty() && !CardProjectileArray.Last()->IsShooting())
+	if (CardProjectiles.IsEmpty())
 	{
-		APCREricaCardProjectile* ReturningCard = CardProjectileArray.Pop();
-		ReturningCard->ReturnCard();
+		return;
+	}
+
+	TArray<APCREricaCardProjectile*> CardsToRemove;
+
+	for (const auto& CardProjectile : CardProjectiles)
+	{
+		if (CardProjectile->GetCurrentCardState() == ECardState::Stop)
+		{
+			CardsToRemove.Add(CardProjectile);
+		}
+	}
+
+	for (const auto& CardToRemove : CardsToRemove)
+	{
+		int32 Index;
+		if (CardProjectiles.Find(CardToRemove, Index))
+		{
+			APCREricaCardProjectile* ReturningCard = CardProjectiles[Index];
+			CardProjectiles.RemoveAt(Index);
+			ReturningCard->ReturnCard();
+
+			UE_LOG(PCRLogEricaCharacter, Warning, TEXT("%p"), ReturningCard);
+		}
 	}
 }
 
@@ -238,16 +272,7 @@ void APCREricaCharacter::RapidShot()
 
 		RETURN_IF_INVALID(CachedEricaPlayerController);
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(MouseDirection).Rotator();
-
-		RETURN_IF_INVALID(IsValid(CardPool));
-		APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
-		if (IsValid(CardProjectile))
-		{
-			CardProjectileArray.Insert(CardProjectile, 0);
-			CardProjectile->SetRange(ParameterDataAsset->EricaCardRapidShotRange);
-			CardProjectile->Shoot(MouseDirectionRotator.Vector());
-		}
+		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardRapidShotRange);
 	}
 }
 
@@ -279,10 +304,8 @@ void APCREricaCharacter::BuckShot()
 		for (int32 i = 0; i < ProjectileCount; ++i)
 		{
 			const float CurrentRotation = -TotalDegrees / 2 + DegreeInterval * i;
-
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
-
 			HandleShootCard(CurrentDirection, ParameterDataAsset->EricaCardBuckShotRange);
 		}
 	}
@@ -290,14 +313,16 @@ void APCREricaCharacter::BuckShot()
 
 void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 {
-	RETURN_IF_INVALID(IsValid(CardPool));
-	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->GetProjectile(GetActorLocation()));
-	if (IsValid(CardProjectile))
+	RETURN_IF_INVALID(CardPool);
+	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->Acquire());
+	if (CardProjectile)
 	{
-		CardProjectileArray.Insert(CardProjectile, 0);
+		CardProjectiles.Insert(CardProjectile, 0);
 		CardProjectile->SetRange(Range);
-		CardProjectile->Shoot(Direction);
+		CardProjectile->LaunchProjectile(this, GetActorLocation(), Direction);
 	}
+
+	UE_LOG(PCRLogEricaCharacter, Warning, TEXT("필드에 발사된 카드 개수: %d"), CardProjectiles.Num());
 }
 
 /**

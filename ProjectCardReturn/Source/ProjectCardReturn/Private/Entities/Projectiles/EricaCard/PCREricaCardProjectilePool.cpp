@@ -14,3 +14,10 @@ APCREricaCardProjectilePool::APCREricaCardProjectilePool()
 		ProjectilePoolSize = GetParameterDataAsset()->EricaCardCount;
 	}
 }
+
+APCRBaseProjectile* APCREricaCardProjectilePool::HandleEmptyPool()
+{
+	UE_LOG(PCRLogBaseProjectilePool, Warning, TEXT("카드가 모두 소진되었습니다."));
+	
+	return Super::HandleEmptyPool();
+}

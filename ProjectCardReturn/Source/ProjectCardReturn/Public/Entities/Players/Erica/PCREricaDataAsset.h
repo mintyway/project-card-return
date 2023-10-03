@@ -20,6 +20,9 @@ class PROJECTCARDRETURN_API UPCREricaDataAsset : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> SkeletalMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
+	TObjectPtr<UStaticMesh> AimingPlane;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;

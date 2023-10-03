@@ -6,10 +6,18 @@
 #include "Entities/Projectiles/Base/PCRBaseProjectile.h"
 #include "PCREricaCardProjectile.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnReturnCardBeginDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnReturnCardEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnReturnCardBeginSignature);
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCardProjectile, Log, All);
+
+UENUM()
+enum class ECardState : uint8
+{
+	Flying = 1,
+	Stop,
+	Returning,
+	Invalid
+};
 
 /**
  * 
@@ -24,31 +32,36 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
-	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	virtual void Init(AActor* Shooter, APCRBaseProjectilePool* Pool) override;
-	virtual void Shoot(const FVector& Direction) override;
-
-	FOnReturnCardBeginDelegate OnReturnCardBegin;
-	FOnReturnCardEndDelegate OnReturnCardEnd;
-
+	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction) override;
 	void ReturnCard();
-	void SetCardEnable(bool bIsEnable = true);
-	bool IsShooting() const { return bIsShooting; }
-	void SetRange(float NewRange) { Range = NewRange; }
+	void SetRange(float NewRange) { CardRange = NewRange; }
+	bool GetIsShooting() const { return bIsShooting; }
+	FORCEINLINE ECardState GetCurrentCardState() const { return CurrentCardState; }
 
+	FOnReturnCardBeginSignature OnReturnCardBegin;
+
+protected:
+	virtual void EnableCollisionDetection() override;
+	
 private:
 	UFUNCTION()
 	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
-	void CardReturnMovement(float DeltaSeconds);
+	void PauseCard();
+	
+	void HandleCardReturn(float DeltaSeconds);
 	void CheckCardRangeAndStop(float DeltaSeconds);
 
-	float ReturnSpeed;
-	float Range;
-	float ReturnRange;
+	float CardReturnSpeed;
+	float CardRange;
+	// 카드가 플레이어로부터 얼마나 가까워지면 회수될지 거리를 나타냅니다.
+	float CardReleaseRange;
+
+	ECardState CurrentCardState;
+	
 	bool bIsShooting;
 	bool bIsReturning;
 };

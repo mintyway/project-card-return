@@ -10,14 +10,14 @@ class UPCRParameterDataAsset;
 class UBoxComponent;
 class UPCRProjectileDataAsset;
 class UProjectileMovementComponent;
-class APCRBaseProjectilePool;
 
-DECLARE_MULTICAST_DELEGATE(FOnShootCardDelegate);
+DECLARE_MULTICAST_DELEGATE(FLaunchProjectileSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FReleaseProjectileSignature, APCRBaseProjectile*);
 
 /**
  * 기본 베이스 투사체 클래스입니다.
  */
-UCLASS()
+UCLASS(Abstract)
 class PROJECTCARDRETURN_API APCRBaseProjectile : public AActor
 {
 	GENERATED_BODY()
@@ -27,26 +27,31 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual void Init(AActor* Shooter, APCRBaseProjectilePool* Pool);
-	virtual void Shoot(const FVector& Direction);
-	virtual void SetCollision(bool bIsEnable);
-	void ReturnToProjectilePool();
+	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
+	void ReleaseToProjectilePool();
 	
 	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent; }
 	FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
 	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
-	FORCEINLINE APCRBaseProjectilePool* GetOwnerPool() const { return OwnerPool; }
-	
 	FORCEINLINE const UPCRProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
 	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 
-	FOnShootCardDelegate OnShootCard;
+	FLaunchProjectileSignature OnLaunchProjectile;
+	FReleaseProjectileSignature OnReleaseProjectile;
 
 protected:
+	virtual void EnableProjectile();
+	virtual void DisableProjectile();
+	
+	/**
+	 * 서브클래스의 충돌판정 설정을 이 가상함수 내부에 정의하고 이를 통해 초기화, 재설정을 가능하도록 설계해야합니다. 오브젝트 풀에서 나올때 해당 함수가 호출됩니다.\n
+	 * 이 함수는 순수가상함수입니다.
+	 */
+	virtual void EnableCollisionDetection() PURE_VIRTUAL();
+	virtual void DisableCollisionDetection();
+	
 	FVector ShootLocation;
 	float ProjectileSpeed;
 
@@ -60,9 +65,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 	
-	UPROPERTY()
-	TObjectPtr<APCRBaseProjectilePool> OwnerPool;
-
 	TObjectPtr<const UPCRProjectileDataAsset> ProjectileDataAsset;
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 };

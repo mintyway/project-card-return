@@ -16,4 +16,7 @@ class PROJECTCARDRETURN_API APCREricaCardProjectilePool : public APCRBaseProject
 	
 public:	
 	APCREricaCardProjectilePool();
+
+protected:
+	virtual APCRBaseProjectile* HandleEmptyPool() override;
 };

@@ -74,7 +74,7 @@ public:
 	float EricaCardBuckShotRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaCardReturnRange;
+	float EricaCardReleaseRange;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")

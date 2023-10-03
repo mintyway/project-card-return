@@ -46,7 +46,10 @@ public:
 
 protected:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
+	
+	virtual void HandleChangeHP();
+	virtual void HandleDead();
+	
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
 
@@ -62,9 +65,6 @@ protected:
 	float AttackSpeed;
 	
 private:
-	virtual void HandleChangeHP();
-	virtual void HandleDead();
-	
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;

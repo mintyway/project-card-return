@@ -3,7 +3,6 @@
 
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
-#include "Entities/Projectiles/EricaCard/PCREricaCardProjectilePool.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -11,32 +10,33 @@
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "GameFramework/Character.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
 
 APCREricaCardProjectile::APCREricaCardProjectile()
 {
-	if (IsValid(GetParameterDataAsset()))
+	CurrentCardState = ECardState::Invalid;
+
+	if (GetParameterDataAsset())
 	{
 		ProjectileSpeed = GetParameterDataAsset()->EricaCardSpeed;
-		ReturnSpeed = GetParameterDataAsset()->EricaCardReturnSpeed;
-		Range = GetParameterDataAsset()->EricaCardRapidShotRange;
-		ReturnRange = GetParameterDataAsset()->EricaCardReturnRange;
+		CardReturnSpeed = GetParameterDataAsset()->EricaCardReturnSpeed;
+		CardRange = GetParameterDataAsset()->EricaCardRapidShotRange;
+		CardReleaseRange = GetParameterDataAsset()->EricaCardReleaseRange;
 	}
-	
-	if (IsValid(GetBoxComponent()))
+
+	if (GetBoxComponent())
 	{
 		GetBoxComponent()->InitBoxExtent(FVector(4.4, 3.1, 1.0));
 		GetBoxComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
 	}
 
-	if (IsValid(GetStaticMeshComponent()) && IsValid(GetProjectileDataAsset()))
+	if (GetStaticMeshComponent() && GetProjectileDataAsset())
 	{
 		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->GetEricaCardMesh());
 	}
 
-	if (IsValid(GetProjectileMovementComponent()))
+	if (GetProjectileMovementComponent())
 	{
 		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
 	}
@@ -49,61 +49,43 @@ void APCREricaCardProjectile::PostInitializeComponents()
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 }
 
-void APCREricaCardProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void APCREricaCardProjectile::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bIsReturning)
+	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s: %d"), *this->GetName(), CurrentCardState);
+	switch (CurrentCardState)
 	{
-		CardReturnMovement(DeltaSeconds);
-	}
-	else
-	{
-		CheckCardRangeAndStop(DeltaSeconds);
+		case ECardState::Flying:
+		{
+			CheckCardRangeAndStop(DeltaSeconds);
+			break;
+		}
+		case ECardState::Stop:
+		{
+			return;
+		}
+		case ECardState::Returning:
+		{
+			HandleCardReturn(DeltaSeconds);
+			break;
+		}
+		case ECardState::Invalid:
+		{
+			return;
+		}
+		default:
+		{
+			return;
+		}
 	}
 }
 
-void APCREricaCardProjectile::Init(AActor* Shooter, APCRBaseProjectilePool* Pool)
+void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
-	Super::Init(Shooter, Pool);
-
-	bIsShooting = false;
-	bIsReturning = false;
-}
-
-/**
- * 카드를 발사시킵니다.
- * @param Direction 카드의 진행방향
- */
-void APCREricaCardProjectile::Shoot(const FVector& Direction)
-{
-	Super::Shoot(Direction);
-
-	bIsShooting = true;
-}
-
-/**
- * 카드의 활성화 여부를 설정합니다.
- */
-void APCREricaCardProjectile::SetCardEnable(bool bIsEnable)
-{
-	if (bIsEnable)
-	{
-		SetActorTickEnabled(true);
-		GetProjectileMovementComponent()->Activate();
-		SetCollision(true);
-	}
-	else
-	{
-		SetActorTickEnabled(false);
-		GetProjectileMovementComponent()->Deactivate();
-		SetCollision(false);
-	}
+	Super::LaunchProjectile(NewOwner, StartLocation, Direction);
+	
+	CurrentCardState = ECardState::Flying;
 }
 
 /**
@@ -111,12 +93,38 @@ void APCREricaCardProjectile::SetCardEnable(bool bIsEnable)
  */
 void APCREricaCardProjectile::ReturnCard()
 {
-	bIsReturning = true;
-	SetCardEnable(true);
-	
+	CurrentCardState = ECardState::Returning;
+	EnableProjectile();
+	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%p: %d"), this, CurrentCardState);
+
 	OnReturnCardBegin.Broadcast();
 }
 
+void APCREricaCardProjectile::EnableCollisionDetection()
+{
+	if (GetBoxComponent())
+	{
+		GetBoxComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		GetBoxComponent()->SetCollisionObjectType(ECC_GameTraceChannel3);
+		GetBoxComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+	}
+}
+
+/**
+ * 카드를 멈추고 틱, 충돌을 비활성화합니다.
+ */
+void APCREricaCardProjectile::PauseCard()
+{
+	CurrentCardState = ECardState::Stop;
+	DisableProjectile();
+}
+
+/**
+ * 
+ * @param OverlappedActor 카드 액터
+ * @param OtherActor 카드에 맞은 액터
+ */
 void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
@@ -126,15 +134,15 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
 
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
-	if (DotResult < 0)
+	if (DotResult <= 0)
 	{
 		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("정면 충돌"));
 		// TODO: 현재는 해당 액터가 밀리면서 여러번 오버랩될 수 있는 상황입니다. 나중에 충돌 당하는 액터에게 오버랩 쿨타임을 구현해 이를 막아야합니다.
 		OtherCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 500.f, false, false);
-		
-		APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
+
+		const APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
-		OtherActor->TakeDamage(EricaCharacter->GetAttackPower() / 5, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
+		OtherCharacter->TakeDamage(EricaCharacter->GetAttackPower() / 5, DamageEvent, EricaCharacter->GetController(), this);
 	}
 	else
 	{
@@ -146,24 +154,24 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 }
 
 /**
- * 카드 플레이어 방향으로 이동시키고 플레이어에 닿을 시 풀로 반환합니다.
+ * 카드를 플레이어 방향으로 이동시키고 플레이어에 닿을 시 풀로 반환합니다.
  */
-void APCREricaCardProjectile::CardReturnMovement(float DeltaSeconds)
+void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 {
-	RETURN_IF_INVALID(IsValid(GetOwner()));
+	RETURN_IF_INVALID(GetOwner());
 	const FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-	// GetProjectileMovementComponent()->Velocity = MoveDirection * ReturnSpeed;
-	// SetActorRotation(FRotationMatrix::MakeFromX(MoveDirection).Rotator());
-	SetActorLocationAndRotation(GetActorLocation() + (MoveDirection * ReturnSpeed * DeltaSeconds), MoveDirection.Rotation());
+	const FVector MoveVector = MoveDirection * CardReturnSpeed;
+	const FRotator MoveRotator = FRotationMatrix::MakeFromX(MoveDirection).Rotator();
+	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);
 
-	const float ShooterDistance = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
-	if (ShooterDistance <= (ReturnRange * ReturnRange))
+	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
+	if (OwnerDistanceSquared <= (CardReleaseRange * CardReleaseRange))
 	{
-		bIsReturning = false;
-		ReturnToProjectilePool();
-		
-		OnReturnCardEnd.Broadcast();
+		CurrentCardState = ECardState::Invalid;
+		ReleaseToProjectilePool();
+
+		OnReturnCardBegin.Broadcast();
 	}
 }
 
@@ -173,9 +181,8 @@ void APCREricaCardProjectile::CardReturnMovement(float DeltaSeconds)
 void APCREricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 {
 	const float Distance = FVector::DistSquared(ShootLocation, GetActorLocation());
-	if (Distance >= (Range * Range))
+	if (Distance >= (CardRange * CardRange))
 	{
-		bIsShooting = false;
-		SetCardEnable(false);
+		PauseCard();
 	}
 }

@@ -24,7 +24,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 	EricaCardReturnSpeed = 6000.f;
 	EricaCardRapidShotRange = 1000.f;
 	EricaCardBuckShotRange = 800.f;
-	EricaCardReturnRange = 50.f;
+	EricaCardReleaseRange = 50.f;
 
 	DeadAfterDestroyTime = 1.f;
 

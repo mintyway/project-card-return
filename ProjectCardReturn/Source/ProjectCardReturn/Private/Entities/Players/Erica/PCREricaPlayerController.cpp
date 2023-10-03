@@ -68,7 +68,7 @@ void APCREricaPlayerController::Tick(float DeltaSeconds)
 FVector APCREricaPlayerController::GetMouseDirection() const
 {
 	FHitResult MouseClickedResult;
-	if (GetHitResultUnderCursor(ECC_Visibility, false, MouseClickedResult))
+	if (GetHitResultUnderCursor(ECC_GameTraceChannel5, false, MouseClickedResult))
 	{
 		FVector MouseClickedLocation = MouseClickedResult.Location;
 		MouseClickedLocation.Z = 0.0;
