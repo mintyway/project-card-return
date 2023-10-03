@@ -50,6 +50,9 @@ private:
 	UFUNCTION()
 	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
+	UFUNCTION()
+	void HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	
 	void PauseCard();
 	
 	void HandleCardReturn(float DeltaSeconds);

@@ -47,13 +47,13 @@ void APCREricaCardProjectile::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
+	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
 }
 
 void APCREricaCardProjectile::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s: %d"), *this->GetName(), CurrentCardState);
 	switch (CurrentCardState)
 	{
 		case ECardState::Flying:
@@ -93,9 +93,27 @@ void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& 
  */
 void APCREricaCardProjectile::ReturnCard()
 {
+	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s 카드가 복귀를 시작합니다."), *GetName());
 	CurrentCardState = ECardState::Returning;
 	EnableProjectile();
-	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%p: %d"), this, CurrentCardState);
+
+	const AActor* AttachedActor = GetAttachParentActor();
+	if(AttachedActor)
+	{
+		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s 카드를 %s로부터 디태치합니다."), *GetName(), *AttachedActor->GetName());
+		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		// 해당 오브젝트의 물리가 활성화 되어있는 경우 물체를 당겨옵니다.
+		UStaticMeshComponent* MeshComponent = AttachedActor->FindComponentByClass<UStaticMeshComponent>();
+		if (MeshComponent && MeshComponent->IsSimulatingPhysics())
+		{
+			const FVector Direction = (GetOwner()->GetActorLocation() - AttachedActor->GetActorLocation()).GetSafeNormal();
+			FVector ImpulseDirection(Direction);
+			const float ImpulseSize = 10000.f;
+			MeshComponent->AddImpulse(Direction * ImpulseSize);
+			UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s가 당겨집니다."), *AttachedActor->GetName());
+		}
+	}
 
 	OnReturnCardBegin.Broadcast();
 }
@@ -108,11 +126,12 @@ void APCREricaCardProjectile::EnableCollisionDetection()
 		GetBoxComponent()->SetCollisionObjectType(ECC_GameTraceChannel3);
 		GetBoxComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Block);
 	}
 }
 
 /**
- * 카드를 멈추고 틱, 충돌을 비활성화합니다.
+ * 카드를 멈추고 틱, 충돌을 비활성화합니다. 이 함수를 호출하면 카드는 복귀 가능 상태가 됩니다.
  */
 void APCREricaCardProjectile::PauseCard()
 {
@@ -136,7 +155,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
 	if (DotResult <= 0)
 	{
-		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("정면 충돌"));
+		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s 카드가 %s와 정면으로 충돌했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName());
 		// TODO: 현재는 해당 액터가 밀리면서 여러번 오버랩될 수 있는 상황입니다. 나중에 충돌 당하는 액터에게 오버랩 쿨타임을 구현해 이를 막아야합니다.
 		OtherCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 500.f, false, false);
 
@@ -146,15 +165,24 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	}
 	else
 	{
-		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("후면 충돌"));
+		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s 카드가 %s와 후면으로 충돌했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName());
 		APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
 }
 
+void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
+	
+	PauseCard();
+	RETURN_IF_INVALID(OtherActor);
+	AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
+}
+
 /**
- * 카드를 플레이어 방향으로 이동시키고 플레이어에 닿을 시 풀로 반환합니다.
+ * 카드를 플레이어 방향으로 이동시키고 플레이어에 닿을 시 풀로 반환합니다. 이때 모든 충돌판정을 무시합니다.
  */
 void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 {
@@ -163,6 +191,12 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 
 	const FVector MoveVector = MoveDirection * CardReturnSpeed;
 	const FRotator MoveRotator = FRotationMatrix::MakeFromX(MoveDirection).Rotator();
+	
+	if (GetBoxComponent())
+	{
+		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
+	}
+	
 	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);
 
 	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
