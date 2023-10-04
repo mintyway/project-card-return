@@ -47,7 +47,7 @@ APCRBaseProjectile* APCRBaseProjectilePool::Acquire()
 	if (ProjectilePool.Dequeue(AcquireProjectile))
 	{
 		const FDelegateHandle NewHandle = AcquireProjectile->OnReleaseProjectile.AddUObject(this, &APCRBaseProjectilePool::Release);
-		OnReleaseProjectileDelegateMap.Add(AcquireProjectile, NewHandle);
+		OnReleaseProjectileDelegateHandleMap.Add(AcquireProjectile, NewHandle);
 		return AcquireProjectile;
 	}
 	else
@@ -63,7 +63,7 @@ APCRBaseProjectile* APCRBaseProjectilePool::Acquire()
 void APCRBaseProjectilePool::Release(APCRBaseProjectile* Projectile)
 {
 	ProjectilePool.Enqueue(Projectile);
-	const FDelegateHandle* ExistingHandle = OnReleaseProjectileDelegateMap.Find(Projectile);
+	const FDelegateHandle* ExistingHandle = OnReleaseProjectileDelegateHandleMap.Find(Projectile);
 	if (ExistingHandle)
 	{
 		Projectile->OnReleaseProjectile.Remove(*ExistingHandle);

@@ -3,14 +3,20 @@
 
 #include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
+#include "Components/BoxComponent.h"
+#include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
+
 #include "Components/CapsuleComponent.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierCharacter);
+
 APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	bCanAttack = true;
-
+	bOwnShield = false;
+	
 	if (IsValid(GetParameterDataAsset()))
 	{
 		// MaxHealthPoint = GetParameterDataAsset()->RabbitMaxHealthPoint;
@@ -50,9 +56,21 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 	}
 }
 
+void APCRMeleeSoldierCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	SpawnAndAttachShield();
+}
+
 void APCRMeleeSoldierCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void APCRMeleeSoldierCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }
 
 void APCRMeleeSoldierCharacter::Attack()
@@ -63,9 +81,48 @@ void APCRMeleeSoldierCharacter::Attack()
 void APCRMeleeSoldierCharacter::HandleDead()
 {
 	Super::HandleDead();
+
+	DetachShieldAndDestroy();
 }
 
-void APCRMeleeSoldierCharacter::Tick(float DeltaSeconds)
+/**
+ * 실드를 스폰하고 몬스터에게 부착합니다.
+ */
+void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 {
-	Super::Tick(DeltaSeconds);
+	RETURN_IF_INVALID(GetWorld());
+	Shield = GetWorld()->SpawnActor<APCRShieldActor>();
+	RETURN_IF_INVALID(Shield);
+	RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform));
+	Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
+	Shield->OnDetachedCard.AddUObject(this, &APCRMeleeSoldierCharacter::DetachShieldAndDestroy);
+
+	bOwnShield = true;
+}
+
+/**
+ * 실드를 탈착하고 물리 시뮬레이션을 활성화합니다. 이후 파괴합니다.
+ */
+void APCRMeleeSoldierCharacter::DetachShieldAndDestroy()
+{
+	if (!bOwnShield)
+	{
+		return;
+	}
+
+	FTimerHandle DestroyTimer;
+	GetWorldTimerManager().SetTimer(DestroyTimer, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		Shield->Destroy();
+		Shield = nullptr;
+	}), 1.f, false);
+
+	Shield->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	UBoxComponent* ShieldBoxComponent = Shield->FindComponentByClass<UBoxComponent>();
+	RETURN_IF_INVALID(ShieldBoxComponent);
+	ShieldBoxComponent->SetSimulatePhysics(true);
+
+	UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
+
+	bOwnShield = false;
 }

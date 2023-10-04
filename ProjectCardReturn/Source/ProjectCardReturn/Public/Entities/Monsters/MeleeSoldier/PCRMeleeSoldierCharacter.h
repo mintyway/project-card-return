@@ -7,6 +7,10 @@
 #include "PCRMeleeSoldierCharacter.generated.h"
 
 
+class APCRShieldActor;
+
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogMeleeSoldierCharacter, Log, All);
+
 /**
  * 
  */
@@ -19,19 +23,23 @@ public:
 	APCRMeleeSoldierCharacter();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void Attack() override;
 	virtual void HandleDead() override;
 
 public:
-	virtual void Tick(float DeltaSeconds) override;
+	void SpawnAndAttachShield();
+	void DetachShieldAndDestroy();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Dummy")
 	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
 
 	UPROPERTY()
-	TObjectPtr<AActor> Shield;
-	
+	TObjectPtr<APCRShieldActor> Shield;
+
 	bool bCanAttack;
+	bool bOwnShield;
 };

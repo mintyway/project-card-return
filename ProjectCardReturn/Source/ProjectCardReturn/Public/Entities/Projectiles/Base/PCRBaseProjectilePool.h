@@ -35,7 +35,7 @@ protected:
 	virtual APCRBaseProjectile* HandleEmptyPool();
 	
 	TQueue<TObjectPtr<APCRBaseProjectile>> ProjectilePool;
-	TMap<APCRBaseProjectile*, FDelegateHandle> OnReleaseProjectileDelegateMap;
+	TMap<APCRBaseProjectile*, FDelegateHandle> OnReleaseProjectileDelegateHandleMap;
 	
 	int32 ProjectilePoolSize;
 	

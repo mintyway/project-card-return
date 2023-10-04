@@ -321,7 +321,7 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 		CardProjectile->LaunchProjectile(this, GetActorLocation(), Direction);
 	}
 
-	UE_LOG(PCRLogEricaCharacter, Warning, TEXT("필드에 발사된 카드 개수: %d"), CardProjectiles.Num());
+	UE_LOG(PCRLogEricaCharacter, Log, TEXT("필드에 발사된 카드 개수: %d"), CardProjectiles.Num());
 }
 
 /**
@@ -384,7 +384,7 @@ void APCREricaCharacter::HandleDash(float DeltaTime)
 	const FVector NewLocation = FMath::Lerp(CachedDashStartLocation, CachedDashStartLocation + CachedDashDirection * DashDistance, Alpha);
 	if (!SetActorLocation(NewLocation, true))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Blocking"));
+		UE_LOG(PCRLogEricaCharacter, Log, TEXT("대시 중 벽에 막혔습니다."));
 		bIsDashing = false;
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
