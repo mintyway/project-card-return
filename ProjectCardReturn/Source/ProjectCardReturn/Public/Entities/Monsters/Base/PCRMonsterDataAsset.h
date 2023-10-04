@@ -22,6 +22,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	TObjectPtr<UBlackboardData> DefaultBlackBoard;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	TObjectPtr<USkeletalMesh> MeleeSoldierMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	TObjectPtr<UStaticMesh> ShieldMesh;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;

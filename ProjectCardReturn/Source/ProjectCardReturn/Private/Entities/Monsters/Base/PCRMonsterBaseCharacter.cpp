@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
+#include "BrainComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 
@@ -154,8 +155,16 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
  */
 void APCRMonsterBaseCharacter::HandleDead()
 {
+	UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("%s가 죽었습니다."), *GetName());
+	
 	bIsAlive = false;
-
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
+	const auto MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
+	RETURN_IF_INVALID(MonsterBaseAIController);
+	MonsterBaseAIController->StopMovement();
+	RETURN_IF_INVALID(MonsterBaseAIController->GetBrainComponent());
+	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
+	
 	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() -> void
@@ -163,7 +172,6 @@ void APCRMonsterBaseCharacter::HandleDead()
 		Destroy();
 	}), ParameterDataAsset->DeadAfterDestroyTime, false);
 
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
 
 	OnDead.Broadcast();
 }

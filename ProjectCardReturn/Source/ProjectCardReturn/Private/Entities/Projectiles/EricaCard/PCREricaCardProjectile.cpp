@@ -97,6 +97,7 @@ void APCREricaCardProjectile::ReturnCard()
 	CurrentCardState = ECardState::Returning;
 	EnableProjectile();
 
+	// TODO: 델리게이트를 통해 해당 액터가 수행하도록 바꿀 것
 	const AActor* AttachedActor = GetAttachParentActor();
 	if(AttachedActor)
 	{
@@ -147,7 +148,7 @@ void APCREricaCardProjectile::PauseCard()
 void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
-	RETURN_IF_INVALID(IsValid(OtherCharacter));
+	RETURN_IF_INVALID(OtherCharacter);
 
 	const FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
@@ -179,6 +180,8 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
 	PauseCard();
 	RETURN_IF_INVALID(OtherActor);
 	AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
+
+	OnBlockedCard.Broadcast(this);
 }
 
 /**
@@ -204,8 +207,6 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 	{
 		CurrentCardState = ECardState::Invalid;
 		ReleaseToProjectilePool();
-
-		OnReturnCardBegin.Broadcast();
 	}
 }
 

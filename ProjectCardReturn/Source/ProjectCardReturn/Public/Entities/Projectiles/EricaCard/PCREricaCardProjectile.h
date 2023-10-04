@@ -6,7 +6,8 @@
 #include "Entities/Projectiles/Base/PCRBaseProjectile.h"
 #include "PCREricaCardProjectile.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnReturnCardBeginSignature);
+DECLARE_MULTICAST_DELEGATE(FReturnCardBeginSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FBlockedCardSignature, AActor*);
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCardProjectile, Log, All);
 
@@ -41,7 +42,8 @@ public:
 	bool GetIsShooting() const { return bIsShooting; }
 	FORCEINLINE ECardState GetCurrentCardState() const { return CurrentCardState; }
 
-	FOnReturnCardBeginSignature OnReturnCardBegin;
+	FBlockedCardSignature OnBlockedCard;
+	FReturnCardBeginSignature OnReturnCardBegin;
 
 protected:
 	virtual void EnableCollisionDetection() override;

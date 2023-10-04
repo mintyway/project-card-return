@@ -1,22 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
+#include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
-#include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
-#include "Entities/Monsters/Base/PCRMonsterBaseAIController.h"
-#include "UI/PCRUIDataAsset.h"
-
-#include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-APCRRabbitCharacter::APCRRabbitCharacter()
+APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	bCanAttack = true;
-
-	// SetActorScale3D(FVector(0.8, 0.8, 0.8));
 
 	if (IsValid(GetParameterDataAsset()))
 	{
@@ -57,39 +50,22 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 	}
 }
 
-void APCRRabbitCharacter::BeginPlay()
+void APCRMeleeSoldierCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void APCRRabbitCharacter::Attack()
+void APCRMeleeSoldierCharacter::Attack()
 {
 	Super::Attack();
-
-	if (bCanAttack)
-	{
-		bCanAttack = false;
-		FTimerHandle UnUsedHandle;
-		GetWorld()->GetTimerManager().SetTimer(UnUsedHandle, FTimerDelegate::CreateLambda([this]() -> void
-		{
-			SIMPLE_LOG;
-			bCanAttack = true;
-		}), AttackSpeed, false);
-
-		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
-	}
 }
 
-/**
- * TODO: 부모 클래스로 인공지능 정지 기능을 넘길 것
- * 죽으면 인공지능을 정지합니다.
- */
-void APCRRabbitCharacter::HandleDead()
+void APCRMeleeSoldierCharacter::HandleDead()
 {
 	Super::HandleDead();
 }
 
-void APCRRabbitCharacter::Tick(float DeltaSeconds)
+void APCRMeleeSoldierCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
