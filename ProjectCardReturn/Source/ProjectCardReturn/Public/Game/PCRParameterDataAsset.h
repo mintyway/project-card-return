@@ -95,4 +95,23 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitAttackSpeed;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierMaxHealthPoint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackPower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierMoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Shield")
+	float ShieldDestroyTimeAfterDrop;
 };

@@ -16,15 +16,14 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	bCanAttack = true;
 	bOwnShield = false;
-	
+
 	if (IsValid(GetParameterDataAsset()))
 	{
-		// MaxHealthPoint = GetParameterDataAsset()->RabbitMaxHealthPoint;
-		MaxHealthPoint = 1.f;
+		MaxHealthPoint = GetParameterDataAsset()->MeleeSoldierMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
-		AttackPower = GetParameterDataAsset()->RabbitAttackPower;
-		AttackRange = GetParameterDataAsset()->RabbitAttackRange;
-		AttackSpeed = GetParameterDataAsset()->RabbitAttackSpeed;
+		AttackPower = GetParameterDataAsset()->MeleeSoldierAttackPower;
+		AttackRange = GetParameterDataAsset()->MeleeSoldierAttackRange;
+		AttackSpeed = GetParameterDataAsset()->MeleeSoldierAttackSpeed;
 	}
 
 	if (IsValid(GetCapsuleComponent()))
@@ -49,10 +48,10 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 		DummyMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 
-	if (IsValid(GetCharacterMovement()) && IsValid(GetParameterDataAsset()))
+	if (GetCharacterMovement() && GetParameterDataAsset())
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->RabbitMoveSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->MeleeSoldierMoveSpeed;
 	}
 }
 
@@ -82,7 +81,10 @@ void APCRMeleeSoldierCharacter::HandleDead()
 {
 	Super::HandleDead();
 
-	DetachShieldAndDestroy();
+	if (bOwnShield)
+	{
+		Shield->DetachAndDelayedDestroy();
+	}
 }
 
 /**
@@ -95,34 +97,22 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 	RETURN_IF_INVALID(Shield);
 	RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform));
 	Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
-	Shield->OnDetachedCard.AddUObject(this, &APCRMeleeSoldierCharacter::DetachShieldAndDestroy);
+	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 
 	bOwnShield = true;
 }
 
 /**
- * 실드를 탈착하고 물리 시뮬레이션을 활성화합니다. 이후 파괴합니다.
+ * 실드가 탈착되고난 후 처리되야할 함수입니다. 실드의 탈착 시점에 바인드 되어있습니다.
  */
-void APCRMeleeSoldierCharacter::DetachShieldAndDestroy()
+void APCRMeleeSoldierCharacter::HandleDetachedShield()
 {
 	if (!bOwnShield)
 	{
 		return;
 	}
 
-	FTimerHandle DestroyTimer;
-	GetWorldTimerManager().SetTimer(DestroyTimer, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		Shield->Destroy();
-		Shield = nullptr;
-	}), 1.f, false);
-
-	Shield->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	UBoxComponent* ShieldBoxComponent = Shield->FindComponentByClass<UBoxComponent>();
-	RETURN_IF_INVALID(ShieldBoxComponent);
-	ShieldBoxComponent->SetSimulatePhysics(true);
-
 	UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
-
+	Shield = nullptr;
 	bOwnShield = false;
 }

@@ -11,7 +11,8 @@ class UPCRMonsterDataAsset;
 class APCREricaCardProjectile;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogShieldActor, Log, All);
-DECLARE_MULTICAST_DELEGATE(FDetachedSignature);
+DECLARE_MULTICAST_DELEGATE(FDetachedShieldSignature);
+DECLARE_MULTICAST_DELEGATE(FDetachedCardSignature);
 
 UCLASS()
 class PROJECTCARDRETURN_API APCRShieldActor : public AActor
@@ -25,14 +26,19 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginDestroy() override;
 
 public:
-	FDetachedSignature OnDetachedCard;
+	void DetachAndDelayedDestroy();
+	
+	FDetachedShieldSignature OnDetachedShield;
+	FDetachedCardSignature OnDetachedCard;
 
 private:
 	UFUNCTION()
 	void HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-	
+
+	void DelayedDestroy();
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 
 	UPROPERTY(VisibleAnywhere, Category = "Box");

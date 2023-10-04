@@ -13,7 +13,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 	CameraLagMaxDistance = 100.f;
 
 	EricaMoveSpeed = 750.f;
-	EricaAttackPower = 50.f;
+	EricaAttackPower = 1.f;
 	EricaRapidShotCoolTime = 0.1f;
 	EricaBuckShotCoolTime = 0.5f;
 	EricaDashCoolTime = 1.f;
@@ -28,9 +28,17 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	DeadAfterDestroyTime = 1.f;
 
-	RabbitMaxHealthPoint = 100.f;
+	RabbitMaxHealthPoint = 3.f;
 	RabbitAttackPower = 3.f;
 	RabbitMoveSpeed = 300.f;
 	RabbitAttackRange = 300.f;
 	RabbitAttackSpeed = 1.f;
+
+	MeleeSoldierMaxHealthPoint = 1.f;
+	MeleeSoldierAttackPower = 34.f;
+	MeleeSoldierMoveSpeed = 300.f;
+	MeleeSoldierAttackRange = 300.f;
+	MeleeSoldierAttackSpeed = 1.f;
+
+	ShieldDestroyTimeAfterDrop = 1.f;
 }

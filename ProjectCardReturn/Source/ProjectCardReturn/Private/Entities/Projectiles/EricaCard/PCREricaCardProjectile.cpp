@@ -97,24 +97,6 @@ void APCREricaCardProjectile::ReturnCard()
 	CurrentCardState = ECardState::Returning;
 	EnableProjectile();
 
-	// // TODO: 델리게이트를 통해 해당 액터가 수행하도록 바꿀 것
-	// const AActor* AttachedActor = GetAttachParentActor();
-	// if(AttachedActor)
-	// {
-	// 	UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s 카드를 %s로부터 디태치합니다."), *GetName(), *AttachedActor->GetName());
-	// 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	//
-	// 	// 해당 오브젝트의 물리가 활성화 되어있는 경우 물체를 당겨옵니다.
-	// 	UStaticMeshComponent* MeshComponent = AttachedActor->FindComponentByClass<UStaticMeshComponent>();
-	// 	if (MeshComponent && MeshComponent->IsSimulatingPhysics())
-	// 	{
-	// 		const FVector Direction = (GetOwner()->GetActorLocation() - AttachedActor->GetActorLocation()).GetSafeNormal();
-	// 		const float ImpulseSize = 10000.f;
-	// 		MeshComponent->AddImpulse(Direction * ImpulseSize);
-	// 		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s가 당겨집니다."), *AttachedActor->GetName());
-	// 	}
-	// }
-
 	OnReturnCardBegin.Broadcast(this);
 }
 
@@ -149,7 +131,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
 	if (!OtherCharacter)
 	{
-		UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s가 %s와 충돌했지만 %s이 물체이기 때문에 데미지를 주지 못했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName(), *OtherActor->GetName());
+		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s가 %s와 충돌했지만 %s이 물체이기 때문에 데미지를 주지 못했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName(), *OtherActor->GetName());
 
 		return;
 	}
@@ -166,7 +148,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 		const APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
-		OtherCharacter->TakeDamage(EricaCharacter->GetAttackPower() / 5, DamageEvent, EricaCharacter->GetController(), this);
+		OtherCharacter->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), this);
 	}
 	else
 	{

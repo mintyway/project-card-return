@@ -31,7 +31,7 @@ protected:
 
 public:
 	void SpawnAndAttachShield();
-	void DetachShieldAndDestroy();
+	void HandleDetachedShield();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Dummy")

@@ -20,8 +20,7 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 
 	if (IsValid(GetParameterDataAsset()))
 	{
-		// MaxHealthPoint = GetParameterDataAsset()->RabbitMaxHealthPoint;
-		MaxHealthPoint = 1.f;
+		MaxHealthPoint = GetParameterDataAsset()->RabbitMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
 		AttackPower = GetParameterDataAsset()->RabbitAttackPower;
 		AttackRange = GetParameterDataAsset()->RabbitAttackRange;
