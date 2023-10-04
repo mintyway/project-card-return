@@ -95,6 +95,7 @@ void APCREricaCardProjectile::ReturnCard()
 {
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 복귀를 시작합니다."), *GetName());
 	CurrentCardState = ECardState::Returning;
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
 
 	OnReturnCardBegin.Broadcast(this);

@@ -72,6 +72,7 @@ void APCRShieldActor::BeginDestroy()
 void APCRShieldActor::DetachAndDelayedDestroy()
 {
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	BoxComponent->SetCollisionProfileName("Ragdoll");
 
 	OnDetachedShield.Broadcast();
 
@@ -113,7 +114,7 @@ void APCRShieldActor::DelayedDestroy()
 
 /**
  * 
- * @param AttachedCard 카드의 회수가 시작되는 시점
+ * @param AttachedCard 
  */
 void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
@@ -124,7 +125,6 @@ void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 	}
 
 	DetachAndDelayedDestroy();
-
 	const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	const float ImpulseSize = 5000.f;
 	BoxComponent->AddImpulse(Direction * ImpulseSize);
