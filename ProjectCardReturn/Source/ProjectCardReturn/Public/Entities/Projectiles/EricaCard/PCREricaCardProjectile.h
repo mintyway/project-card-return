@@ -40,6 +40,7 @@ public:
 	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction) override;
 	virtual void EnableProjectile() override;
 	virtual void DisableProjectile() override;
+	virtual void ReleaseToProjectilePool() override;
 	
 	void ReturnCard();
 	void SetRange(float NewRange) { CardRange = NewRange; }
@@ -63,6 +64,8 @@ private:
 	void HandleCardReturn(float DeltaSeconds);
 	void CheckCardRangeAndStop(float DeltaSeconds);
 	void HandleCardMaxRange();
+	void EnableCardFloatingFX();
+	void DisableCardFloatingFX();
 
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	TObjectPtr<UNiagaraComponent> CardRibbonFXComponent;

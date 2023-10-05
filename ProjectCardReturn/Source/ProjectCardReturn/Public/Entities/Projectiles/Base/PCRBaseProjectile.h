@@ -30,7 +30,7 @@ protected:
 
 public:
 	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
-	void ReleaseToProjectilePool();
+	virtual void ReleaseToProjectilePool();
 	
 	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent; }
 	FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
