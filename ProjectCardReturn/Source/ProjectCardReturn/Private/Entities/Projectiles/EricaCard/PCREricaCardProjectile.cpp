@@ -3,6 +3,7 @@
 
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
+#include "NiagaraComponent.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -34,12 +35,26 @@ APCREricaCardProjectile::APCREricaCardProjectile()
 
 	if (GetStaticMeshComponent() && GetProjectileDataAsset())
 	{
-		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->GetEricaCardMesh());
+		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->EricaCardMesh);
 	}
 
 	if (GetProjectileMovementComponent())
 	{
 		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
+	}
+
+	CardRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardRibbonFXComponent"));
+	if (CardRibbonFXComponent)
+	{
+		CardRibbonFXComponent->SetupAttachment(GetBoxComponent());
+		CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
+	}
+
+	CardFloatingFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardFloatingFXComponent"));
+	if (CardFloatingFXComponent)
+	{
+		CardFloatingFXComponent->SetupAttachment(GetBoxComponent());
+		CardFloatingFXComponent->SetAsset(GetProjectileDataAsset()->CardFloating);
 	}
 }
 
@@ -49,6 +64,9 @@ void APCREricaCardProjectile::PostInitializeComponents()
 
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
+
+	RETURN_IF_INVALID(CardFloatingFXComponent);
+	CardFloatingFXComponent->Deactivate();
 }
 
 void APCREricaCardProjectile::Tick(float DeltaSeconds)
@@ -89,6 +107,20 @@ void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& 
 	CurrentCardState = ECardState::Flying;
 }
 
+void APCREricaCardProjectile::EnableProjectile()
+{
+	Super::EnableProjectile();
+
+	CardRibbonFXComponent->Activate();
+}
+
+void APCREricaCardProjectile::DisableProjectile()
+{
+	Super::DisableProjectile();
+
+	CardRibbonFXComponent->Deactivate();
+}
+
 /**
  * 카드를 플레이어에게로 복귀하는 상태로 바꿉니다.
  */
@@ -98,6 +130,7 @@ void APCREricaCardProjectile::ReturnCard()
 	CurrentCardState = ECardState::Returning;
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
+	CardFloatingFXComponent->Deactivate();
 
 	OnReturnCardBegin.Broadcast(this);
 }
@@ -211,5 +244,11 @@ void APCREricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 	if (Distance >= (CardRange * CardRange))
 	{
 		PauseCard();
+		HandleCardMaxRange();
 	}
+}
+
+void APCREricaCardProjectile::HandleCardMaxRange()
+{
+	CardFloatingFXComponent->Activate();
 }

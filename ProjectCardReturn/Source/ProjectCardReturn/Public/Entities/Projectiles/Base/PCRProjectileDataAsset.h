@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRProjectileDataAsset.generated.h"
 
+class UNiagaraSystem;
 /**
  * 
  */
@@ -15,9 +16,12 @@ class PROJECTCARDRETURN_API UPCRProjectileDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE TObjectPtr<UStaticMesh> GetEricaCardMesh() const { return EricaCardMesh; }
-
-private:
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	TObjectPtr<UStaticMesh> EricaCardMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	TObjectPtr<UNiagaraSystem> CardRibbon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	TObjectPtr<UNiagaraSystem> CardFloating;
 };
