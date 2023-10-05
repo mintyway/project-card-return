@@ -47,7 +47,10 @@ APCREricaCardProjectile::APCREricaCardProjectile()
 	if (CardRibbonFXComponent)
 	{
 		CardRibbonFXComponent->SetupAttachment(GetBoxComponent());
-		CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
+		if (GetProjectileDataAsset()->CardRibbon)
+		{
+			CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
+		}
 	}
 
 	CardFloatingFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardFloatingFXComponent"));
@@ -65,6 +68,7 @@ void APCREricaCardProjectile::PostInitializeComponents()
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
 
+	CardRibbonFXComponent->Deactivate();
 	DisableCardFloatingFX();
 }
 
@@ -102,21 +106,9 @@ void APCREricaCardProjectile::Tick(float DeltaSeconds)
 void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
 	Super::LaunchProjectile(NewOwner, StartLocation, Direction);
-	
-	CurrentCardState = ECardState::Flying;
-}
-
-void APCREricaCardProjectile::EnableProjectile()
-{
-	Super::EnableProjectile();
-
 	CardRibbonFXComponent->Activate();
-}
 
-void APCREricaCardProjectile::DisableProjectile()
-{
-	Super::DisableProjectile();
-
+	CurrentCardState = ECardState::Flying;
 }
 
 void APCREricaCardProjectile::ReleaseToProjectilePool()
@@ -204,7 +196,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
-	
+
 	PauseCard();
 	RETURN_IF_INVALID(OtherActor);
 	AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
@@ -226,12 +218,12 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 
 	const FVector MoveVector = MoveDirection * CardReturnSpeed;
 	const FRotator MoveRotator = FRotationMatrix::MakeFromX(MoveDirection).Rotator();
-	
+
 	if (GetBoxComponent())
 	{
 		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
 	}
-	
+
 	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);
 
 	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());

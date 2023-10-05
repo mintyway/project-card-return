@@ -38,8 +38,6 @@ protected:
 
 public:
 	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction) override;
-	virtual void EnableProjectile() override;
-	virtual void DisableProjectile() override;
 	virtual void ReleaseToProjectilePool() override;
 	
 	void ReturnCard();
