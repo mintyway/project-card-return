@@ -128,6 +128,7 @@ void APCREricaCardProjectile::ReturnCard()
 	CurrentCardState = ECardState::Returning;
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
+	CardRibbonFXComponent->Activate();
 	DisableCardFloatingFX();
 	GetStaticMeshComponent()->SetVisibility(true);
 
