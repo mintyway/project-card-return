@@ -18,6 +18,9 @@ public:
 	UPCRParameterDataAsset();
 
 public:
+	UPROPERTY(EditAnywhere, Category = "Game")
+	bool bIsMonsterSpawn;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraFOV;
 

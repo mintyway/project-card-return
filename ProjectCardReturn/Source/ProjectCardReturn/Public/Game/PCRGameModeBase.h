@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
+class UPCRParameterDataAsset;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameModeBase, Log, All);
 
 class APCRMonsterBaseGenerator;
@@ -30,4 +31,8 @@ public:
 	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator4;
 	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator5;
 	TObjectPtr<APCRMonsterBaseGenerator> MonsterGenerator6;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UPCRParameterDataAsset> ParameterDataAsset;
 };

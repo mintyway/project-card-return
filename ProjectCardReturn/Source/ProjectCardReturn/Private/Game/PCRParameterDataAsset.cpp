@@ -5,6 +5,8 @@
 
 UPCRParameterDataAsset::UPCRParameterDataAsset()
 {
+	bIsMonsterSpawn = true;
+	
 	CameraFOV = 60.f;
 	CameraDistance = 2000.f;
 	CameraPitch = 40.f;
