@@ -329,8 +329,6 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
  */
 void APCREricaCharacter::Dash()
 {
-	SIMPLE_LOG;
-
 	if (bCanDash)
 	{
 		bCanDash = false;

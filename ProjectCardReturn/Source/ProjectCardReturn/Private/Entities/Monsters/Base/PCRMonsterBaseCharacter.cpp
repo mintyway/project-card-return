@@ -155,7 +155,7 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
  */
 void APCRMonsterBaseCharacter::HandleDead()
 {
-	UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("%s가 죽었습니다."), *GetName());
+	UE_LOG(PCRLogMonsterBaseCharacter, Log, TEXT("%s가 죽었습니다."), *GetName());
 	
 	bIsAlive = false;
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));

@@ -6,6 +6,7 @@
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
+#include "Interfaces/PCREricaCardInteractable.h"
 
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
@@ -167,6 +168,12 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
 	PauseCard();
 	RETURN_IF_INVALID(OtherActor);
 	AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
+
+	if (IPCREricaCardInteractable* EricaCardAttachableInterface = Cast<IPCREricaCardInteractable>(OtherActor))
+	{
+		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s와 충돌한 %s는 상호작용이 가능한 오브젝트입니다."), *SelfActor->GetName(), *OtherActor->GetName());
+		EricaCardAttachableInterface->SendEricaCardInfoForBinding(this);
+	}
 }
 
 /**

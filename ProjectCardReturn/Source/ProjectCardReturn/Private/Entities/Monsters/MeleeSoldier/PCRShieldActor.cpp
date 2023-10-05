@@ -41,8 +41,6 @@ void APCRShieldActor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	OnActorHit.AddDynamic(this, &APCRShieldActor::HandleBlocking);
-
 	RETURN_IF_INVALID(BoxComponent);
 	BoxComponent->SetMassOverrideInKg(EName::None, 30.f, true);
 }
@@ -65,6 +63,15 @@ void APCRShieldActor::BeginDestroy()
 	OnDetachedCard.RemoveAll(this);
 }
 
+void APCRShieldActor::SendEricaCardInfoForBinding(APCREricaCardProjectile* NewCard)
+{
+	if (APCREricaCardProjectile* AttachedCard = NewCard)
+	{
+		const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
+		OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
+	}
+}
+
 /**
  * 주인으로부터 실드를 탈착하고 물리 시뮬레이션을 활성화합니다. 이후 파괴합니다.\n
  * 물리 시뮬레이션을 활성화하는 이유는 실드가 바닥에서 뒹굴 수 있도록 하기 위함입니다.
@@ -80,24 +87,6 @@ void APCRShieldActor::DetachAndDelayedDestroy()
 	BoxComponent->SetSimulatePhysics(true);
 
 	DelayedDestroy();
-}
-
-/**
- * 액터가 서로 블로킹(충돌) 될 시 발생하는 이벤트의 처리를 담당합니다.\n
- * 여기서는 충돌된 액터가 카드인지 확인하고 카드라면 접근하여 OnReturnBegin 델리게이트에 바인드합니다.\n
- * 바인드의 이유는 카드의 회수가 시작되는 타이밍에 방패에 특정 상호작용을 하기 위함입니다.
- * @param SelfActor 자신
- * @param OtherActor 충돌한 액터
- * @param NormalImpulse 충돌한 힘
- * @param Hit 충돌결과
- */
-void APCRShieldActor::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-	if (APCREricaCardProjectile* AttachedCard = Cast<APCREricaCardProjectile>(OtherActor))
-	{
-		const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
-		OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
-	}
 }
 
 /**

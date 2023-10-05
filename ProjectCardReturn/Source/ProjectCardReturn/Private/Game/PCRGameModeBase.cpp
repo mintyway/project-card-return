@@ -38,11 +38,11 @@ void APCRGameModeBase::BeginPlay()
 		MonsterGenerator5 = GetWorld()->SpawnActor<APCRMonsterBaseGenerator>(FVector(1500.0, 2000.0, 100.0), FRotator::ZeroRotator);
 		MonsterGenerator6 = GetWorld()->SpawnActor<APCRMonsterBaseGenerator>(FVector(-1500.0, 2000.0, 100.0), FRotator::ZeroRotator);
 
-		// MonsterGenerator1->Start(APCRMeleeSoldierCharacter::StaticClass(), 5.f);
-		// MonsterGenerator2->Start(APCRMeleeSoldierCharacter::StaticClass(), 5.f);
-		MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 5.f);
-		MonsterGenerator4->Start(APCRMeleeSoldierCharacter::StaticClass(), 5.f);
-		MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 5.f);
-		// MonsterGenerator6->Start(APCRRabbitCharacter::StaticClass(), 5.f);
+		// MonsterGenerator1->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
+		// MonsterGenerator2->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
+		MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
+		MonsterGenerator4->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
+		MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 3.f);
+		// MonsterGenerator6->Start(APCRRabbitCharacter::StaticClass(), 3.f);
 	}
 }

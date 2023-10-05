@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
+#include "Interfaces/PCREricaCardInteractable.h"
 #include "GameFramework/Actor.h"
 #include "PCRShieldActor.generated.h"
 
@@ -15,7 +16,7 @@ DECLARE_MULTICAST_DELEGATE(FDetachedShieldSignature);
 DECLARE_MULTICAST_DELEGATE(FDetachedCardSignature);
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRShieldActor : public AActor
+class PROJECTCARDRETURN_API APCRShieldActor : public AActor, public IPCREricaCardInteractable
 {
 	GENERATED_BODY()
 
@@ -29,15 +30,14 @@ protected:
 	virtual void BeginDestroy() override;
 
 public:
+	virtual void SendEricaCardInfoForBinding(APCREricaCardProjectile* NewCard) override;
+	
 	void DetachAndDelayedDestroy();
 	
 	FDetachedShieldSignature OnDetachedShield;
 	FDetachedCardSignature OnDetachedCard;
 
 private:
-	UFUNCTION()
-	void HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-
 	void DelayedDestroy();
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 
