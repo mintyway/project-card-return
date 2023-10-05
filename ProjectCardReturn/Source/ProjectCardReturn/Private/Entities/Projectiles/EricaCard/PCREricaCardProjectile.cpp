@@ -3,6 +3,7 @@
 
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
+#include "NiagaraComponent.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -28,18 +29,35 @@ APCREricaCardProjectile::APCREricaCardProjectile()
 
 	if (GetBoxComponent())
 	{
-		GetBoxComponent()->InitBoxExtent(FVector(4.4, 3.1, 1.0));
-		GetBoxComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
+		GetBoxComponent()->InitBoxExtent(FVector(30.8, 21.7, 1.0));
 	}
 
 	if (GetStaticMeshComponent() && GetProjectileDataAsset())
 	{
-		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->GetEricaCardMesh());
+		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->EricaCardMesh);
+		GetStaticMeshComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
 	}
 
 	if (GetProjectileMovementComponent())
 	{
 		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
+	}
+
+	CardRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardRibbonFXComponent"));
+	if (CardRibbonFXComponent)
+	{
+		CardRibbonFXComponent->SetupAttachment(GetBoxComponent());
+		if (GetProjectileDataAsset()->CardRibbon)
+		{
+			CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
+		}
+	}
+
+	CardFloatingFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardFloatingFXComponent"));
+	if (CardFloatingFXComponent)
+	{
+		CardFloatingFXComponent->SetupAttachment(GetBoxComponent());
+		CardFloatingFXComponent->SetAsset(GetProjectileDataAsset()->CardFloating);
 	}
 }
 
@@ -49,6 +67,9 @@ void APCREricaCardProjectile::PostInitializeComponents()
 
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
+
+	CardRibbonFXComponent->Deactivate();
+	DisableCardFloatingFX();
 }
 
 void APCREricaCardProjectile::Tick(float DeltaSeconds)
@@ -85,8 +106,17 @@ void APCREricaCardProjectile::Tick(float DeltaSeconds)
 void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
 	Super::LaunchProjectile(NewOwner, StartLocation, Direction);
-	
+	CardRibbonFXComponent->Activate();
+
 	CurrentCardState = ECardState::Flying;
+}
+
+void APCREricaCardProjectile::ReleaseToProjectilePool()
+{
+	Super::ReleaseToProjectilePool();
+
+	CardRibbonFXComponent->Deactivate();
+	DisableCardFloatingFX();
 }
 
 /**
@@ -98,6 +128,8 @@ void APCREricaCardProjectile::ReturnCard()
 	CurrentCardState = ECardState::Returning;
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
+	DisableCardFloatingFX();
+	GetStaticMeshComponent()->SetVisibility(true);
 
 	OnReturnCardBegin.Broadcast(this);
 }
@@ -164,7 +196,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
-	
+
 	PauseCard();
 	RETURN_IF_INVALID(OtherActor);
 	AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
@@ -186,12 +218,12 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 
 	const FVector MoveVector = MoveDirection * CardReturnSpeed;
 	const FRotator MoveRotator = FRotationMatrix::MakeFromX(MoveDirection).Rotator();
-	
+
 	if (GetBoxComponent())
 	{
 		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
 	}
-	
+
 	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);
 
 	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
@@ -211,5 +243,27 @@ void APCREricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 	if (Distance >= (CardRange * CardRange))
 	{
 		PauseCard();
+		CardRibbonFXComponent->Deactivate();
+		HandleCardMaxRange();
 	}
+}
+
+void APCREricaCardProjectile::HandleCardMaxRange()
+{
+	GetStaticMeshComponent()->SetVisibility(false);
+	EnableCardFloatingFX();
+}
+
+void APCREricaCardProjectile::EnableCardFloatingFX()
+{
+	RETURN_IF_INVALID(CardFloatingFXComponent);
+	CardFloatingFXComponent->SetVisibility(true);
+	CardFloatingFXComponent->Activate();
+}
+
+void APCREricaCardProjectile::DisableCardFloatingFX()
+{
+	RETURN_IF_INVALID(CardFloatingFXComponent);
+	CardFloatingFXComponent->SetVisibility(false);
+	CardFloatingFXComponent->Deactivate();
 }
