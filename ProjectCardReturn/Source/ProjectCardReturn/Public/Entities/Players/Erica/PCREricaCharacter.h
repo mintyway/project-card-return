@@ -85,15 +85,17 @@ private:
 	TArray<FKey> MovementKeys;
 	FVector LastInputMoveDirection;
 
-	uint8 bCanDash:1;
-	uint8 bIsDashing:1;
-	uint8 bCanRapidShot:1;
-	uint8 bCanBuckShot:1;
+	uint32 bCanDash:1;
+	uint32 bIsDashing:1;
+	uint32 bCanRapidShot:1;
+	uint32 bCanBuckShot:1;
+	uint32 bCanReturnCard:1;
 
 	float DashCoolTime;
 	float TotalDashTime;
 	float ElapsedDashTime;
 	float DashDistance;
+	float ReturnCardCoolTime;
 	FVector CachedDashStartLocation;
 	FVector CachedDashDirection;
 	

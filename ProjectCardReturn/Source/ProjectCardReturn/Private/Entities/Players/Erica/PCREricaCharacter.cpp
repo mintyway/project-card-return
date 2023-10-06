@@ -34,6 +34,8 @@ APCREricaCharacter::APCREricaCharacter()
 	bIsDashing = false;
 
 	ElapsedDashTime = 0.f;
+	// TODO: 파라미터화 필요
+	ReturnCardCoolTime = 1.f;
 
 	static ConstructorHelpers::FObjectFinder<UPCREricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.PCREricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -176,29 +178,39 @@ void APCREricaCharacter::ShootCard()
  */
 void APCREricaCharacter::ReturnCard()
 {
-	if (CardProjectiles.IsEmpty())
+	if (bCanReturnCard)
 	{
-		return;
-	}
-
-	TArray<APCREricaCardProjectile*> CardsToRemove;
-
-	for (const auto& CardProjectile : CardProjectiles)
-	{
-		if (CardProjectile->GetCurrentCardState() == ECardState::Stop)
+		bCanReturnCard = false;
+		FTimerHandle DashCoolTimeHandle;
+		GetWorldTimerManager().SetTimer(DashCoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
 		{
-			CardsToRemove.Add(CardProjectile);
+			bCanReturnCard = true;
+		}), ReturnCardCoolTime, false);
+		
+		if (CardProjectiles.IsEmpty())
+		{
+			return;
 		}
-	}
 
-	for (const auto& CardToRemove : CardsToRemove)
-	{
-		int32 Index;
-		if (CardProjectiles.Find(CardToRemove, Index))
+		TArray<APCREricaCardProjectile*> CardsToRemove;
+
+		for (const auto& CardProjectile : CardProjectiles)
 		{
-			APCREricaCardProjectile* ReturningCard = CardProjectiles[Index];
-			CardProjectiles.RemoveAt(Index);
-			ReturningCard->ReturnCard();
+			if (CardProjectile->GetCurrentCardState() == ECardState::Stop)
+			{
+				CardsToRemove.Add(CardProjectile);
+			}
+		}
+
+		for (const auto& CardToRemove : CardsToRemove)
+		{
+			int32 Index;
+			if (CardProjectiles.Find(CardToRemove, Index))
+			{
+				APCREricaCardProjectile* ReturningCard = CardProjectiles[Index];
+				CardProjectiles.RemoveAt(Index);
+				ReturningCard->ReturnCard();
+			}
 		}
 	}
 }

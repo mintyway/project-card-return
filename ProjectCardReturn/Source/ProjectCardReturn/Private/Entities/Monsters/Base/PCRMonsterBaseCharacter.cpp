@@ -19,6 +19,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// TODO: 모두 파라미터화 필요
 	MaxHealthPoint = 100.f;
 	HealthPoint = MaxHealthPoint;
 	AttackPower = 3.f;
@@ -135,6 +136,7 @@ float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	// TODO: 현재는 데미지 0을 스턴으로 활용하고 있지만 추후 인터페이스를 통해 전달하도록 변경 필요
 	if (ActualDamage <= 0)
 	{
 		UE_LOG(PCRLogMonsterBaseCharacter, Log, TEXT("%s가 %s에게 상태이상 공격을 당했습니다."), *this->GetName(), *DamageCauser->GetName());

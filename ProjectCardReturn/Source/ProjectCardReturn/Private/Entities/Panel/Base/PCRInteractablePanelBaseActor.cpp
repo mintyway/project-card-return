@@ -15,8 +15,11 @@ APCRInteractablePanelBaseActor::APCRInteractablePanelBaseActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CurrentState = EState::Invalid;
+	// TODO: 파라미터화 필요
 	TippingTime = 0.2f;
+	// TODO: 파라미터화 필요
 	ElapsedTime = 0.f;
+	// TODO: 파라미터화 필요
 	StandUpCoolTime = 1.f;
 
 	static ConstructorHelpers::FObjectFinder<UPCRInteractablePanelDataAsset> DA_InteractablePanelDataAsset(TEXT("/Script/ProjectCardReturn.PCRInteractablePanelDataAsset'/Game/DataAssets/DA_InteractablePanel.DA_InteractablePanel'"));
@@ -107,6 +110,7 @@ void APCRInteractablePanelBaseActor::HandleBeginOverlap(AActor* OverlappedActor,
 
 	UE_LOG(PCRLogInteractablePanelBaseActor, Log, TEXT("%s가 %s를 덮쳤습니다"), *OverlappedActor->GetName(), *OtherActor->GetName());
 
+	// TODO: 현재 데미지 0을 스턴으로 활용하고 있지만 추후 인터페이스를 통해 전달하도록 수정 필요
 	const FDamageEvent DamageEvent;
 	OtherActor->TakeDamage(0.f, DamageEvent, nullptr, OverlappedActor);
 }

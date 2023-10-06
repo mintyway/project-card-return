@@ -16,6 +16,8 @@ const FName APCRMonsterBaseAIController::TargetKey(TEXT("Target"));
 APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
+	// TODO: 파라미터화 필요 및 몬스터 베이스 클래스로 이동 필요
 	bIsStunned = false;
 
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
