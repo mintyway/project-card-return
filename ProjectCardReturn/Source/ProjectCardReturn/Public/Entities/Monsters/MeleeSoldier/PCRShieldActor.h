@@ -30,7 +30,7 @@ protected:
 	virtual void BeginDestroy() override;
 
 public:
-	virtual void SendEricaCardInfoForBinding(APCREricaCardProjectile* NewCard) override;
+	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
 	
 	void DetachAndDelayedDestroy();
 	

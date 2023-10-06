@@ -34,12 +34,14 @@ public:
 	virtual void Attack();
 
 	void ChangeHP(float Amount);
+	void Stun();
 
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE const UPCRUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
 	FORCEINLINE bool IsAlive() const { return bIsAlive; }
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
+	FORCEINLINE float GetStunTime() const { return StunTime; }
 
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
@@ -63,6 +65,7 @@ protected:
 	float MoveSpeed;
 	float AttackRange;
 	float AttackSpeed;
+	float StunTime;
 	
 private:
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;

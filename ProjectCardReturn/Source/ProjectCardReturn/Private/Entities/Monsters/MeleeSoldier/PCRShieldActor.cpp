@@ -59,17 +59,19 @@ void APCRShieldActor::BeginDestroy()
 {
 	Super::BeginDestroy();
 
-	OnDetachedShield.RemoveAll(this);
-	OnDetachedCard.RemoveAll(this);
+	OnDetachedShield.Clear();
+	OnDetachedCard.Clear();
 }
 
-void APCRShieldActor::SendEricaCardInfoForBinding(APCREricaCardProjectile* NewCard)
+/**
+ * 방패가 카드에 박힌경우 카드의 델리게이트에 바인드하기위해 인터페이스를 통해 호출됩니다. 
+ * @param AttachedCard 방패에 박힌 카드
+ */
+void APCRShieldActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
-	if (APCREricaCardProjectile* AttachedCard = NewCard)
-	{
-		const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
-		OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
-	}
+	RETURN_IF_INVALID(AttachedCard);
+	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
+	OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
 }
 
 /**
@@ -102,8 +104,8 @@ void APCRShieldActor::DelayedDestroy()
 }
 
 /**
- * 
- * @param AttachedCard 
+ * 카드가 복귀할때 처리를 담당합니다.
+ * @param AttachedCard 방패에 박힌 카드
  */
 void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
@@ -111,6 +113,7 @@ void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 	if (ExistingHandle)
 	{
 		AttachedCard->OnReturnCardBegin.Remove(*ExistingHandle);
+		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
 	DetachAndDelayedDestroy();

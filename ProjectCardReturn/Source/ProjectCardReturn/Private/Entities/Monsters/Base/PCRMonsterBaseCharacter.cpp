@@ -25,6 +25,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	bIsAlive = true;
 	MoveSpeed = 300.f;
 	AttackRange = 300.f;
+	StunTime = 1.f;
 
 	bUseControllerRotationYaw = false;
 
@@ -113,6 +114,16 @@ void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 }
 
 /**
+ * 잠시동안 스턴에 빠집니다.
+ */
+void APCRMonsterBaseCharacter::Stun()
+{
+	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
+	RETURN_IF_INVALID(MonsterBaseAIController);
+	MonsterBaseAIController->ApplyStun(StunTime);
+}
+
+/**
  * 몬스터가 공격을 받을 시 호출됩니다.
  * @param DamageAmount 받은 데미지량
  * @param DamageEvent 데미지 유형
@@ -123,8 +134,16 @@ void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 
+	if (ActualDamage <= 0)
+	{
+		UE_LOG(PCRLogMonsterBaseCharacter, Log, TEXT("%s가 %s에게 상태이상 공격을 당했습니다."), *this->GetName(), *DamageCauser->GetName());
+
+		Stun();
+		return ActualDamage;
+	}
+
+	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	ChangeHP(-ActualDamage);
 	return ActualDamage;
 }
@@ -156,7 +175,7 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
 void APCRMonsterBaseCharacter::HandleDead()
 {
 	UE_LOG(PCRLogMonsterBaseCharacter, Log, TEXT("%s가 죽었습니다."), *GetName());
-	
+
 	bIsAlive = false;
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
 	const auto MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
@@ -164,14 +183,13 @@ void APCRMonsterBaseCharacter::HandleDead()
 	MonsterBaseAIController->StopMovement();
 	RETURN_IF_INVALID(MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
-	
+
 	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() -> void
 	{
 		Destroy();
 	}), ParameterDataAsset->DeadAfterDestroyTime, false);
-
 
 	OnDead.Broadcast();
 }

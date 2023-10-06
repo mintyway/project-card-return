@@ -27,6 +27,8 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 	
 public:
+	void ApplyStun(float StunTime);
+	
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 
 	static const FName TargetKey;
@@ -34,4 +36,7 @@ public:
 private:
 	void SetTarget();
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+
+	FTimerHandle StunTimer;
+	bool bIsStunned;
 };

@@ -15,6 +15,6 @@ class PROJECTCARDRETURN_API UPCRInteractablePanelDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "DummyMesh")
-	TObjectPtr<UStaticMesh> DummyMesh;
+	UPROPERTY(EditDefaultsOnly, Category = "Panel")
+	TObjectPtr<UStaticMesh> PanelMesh;
 };

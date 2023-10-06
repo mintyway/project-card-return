@@ -18,7 +18,7 @@ enum class ECardState : uint8
 	Flying = 1,
 	Stop,
 	Returning,
-	Invalid
+	Invalid = 0
 };
 
 /**

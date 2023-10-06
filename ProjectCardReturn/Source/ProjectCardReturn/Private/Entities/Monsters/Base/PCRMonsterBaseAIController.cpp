@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Base/PCRMonsterBaseAIController.h"
 
+#include "BrainComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
@@ -15,6 +16,7 @@ const FName APCRMonsterBaseAIController::TargetKey(TEXT("Target"));
 APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	bIsStunned = false;
 
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_Monster.Succeeded())
@@ -54,17 +56,42 @@ void APCRMonsterBaseAIController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	// 타겟을 계속 바라보도록 하는 코드입니다.
-	APCRMonsterBaseCharacter* ControllingMonster = Cast<APCRMonsterBaseCharacter>(GetPawn());
-	RETURN_IF_INVALID(ControllingMonster);
-	if (ControllingMonster->IsAlive())
+	if (!bIsStunned)
 	{
-		RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
-		const AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(APCRMonsterBaseAIController::TargetKey));
-		RETURN_IF_INVALID(Target)
-		const FVector TargetLocation = Target->GetActorLocation();
-		const FVector TargetDirection = (TargetLocation - ControllingMonster->GetActorLocation()).GetSafeNormal();
-		ControllingMonster->SetActorRotation(FRotationMatrix::MakeFromX(TargetDirection).Rotator());
+		APCRMonsterBaseCharacter* ControllingMonster = Cast<APCRMonsterBaseCharacter>(GetPawn());
+		RETURN_IF_INVALID(ControllingMonster);
+		if (ControllingMonster->IsAlive())
+		{
+			RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
+			const AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(APCRMonsterBaseAIController::TargetKey));
+			RETURN_IF_INVALID(Target)
+			const FVector TargetLocation = Target->GetActorLocation();
+			const FVector TargetDirection = (TargetLocation - ControllingMonster->GetActorLocation()).GetSafeNormal();
+
+			const FRotator CurrentRotation = ControllingMonster->GetActorRotation();
+			const FRotator TargetRotation = FRotationMatrix::MakeFromX(TargetDirection).Rotator();
+
+			const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaSeconds, 10.f);
+
+			ControllingMonster->SetActorRotation(NewRotation);
+		}
 	}
+}
+
+void APCRMonsterBaseAIController::ApplyStun(float StunTime)
+{
+	bIsStunned = true;
+
+	BrainComponent->StopLogic("Stunned");
+	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s가 %f.1초간 스턴에 빠집니다."), *GetPawn()->GetName(), StunTime);
+
+	GetWorldTimerManager().ClearTimer(StunTimer);
+	GetWorldTimerManager().SetTimer(StunTimer, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		bIsStunned = false;
+		BrainComponent->RestartLogic();
+		UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s의 스턴이 풀렸습니다."), *GetPawn()->GetName());
+	}), StunTime, false);
 }
 
 void APCRMonsterBaseAIController::SetTarget()
