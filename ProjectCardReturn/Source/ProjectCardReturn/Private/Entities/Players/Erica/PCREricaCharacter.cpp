@@ -32,6 +32,7 @@ APCREricaCharacter::APCREricaCharacter()
 
 	bCanDash = true;
 	bIsDashing = false;
+	bCanReturnCard = true;
 
 	ElapsedDashTime = 0.f;
 	// TODO: 파라미터화 필요
