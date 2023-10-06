@@ -15,7 +15,6 @@ APCRInteractablePanelBaseActor::APCRInteractablePanelBaseActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CurrentState = EState::Invalid;
-	StartRotation = FRotator::ZeroRotator;
 	TippingTime = 0.2f;
 	ElapsedTime = 0.f;
 	StandUpCoolTime = 1.f;
@@ -39,6 +38,7 @@ void APCRInteractablePanelBaseActor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	StartRotation = GetActorRotation();
 	OnActorBeginOverlap.AddDynamic(this, &APCRInteractablePanelBaseActor::HandleBeginOverlap);
 }
 
@@ -185,11 +185,11 @@ void APCRInteractablePanelBaseActor::HandleReturnCard(APCREricaCardProjectile* A
 	const float DotResult = FVector::DotProduct(GetActorForwardVector(), CardReturnDirection);
 	if (DotResult >= 0)
 	{
-		EndRotation = FRotator(-90.0, 0.0, 0.0);
+		EndRotation = FRotator(-90.0, GetActorRotation().Yaw, GetActorRotation().Roll);
 	}
 	else
 	{
-		EndRotation = FRotator(90.0, 0.0, 0.0);
+		EndRotation = FRotator(90.0, GetActorRotation().Yaw, GetActorRotation().Roll);
 	}
 }
 
