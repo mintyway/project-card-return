@@ -113,6 +113,7 @@ void APCREricaCardProjectile::ReleaseToProjectilePool()
 
 	CardRibbonFXComponent->Deactivate();
 	DisableCardFloatingFX();
+	OnReturnCardBegin.Clear();
 }
 
 /**

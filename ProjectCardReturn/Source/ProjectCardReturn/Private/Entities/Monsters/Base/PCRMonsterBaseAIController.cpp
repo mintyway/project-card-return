@@ -16,7 +16,7 @@ const FName APCRMonsterBaseAIController::TargetKey(TEXT("Target"));
 APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	// TODO: 파라미터화 필요 및 몬스터 베이스 클래스로 이동 필요
 	bIsStunned = false;
 
@@ -90,9 +90,12 @@ void APCRMonsterBaseAIController::ApplyStun(float StunTime)
 	GetWorldTimerManager().ClearTimer(StunTimer);
 	GetWorldTimerManager().SetTimer(StunTimer, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		bIsStunned = false;
-		BrainComponent->RestartLogic();
-		UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s의 스턴이 풀렸습니다."), *GetPawn()->GetName());
+		if (IsValid(this))
+		{
+			bIsStunned = false;
+			BrainComponent->RestartLogic();
+			UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s의 스턴이 풀렸습니다."), *GetPawn()->GetName());
+		}
 	}), StunTime, false);
 }
 
