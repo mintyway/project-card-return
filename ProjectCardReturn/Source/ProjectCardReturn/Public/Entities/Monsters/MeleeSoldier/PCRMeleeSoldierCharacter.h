@@ -30,13 +30,13 @@ protected:
 	virtual void HandleDead() override;
 
 public:
+	UFUNCTION(BlueprintCallable)
+	bool GetOwnShield() const { return bOwnShield; }
+	
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Dummy")
-	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
-
 	UPROPERTY()
 	TObjectPtr<APCRShieldActor> Shield;
 

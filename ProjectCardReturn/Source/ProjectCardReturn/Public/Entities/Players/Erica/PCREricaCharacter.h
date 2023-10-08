@@ -46,6 +46,7 @@ protected:
 
 public:
 	float GetAttackPower() const { return AttackPower; }
+	bool GetIsDashing() const { return bIsDashing; }
 
 	void ShootCard();
 	void ReturnCard();

@@ -28,6 +28,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	TObjectPtr<UStaticMesh> ShieldMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	TSoftClassPtr<UAnimInstance> MeleeSoldierAnimationBlueprint;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;

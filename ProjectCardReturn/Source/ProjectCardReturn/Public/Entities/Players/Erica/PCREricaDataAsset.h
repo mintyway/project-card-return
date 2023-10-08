@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> SkeletalMesh;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	TSoftClassPtr<UAnimInstance> AnimationBlueprint;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TObjectPtr<UStaticMesh> AimingPlane;
 	

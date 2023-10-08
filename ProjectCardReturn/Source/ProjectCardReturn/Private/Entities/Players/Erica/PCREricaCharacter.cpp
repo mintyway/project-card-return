@@ -63,7 +63,7 @@ APCREricaCharacter::APCREricaCharacter()
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-		GetCapsuleComponent()->InitCapsuleSize(1.f, 77.f);
+		GetCapsuleComponent()->InitCapsuleSize(30.f, 75.f);
 	}
 
 	if (GetMesh() && EricaDataAsset)
@@ -71,6 +71,11 @@ APCREricaCharacter::APCREricaCharacter()
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+		if (UClass* EricaAnimationBlueprint = EricaDataAsset->AnimationBlueprint.LoadSynchronous())
+		{
+			GetMesh()->SetAnimInstanceClass(EricaAnimationBlueprint);
+		}
 	}
 
 	if (GetCharacterMovement() && ParameterDataAsset)

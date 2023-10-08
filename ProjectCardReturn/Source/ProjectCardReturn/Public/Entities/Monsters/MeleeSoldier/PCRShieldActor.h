@@ -41,7 +41,7 @@ private:
 	void DelayedDestroy();
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 
-	UPROPERTY(VisibleAnywhere, Category = "Box");
+	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")

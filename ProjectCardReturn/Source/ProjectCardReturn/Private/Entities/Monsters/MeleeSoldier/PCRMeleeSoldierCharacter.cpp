@@ -4,6 +4,7 @@
 #include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
 #include "Components/BoxComponent.h"
+#include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
 
 #include "Components/CapsuleComponent.h"
@@ -32,20 +33,18 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 	}
 
 	// TODO: 모델링 작업 완료되면 활성화
-	// if (GetMesh() && GetMonsterDataAsset())
-	// {
-	// 	GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->GetRabbitMesh());
-	// 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
-	// }
-
-	// TODO: 더미 모델링 임시 적용: 모델링 작업 완료되면 제거
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Cube(TEXT("/Script/Engine.StaticMesh'/Game/Dummy/SM_Cube.SM_Cube'"));
-	DummyMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMeshComponent"));
-	if (IsValid(DummyMeshComponent) && SM_Cube.Succeeded())
+	if (GetMesh() && GetMonsterDataAsset())
 	{
-		DummyMeshComponent->SetupAttachment(RootComponent);
-		DummyMeshComponent->SetStaticMesh(SM_Cube.Object);
-		DummyMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
+		GetMesh()->SetupAttachment(GetCapsuleComponent());
+		GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->MeleeSoldierMesh);
+		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
+		GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+		if (UClass* AnimationBlueprint = GetMonsterDataAsset()->MeleeSoldierAnimationBlueprint.LoadSynchronous())
+		{
+			GetMesh()->SetAnimInstanceClass(AnimationBlueprint);
+		}
 	}
 
 	if (GetCharacterMovement() && GetParameterDataAsset())
@@ -75,6 +74,8 @@ void APCRMeleeSoldierCharacter::Tick(float DeltaSeconds)
 void APCRMeleeSoldierCharacter::Attack()
 {
 	Super::Attack();
+
+	
 }
 
 void APCRMeleeSoldierCharacter::HandleDead()
@@ -95,8 +96,10 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 	RETURN_IF_INVALID(GetWorld());
 	Shield = GetWorld()->SpawnActor<APCRShieldActor>();
 	RETURN_IF_INVALID(Shield);
-	RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform));
-	Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
+	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
+	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	RETURN_IF_INVALID(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	// Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
 	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 
 	bOwnShield = true;
