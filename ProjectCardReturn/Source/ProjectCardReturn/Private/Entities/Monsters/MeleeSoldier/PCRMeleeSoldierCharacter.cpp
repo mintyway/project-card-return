@@ -8,6 +8,7 @@
 #include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -16,7 +17,7 @@ DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierCharacter);
 APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	bCanAttack = true;
-	bOwnShield = false;
+	bHasShield = false;
 
 	if (IsValid(GetParameterDataAsset()))
 	{
@@ -59,6 +60,12 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	SpawnAndAttachShield();
+
+	MeleeSoldierAnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!MeleeSoldierAnimInstance)
+	{
+		NULL_POINTER_EXCEPTION(MeleeSoldierAnimInstance);
+	}
 }
 
 void APCRMeleeSoldierCharacter::BeginPlay()
@@ -75,13 +82,9 @@ void APCRMeleeSoldierCharacter::Attack()
 {
 	Super::Attack();
 
-	if (bCanAttack)
+	if (MeleeSoldierAnimInstance)
 	{
-		UE_LOG(PCRLogMeleeSoldierCharacter, Warning, TEXT("Attack!"));
-		GetMesh()->GetAnimInstance()->Montage_Play(GetMonsterDataAsset()->MeleeSoldierAnimationMontage);
-		
-		bCanAttack = false;
-		
+		MeleeSoldierAnimInstance->Attack();
 	}
 }
 
@@ -89,7 +92,7 @@ void APCRMeleeSoldierCharacter::HandleDead()
 {
 	Super::HandleDead();
 
-	if (bOwnShield)
+	if (bHasShield)
 	{
 		Shield->DetachAndDelayedDestroy();
 	}
@@ -109,7 +112,7 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 	// Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
 	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 
-	bOwnShield = true;
+	bHasShield = true;
 }
 
 /**
@@ -117,12 +120,12 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
  */
 void APCRMeleeSoldierCharacter::HandleDetachedShield()
 {
-	if (!bOwnShield)
+	if (!bHasShield)
 	{
 		return;
 	}
 
 	UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
 	Shield = nullptr;
-	bOwnShield = false;
+	bHasShield = false;
 }

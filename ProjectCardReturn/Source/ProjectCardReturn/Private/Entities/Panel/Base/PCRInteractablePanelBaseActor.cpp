@@ -90,7 +90,6 @@ void APCRInteractablePanelBaseActor::BindOnCardReturnBegin(APCREricaCardProjecti
 	RETURN_IF_INVALID(AttachedCard);
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRInteractablePanelBaseActor::HandleReturnCard);
 	OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
-	UE_LOG(PCRLogInteractablePanelBaseActor, Warning, TEXT("바인드 된 카드: %s"), *AttachedCard->GetName());
 }
 
 /**

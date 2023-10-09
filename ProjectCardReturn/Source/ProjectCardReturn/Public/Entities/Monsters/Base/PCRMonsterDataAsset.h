@@ -33,7 +33,10 @@ public:
 	TSoftClassPtr<UAnimInstance> MeleeSoldierAnimationBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	TObjectPtr<UAnimMontage> MeleeSoldierAnimationMontage;
+	TObjectPtr<UAnimMontage> MeleeSoldierShieldAttackAnimationMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	TObjectPtr<UAnimMontage> MeleeSoldierSpearAttackAnimationMontage;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;

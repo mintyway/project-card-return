@@ -7,6 +7,7 @@
 #include "PCRMeleeSoldierCharacter.generated.h"
 
 
+class UPCRMeleeSoldierAnimInstance;
 class APCRShieldActor;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMeleeSoldierCharacter, Log, All);
@@ -30,8 +31,7 @@ protected:
 public:
 	virtual void Attack() override;
 	
-	UFUNCTION(BlueprintCallable)
-	bool GetOwnShield() const { return bOwnShield; }
+	FORCEINLINE bool GetHasShield() const { return bHasShield; }
 	
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
@@ -43,6 +43,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<APCRShieldActor> Shield;
 
-	bool bCanAttack;
-	bool bOwnShield;
+	UPROPERTY()
+	TObjectPtr<UPCRMeleeSoldierAnimInstance> MeleeSoldierAnimInstance;
+
+	uint32 bCanAttack:1;
+	uint32 bHasShield:1;
 };

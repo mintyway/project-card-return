@@ -101,7 +101,6 @@ void APCRMonsterBaseCharacter::Tick(float DeltaTime)
  */
 void APCRMonsterBaseCharacter::Attack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Monster's Attack!"));
 }
 
 /**

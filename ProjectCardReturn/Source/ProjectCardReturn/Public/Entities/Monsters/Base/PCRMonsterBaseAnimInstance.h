@@ -6,6 +6,10 @@
 #include "Animation/AnimInstance.h"
 #include "PCRMonsterBaseAnimInstance.generated.h"
 
+class UPCRMonsterDataAsset;
+class APCRMonsterBaseCharacter;
+class UCharacterMovementComponent;
+
 /**
  * 
  */
@@ -17,7 +21,22 @@ class PROJECTCARDRETURN_API UPCRMonsterBaseAnimInstance : public UAnimInstance
 public:
 	UPCRMonsterBaseAnimInstance();
 
-private:
-	// UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+protected:
+	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reference")
+	TObjectPtr<APCRMonsterBaseCharacter> CachedMonsterBaseCharacter;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reference")
+	TObjectPtr<UCharacterMovementComponent> CachedCharacterMovement;
 	
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	uint32 bShouldMove:1;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	FVector Velocity;
+
+	UPROPERTY()
+	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 };
