@@ -3,3 +3,4 @@
 
 #include "Entities/Monsters/Base/PCRMonsterBaseAnimInstance.h"
 
+UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance() {}

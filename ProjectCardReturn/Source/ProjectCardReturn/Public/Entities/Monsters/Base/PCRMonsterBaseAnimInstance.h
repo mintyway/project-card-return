@@ -18,6 +18,6 @@ public:
 	UPCRMonsterBaseAnimInstance();
 
 private:
-	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	// UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	
 };
