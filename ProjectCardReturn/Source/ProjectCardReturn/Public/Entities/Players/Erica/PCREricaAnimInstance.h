@@ -6,6 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "PCREricaAnimInstance.generated.h"
 
+class UPCREricaDataAsset;
 class UCharacterMovementComponent;
 class APCREricaCharacter;
 
@@ -38,6 +39,9 @@ protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+public:
+	void Attack();
+	
 private:
 	void SetLocalVelocityDirectionAngle();
 	
@@ -64,10 +68,13 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	ELocalVelocityDirection CurrentLocalVelocityDirection;
-	
-	UPROPERTY()
-	TObjectPtr<APCREricaCharacter> CachedOwningEricaCharacter;
 
 	UPROPERTY()
-	TObjectPtr<UCharacterMovementComponent> CachedOwningCharacterMovementComponent;
+	TObjectPtr<UPCREricaDataAsset> EricaDataAsset;
+	
+	UPROPERTY()
+	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UCharacterMovementComponent> CachedCharacterMovement;
 };

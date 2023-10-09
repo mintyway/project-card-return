@@ -23,6 +23,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	TSoftClassPtr<UAnimInstance> AnimationBlueprint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	TObjectPtr<UAnimMontage> AttackAnimationMontage;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TObjectPtr<UStaticMesh> AimingPlane;

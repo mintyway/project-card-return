@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "PCREricaCharacter.generated.h"
 
+class UPCREricaAnimInstance;
 class UPCRParameterDataAsset;
 class APCREricaCardProjectile;
 class APCREricaPlayerController;
@@ -73,11 +74,21 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Aim")
 	TObjectPtr<UStaticMeshComponent> AimingPlane;
-	
+
+	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
+
+	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY()
 	TObjectPtr<APCREricaCardProjectilePool> CardPool;
+
+	UPROPERTY()
 	TObjectPtr<APCREricaPlayerController> CachedEricaPlayerController;
+	
+	UPROPERTY()
+	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
 	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
 

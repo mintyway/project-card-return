@@ -16,6 +16,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
@@ -132,6 +133,18 @@ void APCREricaCharacter::PostInitializeComponents()
 	CardPool = GetWorld()->SpawnActor<APCREricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
 	RETURN_IF_INVALID(IsValid(CardPool));
 	CardPool->InitProjectilePool(APCREricaCardProjectile::StaticClass());
+
+	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
+	if (!AnimInstance)
+	{
+		NULL_POINTER_EXCEPTION(AnimInstance);
+	}
+
+	CachedEricaAnimInstance = Cast<UPCREricaAnimInstance>(AnimInstance);
+	if (!CachedEricaAnimInstance)
+	{
+		NULL_POINTER_EXCEPTION(CachedEricaAnimInstance);
+	}
 }
 
 void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -176,6 +189,11 @@ void APCREricaCharacter::Tick(float DeltaTime)
  */
 void APCREricaCharacter::ShootCard()
 {
+	if (CachedEricaAnimInstance)
+	{
+		CachedEricaAnimInstance->Attack();
+	}
+	
 	HandleShootMode();
 }
 
@@ -192,7 +210,7 @@ void APCREricaCharacter::ReturnCard()
 		{
 			bCanReturnCard = true;
 		}), ReturnCardCoolTime, false);
-		
+
 		if (CardProjectiles.IsEmpty())
 		{
 			return;
