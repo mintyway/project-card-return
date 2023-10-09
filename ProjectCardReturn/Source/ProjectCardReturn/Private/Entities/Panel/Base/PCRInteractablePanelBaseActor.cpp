@@ -178,7 +178,6 @@ void APCRInteractablePanelBaseActor::HandleReturnCard(APCREricaCardProjectile* A
 	{
 		AttachedCard->OnReturnCardBegin.Remove(*ExistingHandle);
 		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
-		UE_LOG(PCRLogInteractablePanelBaseActor, Warning, TEXT("바인드 해제된 카드: %s"), *AttachedCard->GetName());
 	}
 
 	UE_LOG(PCRLogInteractablePanelBaseActor, Log, TEXT("%s가 %s를 넘어뜨립니다."), *AttachedCard->GetName(), *this->GetName());

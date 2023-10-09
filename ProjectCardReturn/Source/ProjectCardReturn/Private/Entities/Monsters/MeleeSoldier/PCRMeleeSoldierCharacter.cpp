@@ -75,7 +75,14 @@ void APCRMeleeSoldierCharacter::Attack()
 {
 	Super::Attack();
 
-	
+	if (bCanAttack)
+	{
+		UE_LOG(PCRLogMeleeSoldierCharacter, Warning, TEXT("Attack!"));
+		GetMesh()->GetAnimInstance()->Montage_Play(GetMonsterDataAsset()->MeleeSoldierAnimationMontage);
+		
+		bCanAttack = false;
+		
+	}
 }
 
 void APCRMeleeSoldierCharacter::HandleDead()

@@ -26,16 +26,19 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	virtual void Attack() override;
-	virtual void HandleDead() override;
 
 public:
+	virtual void Attack() override;
+	
 	UFUNCTION(BlueprintCallable)
 	bool GetOwnShield() const { return bOwnShield; }
 	
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
 
+protected:
+	virtual void HandleDead() override;
+	
 private:
 	UPROPERTY()
 	TObjectPtr<APCRShieldActor> Shield;
