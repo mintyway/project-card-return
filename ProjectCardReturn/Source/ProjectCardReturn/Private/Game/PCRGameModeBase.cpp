@@ -46,3 +46,4 @@ void APCRGameModeBase::BeginPlay()
 		// MonsterGenerator6->Start(APCRRabbitCharacter::StaticClass(), 3.f);
 	}
 }
+

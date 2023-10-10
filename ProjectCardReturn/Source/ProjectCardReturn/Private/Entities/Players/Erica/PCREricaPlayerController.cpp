@@ -8,6 +8,8 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "ToolContextInterfaces.h"
+#include "Kismet/GameplayStatics.h"
 
 APCREricaPlayerController::APCREricaPlayerController()
 {
@@ -29,6 +31,7 @@ void APCREricaPlayerController::SetupInputComponent()
 		RETURN_IF_INVALID(DataAsset);
 		EnhancedInputComponent->BindAction(DataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Shoot);
 		EnhancedInputComponent->BindAction(DataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Return);
+		EnhancedInputComponent->BindAction(DataAsset->MenuInputAction, ETriggerEvent::Started, this, &APCREricaPlayerController::HandleMenuInput);
 	}
 }
 
@@ -72,11 +75,11 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 	{
 		FVector MouseClickedLocation = MouseClickedResult.Location;
 		MouseClickedLocation.Z = 0.0;
-	
+
 		RETURN_IF_INVALID(CachedEricaCharacter, FVector::ZeroVector);
 		FVector EricaRossLocation = CachedEricaCharacter->GetActorLocation();
 		EricaRossLocation.Z = 0.0;
-	
+
 		FVector MouseDirection = (MouseClickedLocation - EricaRossLocation).GetSafeNormal();
 		return MouseDirection;
 	}
@@ -92,4 +95,16 @@ void APCREricaPlayerController::Shoot()
 void APCREricaPlayerController::Return()
 {
 	CachedEricaCharacter->ReturnCard();
+}
+
+void APCREricaPlayerController::HandleMenuInput()
+{
+	const UWorld* CurrentWorld = GetWorld();
+	const FString CurrentLevelName = CurrentWorld->GetName();
+	UGameplayStatics::OpenLevel(CurrentWorld, FName(CurrentLevelName));
+}
+
+void APCREricaPlayerController::Test()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *this->GetName());
 }

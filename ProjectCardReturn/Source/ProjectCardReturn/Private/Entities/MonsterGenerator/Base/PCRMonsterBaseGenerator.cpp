@@ -48,8 +48,10 @@ void APCRMonsterBaseGenerator::SpawnMonster(UClass* MonsterClass) const
 {
 	const FVector2D RandomLocation2D = FMath::RandPointInCircle(SpawnRangeRadius);
 	const FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
+
 	const FVector SpawnLocation = GetActorLocation() + RandomLocation;
 
 	UE_LOG(PCRLogMonsterBaseGenerator, Log, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
+
 	GetWorld()->SpawnActor<APCRMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator);
 }
