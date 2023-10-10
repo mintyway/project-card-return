@@ -68,6 +68,8 @@ protected:
 	float StunTime;
 	
 private:
+	void DestroyTimeCallback();
+	
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;

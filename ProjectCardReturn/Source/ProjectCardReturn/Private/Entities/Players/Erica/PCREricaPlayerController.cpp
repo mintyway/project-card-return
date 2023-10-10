@@ -103,8 +103,3 @@ void APCREricaPlayerController::HandleMenuInput()
 	const FString CurrentLevelName = CurrentWorld->GetName();
 	UGameplayStatics::OpenLevel(CurrentWorld, FName(CurrentLevelName));
 }
-
-void APCREricaPlayerController::Test()
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *this->GetName());
-}

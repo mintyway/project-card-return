@@ -20,7 +20,7 @@ APCRInteractablePanelBaseActor::APCRInteractablePanelBaseActor()
 	// TODO: 파라미터화 필요
 	ElapsedTime = 0.f;
 	// TODO: 파라미터화 필요
-	StandUpCoolTime = 1.f;
+	StandUpCooldownTime = 1.f;
 
 	static ConstructorHelpers::FObjectFinder<UPCRInteractablePanelDataAsset> DA_InteractablePanelDataAsset(TEXT("/Script/ProjectCardReturn.PCRInteractablePanelDataAsset'/Game/DataAssets/DA_InteractablePanel.DA_InteractablePanel'"));
 	if (DA_InteractablePanelDataAsset.Succeeded())
@@ -132,13 +132,17 @@ void APCRInteractablePanelBaseActor::HandleTipping(float DeltaTime)
 		SetActorTickEnabled(false);
 		DisableCollisionDetection();
 
-		FTimerHandle StandUpCoolTimeHandle;
-		GetWorldTimerManager().SetTimer(StandUpCoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
-		{
-			CurrentState = EState::StandingUp;
-			SetActorTickEnabled(true);
-		}), StandUpCoolTime, false);
+		FTimerHandle StandUpCooldownTimerHandle;
+		FTimerDelegate StandUpCooldownTimerDelegate;
+		StandUpCooldownTimerDelegate.BindUObject(this, &APCRInteractablePanelBaseActor::StandUpCooldownTimerCallback);
+		GetWorldTimerManager().SetTimer(StandUpCooldownTimerHandle, StandUpCooldownTimerDelegate, StandUpCooldownTime, false);
 	}
+}
+
+void APCRInteractablePanelBaseActor::StandUpCooldownTimerCallback()
+{
+	CurrentState = EState::StandingUp;
+	SetActorTickEnabled(true);
 }
 
 /**

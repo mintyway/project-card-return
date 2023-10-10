@@ -87,16 +87,10 @@ void APCRMonsterBaseAIController::ApplyStun(float StunTime)
 	BrainComponent->StopLogic("Stunned");
 	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s가 %f.1초간 스턴에 빠집니다."), *GetPawn()->GetName(), StunTime);
 
-	GetWorldTimerManager().ClearTimer(StunTimer);
-	GetWorldTimerManager().SetTimer(StunTimer, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		if (IsValid(this))
-		{
-			bIsStunned = false;
-			BrainComponent->RestartLogic();
-			UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s의 스턴이 풀렸습니다."), *GetPawn()->GetName());
-		}
-	}), StunTime, false);
+	GetWorldTimerManager().ClearTimer(StunTimerHandle);
+	FTimerDelegate StunTimerDelegate;
+	StunTimerDelegate.BindUObject(this, &APCRMonsterBaseAIController::StunTimerCallback);
+	GetWorldTimerManager().SetTimer(StunTimerHandle, StunTimerDelegate, StunTime, false);
 }
 
 void APCRMonsterBaseAIController::SetTarget()
@@ -105,4 +99,11 @@ void APCRMonsterBaseAIController::SetTarget()
 	const AController* PlayerController = IsValid(GetWorld()) ? GetWorld()->GetFirstPlayerController() : nullptr;
 	RETURN_IF_INVALID(IsValid(PlayerController));
 	GetBlackboardComponent()->SetValueAsObject(APCRMonsterBaseAIController::TargetKey, PlayerController->GetPawn());
+}
+
+void APCRMonsterBaseAIController::StunTimerCallback()
+{
+	bIsStunned = false;
+	BrainComponent->RestartLogic();
+	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s의 스턴이 풀렸습니다."), *GetPawn()->GetName());
 }

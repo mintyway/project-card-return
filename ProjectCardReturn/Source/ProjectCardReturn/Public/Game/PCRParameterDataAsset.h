@@ -47,19 +47,19 @@ public:
 	float EricaAttackPower;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaRapidShotCoolTime;
+	float EricaRapidShotCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaBuckShotCoolTime;
+	float EricaBuckShotCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaTotalDashTime;
+	float EricaMaxDashTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaDashDistance;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaDashCoolTime;
+	float EricaDashCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	int32 EricaCardCount;

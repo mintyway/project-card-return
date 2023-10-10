@@ -40,6 +40,7 @@ public:
 private:
 	void DelayedDestroy();
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
+	void DestroyTimerCallback();
 
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;

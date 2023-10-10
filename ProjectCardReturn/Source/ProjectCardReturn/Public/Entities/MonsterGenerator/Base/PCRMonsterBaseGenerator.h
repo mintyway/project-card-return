@@ -27,10 +27,11 @@ public:
 	void Stop();
 
 private:
+	void SpawnMonster(UClass* MonsterClass) const;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Root")
 	TObjectPtr<USceneComponent> RootSceneComponent;
 	
-	void SpawnMonster(UClass* MonsterClass) const;
 	
 	TObjectPtr<APCRMonsterBaseCharacter> CurrentGenerateMonster;
 	FTimerHandle SpawnTimerHandle;

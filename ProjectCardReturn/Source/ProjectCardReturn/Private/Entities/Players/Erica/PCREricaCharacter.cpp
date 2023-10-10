@@ -54,10 +54,10 @@ APCREricaCharacter::APCREricaCharacter()
 	if (ParameterDataAsset)
 	{
 		AttackPower = ParameterDataAsset->EricaAttackPower;
-		RapidShotCoolTime = ParameterDataAsset->EricaRapidShotCoolTime;
-		BuckShotCoolTime = ParameterDataAsset->EricaBuckShotCoolTime;
-		DashCoolTime = ParameterDataAsset->EricaDashCoolTime;
-		TotalDashTime = ParameterDataAsset->EricaTotalDashTime;
+		RapidShotCooldownTime = ParameterDataAsset->EricaRapidShotCooldownTime;
+		BuckShotCooldownTime = ParameterDataAsset->EricaBuckShotCooldownTime;
+		DashCooldownTime = ParameterDataAsset->EricaDashCooldownTime;
+		MaxDashTime = ParameterDataAsset->EricaMaxDashTime;
 		DashDistance = ParameterDataAsset->EricaDashDistance;
 	}
 
@@ -193,7 +193,7 @@ void APCREricaCharacter::ShootCard()
 	{
 		CachedEricaAnimInstance->Attack();
 	}
-	
+
 	HandleShootMode();
 }
 
@@ -205,11 +205,11 @@ void APCREricaCharacter::ReturnCard()
 	if (bCanReturnCard)
 	{
 		bCanReturnCard = false;
-		FTimerHandle DashCoolTimeHandle;
-		GetWorldTimerManager().SetTimer(DashCoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
-		{
-			bCanReturnCard = true;
-		}), ReturnCardCoolTime, false);
+
+		FTimerHandle ReturnCardCooldownTimerHandle;
+		FTimerDelegate ReturnCardCooldownTimerDelegate;
+		ReturnCardCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ReturnCardCooldownTimerCallback);
+		GetWorldTimerManager().SetTimer(ReturnCardCooldownTimerHandle, ReturnCardCooldownTimerDelegate, ReturnCardCoolTime, false);
 
 		if (CardProjectiles.IsEmpty())
 		{
@@ -292,17 +292,15 @@ void APCREricaCharacter::RapidShot()
 	if (bCanRapidShot)
 	{
 		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
-		if (RapidShotCoolTime > SMALL_NUMBER)
+		if (RapidShotCooldownTime > SMALL_NUMBER)
 		{
 			bCanRapidShot = false;
 			bCanBuckShot = false;
 
-			FTimerHandle CoolTimeHandle;
-			GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
-			{
-				bCanRapidShot = true;
-				bCanBuckShot = true;
-			}), RapidShotCoolTime, false);
+			FTimerHandle ShotCooldownTimerHandle;
+			FTimerDelegate ShotCooldownTimerDelegate;
+			ShotCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ShotCooldownTimerCallback);
+			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, RapidShotCooldownTime, false);
 		}
 
 		RETURN_IF_INVALID(CachedEricaPlayerController);
@@ -319,16 +317,14 @@ void APCREricaCharacter::BuckShot()
 	if (bCanBuckShot)
 	{
 		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
-		if (BuckShotCoolTime > SMALL_NUMBER)
+		if (BuckShotCooldownTime > SMALL_NUMBER)
 		{
 			bCanRapidShot = false;
 			bCanBuckShot = false;
-			FTimerHandle CoolTimeHandle;
-			GetWorldTimerManager().SetTimer(CoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
-			{
-				bCanRapidShot = true;
-				bCanBuckShot = true;
-			}), BuckShotCoolTime, false);
+			FTimerHandle ShotCooldownTimerHandle;
+			FTimerDelegate ShotCooldownTimerDelegate;
+			ShotCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ShotCooldownTimerCallback);
+			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, BuckShotCooldownTime, false);
 		}
 
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
@@ -371,19 +367,16 @@ void APCREricaCharacter::Dash()
 		bIsDashing = true;
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
 
-		FTimerHandle DashCoolTimeHandle;
-		GetWorldTimerManager().SetTimer(DashCoolTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
-		{
-			bCanDash = true;
-		}), DashCoolTime, false);
+		FTimerHandle DashCooldownTimerHandle;
+		FTimerDelegate DashCooldownTimerDelegate;
+		DashCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::DashCooldownTimerCallback);
+		GetWorldTimerManager().SetTimer(DashCooldownTimerHandle, DashCooldownTimerDelegate, DashCooldownTime, false);
 
-		FTimerHandle TotalDashTimeHandle;
-		GetWorldTimerManager().SetTimer(TotalDashTimeHandle, FTimerDelegate::CreateLambda([this]() -> void
-		{
-			ElapsedDashTime = 0.f;
-			bIsDashing = false;
-			GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-		}), TotalDashTime, false);
+		// 최대 대시 시간을 초과했을 시 상태를 초기화 해줍니다.
+		FTimerHandle MaxDashTimerHandle;
+		FTimerDelegate MaxDashTimerDelegate;
+		MaxDashTimerDelegate.BindUObject(this, &APCREricaCharacter::TotalDashTimeCallback);
+		GetWorldTimerManager().SetTimer(MaxDashTimerHandle, MaxDashTimerDelegate, MaxDashTime, false);
 
 		CachedDashStartLocation = GetActorLocation();
 
@@ -414,7 +407,7 @@ void APCREricaCharacter::Dash()
 void APCREricaCharacter::HandleDash(float DeltaTime)
 {
 	ElapsedDashTime += DeltaTime;
-	const float Alpha = FMath::Clamp(ElapsedDashTime / TotalDashTime, 0.f, 1.0f);
+	const float Alpha = FMath::Clamp(ElapsedDashTime / MaxDashTime, 0.f, 1.0f);
 	const FVector NewLocation = FMath::Lerp(CachedDashStartLocation, CachedDashStartLocation + CachedDashDirection * DashDistance, Alpha);
 	if (!SetActorLocation(NewLocation, true))
 	{
@@ -445,5 +438,35 @@ void APCREricaCharacter::Change()
 			CurrentShootMode = ShootMode::Rapid;
 			break;
 		}
+	}
+}
+
+void APCREricaCharacter::ReturnCardCooldownTimerCallback()
+{
+	bCanReturnCard = true;
+}
+
+void APCREricaCharacter::ShotCooldownTimerCallback()
+{
+	bCanRapidShot = true;
+	bCanBuckShot = true;
+}
+
+void APCREricaCharacter::DashCooldownTimerCallback()
+{
+	bCanDash = true;
+}
+
+void APCREricaCharacter::TotalDashTimeCallback()
+{
+	ElapsedDashTime = 0.f;
+	bIsDashing = false;
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	}
+	else
+	{
+		NULL_POINTER_EXCEPTION(GetCapsuleComponent());
 	}
 }

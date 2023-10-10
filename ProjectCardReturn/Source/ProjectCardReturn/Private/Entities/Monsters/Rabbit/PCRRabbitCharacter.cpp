@@ -64,18 +64,7 @@ void APCRRabbitCharacter::BeginPlay()
 void APCRRabbitCharacter::Attack()
 {
 	Super::Attack();
-
-	// if (bCanAttack)
-	// {
-	// 	bCanAttack = false;
-	// 	FTimerHandle UnUsedHandle;
-	// 	GetWorld()->GetTimerManager().SetTimer(UnUsedHandle, FTimerDelegate::CreateLambda([this]() -> void
-	// 	{
-	// 		bCanAttack = true;
-	// 	}), AttackSpeed, false);
-	//
-	// 	UE_LOG(LogTemp, Warning, TEXT("Attack!"));
-	// }
+	
 }
 
 /**

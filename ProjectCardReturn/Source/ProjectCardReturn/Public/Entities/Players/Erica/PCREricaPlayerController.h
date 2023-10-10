@@ -32,7 +32,6 @@ private:
 	void Shoot();
 	void Return();
 	void HandleMenuInput();
-	void Test();
 
 	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> DataAsset;

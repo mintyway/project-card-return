@@ -42,8 +42,9 @@ public:
 private:
 	UFUNCTION()
 	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
-	
+
 	void HandleTipping(float DeltaTime);
+	void StandUpCooldownTimerCallback();
 	void HandleStandingUp(float DeltaTime);
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 	void EnableCollisionDetection();
@@ -61,5 +62,5 @@ private:
 	FRotator EndRotation;
 	float TippingTime;
 	float ElapsedTime;
-	float StandUpCoolTime;
+	float StandUpCooldownTime;
 };

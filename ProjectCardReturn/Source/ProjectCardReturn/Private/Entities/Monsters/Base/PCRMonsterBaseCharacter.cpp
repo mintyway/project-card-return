@@ -186,11 +186,15 @@ void APCRMonsterBaseCharacter::HandleDead()
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
 
 	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
-	FTimerHandle UnusedHandle;
-	GetWorldTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		Destroy();
-	}), ParameterDataAsset->DeadAfterDestroyTime, false);
+	FTimerHandle DestroyTimeHandle;
+	FTimerDelegate DestroyTimeDelegate;
+	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
+	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
 
 	OnDead.Broadcast();
+}
+
+void APCRMonsterBaseCharacter::DestroyTimeCallback()
+{
+	Destroy();
 }

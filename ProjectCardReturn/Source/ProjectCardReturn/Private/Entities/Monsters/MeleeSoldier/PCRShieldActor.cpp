@@ -97,11 +97,10 @@ void APCRShieldActor::DetachAndDelayedDestroy()
  */
 void APCRShieldActor::DelayedDestroy()
 {
-	FTimerHandle DestroyTimer;
-	GetWorldTimerManager().SetTimer(DestroyTimer, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		Destroy();
-	}), 3.f, false);
+	FTimerHandle DestroyTimerHandle;
+	FTimerDelegate DestroyTimerDelegate;
+	DestroyTimerDelegate.BindUObject(this, &APCRShieldActor::DestroyTimerCallback);
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, 3.f, false);
 }
 
 /**
@@ -122,4 +121,9 @@ void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 	const float ImpulseSize = 1000.f;
 	BoxComponent->AddImpulse(Direction * ImpulseSize);
 	UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
+}
+
+void APCRShieldActor::DestroyTimerCallback()
+{
+	Destroy();
 }

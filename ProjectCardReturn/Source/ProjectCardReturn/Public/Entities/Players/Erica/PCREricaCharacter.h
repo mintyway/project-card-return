@@ -65,6 +65,11 @@ private:
 	void BuckShot();
 	void HandleShootCard(const FVector& Direction, float Range);
 	void Change();
+
+	void ReturnCardCooldownTimerCallback();
+	void ShotCooldownTimerCallback();
+	void DashCooldownTimerCallback();
+	void TotalDashTimeCallback();
 	
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -103,8 +108,8 @@ private:
 	uint32 bCanBuckShot:1;
 	uint32 bCanReturnCard:1;
 
-	float DashCoolTime;
-	float TotalDashTime;
+	float DashCooldownTime;
+	float MaxDashTime;
 	float ElapsedDashTime;
 	float DashDistance;
 	float ReturnCardCoolTime;
@@ -112,7 +117,7 @@ private:
 	FVector CachedDashDirection;
 	
 	ShootMode CurrentShootMode;
-	float RapidShotCoolTime;
-	float BuckShotCoolTime;
+	float RapidShotCooldownTime;
+	float BuckShotCooldownTime;
 	
 };

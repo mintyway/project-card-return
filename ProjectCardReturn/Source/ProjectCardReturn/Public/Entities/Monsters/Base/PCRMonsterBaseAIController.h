@@ -35,8 +35,10 @@ public:
 
 private:
 	void SetTarget();
+	void StunTimerCallback();
+
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 
-	FTimerHandle StunTimer;
+	FTimerHandle StunTimerHandle;
 	bool bIsStunned;
 };
