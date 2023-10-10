@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "PCREricaPlayerController.generated.h"
 
+class UPCRPauseUserWidget;
+class UPCRUIDataAsset;
 class APCREricaCharacter;
 class UPCREricaDataAsset;
 /**
@@ -27,15 +29,28 @@ protected:
 
 public:
 	FVector GetMouseDirection() const;
+	void EnableUIInputMode();
+	void DisableUIInputMode();
 
 private:
 	void Shoot();
 	void Return();
-	void HandleMenuInput();
+	void GamePause();
 
 	UPROPERTY()
-	TObjectPtr<const UPCREricaDataAsset> DataAsset;
+	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
+
+	UPROPERTY()
+	TSubclassOf<UPCRPauseUserWidget> PauseUserWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
+
+	uint32 bUseCharacterRotationByCursorDirection:1;
 };

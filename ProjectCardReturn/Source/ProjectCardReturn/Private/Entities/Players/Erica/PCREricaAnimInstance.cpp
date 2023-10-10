@@ -69,7 +69,7 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 void UPCREricaAnimInstance::Attack()
 {
 	Montage_Play(EricaDataAsset->AttackAnimationMontage);
-	Montage_JumpToSection(FName(TEXT("TempCombo")), EricaDataAsset->AttackAnimationMontage);
+	Montage_JumpToSection(FName(TEXT("Combo1")), EricaDataAsset->AttackAnimationMontage);
 }
 
 void UPCREricaAnimInstance::SetLocalVelocityDirectionAngle()

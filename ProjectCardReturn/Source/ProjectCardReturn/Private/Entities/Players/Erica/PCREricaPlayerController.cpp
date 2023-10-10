@@ -5,21 +5,37 @@
 
 #include "Entities/Players/Erica/PCREricaDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "UI/PCRUIDataAsset.h"
+#include "UI/PCRPauseUserWidget.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "ToolContextInterfaces.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-APCREricaPlayerController::APCREricaPlayerController()
+APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByCursorDirection(true)
 {
+	bShowMouseCursor = true;
+
 	static ConstructorHelpers::FObjectFinder<UPCREricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.PCREricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
 	{
-		DataAsset = DA_Erica.Object;
+		EricaDataAsset = DA_Erica.Object;
 	}
 
-	bShowMouseCursor = true;
+	static ConstructorHelpers::FObjectFinder<UPCRUIDataAsset> DA_UI(TEXT("/Script/ProjectCardReturn.PCRUIDataAsset'/Game/DataAssets/DA_UI.DA_UI'"));
+	if (DA_UI.Succeeded())
+	{
+		UIDataAsset = DA_UI.Object;
+	}
+
+	if (UIDataAsset)
+	{
+		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->Pause.LoadSynchronous())
+		{
+			PauseUserWidgetClass = PCRPauseUserWidgetClass;
+		}
+	}
 }
 
 void APCREricaPlayerController::SetupInputComponent()
@@ -28,10 +44,10 @@ void APCREricaPlayerController::SetupInputComponent()
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		RETURN_IF_INVALID(DataAsset);
-		EnhancedInputComponent->BindAction(DataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Shoot);
-		EnhancedInputComponent->BindAction(DataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Return);
-		EnhancedInputComponent->BindAction(DataAsset->MenuInputAction, ETriggerEvent::Started, this, &APCREricaPlayerController::HandleMenuInput);
+		RETURN_IF_INVALID(EricaDataAsset);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Shoot);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Return);
+		EnhancedInputComponent->BindAction(EricaDataAsset->MenuInputAction, ETriggerEvent::Started, this, &APCREricaPlayerController::GamePause);
 	}
 }
 
@@ -49,8 +65,8 @@ void APCREricaPlayerController::BeginPlay()
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		RETURN_IF_INVALID(IsValid(DataAsset));
-		Subsystem->AddMappingContext(DataAsset->DefaultInputMappingContext, 0);
+		RETURN_IF_INVALID(IsValid(EricaDataAsset));
+		Subsystem->AddMappingContext(EricaDataAsset->DefaultInputMappingContext, 0);
 	}
 }
 
@@ -58,9 +74,12 @@ void APCREricaPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
-	RETURN_IF_INVALID(IsValid(CachedEricaCharacter));
-	CachedEricaCharacter->SetActorRotation(MouseDirectionRotator);
+	if (bUseCharacterRotationByCursorDirection)
+	{
+		const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
+		RETURN_IF_INVALID(IsValid(CachedEricaCharacter));
+		CachedEricaCharacter->SetActorRotation(MouseDirectionRotator);
+	}
 }
 
 /**
@@ -87,6 +106,16 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 	return FVector::ZeroVector;
 }
 
+void APCREricaPlayerController::EnableUIInputMode()
+{
+	bUseCharacterRotationByCursorDirection = false;
+}
+
+void APCREricaPlayerController::DisableUIInputMode()
+{
+	bUseCharacterRotationByCursorDirection = true;
+}
+
 void APCREricaPlayerController::Shoot()
 {
 	CachedEricaCharacter->ShootCard();
@@ -97,9 +126,18 @@ void APCREricaPlayerController::Return()
 	CachedEricaCharacter->ReturnCard();
 }
 
-void APCREricaPlayerController::HandleMenuInput()
+void APCREricaPlayerController::GamePause()
 {
-	const UWorld* CurrentWorld = GetWorld();
-	const FString CurrentLevelName = CurrentWorld->GetName();
-	UGameplayStatics::OpenLevel(CurrentWorld, FName(CurrentLevelName));
+	PauseUserWidget = CreateWidget<UPCRPauseUserWidget>(this, PauseUserWidgetClass);
+	if (PauseUserWidget)
+	{
+		PauseUserWidget->AddToViewport(3);
+	
+		SetPause(true);
+		EnableUIInputMode();
+	}
+	else
+	{
+		NULL_POINTER_EXCEPTION(PauseUserWidget);
+	}
 }

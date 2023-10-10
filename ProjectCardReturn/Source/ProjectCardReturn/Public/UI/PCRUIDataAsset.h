@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRUIDataAsset.generated.h"
 
+class UPCRPauseUserWidget;
 /**
  * 
  */
@@ -15,9 +16,9 @@ class PROJECTCARDRETURN_API UPCRUIDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE TSoftClassPtr<UUserWidget> GetHPBar() const { return HPBar; }
-	
-private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSoftClassPtr<UUserWidget> HPBar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSoftClassPtr<UPCRPauseUserWidget> Pause;
 };

@@ -189,11 +189,6 @@ void APCREricaCharacter::Tick(float DeltaTime)
  */
 void APCREricaCharacter::ShootCard()
 {
-	if (CachedEricaAnimInstance)
-	{
-		CachedEricaAnimInstance->Attack();
-	}
-
 	HandleShootMode();
 }
 
@@ -351,6 +346,11 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 		CardProjectiles.Insert(CardProjectile, 0);
 		CardProjectile->SetRange(Range);
 		CardProjectile->LaunchProjectile(this, GetActorLocation(), Direction);
+
+		if (CachedEricaAnimInstance)
+		{
+			CachedEricaAnimInstance->Attack();
+		}
 	}
 
 	UE_LOG(PCRLogEricaCharacter, Log, TEXT("필드에 발사된 카드 개수: %d"), CardProjectiles.Num());

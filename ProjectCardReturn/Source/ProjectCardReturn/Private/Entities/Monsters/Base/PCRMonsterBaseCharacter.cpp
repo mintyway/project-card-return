@@ -58,7 +58,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 		HPBarWidgetComponent->SetRelativeLocation(FVector(0.0, 0.0, 200.0));
 		HPBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 
-		if (const TSubclassOf<UUserWidget> HPBarClass = UIDataAsset->GetHPBar().LoadSynchronous())
+		if (const TSubclassOf<UUserWidget> HPBarClass = UIDataAsset->HPBar.LoadSynchronous())
 		{
 			HPBarWidgetComponent->SetWidgetClass(HPBarClass);
 			HPBarWidgetComponent->SetDrawSize(FVector2D(150.0, 15.0));
