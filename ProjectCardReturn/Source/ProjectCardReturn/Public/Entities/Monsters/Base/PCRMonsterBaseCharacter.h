@@ -42,7 +42,7 @@ public:
 	FORCEINLINE bool IsAlive() const { return bIsAlive; }
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
 	FORCEINLINE float GetStunTime() const { return StunTime; }
-
+	
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
 
@@ -58,14 +58,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UProgressBar> HPProgressBar;
 
-	float MaxHealthPoint;
 	float HealthPoint;
+	float MaxHealthPoint;
+	uint32 bIsAlive:1;
+	
 	float AttackPower;
-	bool bIsAlive;
 	float MoveSpeed;
 	float AttackRange;
 	float AttackSpeed;
 	float StunTime;
+	
+
 	
 private:
 	void DestroyTimeCallback();

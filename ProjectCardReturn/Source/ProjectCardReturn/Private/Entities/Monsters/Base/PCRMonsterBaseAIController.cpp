@@ -7,6 +7,7 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseAnimInstance.h"
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseAIController);
@@ -56,7 +57,7 @@ void APCRMonsterBaseAIController::BeginPlay()
 void APCRMonsterBaseAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
+	
 	// 타겟을 계속 바라보도록 하는 코드입니다.
 	if (!bIsStunned)
 	{

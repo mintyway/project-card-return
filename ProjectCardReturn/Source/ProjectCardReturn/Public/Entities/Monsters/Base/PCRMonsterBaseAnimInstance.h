@@ -21,6 +21,9 @@ class PROJECTCARDRETURN_API UPCRMonsterBaseAnimInstance : public UAnimInstance
 public:
 	UPCRMonsterBaseAnimInstance();
 
+public:
+	FORCEINLINE bool GetCanAttack() const { return bCanAttack; }
+
 protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -35,8 +38,12 @@ protected:
 	uint32 bShouldMove:1;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
-	FVector Velocity;
+	uint32 bCanAttack:1;
 
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	FVector Velocity;
+	
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+
 };

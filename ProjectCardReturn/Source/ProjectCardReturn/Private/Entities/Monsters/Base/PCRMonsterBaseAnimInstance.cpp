@@ -7,7 +7,7 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false)
+UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_MonsterDataAsset(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_MonsterDataAsset.Succeeded())

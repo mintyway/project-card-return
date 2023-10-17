@@ -52,4 +52,6 @@ private:
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 
 	TMap<APCREricaCardProjectile*, FDelegateHandle> OnReturnCardBeginDelegateMap;
+
+	int32 AttachedCardCount;
 };

@@ -45,5 +45,4 @@ private:
 	void ShieldAttack();
 	void SpearAttack();
 
-	uint32 bCanAttack:1;
 };

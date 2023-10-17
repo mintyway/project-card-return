@@ -9,7 +9,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierAnimInstance);
 
-UPCRMeleeSoldierAnimInstance::UPCRMeleeSoldierAnimInstance(): bHasShield(false), bCanAttack(true) {}
+UPCRMeleeSoldierAnimInstance::UPCRMeleeSoldierAnimInstance(): bHasShield(false) {}
 
 void UPCRMeleeSoldierAnimInstance::NativeInitializeAnimation()
 {
