@@ -44,6 +44,12 @@ public:
 	float EricaMoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	int32 BuckShotCount;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float BuckShotAngle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaNormalShotForwardDamage;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")

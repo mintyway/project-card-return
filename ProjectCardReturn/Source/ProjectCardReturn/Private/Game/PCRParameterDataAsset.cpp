@@ -6,7 +6,7 @@
 UPCRParameterDataAsset::UPCRParameterDataAsset()
 {
 	bIsMonsterSpawn = true;
-	
+
 	CameraFOV = 60.f;
 	CameraDistance = 2000.f;
 	CameraPitch = 40.f;
@@ -15,7 +15,12 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 	CameraLagMaxDistance = 100.f;
 
 	EricaMoveSpeed = 750.f;
-	EricaAttackPower = 1.f;
+	BuckShotCount = 3;
+	BuckShotAngle = 60.f;
+	EricaNormalShotForwardDamage = 1.f;
+	EricaNormalShotBackwardDamage = 1.5f;
+	EricaBuckShotForwardDamage = 0.5f;
+	EricaBuckShotBackwardDamage = 1.f;
 	EricaNormalShotCooldownTime = 0.8f;
 	EricaBuckShotCooldownTime = 0.6f;
 	EricaDashCooldownTime = 1.f;
@@ -30,15 +35,15 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	DeadAfterDestroyTime = 1.f;
 
-	RabbitMaxHealthPoint = 3.f;
+	RabbitMaxHealthPoint = 5.f;
 	RabbitAttackPower = 3.f;
-	RabbitMoveSpeed = 300.f;
+	RabbitMoveSpeed = EricaMoveSpeed * 0.8f;
 	RabbitAttackRange = 300.f;
 	RabbitAttackSpeed = 1.f;
 
-	MeleeSoldierMaxHealthPoint = 1.f;
+	MeleeSoldierMaxHealthPoint = 6.f;
 	MeleeSoldierAttackPower = 34.f;
-	MeleeSoldierMoveSpeed = 300.f;
+	MeleeSoldierMoveSpeed = EricaMoveSpeed * 0.6f;
 	MeleeSoldierAttackRange = 300.f;
 	MeleeSoldierAttackSpeed = 1.f;
 

@@ -38,6 +38,9 @@ protected:
 private:
 	UFUNCTION()
 	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+	void AnimNotify_Hit();
 	
 	void ShieldAttack();
 	void SpearAttack();

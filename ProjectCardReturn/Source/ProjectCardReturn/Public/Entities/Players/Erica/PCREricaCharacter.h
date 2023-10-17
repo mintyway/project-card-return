@@ -20,13 +20,16 @@ class UPCRGameInstance;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE(FAttackSignature);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeCardCountSignature, int32, int32);
+DECLARE_MULTICAST_DELEGATE(FDeadSignature);
 
 /**
  * 캐릭터의 공격 모드를 설정합니다.
  */
 enum class ShootMode
 {
-	Rapid,
+	Normal,
 	Buckshot
 };
 
@@ -46,11 +49,18 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	float GetNormalShotForwardDamage() const { return NormalShotForwardDamage; }
-	float GetNormalShotBackwardDamage() const { return NormalShotBackwardDamage; }
-	float GetBuckShotForwardDamage() const { return BuckShotForwardDamage; }
-	float GetBuckShotBackwardDamage() const { return BuckShotBackwardDamage; }
+	FORCEINLINE float GetMaxHP() const { return MaxHP; }
+	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
+	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
 	
+	FORCEINLINE float GetNormalShotForwardDamage() const { return NormalShotForwardDamage; }
+	FORCEINLINE float GetNormalShotBackwardDamage() const { return NormalShotBackwardDamage; }
+	FORCEINLINE float GetBuckShotForwardDamage() const { return BuckShotForwardDamage; }
+	FORCEINLINE float GetBuckShotBackwardDamage() const { return BuckShotBackwardDamage; }
+	
+	FORCEINLINE int32 GetMaxCardCount() const { return MaxCardCount; }
+	FORCEINLINE int32 GetCurrentCardCount() const { return CurrentCardCount; }
+
 	bool GetIsDashing() const { return bIsDashing; }
 
 	void ShootCard();
@@ -59,13 +69,21 @@ public:
 	FAttackSignature OnCardShoot;
 	FAttackSignature OnCardReturn;
 	
+	FChangeHPSignature OnChangeHP;
+	FDeadSignature OnDead;
+
+	FChangeCardCountSignature OnChangeCardCount;
+
+protected:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
 private:
 	void Move(const FInputActionValue& InputActionValue);
 	void Dash();
 	void HandleDash(float DeltaTime);
 
 	void HandleShootMode();
-	void RapidShot();
+	void NormalShot();
 	void BuckShot();
 	void HandleShootCard(const FVector& Direction, float Range);
 	void Change();
@@ -74,6 +92,12 @@ private:
 	void ShotCooldownTimerCallback();
 	void DashCooldownTimerCallback();
 	void TotalDashTimeCallback();
+
+	void ChangeHP(float Amount);
+	void HandleChangeHP();
+	void HandleDead();
+
+	void HandleChangeCardCount();
 	
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -101,10 +125,20 @@ private:
 
 	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
 
+	float MaxHP;
+	float CurrentHP;
+	uint32 bIsAlive:1;
+	
+	int32 BuckShotCount;
+	float BuckShotAngle;
+	
 	float NormalShotForwardDamage;
 	float NormalShotBackwardDamage;
 	float BuckShotForwardDamage;
 	float BuckShotBackwardDamage;
+
+	int32 MaxCardCount;
+	int32 CurrentCardCount;
 
 	TArray<FKey> MovementKeys;
 	FVector LastInputMoveDirection;

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "PCREricaPlayerController.generated.h"
 
+class UPCRMainUserWidget;
 class UPCRPauseUserWidget;
 class UPCRUIDataAsset;
 class APCREricaCharacter;
@@ -43,6 +44,12 @@ private:
 	UPROPERTY()
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
 
+	UPROPERTY()
+	TSubclassOf<UPCRMainUserWidget> MainUserWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UPCRMainUserWidget> MainUserWidget;
+	
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
 
