@@ -126,7 +126,7 @@ APCREricaCharacter::APCREricaCharacter()
 	{
 		AimingPlane->SetupAttachment(GetCapsuleComponent());
 		AimingPlane->SetStaticMesh(EricaDataAsset->AimingPlane);
-		AimingPlane->SetRelativeScale3D(FVector(50.0, 50.0, 1.0));
+		AimingPlane->SetRelativeScale3D(FVector(75.0, 75.0, 1.0));
 		AimingPlane->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		AimingPlane->SetCollisionObjectType(ECC_GameTraceChannel4);
 		AimingPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
