@@ -23,7 +23,7 @@ APCREricaCardProjectile::APCREricaCardProjectile()
 	{
 		ProjectileSpeed = GetParameterDataAsset()->EricaCardSpeed;
 		CardReturnSpeed = GetParameterDataAsset()->EricaCardReturnSpeed;
-		CardRange = GetParameterDataAsset()->EricaCardRapidShotRange;
+		CardRange = GetParameterDataAsset()->EricaCardNormalShotRange;
 		CardReleaseRange = GetParameterDataAsset()->EricaCardReleaseRange;
 	}
 

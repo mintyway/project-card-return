@@ -53,8 +53,11 @@ APCREricaCharacter::APCREricaCharacter()
 
 	if (ParameterDataAsset)
 	{
-		AttackPower = ParameterDataAsset->EricaAttackPower;
-		RapidShotCooldownTime = ParameterDataAsset->EricaRapidShotCooldownTime;
+		NormalShotForwardDamage = ParameterDataAsset->EricaNormalShotForwardDamage;
+		NormalShotBackwardDamage = ParameterDataAsset->EricaNormalShotBackwardDamage;
+		BuckShotForwardDamage = ParameterDataAsset->EricaBuckShotForwardDamage;
+		BuckShotBackwardDamage = ParameterDataAsset->EricaBuckShotBackwardDamage;
+		RapidShotCooldownTime = ParameterDataAsset->EricaNormalShotCooldownTime;
 		BuckShotCooldownTime = ParameterDataAsset->EricaBuckShotCooldownTime;
 		DashCooldownTime = ParameterDataAsset->EricaDashCooldownTime;
 		MaxDashTime = ParameterDataAsset->EricaMaxDashTime;
@@ -300,7 +303,7 @@ void APCREricaCharacter::RapidShot()
 
 		RETURN_IF_INVALID(CachedEricaPlayerController);
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardRapidShotRange);
+		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardNormalShotRange);
 	}
 }
 

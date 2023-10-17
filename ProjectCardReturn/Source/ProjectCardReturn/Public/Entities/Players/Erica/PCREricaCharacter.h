@@ -46,7 +46,11 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	float GetAttackPower() const { return AttackPower; }
+	float GetNormalShotForwardDamage() const { return NormalShotForwardDamage; }
+	float GetNormalShotBackwardDamage() const { return NormalShotBackwardDamage; }
+	float GetBuckShotForwardDamage() const { return BuckShotForwardDamage; }
+	float GetBuckShotBackwardDamage() const { return BuckShotBackwardDamage; }
+	
 	bool GetIsDashing() const { return bIsDashing; }
 
 	void ShootCard();
@@ -97,7 +101,10 @@ private:
 
 	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
 
-	float AttackPower;
+	float NormalShotForwardDamage;
+	float NormalShotBackwardDamage;
+	float BuckShotForwardDamage;
+	float BuckShotBackwardDamage;
 
 	TArray<FKey> MovementKeys;
 	FVector LastInputMoveDirection;

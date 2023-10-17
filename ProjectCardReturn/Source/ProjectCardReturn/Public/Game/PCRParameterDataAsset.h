@@ -44,14 +44,23 @@ public:
 	float EricaMoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaAttackPower;
+	float EricaNormalShotForwardDamage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaNormalShotBackwardDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaRapidShotCooldownTime;
+	float EricaBuckShotForwardDamage;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaBuckShotBackwardDamage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaNormalShotCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaBuckShotCooldownTime;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaMaxDashTime;
 
@@ -71,7 +80,7 @@ public:
 	float EricaCardReturnSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaCardRapidShotRange;
+	float EricaCardNormalShotRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardBuckShotRange;

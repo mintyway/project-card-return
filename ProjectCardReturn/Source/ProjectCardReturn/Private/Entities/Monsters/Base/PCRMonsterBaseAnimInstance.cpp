@@ -21,25 +21,21 @@ void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedMonsterBaseCharacter = Cast<APCRMonsterBaseCharacter>(TryGetPawnOwner());
-	if (!CachedMonsterBaseCharacter)
-	{
-		NULL_POINTER_EXCEPTION(CachedMonsterBaseCharacter);
-	}
-	
+	checkSlow(CachedMonsterBaseCharacter);
+
 	CachedCharacterMovement = CachedMonsterBaseCharacter ? Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement()) : nullptr;
-	if (!CachedCharacterMovement)
-	{
-		NULL_POINTER_EXCEPTION(CachedCharacterMovement);
-	}
 }
 
 void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (CachedCharacterMovement)
+	if (!CachedMonsterBaseCharacter)
 	{
-		Velocity = CachedCharacterMovement->Velocity;
-		bShouldMove = Velocity.SizeSquared2D() >= FMath::Square(30);
+		return;
 	}
+
+	check(CachedCharacterMovement);
+	Velocity = CachedCharacterMovement->Velocity;
+	bShouldMove = Velocity.SizeSquared2D() >= FMath::Square(30);
 }

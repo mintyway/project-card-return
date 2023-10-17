@@ -30,7 +30,7 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 
 	if (IsValid(GetCapsuleComponent()))
 	{
-		GetCapsuleComponent()->InitCapsuleSize(50.f, 50.f);
+		GetCapsuleComponent()->InitCapsuleSize(30.f, 88.f);
 	}
 
 	// TODO: 모델링 작업 완료되면 활성화

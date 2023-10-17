@@ -16,16 +16,16 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	EricaMoveSpeed = 750.f;
 	EricaAttackPower = 1.f;
-	EricaRapidShotCooldownTime = 0.1f;
-	EricaBuckShotCooldownTime = 0.5f;
+	EricaNormalShotCooldownTime = 0.8f;
+	EricaBuckShotCooldownTime = 0.6f;
 	EricaDashCooldownTime = 1.f;
 	EricaMaxDashTime = 0.25f;
 	EricaDashDistance = 500.f;
-	EricaCardCount = 30;
+	EricaCardCount = 9;
 	EricaCardSpeed = 3000.f;
 	EricaCardReturnSpeed = 6000.f;
-	EricaCardRapidShotRange = 1000.f;
-	EricaCardBuckShotRange = 800.f;
+	EricaCardNormalShotRange = 1300.f;
+	EricaCardBuckShotRange = 700.f;
 	EricaCardReleaseRange = 50.f;
 
 	DeadAfterDestroyTime = 1.f;

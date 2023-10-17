@@ -15,10 +15,6 @@ void UPCRMeleeSoldierAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedMeleeSoldier = Cast<APCRMeleeSoldierCharacter>(CachedMonsterBaseCharacter);
-	if (!CachedMeleeSoldier)
-	{
-		NULL_POINTER_EXCEPTION(CachedMeleeSoldier);
-	}
 
 	OnMontageEnded.AddDynamic(this, &UPCRMeleeSoldierAnimInstance::AttackMontageEnded);
 }
@@ -27,10 +23,12 @@ void UPCRMeleeSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (CachedMeleeSoldier)
+	if (!CachedMeleeSoldier)
 	{
-		bHasShield = CachedMeleeSoldier->GetHasShield();
+		return;
 	}
+
+	bHasShield = CachedMeleeSoldier->GetHasShield();
 }
 
 void UPCRMeleeSoldierAnimInstance::Attack()
@@ -41,7 +39,7 @@ void UPCRMeleeSoldierAnimInstance::Attack()
 	}
 
 	UE_LOG(PCRLogMeleeSoldierAnimInstance, Warning, TEXT("Attack!"));
-	
+
 	if (bHasShield)
 	{
 		ShieldAttack();
