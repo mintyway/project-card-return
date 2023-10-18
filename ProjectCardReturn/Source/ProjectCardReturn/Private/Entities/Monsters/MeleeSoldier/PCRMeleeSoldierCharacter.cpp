@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
+#include "Entities/Monsters/MeleeSoldier/PCRSpearActor.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
@@ -18,6 +19,8 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	bCanAttack = true;
 	bHasShield = false;
+	//
+	bHasSpear = false;
 
 	if (IsValid(GetParameterDataAsset()))
 	{
@@ -96,6 +99,12 @@ void APCRMeleeSoldierCharacter::HandleDead()
 	{
 		Shield->DetachAndDelayedDestroy();
 	}
+
+	//
+	if (bHasSpear)
+	{
+		Spear->DetachAndDelayedDestroy();	
+	}
 }
 
 /**
@@ -113,6 +122,20 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 
 	bHasShield = true;
+}
+
+//
+void APCRMeleeSoldierCharacter::SpawnAndAttachSpear()
+{
+	RETURN_IF_INVALID(GetWorld());
+	Spear = GetWorld()->SpawnActor<APCRSpearActor>();
+	RETURN_IF_INVALID(Spear);
+	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
+	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	RETURN_IF_INVALID(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	// Spear->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
+
+	bHasSpear = true;
 }
 
 /**

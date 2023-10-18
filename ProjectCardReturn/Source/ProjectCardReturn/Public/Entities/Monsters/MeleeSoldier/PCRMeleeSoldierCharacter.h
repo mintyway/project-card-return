@@ -9,6 +9,7 @@
 
 class UPCRMeleeSoldierAnimInstance;
 class APCRShieldActor;
+class APCRSpearActor;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMeleeSoldierCharacter, Log, All);
 
@@ -34,6 +35,8 @@ public:
 	FORCEINLINE bool GetHasShield() const { return bHasShield; }
 	
 	void SpawnAndAttachShield();
+	//
+	void SpawnAndAttachSpear();
 	void HandleDetachedShield();
 
 protected:
@@ -43,9 +46,15 @@ private:
 	UPROPERTY()
 	TObjectPtr<APCRShieldActor> Shield;
 
+	//
+	UPROPERTY()
+	TObjectPtr<APCRSpearActor> Spear;
+	
 	UPROPERTY()
 	TObjectPtr<UPCRMeleeSoldierAnimInstance> MeleeSoldierAnimInstance;
 
 	uint32 bCanAttack:1;
 	uint32 bHasShield:1;
+	// 
+	uint32 bHasSpear:1;
 };
