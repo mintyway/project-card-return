@@ -27,7 +27,7 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 		MaxHealthPoint = GetParameterDataAsset()->MeleeSoldierMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
 		AttackPower = GetParameterDataAsset()->MeleeSoldierAttackPower;
-		AttackRange = GetParameterDataAsset()->MeleeSoldierAttackRange;
+		//AttackRange = GetParameterDataAsset()->MeleeSoldierAttackRange;
 		AttackSpeed = GetParameterDataAsset()->MeleeSoldierAttackSpeed;
 	}
 
@@ -67,10 +67,12 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 	if (FMath::RandBool())
 	{
 		SpawnAndAttachShield();
+		AttackRange = GetParameterDataAsset()->MeleeSoldierShieldAttackRange;
 	}
 	else
 	{
 		SpawnAndAttachSpear();
+		AttackRange = GetParameterDataAsset()->MeleeSoldierSpearAttackRange;
 	}
 
 	MeleeSoldierAnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
