@@ -117,7 +117,7 @@ void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
-	const int32 DetachCount = 2;
+	const int32 DetachCount = 1;
 	if (AttachedCardCount >= DetachCount)
 	{
 		DetachAndDelayedDestroy();
