@@ -62,7 +62,16 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	SpawnAndAttachShield();
+	//SpawnAndAttachShield();
+	//
+	if (FMath::RandBool())
+	{
+		SpawnAndAttachShield();
+	}
+	else
+	{
+		SpawnAndAttachSpear();
+	}
 
 	MeleeSoldierAnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!MeleeSoldierAnimInstance)
