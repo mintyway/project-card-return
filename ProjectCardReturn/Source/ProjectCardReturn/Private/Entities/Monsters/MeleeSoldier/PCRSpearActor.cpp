@@ -47,6 +47,13 @@ void APCRSpearActor::Tick(float DeltaTime)
 
 }
 
+void APCRSpearActor::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	OnDetachedSpear.Clear();
+}
+
 void APCRSpearActor::DetachAndDelayedDestroy()
 {
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);

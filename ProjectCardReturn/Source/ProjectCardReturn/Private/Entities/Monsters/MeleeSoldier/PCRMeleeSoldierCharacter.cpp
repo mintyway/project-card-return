@@ -132,8 +132,9 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachSpear()
 	RETURN_IF_INVALID(Spear);
 	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
 	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	RETURN_IF_INVALID(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	RETURN_IF_INVALID(Spear->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
 	// Spear->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
+	Spear->OnDetachedSpear.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedSpear);
 
 	bHasSpear = true;
 }
@@ -151,4 +152,19 @@ void APCRMeleeSoldierCharacter::HandleDetachedShield()
 	UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
 	Shield = nullptr;
 	bHasShield = false;
+}
+
+/**
+ * 창이 탈착되고난 후 처리되야할 함수입니다. 창의 탈착 시점에 바인드 되어있습니다.
+ */
+void APCRMeleeSoldierCharacter::HandleDetachedSpear()
+{
+	if (!bHasSpear)
+	{
+		return;
+	}
+
+	UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Spear->GetName(), *GetName());
+	Spear = nullptr;
+	bHasSpear = false;
 }

@@ -38,6 +38,7 @@ public:
 	//
 	void SpawnAndAttachSpear();
 	void HandleDetachedShield();
+	void HandleDetachedSpear();
 
 protected:
 	virtual void HandleDead() override;
