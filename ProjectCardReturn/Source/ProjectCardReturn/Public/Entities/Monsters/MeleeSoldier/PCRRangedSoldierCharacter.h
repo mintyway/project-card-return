@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Entities/Monsters/MeleeSoldier/PCRSoldierBaseCharacter.h"
-#include "PCRMeleeSoldierCharacter.generated.h"
+#include "PCRRangedSoldierCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRMeleeSoldierCharacter : public APCRSoldierBaseCharacter
+class PROJECTCARDRETURN_API APCRRangedSoldierCharacter : public APCRSoldierBaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRMeleeSoldierCharacter();
+	APCRRangedSoldierCharacter();
 
 protected:
 	virtual void PostInitializeComponents() override;

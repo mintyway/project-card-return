@@ -32,6 +32,7 @@ public:
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 
 	static const FName TargetKey;
+	static const FName DetectKey;
 
 private:
 	void SetTarget();

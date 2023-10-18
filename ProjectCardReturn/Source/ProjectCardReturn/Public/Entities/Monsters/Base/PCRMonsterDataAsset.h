@@ -27,9 +27,11 @@ public:
 	TObjectPtr<USkeletalMesh> MeleeSoldierMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	TObjectPtr<USkeletalMesh> RangedSoldierMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	TObjectPtr<UStaticMesh> ShieldMesh;
 
-	//
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	TObjectPtr<UStaticMesh> SpearMesh;
 

@@ -39,9 +39,10 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 	MeleeSoldierMaxHealthPoint = 1.f;
 	MeleeSoldierAttackPower = 34.f;
 	MeleeSoldierMoveSpeed = 300.f;
-	MeleeSoldierShieldAttackRange = 300.f;
-	MeleeSoldierSpearAttackRange = 1500.f;
+	MeleeSoldierAttackRange = 300.f;
 	MeleeSoldierAttackSpeed = 1.f;
+	
+	RangedSoldierAttackRange = 1500.f;
 
 	ShieldDestroyTimeAfterDrop = 1.f;
 }

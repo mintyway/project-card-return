@@ -3,7 +3,7 @@
 
 #include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
 
-#include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierCharacter.h"
+#include "Entities/Monsters/MeleeSoldier/PCRSoldierBaseCharacter.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierAnimInstance);
@@ -14,7 +14,7 @@ void UPCRMeleeSoldierAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	CachedMeleeSoldier = Cast<APCRMeleeSoldierCharacter>(CachedMonsterBaseCharacter);
+	CachedMeleeSoldier = Cast<APCRSoldierBaseCharacter>(CachedMonsterBaseCharacter);
 	if (!CachedMeleeSoldier)
 	{
 		NULL_POINTER_EXCEPTION(CachedMeleeSoldier);

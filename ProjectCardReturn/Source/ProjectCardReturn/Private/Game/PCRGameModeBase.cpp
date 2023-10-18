@@ -8,6 +8,7 @@
 #include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
 #include "Entities/MonsterGenerator/Base/PCRMonsterBaseGenerator.h"
 #include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierCharacter.h"
+#include "Entities/Monsters/MeleeSoldier/PCRRangedSoldierCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
@@ -40,9 +41,9 @@ void APCRGameModeBase::BeginPlay()
 
 		// MonsterGenerator1->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
 		// MonsterGenerator2->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
-		MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
-		MonsterGenerator4->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
-		MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 3.f);
+		// MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
+		MonsterGenerator4->Start(APCRRangedSoldierCharacter::StaticClass(), 300000.f);
+		//MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 3.f);
 		// MonsterGenerator6->Start(APCRRabbitCharacter::StaticClass(), 3.f);
 	}
 }

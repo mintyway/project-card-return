@@ -110,14 +110,14 @@ public:
 	float MeleeSoldierMoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierShieldAttackRange;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierSpearAttackRange;
+	float MeleeSoldierAttackRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float MeleeSoldierAttackSpeed;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackRange;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Shield")
 	float ShieldDestroyTimeAfterDrop;
 };
