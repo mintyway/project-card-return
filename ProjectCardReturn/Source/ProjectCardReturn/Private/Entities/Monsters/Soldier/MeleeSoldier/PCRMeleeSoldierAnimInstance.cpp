@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
 
-#include "Entities/Monsters/MeleeSoldier/PCRSoldierBaseCharacter.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierAnimInstance);
 
@@ -14,7 +14,7 @@ void UPCRMeleeSoldierAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	CachedMeleeSoldier = Cast<APCRSoldierBaseCharacter>(CachedMonsterBaseCharacter);
+	CachedMeleeSoldier = Cast<APCRMeleeSoldierCharacter>(CachedMonsterBaseCharacter);
 	if (!CachedMeleeSoldier)
 	{
 		NULL_POINTER_EXCEPTION(CachedMeleeSoldier);

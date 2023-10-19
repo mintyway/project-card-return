@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRShieldActor.h"
 
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"

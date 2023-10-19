@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "ProjectCardReturn.h"
 #include "BehaviorTree/BTService.h"
 #include "BTService_PCRSoldierDetect.generated.h"

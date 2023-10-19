@@ -114,9 +114,24 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float MeleeSoldierAttackSpeed;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierMaxHealthPoint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackPower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierMoveSpeed;
+
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float RangedSoldierAttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearSpeed;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Shield")
 	float ShieldDestroyTimeAfterDrop;

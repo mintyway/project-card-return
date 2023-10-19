@@ -6,7 +6,7 @@
 #include "Entities/Monsters/Base/PCRMonsterBaseAnimInstance.h"
 #include "PCRMeleeSoldierAnimInstance.generated.h"
 
-class APCRSoldierBaseCharacter;
+class APCRMeleeSoldierCharacter;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMeleeSoldierAnimInstance, Log, All);
 
@@ -30,7 +30,7 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Reference")
-	TObjectPtr<APCRSoldierBaseCharacter> CachedMeleeSoldier;
+	TObjectPtr<APCRMeleeSoldierCharacter> CachedMeleeSoldier;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	uint32 bHasShield:1;

@@ -141,6 +141,7 @@ void APCREricaCardProjectile::EnableCollisionDetection()
 		GetBoxComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
 		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Block);
+		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel7, ECR_Block);
 	}
 }
 

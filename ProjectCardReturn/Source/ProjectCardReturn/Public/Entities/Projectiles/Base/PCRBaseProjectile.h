@@ -64,7 +64,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-	
+
+	UPROPERTY()
 	TObjectPtr<const UPCRProjectileDataAsset> ProjectileDataAsset;
+
+	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 };
