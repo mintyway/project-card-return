@@ -26,8 +26,12 @@ APCREricaCharacter::APCREricaCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
 
+	MaxHP = 100.f;
+	CurrentHP = MaxHP;
+	bIsAlive = true;
+	
 	MovementKeys = {EKeys::W, EKeys::S, EKeys::D, EKeys::A};
-	CurrentShootMode = ShootMode::Rapid;
+	CurrentShootMode = ShootMode::Normal;
 	bCanRapidShot = true;
 	bCanBuckShot = true;
 
@@ -53,12 +57,19 @@ APCREricaCharacter::APCREricaCharacter()
 
 	if (ParameterDataAsset)
 	{
-		AttackPower = ParameterDataAsset->EricaAttackPower;
-		RapidShotCooldownTime = ParameterDataAsset->EricaRapidShotCooldownTime;
+		BuckShotCount = ParameterDataAsset->BuckShotCount;
+		BuckShotAngle = ParameterDataAsset->BuckShotAngle;
+		NormalShotForwardDamage = ParameterDataAsset->EricaNormalShotForwardDamage;
+		NormalShotBackwardDamage = ParameterDataAsset->EricaNormalShotBackwardDamage;
+		BuckShotForwardDamage = ParameterDataAsset->EricaBuckShotForwardDamage;
+		BuckShotBackwardDamage = ParameterDataAsset->EricaBuckShotBackwardDamage;
+		RapidShotCooldownTime = ParameterDataAsset->EricaNormalShotCooldownTime;
 		BuckShotCooldownTime = ParameterDataAsset->EricaBuckShotCooldownTime;
 		DashCooldownTime = ParameterDataAsset->EricaDashCooldownTime;
 		MaxDashTime = ParameterDataAsset->EricaMaxDashTime;
 		DashDistance = ParameterDataAsset->EricaDashDistance;
+		MaxCardCount = ParameterDataAsset->EricaCardCount;
+		CurrentCardCount = MaxCardCount;
 	}
 
 	if (GetCapsuleComponent())
@@ -115,7 +126,7 @@ APCREricaCharacter::APCREricaCharacter()
 	{
 		AimingPlane->SetupAttachment(GetCapsuleComponent());
 		AimingPlane->SetStaticMesh(EricaDataAsset->AimingPlane);
-		AimingPlane->SetRelativeScale3D(FVector(50.0, 50.0, 1.0));
+		AimingPlane->SetRelativeScale3D(FVector(75.0, 75.0, 1.0));
 		AimingPlane->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		AimingPlane->SetCollisionObjectType(ECC_GameTraceChannel4);
 		AimingPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -231,7 +242,18 @@ void APCREricaCharacter::ReturnCard()
 				ReturningCard->ReturnCard();
 			}
 		}
+
+		// TODO: 현재는 회수를 시작하자마자 카드 카운트가 초기화되는 방식으로 추후 개선필요.
+		HandleChangeCardCount();
 	}
+}
+
+float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	ChangeHP(-ActualDamage);
+	return ActualDamage;
 }
 
 /**
@@ -240,6 +262,11 @@ void APCREricaCharacter::ReturnCard()
  */
 void APCREricaCharacter::Move(const FInputActionValue& InputActionValue)
 {
+	if (!bIsAlive)
+	{
+		return;
+	}
+	
 	FVector2D MoveScalar = InputActionValue.Get<FVector2D>();
 	MoveScalar.Normalize();
 
@@ -262,9 +289,9 @@ void APCREricaCharacter::HandleShootMode()
 {
 	switch (CurrentShootMode)
 	{
-		case ShootMode::Rapid:
+		case ShootMode::Normal:
 		{
-			RapidShot();
+			NormalShot();
 			break;
 		}
 		case ShootMode::Buckshot:
@@ -280,9 +307,9 @@ void APCREricaCharacter::HandleShootMode()
 }
 
 /**
- * 연발 모드의 발사입니다.
+ * 단발 모드의 발사입니다.
  */
-void APCREricaCharacter::RapidShot()
+void APCREricaCharacter::NormalShot()
 {
 	if (bCanRapidShot)
 	{
@@ -300,7 +327,7 @@ void APCREricaCharacter::RapidShot()
 
 		RETURN_IF_INVALID(CachedEricaPlayerController);
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardRapidShotRange);
+		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardNormalShotRange);
 	}
 }
 
@@ -323,13 +350,11 @@ void APCREricaCharacter::BuckShot()
 		}
 
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		const int32 ProjectileCount = 5;
-		const float TotalDegrees = 60.f;
-		const float DegreeInterval = TotalDegrees / (ProjectileCount - 1);
+		const float DegreeInterval = BuckShotAngle / (BuckShotCount - 1);
 
-		for (int32 i = 0; i < ProjectileCount; ++i)
+		for (int32 i = 0; i < BuckShotCount; ++i)
 		{
-			const float CurrentRotation = -TotalDegrees / 2 + DegreeInterval * i;
+			const float CurrentRotation = -BuckShotAngle / 2 + DegreeInterval * i;
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
 			HandleShootCard(CurrentDirection, ParameterDataAsset->EricaCardBuckShotRange);
@@ -344,6 +369,23 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 	if (CardProjectile)
 	{
 		CardProjectiles.Insert(CardProjectile, 0);
+		switch (CurrentShootMode)
+		{
+			case ShootMode::Normal:
+			{
+				CardProjectile->SetDamage(NormalShotForwardDamage, NormalShotBackwardDamage);
+				break;
+			}
+			case ShootMode::Buckshot:
+			{
+				CardProjectile->SetDamage(BuckShotForwardDamage, BuckShotBackwardDamage);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
 		CardProjectile->SetRange(Range);
 		CardProjectile->LaunchProjectile(this, GetActorLocation(), Direction);
 
@@ -353,6 +395,7 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 		}
 	}
 
+	HandleChangeCardCount();
 	UE_LOG(PCRLogEricaCharacter, Log, TEXT("필드에 발사된 카드 개수: %d"), CardProjectiles.Num());
 }
 
@@ -361,6 +404,11 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
  */
 void APCREricaCharacter::Dash()
 {
+	if (!bIsAlive)
+	{
+		return;
+	}
+	
 	if (bCanDash)
 	{
 		bCanDash = false;
@@ -419,23 +467,28 @@ void APCREricaCharacter::HandleDash(float DeltaTime)
 
 void APCREricaCharacter::Change()
 {
+	if (!bIsAlive)
+	{
+		return;
+	}
+	
 	SIMPLE_LOG;
 
 	switch (CurrentShootMode)
 	{
-		case ShootMode::Rapid:
+		case ShootMode::Normal:
 		{
 			CurrentShootMode = ShootMode::Buckshot;
 			break;
 		}
 		case ShootMode::Buckshot:
 		{
-			CurrentShootMode = ShootMode::Rapid;
+			CurrentShootMode = ShootMode::Normal;
 			break;
 		}
 		default:
 		{
-			CurrentShootMode = ShootMode::Rapid;
+			CurrentShootMode = ShootMode::Normal;
 			break;
 		}
 	}
@@ -469,4 +522,37 @@ void APCREricaCharacter::TotalDashTimeCallback()
 	{
 		NULL_POINTER_EXCEPTION(GetCapsuleComponent());
 	}
+}
+
+void APCREricaCharacter::ChangeHP(float Amount)
+{
+	CurrentHP += Amount;
+	HandleChangeHP();
+}
+
+void APCREricaCharacter::HandleChangeHP()
+{
+	if (CurrentHP <= 0.f)
+	{
+		CurrentHP = 0.f;
+		HandleDead();
+	}
+
+	OnChangeHP.Broadcast(MaxHP, CurrentHP);
+}
+
+void APCREricaCharacter::HandleDead()
+{
+	UE_LOG(PCRLogEricaCharacter, Log, TEXT("%s 주인공 캐릭터가 죽었습니다."), *this->GetName());
+
+	bIsAlive = false;
+	
+	
+	OnDead.Broadcast();
+}
+
+void APCREricaCharacter::HandleChangeCardCount()
+{
+	CurrentCardCount = MaxCardCount - CardProjectiles.Num();
+	OnChangeCardCount.Broadcast(MaxCardCount, CurrentCardCount);
 }

@@ -40,9 +40,9 @@ void APCRGameModeBase::BeginPlay()
 
 		// MonsterGenerator1->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
 		// MonsterGenerator2->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
-		MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
-		MonsterGenerator4->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
-		MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 3.f);
+		MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 10.f);
+		MonsterGenerator4->Start(APCRMeleeSoldierCharacter::StaticClass(), 10.f);
+		MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 10.f);
 		// MonsterGenerator6->Start(APCRRabbitCharacter::StaticClass(), 3.f);
 	}
 }

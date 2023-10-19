@@ -6,6 +6,7 @@
 #include "Entities/Players/Erica/PCREricaDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "UI/PCRUIDataAsset.h"
+#include "UI/PCRMainUserWidget.h"
 #include "UI/PCRPauseUserWidget.h"
 
 #include "EnhancedInputComponent.h"
@@ -31,6 +32,10 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 
 	if (UIDataAsset)
 	{
+		if (const TSubclassOf<UPCRMainUserWidget> PCRMainUserWidgetClass = UIDataAsset->Main.LoadSynchronous())
+		{
+			MainUserWidgetClass = PCRMainUserWidgetClass;
+		}
 		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->Pause.LoadSynchronous())
 		{
 			PauseUserWidgetClass = PCRPauseUserWidgetClass;
@@ -55,8 +60,15 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	CachedEricaCharacter = Cast<APCREricaCharacter>(InPawn);
-	RETURN_IF_INVALID(CachedEricaCharacter);
+	verify((CachedEricaCharacter = Cast<APCREricaCharacter>(InPawn)));
+
+	verify((MainUserWidget = CreateWidget<UPCRMainUserWidget>(this, MainUserWidgetClass)));
+	MainUserWidget->AddToViewport(-1);
+
+	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateHP);
+	MainUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
+	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateCardCount);
+	MainUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
 }
 
 void APCREricaPlayerController::BeginPlay()
@@ -74,7 +86,7 @@ void APCREricaPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bUseCharacterRotationByCursorDirection)
+	if (bUseCharacterRotationByCursorDirection && CachedEricaCharacter->GetIsAlive())
 	{
 		const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
 		RETURN_IF_INVALID(IsValid(CachedEricaCharacter));
@@ -118,11 +130,21 @@ void APCREricaPlayerController::DisableUIInputMode()
 
 void APCREricaPlayerController::Shoot()
 {
+	if (!CachedEricaCharacter->GetIsAlive())
+	{
+		return;
+	}
+	
 	CachedEricaCharacter->ShootCard();
 }
 
 void APCREricaPlayerController::Return()
 {
+	if (!CachedEricaCharacter->GetIsAlive())
+	{
+		return;
+	}
+	
 	CachedEricaCharacter->ReturnCard();
 }
 
@@ -132,7 +154,7 @@ void APCREricaPlayerController::GamePause()
 	if (PauseUserWidget)
 	{
 		PauseUserWidget->AddToViewport(3);
-	
+
 		SetPause(true);
 		EnableUIInputMode();
 	}

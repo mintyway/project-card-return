@@ -15,15 +15,13 @@
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
 
-APCREricaCardProjectile::APCREricaCardProjectile()
+APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), BackwardDamage(0.f), CurrentCardState(ECardState::Invalid)
 {
-	CurrentCardState = ECardState::Invalid;
-
 	if (GetParameterDataAsset())
 	{
 		ProjectileSpeed = GetParameterDataAsset()->EricaCardSpeed;
 		CardReturnSpeed = GetParameterDataAsset()->EricaCardReturnSpeed;
-		CardRange = GetParameterDataAsset()->EricaCardRapidShotRange;
+		CardRange = GetParameterDataAsset()->EricaCardNormalShotRange;
 		CardReleaseRange = GetParameterDataAsset()->EricaCardReleaseRange;
 	}
 
@@ -132,6 +130,12 @@ void APCREricaCardProjectile::ReturnCard()
 	OnReturnCardBegin.Broadcast(this);
 }
 
+void APCREricaCardProjectile::SetDamage(float InForwardDamage, float InBackwardDamage)
+{
+	ForwardDamage = InForwardDamage;
+	BackwardDamage = InBackwardDamage;
+}
+
 void APCREricaCardProjectile::EnableCollisionDetection()
 {
 	if (GetBoxComponent())
@@ -180,14 +184,14 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 		const APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
-		OtherCharacter->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), this);
+		OtherCharacter->TakeDamage(ForwardDamage, DamageEvent, EricaCharacter->GetController(), this);
 	}
 	else
 	{
 		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 %s와 후면으로 충돌했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName());
 		APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
-		OtherActor->TakeDamage(EricaCharacter->GetAttackPower(), DamageEvent, EricaCharacter->GetController(), EricaCharacter);
+		OtherActor->TakeDamage(BackwardDamage, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRUIDataAsset.generated.h"
 
+class UPCRMainUserWidget;
 class UPCRPauseUserWidget;
 /**
  * 
@@ -19,6 +20,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSoftClassPtr<UUserWidget> HPBar;
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSoftClassPtr<UPCRMainUserWidget> Main;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSoftClassPtr<UPCRPauseUserWidget> Pause;
 };

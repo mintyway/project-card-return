@@ -7,6 +7,7 @@
 #include "PCRMonsterBaseAIController.generated.h"
 
 class UPCRMonsterDataAsset;
+class UPCRMonsterBaseAnimInstance;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseAIController, Log, All);
 
@@ -40,5 +41,5 @@ private:
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 
 	FTimerHandle StunTimerHandle;
-	bool bIsStunned;
+	uint32 bIsStunned:1;
 };

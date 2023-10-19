@@ -10,7 +10,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogShieldActor);
 
-APCRShieldActor::APCRShieldActor()
+APCRShieldActor::APCRShieldActor() : AttachedCardCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -70,7 +70,8 @@ void APCRShieldActor::BeginDestroy()
  */
 void APCRShieldActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
-	RETURN_IF_INVALID(AttachedCard);
+	check(AttachedCard);
+	++AttachedCardCount;
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
 	OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
 }
@@ -116,11 +117,17 @@ void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
-	DetachAndDelayedDestroy();
-	const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-	const float ImpulseSize = 1000.f;
-	BoxComponent->AddImpulse(Direction * ImpulseSize);
-	UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
+	const int32 DetachCount = 1;
+	if (AttachedCardCount >= DetachCount)
+	{
+		DetachAndDelayedDestroy();
+		const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		const float ImpulseSize = 1000.f;
+		BoxComponent->AddImpulse(Direction * ImpulseSize);
+		UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
+	}
+
+	AttachedCardCount = 0;
 }
 
 void APCRShieldActor::DestroyTimerCallback()
