@@ -40,18 +40,20 @@ public:
 	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE const UPCRUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
 	FORCEINLINE bool IsAlive() const { return bIsAlive; }
+	FORCEINLINE float GetAttackPower() const { return AttackPower; }
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
 	FORCEINLINE float GetStunTime() const { return StunTime; }
-	
+
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
 
 protected:
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	                         AActor* DamageCauser) override;
+
 	virtual void HandleChangeHP();
 	virtual void HandleDead();
-	
+
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
 
@@ -60,19 +62,17 @@ protected:
 
 	float HealthPoint;
 	float MaxHealthPoint;
-	uint32 bIsAlive:1;
-	
+	uint32 bIsAlive : 1;
+
 	float AttackPower;
 	float MoveSpeed;
 	float AttackRange;
 	float AttackSpeed;
 	float StunTime;
-	
 
-	
 private:
 	void DestroyTimeCallback();
-	
+
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
