@@ -42,7 +42,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 	RabbitAttackSpeed = 1.f;
 
 	MeleeSoldierMaxHealthPoint = 6.f;
-	MeleeSoldierAttackPower = 34.f;
+	MeleeSoldierAttackPower = 10.f;
 	MeleeSoldierMoveSpeed = EricaMoveSpeed * 0.5f;
 	MeleeSoldierAttackRange = 300.f;
 	MeleeSoldierAttackSpeed = 1.f;
