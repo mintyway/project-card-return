@@ -9,6 +9,7 @@
 class UPCRParameterDataAsset;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameModeBase, Log, All);
 
+// 풀리퀘스트 테스트 -동우
 class APCRMonsterBaseGenerator;
 /**
  * 
@@ -18,7 +19,6 @@ class PROJECTCARDRETURN_API APCRGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	//pullrqtest
 public:
 	APCRGameModeBase();
 
