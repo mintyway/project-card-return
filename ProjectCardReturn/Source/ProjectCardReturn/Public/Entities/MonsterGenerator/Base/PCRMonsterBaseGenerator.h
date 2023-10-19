@@ -32,7 +32,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Root")
 	TObjectPtr<USceneComponent> RootSceneComponent;
 	
-	
+	UPROPERTY()
 	TObjectPtr<APCRMonsterBaseCharacter> CurrentGenerateMonster;
 	FTimerHandle SpawnTimerHandle;
 	float GenerateInterval;

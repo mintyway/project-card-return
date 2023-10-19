@@ -37,6 +37,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	TObjectPtr<UAnimMontage> MeleeSoldierSpearAttackAnimationMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	TObjectPtr<USkeletalMesh> RangedSoldierMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	TSoftClassPtr<UAnimInstance> RangedSoldierAnimationBlueprint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	TObjectPtr<UStaticMesh> SpearMesh;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;

@@ -13,6 +13,7 @@
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseAIController);
 
 const FName APCRMonsterBaseAIController::TargetKey(TEXT("Target"));
+const FName APCRMonsterBaseAIController::IsDetectedKey(TEXT("IsDetected"));
 
 APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 {

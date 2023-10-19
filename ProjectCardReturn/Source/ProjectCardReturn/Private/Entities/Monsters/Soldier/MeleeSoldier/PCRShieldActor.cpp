@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRShieldActor.h"
 
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
@@ -10,7 +10,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogShieldActor);
 
-APCRShieldActor::APCRShieldActor() : AttachedCardCount(0)
+APCRShieldActor::APCRShieldActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -70,8 +70,7 @@ void APCRShieldActor::BeginDestroy()
  */
 void APCRShieldActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
-	check(AttachedCard);
-	++AttachedCardCount;
+	RETURN_IF_INVALID(AttachedCard);
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
 	OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
 }
@@ -117,17 +116,11 @@ void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
-	const int32 DetachCount = 1;
-	if (AttachedCardCount >= DetachCount)
-	{
-		DetachAndDelayedDestroy();
-		const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-		const float ImpulseSize = 1000.f;
-		BoxComponent->AddImpulse(Direction * ImpulseSize);
-		UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
-	}
-
-	AttachedCardCount = 0;
+	DetachAndDelayedDestroy();
+	const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	const float ImpulseSize = 1000.f;
+	BoxComponent->AddImpulse(Direction * ImpulseSize);
+	UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
 }
 
 void APCRShieldActor::DestroyTimerCallback()

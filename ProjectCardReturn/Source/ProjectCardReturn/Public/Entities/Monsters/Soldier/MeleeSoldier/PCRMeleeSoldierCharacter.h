@@ -2,21 +2,17 @@
 
 #pragma once
 
-#include "ProjectCardReturn.h"
-#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
+#include "CoreMinimal.h"
+#include "Entities/Monsters/Soldier/Base/PCRSoldierBaseCharacter.h"
 #include "PCRMeleeSoldierCharacter.generated.h"
 
-
-class UPCRMeleeSoldierAnimInstance;
 class APCRShieldActor;
-
-DECLARE_LOG_CATEGORY_EXTERN(PCRLogMeleeSoldierCharacter, Log, All);
-
+class UPCRMeleeSoldierAnimInstance;
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRMeleeSoldierCharacter : public APCRMonsterBaseCharacter
+class PROJECTCARDRETURN_API APCRMeleeSoldierCharacter : public APCRSoldierBaseCharacter
 {
 	GENERATED_BODY()
 
@@ -25,27 +21,22 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	virtual void Attack() override;
-	
-	FORCEINLINE bool GetHasShield() const { return bHasShield; }
-	
+	FORCEINLINE bool GetHasShield() const { return Shield != nullptr; }
+
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
 
+	virtual void Attack() override;
+
 protected:
 	virtual void HandleDead() override;
-	
-private:
+
 	UPROPERTY()
 	TObjectPtr<APCRShieldActor> Shield;
 
+private:
 	UPROPERTY()
 	TObjectPtr<UPCRMeleeSoldierAnimInstance> MeleeSoldierAnimInstance;
-
-	uint32 bCanAttack:1;
-	uint32 bHasShield:1;
 };

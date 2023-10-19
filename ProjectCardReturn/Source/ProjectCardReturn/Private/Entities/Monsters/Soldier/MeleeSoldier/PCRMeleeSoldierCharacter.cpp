@@ -1,24 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierCharacter.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
-#include "Components/BoxComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
-#include "Entities/Monsters/MeleeSoldier/PCRShieldActor.h"
-
-#include "Components/CapsuleComponent.h"
-#include "Entities/Monsters/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRShieldActor.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierCharacter);
-
 APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
-	bCanAttack = true;
-	bHasShield = false;
-
 	if (IsValid(GetParameterDataAsset()))
 	{
 		MaxHealthPoint = GetParameterDataAsset()->MeleeSoldierMaxHealthPoint;
@@ -27,21 +19,12 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 		AttackRange = GetParameterDataAsset()->MeleeSoldierAttackRange;
 		AttackSpeed = GetParameterDataAsset()->MeleeSoldierAttackSpeed;
 	}
-
-	if (IsValid(GetCapsuleComponent()))
-	{
-		GetCapsuleComponent()->InitCapsuleSize(30.f, 88.f);
-	}
-
+	
 	// TODO: 모델링 작업 완료되면 활성화
 	if (GetMesh() && GetMonsterDataAsset())
 	{
-		GetMesh()->SetupAttachment(GetCapsuleComponent());
 		GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->MeleeSoldierMesh);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
-		GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-
+		
 		if (UClass* AnimationBlueprint = GetMonsterDataAsset()->MeleeSoldierAnimationBlueprint.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(AnimationBlueprint);
@@ -50,7 +33,6 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 
 	if (GetCharacterMovement() && GetParameterDataAsset())
 	{
-		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->MeleeSoldierMoveSpeed;
 	}
 }
@@ -59,23 +41,40 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	SpawnAndAttachShield();
-
 	MeleeSoldierAnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
 	if (!MeleeSoldierAnimInstance)
 	{
 		NULL_POINTER_EXCEPTION(MeleeSoldierAnimInstance);
 	}
+
+	SpawnAndAttachShield();
 }
 
-void APCRMeleeSoldierCharacter::BeginPlay()
+/**
+ * 실드를 스폰하고 몬스터에게 부착합니다.
+ */
+void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 {
-	Super::BeginPlay();
+	RETURN_IF_INVALID(GetWorld());
+	Shield = GetWorld()->SpawnActor<APCRShieldActor>();
+	RETURN_IF_INVALID(Shield);
+	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
+	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	RETURN_IF_INVALID(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	// Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
+	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 }
 
-void APCRMeleeSoldierCharacter::Tick(float DeltaSeconds)
+/**
+ * 실드가 탈착되고난 후 처리되야할 함수입니다. 실드의 탈착 시점에 바인드 되어있습니다.
+ */
+void APCRMeleeSoldierCharacter::HandleDetachedShield()
 {
-	Super::Tick(DeltaSeconds);
+	if (Shield)
+	{
+		UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
+		Shield = nullptr;
+	}
 }
 
 void APCRMeleeSoldierCharacter::Attack()
@@ -92,40 +91,8 @@ void APCRMeleeSoldierCharacter::HandleDead()
 {
 	Super::HandleDead();
 
-	if (bHasShield)
+	if (Shield)
 	{
 		Shield->DetachAndDelayedDestroy();
 	}
-}
-
-/**
- * 실드를 스폰하고 몬스터에게 부착합니다.
- */
-void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
-{
-	RETURN_IF_INVALID(GetWorld());
-	Shield = GetWorld()->SpawnActor<APCRShieldActor>();
-	RETURN_IF_INVALID(Shield);
-	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
-	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	RETURN_IF_INVALID(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	// Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
-	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
-
-	bHasShield = true;
-}
-
-/**
- * 실드가 탈착되고난 후 처리되야할 함수입니다. 실드의 탈착 시점에 바인드 되어있습니다.
- */
-void APCRMeleeSoldierCharacter::HandleDetachedShield()
-{
-	if (!bHasShield)
-	{
-		return;
-	}
-
-	UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
-	Shield = nullptr;
-	bHasShield = false;
 }
