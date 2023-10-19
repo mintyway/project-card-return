@@ -18,6 +18,7 @@ class PROJECTCARDRETURN_API APCRGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
+	//pullrqtest
 public:
 	APCRGameModeBase();
 
