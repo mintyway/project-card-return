@@ -23,6 +23,11 @@ void UPCRRangedSoldierAnimInstance::NativeInitializeAnimation()
 	OnMontageEnded.AddDynamic(this, &UPCRRangedSoldierAnimInstance::ThrowMontageEnded);
 }
 
+void UPCRRangedSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+}
+
 void UPCRRangedSoldierAnimInstance::Throw()
 {
 	if (bCanAttack)
