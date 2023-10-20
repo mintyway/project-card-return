@@ -36,23 +36,21 @@ void UPCRMeleeSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UPCRMeleeSoldierAnimInstance::Attack()
 {
-	if (!bCanAttack)
+	if (bCanAttack)
 	{
-		return;
-	}
-
-	UE_LOG(PCRLogMeleeSoldierAnimInstance, Warning, TEXT("Attack!"));
+		UE_LOG(PCRLogMeleeSoldierAnimInstance, Warning, TEXT("Attack!"));
 	
-	if (bHasShield)
-	{
-		ShieldAttack();
-	}
-	else
-	{
-		SpearAttack();
-	}
+		if (bHasShield)
+		{
+			ShieldAttack();
+		}
+		else
+		{
+			SpearAttack();
+		}
 
-	bCanAttack = false;
+		bCanAttack = false;
+	}
 }
 
 void UPCRMeleeSoldierAnimInstance::AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

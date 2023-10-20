@@ -89,7 +89,15 @@ void APCRRangedSoldierCharacter::HandleDestroyedSpear()
 void APCRRangedSoldierCharacter::Attack()
 {
 	Super::Attack();
+	
+	if (Spear && RangedSoldierAnimInstance)
+	{
+		RangedSoldierAnimInstance->Throw();
+	}
+}
 
+void APCRRangedSoldierCharacter::Throw()
+{
 	if (Spear)
 	{
 		const float SpearSpeed = GetParameterDataAsset()->SpearSpeed;
@@ -99,11 +107,6 @@ void APCRRangedSoldierCharacter::Attack()
 		const FVector Direction = (PredictedLocation - GetActorLocation()).GetSafeNormal();
 		
 		Spear->Throw(this, GetActorLocation(), Direction);
-
-		if (RangedSoldierAnimInstance)
-		{
-			RangedSoldierAnimInstance->Throw();
-		}
 	}
 }
 

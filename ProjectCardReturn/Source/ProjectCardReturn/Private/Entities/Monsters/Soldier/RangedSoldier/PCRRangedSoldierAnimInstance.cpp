@@ -3,24 +3,46 @@
 
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierAnimInstance.h"
 
-UPCRRangedSoldierAnimInstance::UPCRRangedSoldierAnimInstance()
-{
-	
-}
+#include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
+#include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
+
+DEFINE_LOG_CATEGORY(PCRLogRangedSoldierAnimInstance);
+
+UPCRRangedSoldierAnimInstance::UPCRRangedSoldierAnimInstance(): bCanThrow(true) {}
 
 void UPCRRangedSoldierAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	
-}
 
-void UPCRRangedSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
-{
-	Super::NativeUpdateAnimation(DeltaSeconds);
-	
+	CachedRangedSoldier = Cast<APCRRangedSoldierCharacter>(CachedMonsterBaseCharacter);
+	if (!CachedRangedSoldier)
+	{
+		NULL_POINTER_EXCEPTION(CachedRangedSoldier);
+	}
+
+	OnMontageEnded.AddDynamic(this, &UPCRRangedSoldierAnimInstance::ThrowMontageEnded);
 }
 
 void UPCRRangedSoldierAnimInstance::Throw()
 {
+	if (bCanAttack)
+	{
+		UE_LOG(PCRLogRangedSoldierAnimInstance, Warning, TEXT("Throw!"));
 	
+		Montage_Play(MonsterDataAsset->RangedSoldierThrowAnimationMontage);
+
+		bCanAttack = false;
+	}
+}
+
+void UPCRRangedSoldierAnimInstance::ThrowMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	bCanThrow = true;
+}
+
+void UPCRRangedSoldierAnimInstance::AnimNotify_Throw()
+{
+	check(CachedRangedSoldier);
+
+	CachedRangedSoldier->Throw();
 }

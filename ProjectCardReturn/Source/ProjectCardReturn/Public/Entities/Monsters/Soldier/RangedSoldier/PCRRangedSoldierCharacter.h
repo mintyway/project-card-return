@@ -30,6 +30,8 @@ public:
 	void HandleDestroyedSpear();
 
 	virtual void Attack() override;
+	
+	void Throw();
 
 protected:
 	virtual void HandleDead() override;
