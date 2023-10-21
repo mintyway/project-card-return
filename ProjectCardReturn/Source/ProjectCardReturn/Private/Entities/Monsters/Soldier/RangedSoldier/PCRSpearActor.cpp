@@ -58,12 +58,11 @@ APCRSpearActor::APCRSpearActor()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	if (ProjectileMovementComponent)
 	{
+		ProjectileMovementComponent->bShouldBounce = false;
+		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 		ProjectileMovementComponent->InitialSpeed = 0.f;
 		ProjectileMovementComponent->MaxSpeed = ParameterDataAsset->SpearSpeed;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
-		ProjectileMovementComponent->bShouldBounce = false;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
-		ProjectileMovementComponent->Velocity = FVector::ZeroVector;
 		ProjectileMovementComponent->Deactivate();
 	}
 }
@@ -134,17 +133,22 @@ void APCRSpearActor::DelayedDestroy()
 
 void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (APCREricaCharacter* Erica = Cast<APCREricaCharacter>(OtherActor))
+	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 	{
 		if (APCRRangedSoldierCharacter* RangedSolider = Cast<APCRRangedSoldierCharacter>(GetOwner()))
 		{
 			const float AttackDamage = Cast<APCRRangedSoldierCharacter>(GetOwner())->GetAttackPower();
 			const FDamageEvent DamageEvent;
-			Erica->TakeDamage(AttackDamage, DamageEvent, RangedSolider->GetController(), RangedSolider);
+			Player->TakeDamage(AttackDamage, DamageEvent, RangedSolider->GetController(), RangedSolider);
 			
 			OnDestroyedSpear.Broadcast();
 			Destroy();
 		}
+	}
+	else if (APCREricaCardProjectile* Projectile = Cast<APCREricaCardProjectile>(OtherActor))
+	{
+		ProjectileMovementComponent->Deactivate();
+		DelayedDestroy();
 	}
 }
 
