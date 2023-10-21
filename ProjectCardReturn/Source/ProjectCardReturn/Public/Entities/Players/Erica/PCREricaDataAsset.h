@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCREricaDataAsset.generated.h"
 
+class UNiagaraSystem;
 class UInputAction;
 class UInputMappingContext;
 
@@ -50,4 +51,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> MenuInputAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	TObjectPtr<UNiagaraSystem> DashEffect;
 };

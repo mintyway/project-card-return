@@ -4,6 +4,7 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -42,17 +43,14 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 	}
 
 	CardRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardRibbonFXComponent"));
-	if (CardRibbonFXComponent)
+	if (CardRibbonFXComponent && GetProjectileDataAsset())
 	{
 		CardRibbonFXComponent->SetupAttachment(GetBoxComponent());
-		if (GetProjectileDataAsset()->CardRibbon)
-		{
-			CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
-		}
+		CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
 	}
 
 	CardFloatingFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardFloatingFXComponent"));
-	if (CardFloatingFXComponent)
+	if (CardFloatingFXComponent && GetProjectileDataAsset())
 	{
 		CardFloatingFXComponent->SetupAttachment(GetBoxComponent());
 		CardFloatingFXComponent->SetAsset(GetProjectileDataAsset()->CardFloating);
@@ -165,6 +163,11 @@ void APCREricaCardProjectile::PauseCard()
  */
 void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
+	if (GetProjectileDataAsset())
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), GetProjectileDataAsset()->CardPenetratedHit, GetActorLocation(), GetActorRotation());
+	}
+
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
 	if (!OtherCharacter)
 	{
@@ -175,7 +178,6 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 	const FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
-
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
 	if (DotResult <= 0)
 	{
@@ -198,6 +200,11 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (GetProjectileDataAsset())
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), GetProjectileDataAsset()->CardBlockedHit, GetActorLocation(), GetActorRotation());
+	}
+
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
 
 	PauseCard();

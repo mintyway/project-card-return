@@ -9,25 +9,26 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	CameraFOV = 60.f;
 	CameraDistance = 2000.f;
-	CameraPitch = 40.f;
+	CameraPitch = 38.f;
 	CameraOffset = -125.0;
 	CameraLagSpeed = 18.f;
 	CameraLagMaxDistance = 100.f;
 
 	EricaMoveSpeed = 750.f;
 	BuckShotCount = 3;
-	BuckShotAngle = 60.f;
+	BuckShotAngle = 30.f;
 	EricaNormalShotForwardDamage = 1.f;
-	EricaNormalShotBackwardDamage = 1.5f;
+	EricaNormalShotBackwardDamage = 2.5f;
 	EricaBuckShotForwardDamage = 0.5f;
-	EricaBuckShotBackwardDamage = 1.f;
+	EricaBuckShotBackwardDamage = 1.5f;
 	EricaNormalShotCooldownTime = 0.8f;
 	EricaBuckShotCooldownTime = 0.6f;
+	EricaReturnCardCooldownTime = 1.f;
 	EricaDashCooldownTime = 1.f;
-	EricaMaxDashTime = 0.25f;
+	EricaMaxDashTime = 0.1f;
 	EricaDashDistance = 500.f;
 	EricaCardCount = 9;
-	EricaCardSpeed = 3000.f;
+	EricaCardSpeed = 5000.f;
 	EricaCardReturnSpeed = 6000.f;
 	EricaCardNormalShotRange = 1300.f;
 	EricaCardBuckShotRange = 700.f;
@@ -35,7 +36,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	DeadAfterDestroyTime = 1.f;
 
-	RabbitMaxHealthPoint = 5.f;
+	RabbitMaxHealthPoint = 3.f;
 	RabbitAttackPower = 3.f;
 	RabbitMoveSpeed = EricaMoveSpeed * 0.7f;
 	RabbitAttackRange = 300.f;

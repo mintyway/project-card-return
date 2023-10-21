@@ -16,6 +16,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class APCREricaCardProjectilePool;
 class UPCRGameInstance;
+class UNiagaraComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCharacter, Log, All);
 
@@ -106,6 +107,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Aim")
 	TObjectPtr<UStaticMeshComponent> AimingPlane;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
 
 	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
@@ -123,6 +127,7 @@ private:
 	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
 	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
+
 
 	float MaxHP;
 	float CurrentHP;
@@ -152,7 +157,7 @@ private:
 	float MaxDashTime;
 	float ElapsedDashTime;
 	float DashDistance;
-	float ReturnCardCoolTime;
+	float ReturnCardCooldownTime;
 	FVector CachedDashStartLocation;
 	FVector CachedDashDirection;
 	

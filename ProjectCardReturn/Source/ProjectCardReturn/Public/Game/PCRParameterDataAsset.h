@@ -66,6 +66,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaBuckShotCooldownTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaReturnCardCooldownTime;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaMaxDashTime;

@@ -36,8 +36,8 @@ void UPCRMeleeSoldierAnimInstance::Attack()
 	{
 		return;
 	}
-	
-	UE_LOG(PCRLogMeleeSoldierAnimInstance, Warning, TEXT("Attack!"));
+
+	UE_LOG(PCRLogMeleeSoldierAnimInstance, Log, TEXT("Attack!"));
 	
 	if (bHasShield)
 	{

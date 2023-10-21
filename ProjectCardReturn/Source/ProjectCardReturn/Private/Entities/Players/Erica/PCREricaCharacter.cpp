@@ -18,6 +18,7 @@
 #include "EnhancedInputComponent.h"
 #include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
@@ -40,8 +41,6 @@ APCREricaCharacter::APCREricaCharacter()
 	bCanReturnCard = true;
 
 	ElapsedDashTime = 0.f;
-	// TODO: 파라미터화 필요
-	ReturnCardCoolTime = 1.f;
 
 	static ConstructorHelpers::FObjectFinder<UPCREricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.PCREricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -65,6 +64,7 @@ APCREricaCharacter::APCREricaCharacter()
 		BuckShotBackwardDamage = ParameterDataAsset->EricaBuckShotBackwardDamage;
 		RapidShotCooldownTime = ParameterDataAsset->EricaNormalShotCooldownTime;
 		BuckShotCooldownTime = ParameterDataAsset->EricaBuckShotCooldownTime;
+		ReturnCardCooldownTime = ParameterDataAsset->EricaReturnCardCooldownTime;
 		DashCooldownTime = ParameterDataAsset->EricaDashCooldownTime;
 		MaxDashTime = ParameterDataAsset->EricaMaxDashTime;
 		DashDistance = ParameterDataAsset->EricaDashDistance;
@@ -132,6 +132,13 @@ APCREricaCharacter::APCREricaCharacter()
 		AimingPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
 		AimingPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel5, ECR_Block);
 		AimingPlane->SetHiddenInGame(true);
+	}
+
+	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
+	if (DashNiagaraComponent && EricaDataAsset)
+	{
+		DashNiagaraComponent->SetupAttachment(GetCapsuleComponent());
+		DashNiagaraComponent->SetAsset(EricaDataAsset->DashEffect);
 	}
 }
 
@@ -215,7 +222,7 @@ void APCREricaCharacter::ReturnCard()
 		FTimerHandle ReturnCardCooldownTimerHandle;
 		FTimerDelegate ReturnCardCooldownTimerDelegate;
 		ReturnCardCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ReturnCardCooldownTimerCallback);
-		GetWorldTimerManager().SetTimer(ReturnCardCooldownTimerHandle, ReturnCardCooldownTimerDelegate, ReturnCardCoolTime, false);
+		GetWorldTimerManager().SetTimer(ReturnCardCooldownTimerHandle, ReturnCardCooldownTimerDelegate, ReturnCardCooldownTime, false);
 
 		if (CardProjectiles.IsEmpty())
 		{
@@ -414,7 +421,7 @@ void APCREricaCharacter::Dash()
 		bCanDash = false;
 		bIsDashing = true;
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-
+		DashNiagaraComponent->ActivateSystem();
 		FTimerHandle DashCooldownTimerHandle;
 		FTimerDelegate DashCooldownTimerDelegate;
 		DashCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::DashCooldownTimerCallback);
@@ -471,8 +478,6 @@ void APCREricaCharacter::Change()
 	{
 		return;
 	}
-	
-	SIMPLE_LOG;
 
 	switch (CurrentShootMode)
 	{
