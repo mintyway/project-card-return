@@ -50,7 +50,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	ShieldDestroyTimeAfterDrop = 1.f;
 	RangedSoldierMaxHealthPoint = 6.f;
-	RangedSoldierAttackPower = 34.f;
+	RangedSoldierAttackPower = 10.f;
 	RangedSoldierMoveSpeed = 300.f;
 	RangedSoldierAttackRange = 1500.f;
 	RangedSoldierAttackSpeed = 1.f;
