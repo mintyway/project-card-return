@@ -11,9 +11,9 @@ DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectilePool);
 
 APCREricaCardProjectilePool::APCREricaCardProjectilePool()
 {
-	if (IsValid(GetParameterDataAsset()))
+	if (IsValid(ParameterDataAsset))
 	{
-		ProjectilePoolSize = GetParameterDataAsset()->EricaCardCount;
+		ProjectilePoolSize = ParameterDataAsset->EricaCardCount;
 	}
 }
 

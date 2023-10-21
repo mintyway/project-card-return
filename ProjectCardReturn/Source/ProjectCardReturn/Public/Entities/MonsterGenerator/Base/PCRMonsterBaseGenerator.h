@@ -34,6 +34,7 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<APCRMonsterBaseCharacter> CurrentGenerateMonster;
+
 	FTimerHandle SpawnTimerHandle;
 	float GenerateInterval;
 	float SpawnRangeRadius;

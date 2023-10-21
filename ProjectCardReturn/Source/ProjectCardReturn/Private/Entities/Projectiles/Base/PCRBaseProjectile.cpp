@@ -10,10 +10,9 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-APCRBaseProjectile::APCRBaseProjectile()
+APCRBaseProjectile::APCRBaseProjectile() : 	ProjectileSpeed(1000.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	ProjectileSpeed = 1000.f;
 
 	static ConstructorHelpers::FObjectFinder<UPCRProjectileDataAsset> DA_Projectile(TEXT("/Script/ProjectCardReturn.PCRProjectileDataAsset'/Game/DataAssets/DA_Projectile.DA_Projectile'"));
 	if (DA_Projectile.Succeeded())
@@ -73,7 +72,7 @@ void APCRBaseProjectile::LaunchProjectile(AActor* NewOwner, const FVector& Start
 	SetActorLocationAndRotation(ShootLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
 	SetActorHiddenInGame(false);
 	EnableProjectile();
-	GetProjectileMovementComponent()->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
+	ProjectileMovementComponent->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
 
 	OnLaunchProjectile.Broadcast();
 }

@@ -41,6 +41,10 @@ protected:
 
 public:
 	void Attack();
+
+protected:
+	UPROPERTY()
+	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 	
 private:
 	void SetLocalVelocityDirectionAngle();
@@ -68,9 +72,6 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	ELocalVelocityDirection CurrentLocalVelocityDirection;
-
-	UPROPERTY()
-	TObjectPtr<UPCREricaDataAsset> EricaDataAsset;
 	
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
