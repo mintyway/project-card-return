@@ -7,6 +7,8 @@
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
+DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectilePool);
+
 APCREricaCardProjectilePool::APCREricaCardProjectilePool()
 {
 	if (IsValid(GetParameterDataAsset()))
@@ -17,7 +19,7 @@ APCREricaCardProjectilePool::APCREricaCardProjectilePool()
 
 APCRBaseProjectile* APCREricaCardProjectilePool::HandleEmptyPool()
 {
-	UE_LOG(PCRLogBaseProjectilePool, Warning, TEXT("카드가 모두 소진되었습니다."));
+	UE_LOG(PCRLogEricaCardProjectilePool, Log, TEXT("카드가 모두 소진되었습니다."));
 	
 	return Super::HandleEmptyPool();
 }

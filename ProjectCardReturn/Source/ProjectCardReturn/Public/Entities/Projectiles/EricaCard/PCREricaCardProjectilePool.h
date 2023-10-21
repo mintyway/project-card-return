@@ -9,6 +9,8 @@
 
 class APCREricaCardProjectile;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCardProjectilePool, Log, All);
+
 UCLASS()
 class PROJECTCARDRETURN_API APCREricaCardProjectilePool : public APCRBaseProjectilePool
 {
