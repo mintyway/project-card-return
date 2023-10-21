@@ -29,16 +29,14 @@ public:
 	virtual APCRBaseProjectile* Acquire();
 	virtual void Release(APCRBaseProjectile* Projectile);
 
-	FORCEINLINE TObjectPtr<UPCRParameterDataAsset> GetParameterDataAsset() const { return ParameterDataAsset; }
-
 protected:
 	virtual APCRBaseProjectile* HandleEmptyPool();
+
+	UPROPERTY()
+	TObjectPtr<UPCRParameterDataAsset> ParameterDataAsset;
 	
 	TQueue<TObjectPtr<APCRBaseProjectile>> ProjectilePool;
 	TMap<APCRBaseProjectile*, FDelegateHandle> OnReleaseProjectileDelegateHandleMap;
 	
 	int32 ProjectilePoolSize;
-	
-private:
-	TObjectPtr<UPCRParameterDataAsset> ParameterDataAsset;
 };

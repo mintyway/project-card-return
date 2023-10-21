@@ -32,12 +32,6 @@ public:
 	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
 	virtual void ReleaseToProjectilePool();
 	
-	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent; }
-	FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
-	FORCEINLINE UProjectileMovementComponent* GetProjectileMovementComponent() const { return ProjectileMovementComponent; }
-	FORCEINLINE const UPCRProjectileDataAsset* GetProjectileDataAsset() const { return ProjectileDataAsset; }
-	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
-
 	FLaunchProjectileSignature OnLaunchProjectile;
 	FReleaseProjectileSignature OnReleaseProjectile;
 
@@ -51,11 +45,7 @@ protected:
 	 */
 	virtual void EnableCollisionDetection() PURE_VIRTUAL();
 	virtual void DisableCollisionDetection();
-	
-	FVector ShootLocation;
-	float ProjectileSpeed;
 
-private:
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
 	TObjectPtr<UBoxComponent> BoxComponent;
 
@@ -64,10 +54,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-
+	
 	UPROPERTY()
 	TObjectPtr<const UPCRProjectileDataAsset> ProjectileDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+	
+	FVector ShootLocation;
+	float ProjectileSpeed;
 };

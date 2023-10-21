@@ -28,7 +28,8 @@ DECLARE_MULTICAST_DELEGATE(FDeadSignature);
 /**
  * 캐릭터의 공격 모드를 설정합니다.
  */
-enum class ShootMode
+UENUM()
+enum class ShootMode : uint8
 {
 	Normal,
 	Buckshot
@@ -126,8 +127,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
+	UPROPERTY()
 	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
-
 
 	float MaxHP;
 	float CurrentHP;

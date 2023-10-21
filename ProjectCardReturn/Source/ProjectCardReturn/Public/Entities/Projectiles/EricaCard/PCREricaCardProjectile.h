@@ -43,7 +43,6 @@ public:
 	void ReturnCard();
 	void SetDamage(float InForwardDamage, float InBackwardDamage);
 	void SetRange(float NewRange) { CardRange = NewRange; }
-	bool GetIsShooting() const { return bIsShooting; }
 	FORCEINLINE ECardState GetCurrentCardState() const { return CurrentCardState; }
 
 	FReturnCardBeginSignature OnReturnCardBegin;
@@ -80,7 +79,4 @@ private:
 	float CardReleaseRange;
 
 	ECardState CurrentCardState;
-	
-	bool bIsShooting;
-	bool bIsReturning;
 };

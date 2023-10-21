@@ -18,42 +18,42 @@ DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
 
 APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), BackwardDamage(0.f), CurrentCardState(ECardState::Invalid)
 {
-	if (GetParameterDataAsset())
+	if (ParameterDataAsset)
 	{
-		ProjectileSpeed = GetParameterDataAsset()->EricaCardSpeed;
-		CardReturnSpeed = GetParameterDataAsset()->EricaCardReturnSpeed;
-		CardRange = GetParameterDataAsset()->EricaCardNormalShotRange;
-		CardReleaseRange = GetParameterDataAsset()->EricaCardReleaseRange;
+		ProjectileSpeed = ParameterDataAsset->EricaCardSpeed;
+		CardReturnSpeed = ParameterDataAsset->EricaCardReturnSpeed;
+		CardRange = ParameterDataAsset->EricaCardNormalShotRange;
+		CardReleaseRange = ParameterDataAsset->EricaCardReleaseRange;
 	}
 
-	if (GetBoxComponent())
+	if (BoxComponent)
 	{
-		GetBoxComponent()->InitBoxExtent(FVector(30.8, 21.7, 1.0));
+		BoxComponent->InitBoxExtent(FVector(30.8, 21.7, 1.0));
 	}
 
-	if (GetStaticMeshComponent() && GetProjectileDataAsset())
+	if (StaticMeshComponent && ProjectileDataAsset)
 	{
-		GetStaticMeshComponent()->SetStaticMesh(GetProjectileDataAsset()->EricaCardMesh);
-		GetStaticMeshComponent()->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
+		StaticMeshComponent->SetStaticMesh(ProjectileDataAsset->EricaCardMesh);
+		StaticMeshComponent->SetRelativeScale3D(FVector(7.0, 7.0, 1.0));
 	}
 
-	if (GetProjectileMovementComponent())
+	if (ProjectileMovementComponent)
 	{
-		GetProjectileMovementComponent()->MaxSpeed = ProjectileSpeed;
+		ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
 	}
 
 	CardRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardRibbonFXComponent"));
-	if (CardRibbonFXComponent && GetProjectileDataAsset())
+	if (CardRibbonFXComponent && ProjectileDataAsset)
 	{
-		CardRibbonFXComponent->SetupAttachment(GetBoxComponent());
-		CardRibbonFXComponent->SetAsset(GetProjectileDataAsset()->CardRibbon);
+		CardRibbonFXComponent->SetupAttachment(BoxComponent);
+		CardRibbonFXComponent->SetAsset(ProjectileDataAsset->CardRibbon);
 	}
 
 	CardFloatingFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardFloatingFXComponent"));
-	if (CardFloatingFXComponent && GetProjectileDataAsset())
+	if (CardFloatingFXComponent && ProjectileDataAsset)
 	{
-		CardFloatingFXComponent->SetupAttachment(GetBoxComponent());
-		CardFloatingFXComponent->SetAsset(GetProjectileDataAsset()->CardFloating);
+		CardFloatingFXComponent->SetupAttachment(BoxComponent);
+		CardFloatingFXComponent->SetAsset(ProjectileDataAsset->CardFloating);
 	}
 }
 
@@ -123,7 +123,7 @@ void APCREricaCardProjectile::ReturnCard()
 	EnableProjectile();
 	CardRibbonFXComponent->Activate();
 	DisableCardFloatingFX();
-	GetStaticMeshComponent()->SetVisibility(true);
+	StaticMeshComponent->SetVisibility(true);
 
 	OnReturnCardBegin.Broadcast(this);
 }
@@ -136,14 +136,14 @@ void APCREricaCardProjectile::SetDamage(float InForwardDamage, float InBackwardD
 
 void APCREricaCardProjectile::EnableCollisionDetection()
 {
-	if (GetBoxComponent())
+	if (BoxComponent)
 	{
-		GetBoxComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		GetBoxComponent()->SetCollisionObjectType(ECC_GameTraceChannel3);
-		GetBoxComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
-		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
-		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Block);
-		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel8, ECR_Block);
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel3);
+		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Block);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel8, ECR_Block);
 	}
 }
 
@@ -163,9 +163,9 @@ void APCREricaCardProjectile::PauseCard()
  */
 void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (GetProjectileDataAsset())
+	if (ProjectileDataAsset)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), GetProjectileDataAsset()->CardPenetratedHit, GetActorLocation(), GetActorRotation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileDataAsset->CardPenetratedHit, GetActorLocation(), GetActorRotation());
 	}
 
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
@@ -200,9 +200,9 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (GetProjectileDataAsset())
+	if (ProjectileDataAsset)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), GetProjectileDataAsset()->CardBlockedHit, GetActorLocation(), GetActorRotation());
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileDataAsset->CardBlockedHit, GetActorLocation(), GetActorRotation());
 	}
 
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
@@ -229,10 +229,10 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 	const FVector MoveVector = MoveDirection * CardReturnSpeed;
 	const FRotator MoveRotator = FRotationMatrix::MakeFromX(MoveDirection).Rotator();
 
-	if (GetBoxComponent())
+	if (BoxComponent)
 	{
-		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
-		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel8, ECR_Overlap);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel8, ECR_Overlap);
 	}
 
 	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);
@@ -261,7 +261,7 @@ void APCREricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 
 void APCREricaCardProjectile::HandleCardMaxRange()
 {
-	GetStaticMeshComponent()->SetVisibility(false);
+	StaticMeshComponent->SetVisibility(false);
 	EnableCardFloatingFX();
 }
 
