@@ -13,29 +13,29 @@
 
 APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 {
-	if (IsValid(GetParameterDataAsset()))
+	if (IsValid(ParameterDataAsset))
 	{
-		MaxHealthPoint = GetParameterDataAsset()->RangedSoldierMaxHealthPoint;
+		MaxHealthPoint = ParameterDataAsset->RangedSoldierMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
-		AttackPower = GetParameterDataAsset()->RangedSoldierAttackPower;
-		AttackRange = GetParameterDataAsset()->RangedSoldierAttackRange;
-		AttackSpeed = GetParameterDataAsset()->RangedSoldierAttackSpeed;
+		AttackPower = ParameterDataAsset->RangedSoldierAttackPower;
+		AttackRange = ParameterDataAsset->RangedSoldierAttackRange;
+		AttackSpeed = ParameterDataAsset->RangedSoldierAttackSpeed;
 	}
 	
 	// TODO: 모델링 작업 완료되면 활성화
-	if (GetMesh() && GetMonsterDataAsset())
+	if (GetMesh() && MonsterDataAsset)
 	{
-		GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->RangedSoldierMesh);
+		GetMesh()->SetSkeletalMesh(MonsterDataAsset->RangedSoldierMesh);
 		
-		if (UClass* AnimationBlueprint = GetMonsterDataAsset()->RangedSoldierAnimationBlueprint.LoadSynchronous())
+		if (UClass* AnimationBlueprint = MonsterDataAsset->RangedSoldierAnimationBlueprint.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(AnimationBlueprint);
 		}
 	}
 
-	if (GetCharacterMovement() && GetParameterDataAsset())
+	if (GetCharacterMovement() && MonsterDataAsset && ParameterDataAsset)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->RangedSoldierMoveSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->RangedSoldierMoveSpeed;
 	}
 }
 
@@ -68,7 +68,7 @@ void APCRRangedSoldierCharacter::Throw()
 	APCRSpearActor* Spear = GetWorld()->SpawnActor<APCRSpearActor>();
 	check(Spear);
 	
-	const float SpearSpeed = GetParameterDataAsset()->SpearSpeed;
+	const float SpearSpeed = ParameterDataAsset->SpearSpeed;
 	const float Distance = GetDistanceTo(CachedPlayerCharacter);
 	const FVector PredictedMove = CachedPlayerCharacter->GetVelocity() * (Distance / SpearSpeed);
 	const FVector PredictedLocation = CachedPlayerCharacter->GetActorLocation() + PredictedMove;

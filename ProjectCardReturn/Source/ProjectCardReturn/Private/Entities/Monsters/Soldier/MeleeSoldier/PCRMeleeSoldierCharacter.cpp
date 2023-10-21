@@ -14,27 +14,27 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	if (IsValid(GetParameterDataAsset()))
 	{
-		MaxHealthPoint = GetParameterDataAsset()->MeleeSoldierMaxHealthPoint;
+		MaxHealthPoint = ParameterDataAsset->MeleeSoldierMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
-		AttackPower = GetParameterDataAsset()->MeleeSoldierAttackPower;
-		AttackRange = GetParameterDataAsset()->MeleeSoldierAttackRange;
-		AttackSpeed = GetParameterDataAsset()->MeleeSoldierAttackSpeed;
+		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower;
+		AttackRange = ParameterDataAsset->MeleeSoldierAttackRange;
+		AttackSpeed = ParameterDataAsset->MeleeSoldierAttackSpeed;
 	}
 	
 	// TODO: 모델링 작업 완료되면 활성화
-	if (GetMesh() && GetMonsterDataAsset())
+	if (GetMesh() && MonsterDataAsset)
 	{
-		GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->MeleeSoldierMesh);
+		GetMesh()->SetSkeletalMesh(MonsterDataAsset->MeleeSoldierMesh);
 		
-		if (UClass* AnimationBlueprint = GetMonsterDataAsset()->MeleeSoldierAnimationBlueprint.LoadSynchronous())
+		if (UClass* AnimationBlueprint = MonsterDataAsset->MeleeSoldierAnimationBlueprint.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(AnimationBlueprint);
 		}
 	}
 
-	if (GetCharacterMovement() && GetParameterDataAsset())
+	if (GetCharacterMovement() && ParameterDataAsset)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->MeleeSoldierMoveSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->MeleeSoldierMoveSpeed;
 	}
 }
 

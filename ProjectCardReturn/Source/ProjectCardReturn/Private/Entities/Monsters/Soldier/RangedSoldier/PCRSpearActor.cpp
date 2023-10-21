@@ -53,7 +53,7 @@ APCRSpearActor::APCRSpearActor()
 	}
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	if (ProjectileMovementComponent)
+	if (ProjectileMovementComponent && ParameterDataAsset)
 	{
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
@@ -97,7 +97,11 @@ void APCRSpearActor::DelayedDestroy()
 	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
 	DestroyTimerDelegate.BindUObject(this, &APCRSpearActor::DestroyTimerCallback);
-	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, 3.f, false);
+
+	if (ParameterDataAsset)
+	{
+		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->SpearDestroyTimeAfterDrop, false);
+	}
 }
 
 void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

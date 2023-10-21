@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "PCRShieldActor.generated.h"
 
+class UPCRParameterDataAsset;
 class UBoxComponent;
 class UPCRMonsterDataAsset;
 class APCREricaCardProjectile;
@@ -48,8 +49,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+
+	UPROPERTY(VisibleAnywhere, Category = "Data")
+	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 
 	TMap<APCREricaCardProjectile*, FDelegateHandle> OnReturnCardBeginDelegateMap;
 };

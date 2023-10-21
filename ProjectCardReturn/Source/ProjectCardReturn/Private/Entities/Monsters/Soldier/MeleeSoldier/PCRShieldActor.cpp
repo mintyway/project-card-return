@@ -7,6 +7,7 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
 #include "Components/BoxComponent.h"
+#include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRLogShieldActor);
 
@@ -18,6 +19,12 @@ APCRShieldActor::APCRShieldActor()
 	if (DA_Monster.Succeeded())
 	{
 		MonsterDataAsset = DA_Monster.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	if (DA_Parameter.Succeeded())
+	{
+		ParameterDataAsset = DA_Parameter.Object;
 	}
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
@@ -100,7 +107,11 @@ void APCRShieldActor::DelayedDestroy()
 	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
 	DestroyTimerDelegate.BindUObject(this, &APCRShieldActor::DestroyTimerCallback);
-	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, 3.f, false);
+
+	if (ParameterDataAsset)
+	{
+		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ShieldDestroyTimeAfterDrop, false);
+	}
 }
 
 /**

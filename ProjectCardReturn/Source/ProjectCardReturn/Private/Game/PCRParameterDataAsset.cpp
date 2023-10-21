@@ -47,12 +47,13 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 	MeleeSoldierMoveSpeed = EricaMoveSpeed * 0.5f;
 	MeleeSoldierAttackRange = 300.f;
 	MeleeSoldierAttackSpeed = 1.f;
-
-	ShieldDestroyTimeAfterDrop = 1.f;
+	ShieldDestroyTimeAfterDrop = 3.f;
+	
 	RangedSoldierMaxHealthPoint = 6.f;
 	RangedSoldierAttackPower = 10.f;
 	RangedSoldierMoveSpeed = 300.f;
 	RangedSoldierAttackRange = 1500.f;
 	RangedSoldierAttackSpeed = 1.f;
+	SpearDestroyTimeAfterDrop = 3.f;
 	SpearSpeed = 2000.f;
 }

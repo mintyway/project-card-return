@@ -52,4 +52,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	TSoftClassPtr<UAnimInstance> RabbitAnimationBlueprint;
 };

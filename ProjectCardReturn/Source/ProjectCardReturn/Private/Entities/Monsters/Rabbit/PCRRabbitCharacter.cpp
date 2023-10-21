@@ -14,30 +14,25 @@
 
 APCRRabbitCharacter::APCRRabbitCharacter()
 {
-	bCanAttack = true;
-
-	// SetActorScale3D(FVector(0.8, 0.8, 0.8));
-
-	if (IsValid(GetParameterDataAsset()))
+	if (IsValid(ParameterDataAsset))
 	{
-		MaxHealthPoint = GetParameterDataAsset()->RabbitMaxHealthPoint;
+		MaxHealthPoint = ParameterDataAsset->RabbitMaxHealthPoint;
 		HealthPoint = MaxHealthPoint;
-		AttackPower = GetParameterDataAsset()->RabbitAttackPower;
-		AttackRange = GetParameterDataAsset()->RabbitAttackRange;
-		AttackSpeed = GetParameterDataAsset()->RabbitAttackSpeed;
-	}
-
-	if (IsValid(GetCapsuleComponent()))
-	{
-		GetCapsuleComponent()->InitCapsuleSize(50.f, 50.f);
+		AttackPower = ParameterDataAsset->RabbitAttackPower;
+		AttackRange = ParameterDataAsset->RabbitAttackRange;
+		AttackSpeed = ParameterDataAsset->RabbitAttackSpeed;
 	}
 
 	// TODO: 모델링 작업 완료되면 활성화
-	// if (GetMesh() && GetMonsterDataAsset())
-	// {
-	// 	GetMesh()->SetSkeletalMesh(GetMonsterDataAsset()->GetRabbitMesh());
-	// 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
-	// }
+	if (GetMesh() && MonsterDataAsset)
+	{
+		GetMesh()->SetSkeletalMesh(MonsterDataAsset->RabbitMesh);
+		
+		if (UClass* AnimationBlueprint = MonsterDataAsset->RabbitAnimationBlueprint.LoadSynchronous())
+		{
+			GetMesh()->SetAnimInstanceClass(AnimationBlueprint);
+		}
+	}
 
 	// TODO: 더미 모델링 임시 적용: 모델링 작업 완료되면 제거
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Cube(TEXT("/Script/Engine.StaticMesh'/Game/Dummy/SM_Cube.SM_Cube'"));
@@ -49,10 +44,10 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 		DummyMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 
-	if (IsValid(GetCharacterMovement()) && IsValid(GetParameterDataAsset()))
+	if (IsValid(GetCharacterMovement()) && IsValid(ParameterDataAsset))
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->MaxWalkSpeed = GetParameterDataAsset()->RabbitMoveSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->RabbitMoveSpeed;
 	}
 }
 

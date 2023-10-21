@@ -48,9 +48,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 };

@@ -17,7 +17,6 @@ class PROJECTCARDRETURN_API UPCRParameterDataAsset : public UDataAsset
 public:
 	UPCRParameterDataAsset();
 
-public:
 	UPROPERTY(EditAnywhere, Category = "Game")
 	bool bIsMonsterSpawn;
 	
@@ -133,7 +132,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float MeleeSoldierAttackSpeed;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Shield")
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float ShieldDestroyTimeAfterDrop;
 
 	
@@ -151,6 +150,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float RangedSoldierAttackSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearDestroyTimeAfterDrop;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float SpearSpeed;

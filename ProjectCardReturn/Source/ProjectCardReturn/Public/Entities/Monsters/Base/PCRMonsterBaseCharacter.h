@@ -70,11 +70,15 @@ protected:
 	float AttackSpeed;
 	float StunTime;
 
-private:
 	void DestroyTimeCallback();
-
+	
+	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+	
+	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY()
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
 
 	float DeadAfterDestroyTime;
