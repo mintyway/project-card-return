@@ -8,8 +8,6 @@
 
 DEFINE_LOG_CATEGORY(PCRLogRangedSoldierAnimInstance);
 
-UPCRRangedSoldierAnimInstance::UPCRRangedSoldierAnimInstance(): bCanThrow(true) {}
-
 void UPCRRangedSoldierAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -42,7 +40,7 @@ void UPCRRangedSoldierAnimInstance::Throw()
 
 void UPCRRangedSoldierAnimInstance::ThrowMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	bCanThrow = true;
+	bCanAttack = true;
 }
 
 void UPCRRangedSoldierAnimInstance::AnimNotify_Throw()

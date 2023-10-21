@@ -43,6 +43,12 @@ void APCRRangedSoldierCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	RangedSoldierAnimInstance = Cast<UPCRRangedSoldierAnimInstance>(GetMesh()->GetAnimInstance());
+	if (!RangedSoldierAnimInstance)
+	{
+		NULL_POINTER_EXCEPTION(RangedSoldierAnimInstance);
+	}
+
 	SpawnAndAttachSpear();
 
 	if (const APlayerController* CurrentPlayerController = UGameplayStatics::GetPlayerController(this, 0))
@@ -98,16 +104,21 @@ void APCRRangedSoldierCharacter::Attack()
 
 void APCRRangedSoldierCharacter::Throw()
 {
-	if (Spear)
+	if (!Spear)
 	{
-		const float SpearSpeed = GetParameterDataAsset()->SpearSpeed;
-		const float Distance = GetDistanceTo(CachedPlayerCharacter);
-		const FVector PredictedMove = CachedPlayerCharacter->GetVelocity() * (Distance / SpearSpeed);
-		const FVector PredictedLocation = CachedPlayerCharacter->GetActorLocation() + PredictedMove;
-		const FVector Direction = (PredictedLocation - GetActorLocation()).GetSafeNormal();
-		
-		Spear->Throw(this, GetActorLocation(), Direction);
+		Spear->OnDestroyedSpear.Broadcast();
+		Spear->Destroy();
 	}
+
+	SpawnAndAttachSpear();
+	
+	const float SpearSpeed = GetParameterDataAsset()->SpearSpeed;
+	const float Distance = GetDistanceTo(CachedPlayerCharacter);
+	const FVector PredictedMove = CachedPlayerCharacter->GetVelocity() * (Distance / SpearSpeed);
+	const FVector PredictedLocation = CachedPlayerCharacter->GetActorLocation() + PredictedMove;
+	const FVector Direction = (PredictedLocation - GetActorLocation()).GetSafeNormal();
+		
+	Spear->Throw(this, GetActorLocation(), Direction);
 }
 
 void APCRRangedSoldierCharacter::HandleDead()

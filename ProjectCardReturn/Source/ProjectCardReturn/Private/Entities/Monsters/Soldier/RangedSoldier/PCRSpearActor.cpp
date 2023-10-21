@@ -6,6 +6,8 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 #include "Components/BoxComponent.h"
+#include "Engine/DamageEvents.h"
+#include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Game/PCRGameModeBase.h"
@@ -38,8 +40,9 @@ APCRSpearActor::APCRSpearActor()
 		RootComponent = BoxComponent;
 		BoxComponent->SetBoxExtent(FVector(1.5, 36.5, 52.0));
 		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel7);
+		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel8);
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 	}
 
@@ -131,31 +134,23 @@ void APCRSpearActor::DelayedDestroy()
 
 void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor)
+	if (APCREricaCharacter* Erica = Cast<APCREricaCharacter>(OtherActor))
 	{
-		if (APCREricaCharacter* Erica = Cast<APCREricaCharacter>(OtherActor))
+		if (APCRRangedSoldierCharacter* RangedSolider = Cast<APCRRangedSoldierCharacter>(GetOwner()))
 		{
-			DestroyTimerCallback();
+			const float AttackDamage = Cast<APCRRangedSoldierCharacter>(GetOwner())->GetAttackPower();
+			const FDamageEvent DamageEvent;
+			Erica->TakeDamage(AttackDamage, DamageEvent, RangedSolider->GetController(), RangedSolider);
+			
+			OnDestroyedSpear.Broadcast();
+			Destroy();
 		}
 	}
 }
 
-/*void APCRSpearActor::HandleBlockedByCard(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-	UE_LOG(PCRLogSpearActor, Warning, TEXT("%s"), *FString(__FUNCTION__));
-	ProjectileMovementComponent->Deactivate();
-	DelayedDestroy();
-}*/
-
-/*void APCRSpearActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
-{
-	AttachedCard->OnActorHit.AddDynamic(this, &APCRSpearActor::HandleBlockedByCard);
-}*/
-
 void APCRSpearActor::DestroyTimerCallback()
 {
 	OnDestroyedSpear.Broadcast();
-	
 	Destroy();
 }
 

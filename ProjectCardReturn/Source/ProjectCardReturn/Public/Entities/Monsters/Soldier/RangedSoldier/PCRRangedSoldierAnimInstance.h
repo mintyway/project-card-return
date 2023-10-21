@@ -18,9 +18,6 @@ class PROJECTCARDRETURN_API UPCRRangedSoldierAnimInstance : public UPCRMonsterBa
 {
 	GENERATED_BODY()
 
-public:
-	UPCRRangedSoldierAnimInstance();
-
 protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -38,6 +35,4 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_Throw();
-	
-	uint32 bCanThrow:1;
 };

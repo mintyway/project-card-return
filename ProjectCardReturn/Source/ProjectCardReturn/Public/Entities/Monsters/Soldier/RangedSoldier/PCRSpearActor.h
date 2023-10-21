@@ -18,7 +18,7 @@ DECLARE_MULTICAST_DELEGATE(FDetachedSpearSignature);
 DECLARE_MULTICAST_DELEGATE(FDestroyedSpearSigniture);
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRSpearActor : public AActor//, public IPCREricaCardInteractable
+class PROJECTCARDRETURN_API APCRSpearActor : public AActor
 {
 	GENERATED_BODY()
 	
@@ -33,7 +33,6 @@ protected:
 public:
 	void DetachAndDelayedDestroy();
 	void Throw(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
-	FORCEINLINE bool IsThrown() const { return Thrown; }
 	
 	FDetachedSpearSignature OnDetachedSpear;
 	FDestroyedSpearSigniture OnDestroyedSpear;
@@ -44,11 +43,6 @@ private:
 
 	UFUNCTION()
 	void HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	//UFUNCTION()
-	//void HandleBlockedByCard(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-	
-	//virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;

@@ -49,6 +49,8 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
@@ -73,9 +75,6 @@ public:
 	FDeadSignature OnDead;
 
 	FChangeCardCountSignature OnChangeCardCount;
-
-protected:
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	
 private:
 	void Move(const FInputActionValue& InputActionValue);
