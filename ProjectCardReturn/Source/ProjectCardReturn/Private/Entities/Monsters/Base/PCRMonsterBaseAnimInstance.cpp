@@ -30,11 +30,12 @@ void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	// 블루프린트 실행 시 방어 코드
 	if (!CachedMonsterBaseCharacter)
 	{
 		return;
 	}
-
+	
 	check(CachedCharacterMovement);
 	Velocity = CachedCharacterMovement->Velocity;
 	bShouldMove = Velocity.SizeSquared2D() >= FMath::Square(30);

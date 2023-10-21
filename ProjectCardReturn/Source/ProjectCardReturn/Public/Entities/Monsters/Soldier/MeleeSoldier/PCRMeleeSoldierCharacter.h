@@ -30,6 +30,8 @@ public:
 
 	virtual void Attack() override;
 
+	void AttackHit();
+
 protected:
 	virtual void HandleDead() override;
 

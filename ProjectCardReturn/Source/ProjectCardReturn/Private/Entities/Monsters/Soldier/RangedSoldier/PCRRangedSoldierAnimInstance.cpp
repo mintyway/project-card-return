@@ -13,10 +13,6 @@ void UPCRRangedSoldierAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedRangedSoldier = Cast<APCRRangedSoldierCharacter>(CachedMonsterBaseCharacter);
-	if (!CachedRangedSoldier)
-	{
-		NULL_POINTER_EXCEPTION(CachedRangedSoldier);
-	}
 
 	OnMontageEnded.AddDynamic(this, &UPCRRangedSoldierAnimInstance::ThrowMontageEnded);
 }
@@ -28,14 +24,16 @@ void UPCRRangedSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UPCRRangedSoldierAnimInstance::Throw()
 {
-	if (bCanAttack)
+	if (!bCanAttack)
 	{
-		UE_LOG(PCRLogRangedSoldierAnimInstance, Warning, TEXT("Throw!"));
-	
-		Montage_Play(MonsterDataAsset->RangedSoldierThrowAnimationMontage);
-
-		bCanAttack = false;
+		return;
 	}
+	
+	UE_LOG(PCRLogRangedSoldierAnimInstance, Warning, TEXT("Throw!"));
+	
+	Montage_Play(MonsterDataAsset->RangedSoldierThrowAnimationMontage);
+
+	bCanAttack = false;
 }
 
 void UPCRRangedSoldierAnimInstance::ThrowMontageEnded(UAnimMontage* Montage, bool bInterrupted)

@@ -35,6 +35,7 @@ void APCRMonsterBaseGenerator::Start(UClass* MonsterClass, float Interval)
 	SpawnMonsterDelegate.BindUObject(this, &APCRMonsterBaseGenerator::SpawnMonster, MonsterClass);
 	
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, Interval, true);
+	SpawnMonster(MonsterClass);
 
 	UE_LOG(PCRLogMonsterBaseGenerator, Log, TEXT("%s이(가) 활성화되었습니다."), *GetName());
 }

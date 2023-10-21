@@ -16,10 +16,6 @@ void UPCRMeleeSoldierAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedMeleeSoldier = Cast<APCRMeleeSoldierCharacter>(CachedMonsterBaseCharacter);
-	if (!CachedMeleeSoldier)
-	{
-		NULL_POINTER_EXCEPTION(CachedMeleeSoldier);
-	}
 
 	OnMontageEnded.AddDynamic(this, &UPCRMeleeSoldierAnimInstance::AttackMontageEnded);
 }
@@ -36,21 +32,23 @@ void UPCRMeleeSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UPCRMeleeSoldierAnimInstance::Attack()
 {
-	if (bCanAttack)
+	if (!bCanAttack)
 	{
-		UE_LOG(PCRLogMeleeSoldierAnimInstance, Warning, TEXT("Attack!"));
-	
-		if (bHasShield)
-		{
-			ShieldAttack();
-		}
-		else
-		{
-			SpearAttack();
-		}
-
-		bCanAttack = false;
+		return;
 	}
+	
+	UE_LOG(PCRLogMeleeSoldierAnimInstance, Warning, TEXT("Attack!"));
+	
+	if (bHasShield)
+	{
+		ShieldAttack();
+	}
+	else
+	{
+		SpearAttack();
+	}
+
+	bCanAttack = false;
 }
 
 void UPCRMeleeSoldierAnimInstance::AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -62,32 +60,7 @@ void UPCRMeleeSoldierAnimInstance::AnimNotify_Hit()
 {
 	check(CachedMeleeSoldier);
 
-	// TODO: 파라미터화 필요 리스트
-	float AttackRange = CachedMeleeSoldier->GetAttackRange();
-	float AttackRadius = 50.f;
-
-	FHitResult HitResult;
-	const FVector Start = CachedMeleeSoldier->GetActorLocation();
-	const FVector End = Start + CachedMeleeSoldier->GetActorForwardVector() * AttackRange;
-	const FQuat Rot = FQuat::Identity;
-	FCollisionShape Shape = FCollisionShape::MakeSphere(AttackRadius);
-	const bool bSweepResult = GetWorld()->SweepSingleByChannel(HitResult, Start, End, Rot, ECC_GameTraceChannel7, Shape);
-	if (bSweepResult)
-	{
-		if (AActor* TargetActor = HitResult.GetActor())
-		{
-			float AttackDamage = CachedMeleeSoldier->GetAttackPower();
-			FDamageEvent DamageEvent;
-			TargetActor->TakeDamage(AttackDamage, DamageEvent, CachedMeleeSoldier->GetController(), CachedMeleeSoldier);
-		}
-	}
-
-	const FVector TraceVector = CachedMeleeSoldier->GetActorForwardVector() * AttackRange;
-	const FVector Center = Start + TraceVector * 0.5f;
-	const float HalfHeight = AttackRange * 0.5f + AttackRadius;
-	const FQuat CapsuleRotate = FRotationMatrix::MakeFromZ(TraceVector).ToQuat();
-	const FColor DrawColor = bSweepResult ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRotate, DrawColor, false, 1.f);
+	CachedMeleeSoldier->AttackHit();
 }
 
 void UPCRMeleeSoldierAnimInstance::ShieldAttack()
