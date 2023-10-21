@@ -25,16 +25,8 @@ void UPCREricaAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedEricaCharacter = Cast<APCREricaCharacter>(GetOwningActor());
-	if (!CachedEricaCharacter)
-	{
-		NULL_POINTER_EXCEPTION(CachedEricaCharacter);
-	}
-
 	CachedCharacterMovement = CachedEricaCharacter ? CachedEricaCharacter->GetCharacterMovement() : nullptr;
-	if (!CachedCharacterMovement)
-	{
-		NULL_POINTER_EXCEPTION(CachedCharacterMovement);
-	}
+
 }
 
 void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -46,14 +38,10 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
+	check(CachedCharacterMovement);
+
 	Velocity = CachedEricaCharacter->GetVelocity();
 	GroundSpeed = Velocity.Size2D();
-
-	if (!CachedCharacterMovement)
-	{
-		return;
-	}
-
 	InputDirection = CachedCharacterMovement->GetCurrentAcceleration().GetSafeNormal();
 	const bool IsMoveInput = InputDirection != FVector::ZeroVector;
 	ShouldMove = IsMoveInput && GroundSpeed;
