@@ -127,8 +127,11 @@ void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* O
 	}
 	else if (APCREricaCardProjectile* Projectile = Cast<APCREricaCardProjectile>(OtherActor))
 	{
-		ProjectileMovementComponent->Deactivate();
-		DelayedDestroy();
+		if (Projectile->GetCurrentCardState() == ECardState::Flying)
+		{
+			ProjectileMovementComponent->Deactivate();
+			DelayedDestroy();
+		}
 	}
 }
 
