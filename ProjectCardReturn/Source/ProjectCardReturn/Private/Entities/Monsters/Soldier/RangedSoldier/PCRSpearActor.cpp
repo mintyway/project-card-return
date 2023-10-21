@@ -41,7 +41,6 @@ APCRSpearActor::APCRSpearActor()
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel8);
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Block);
-		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 	}
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
@@ -113,16 +112,6 @@ void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* O
 			
 			Destroy();
 		}
-	}
-	else if (const APCREricaCardProjectile* Projectile = Cast<APCREricaCardProjectile>(OtherActor))
-	{
-		if (Projectile->GetCurrentCardState() == ECardState::Returning)
-		{
-			return;
-		}
-		
-		ProjectileMovementComponent->Deactivate();
-		DelayedDestroy();
 	}
 }
 
