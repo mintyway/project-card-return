@@ -77,17 +77,6 @@ void APCRSpearActor::Tick(float DeltaTime)
 
 }
 
-void APCRSpearActor::DetachAndDelayedDestroy()
-{
-	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	BoxComponent->SetCollisionProfileName("Ragdoll");
-
-	RETURN_IF_INVALID(BoxComponent);
-	BoxComponent->SetSimulatePhysics(true);
-
-	DelayedDestroy();
-}
-
 void APCRSpearActor::Throw(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
 	SetOwner(NewOwner);
@@ -125,13 +114,13 @@ void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* O
 			Destroy();
 		}
 	}
-	else if (APCREricaCardProjectile* Projectile = Cast<APCREricaCardProjectile>(OtherActor))
+	else if (const APCREricaCardProjectile* Projectile = Cast<APCREricaCardProjectile>(OtherActor))
 	{
-		if (Projectile->GetCurrentCardState() == ECardState::Flying)
-		{
-			ProjectileMovementComponent->Deactivate();
-			DelayedDestroy();
-		}
+		if (Projectile->GetCurrentCardState() == ECardState::Returning)
+			return;
+		
+		ProjectileMovementComponent->Deactivate();
+		DelayedDestroy();
 	}
 }
 

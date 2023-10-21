@@ -232,6 +232,7 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 	if (GetBoxComponent())
 	{
 		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
+		GetBoxComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel8, ECR_Overlap);
 	}
 
 	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);

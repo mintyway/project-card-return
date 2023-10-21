@@ -30,7 +30,6 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	void DetachAndDelayedDestroy();
 	void Throw(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
 	
 private:
