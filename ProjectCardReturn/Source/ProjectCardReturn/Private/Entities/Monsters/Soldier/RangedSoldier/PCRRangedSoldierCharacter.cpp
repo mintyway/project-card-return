@@ -44,12 +44,7 @@ void APCRRangedSoldierCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	RangedSoldierAnimInstance = Cast<UPCRRangedSoldierAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!RangedSoldierAnimInstance)
-	{
-		NULL_POINTER_EXCEPTION(RangedSoldierAnimInstance);
-	}
-
-	SpawnAndAttachSpear();
+	check(RangedSoldierAnimInstance);
 
 	if (const APlayerController* CurrentPlayerController = UGameplayStatics::GetPlayerController(this, 0))
 	{
@@ -57,46 +52,11 @@ void APCRRangedSoldierCharacter::PostInitializeComponents()
 	}
 }
 
-/**
- * 창을 스폰하고 몬스터에게 부착합니다.
- */
-void APCRRangedSoldierCharacter::SpawnAndAttachSpear()
-{
-	RETURN_IF_INVALID(GetWorld());
-	Spear = GetWorld()->SpawnActor<APCRSpearActor>();
-	RETURN_IF_INVALID(Spear);
-	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
-	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	RETURN_IF_INVALID(Spear->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	// Spear->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
-	Spear->OnDetachedSpear.AddUObject(this, &APCRRangedSoldierCharacter::HandleDetachedSpear);
-	Spear->OnDestroyedSpear.AddUObject(this, &APCRRangedSoldierCharacter::HandleDestroyedSpear);
-}
-
-/**
- * 창이 탈착되고난 후 처리되야할 함수입니다. 창의 탈착 시점에 바인드 되어있습니다.
- */
-void APCRRangedSoldierCharacter::HandleDetachedSpear()
-{
-	if (Spear)
-	{
-		UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Spear->GetName(), *GetName());
-		Spear = nullptr;
-	}
-}
-
-void APCRRangedSoldierCharacter::HandleDestroyedSpear()
-{
-	Spear = nullptr;
-
-	SpawnAndAttachSpear();
-}
-
 void APCRRangedSoldierCharacter::Attack()
 {
 	Super::Attack();
 	
-	if (Spear && RangedSoldierAnimInstance)
+	if (RangedSoldierAnimInstance)
 	{
 		RangedSoldierAnimInstance->Throw();
 	}
@@ -104,13 +64,9 @@ void APCRRangedSoldierCharacter::Attack()
 
 void APCRRangedSoldierCharacter::Throw()
 {
-	if (!Spear)
-	{
-		Spear->OnDestroyedSpear.Broadcast();
-		Spear->Destroy();
-	}
-
-	SpawnAndAttachSpear();
+	check(GetWorld());
+	APCRSpearActor* Spear = GetWorld()->SpawnActor<APCRSpearActor>();
+	check(Spear);
 	
 	const float SpearSpeed = GetParameterDataAsset()->SpearSpeed;
 	const float Distance = GetDistanceTo(CachedPlayerCharacter);
@@ -119,14 +75,4 @@ void APCRRangedSoldierCharacter::Throw()
 	const FVector Direction = (PredictedLocation - GetActorLocation()).GetSafeNormal();
 		
 	Spear->Throw(this, GetActorLocation(), Direction);
-}
-
-void APCRRangedSoldierCharacter::HandleDead()
-{
-	Super::HandleDead();
-
-	if (Spear)
-	{
-		Spear->DetachAndDelayedDestroy();
-	}
 }

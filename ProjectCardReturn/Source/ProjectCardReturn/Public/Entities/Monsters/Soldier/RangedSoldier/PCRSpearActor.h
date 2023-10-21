@@ -28,14 +28,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	virtual void BeginDestroy() override;
 
 public:
 	void DetachAndDelayedDestroy();
 	void Throw(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
-	
-	FDetachedSpearSignature OnDetachedSpear;
-	FDestroyedSpearSigniture OnDestroyedSpear;
 	
 private:
 	void DelayedDestroy();
@@ -58,6 +54,4 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
-
-	uint32 Thrown:1;
 };

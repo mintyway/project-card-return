@@ -19,8 +19,6 @@ DEFINE_LOG_CATEGORY(PCRLogSpearActor);
 APCRSpearActor::APCRSpearActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	Thrown = false;
 	
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_Monster.Succeeded())
@@ -79,20 +77,10 @@ void APCRSpearActor::Tick(float DeltaTime)
 
 }
 
-void APCRSpearActor::BeginDestroy()
-{
-	Super::BeginDestroy();
-	
-	OnDetachedSpear.Clear();
-	OnDestroyedSpear.Clear();
-}
-
 void APCRSpearActor::DetachAndDelayedDestroy()
 {
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	BoxComponent->SetCollisionProfileName("Ragdoll");
-
-	OnDetachedSpear.Broadcast();
 
 	RETURN_IF_INVALID(BoxComponent);
 	BoxComponent->SetSimulatePhysics(true);
@@ -102,25 +90,18 @@ void APCRSpearActor::DetachAndDelayedDestroy()
 
 void APCRSpearActor::Throw(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
-	if (!Thrown)
-	{
-		SetOwner(NewOwner);
+	SetOwner(NewOwner);
 
-		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-
-		const FVector ShootLocation = StartLocation;
-		const FRotator ShooRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+	const FVector ShootLocation = StartLocation;
+	const FRotator ShooRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
 	
-		SetActorLocationAndRotation(ShootLocation, ShooRotation);
-		ProjectileMovementComponent->Activate();
-		ProjectileMovementComponent->Velocity = Direction.GetSafeNormal() * ParameterDataAsset->SpearSpeed; 
+	SetActorLocationAndRotation(ShootLocation, ShooRotation);
+	ProjectileMovementComponent->Activate();
+	ProjectileMovementComponent->Velocity = Direction.GetSafeNormal() * ParameterDataAsset->SpearSpeed; 
 
-		BoxComponent->OnComponentHit.AddDynamic(this, &APCRSpearActor::HandleSpearHit);
+	BoxComponent->OnComponentHit.AddDynamic(this, &APCRSpearActor::HandleSpearHit);
 		
-		Thrown = true;
-		
-		DelayedDestroy();
-	}
+	DelayedDestroy();
 }
 
 void APCRSpearActor::DelayedDestroy()
@@ -141,7 +122,6 @@ void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* O
 			const FDamageEvent DamageEvent;
 			Player->TakeDamage(AttackDamage, DamageEvent, RangedSolider->GetController(), RangedSolider);
 			
-			OnDestroyedSpear.Broadcast();
 			Destroy();
 		}
 	}
@@ -154,7 +134,6 @@ void APCRSpearActor::HandleSpearHit(UPrimitiveComponent* HitComponent, AActor* O
 
 void APCRSpearActor::DestroyTimerCallback()
 {
-	OnDestroyedSpear.Broadcast();
 	Destroy();
 }
 

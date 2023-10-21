@@ -23,21 +23,9 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 public:
-	FORCEINLINE bool GetHasSpear() const { return Spear != nullptr; }
-
-	void SpawnAndAttachSpear();
-	void HandleDetachedSpear();
-	void HandleDestroyedSpear();
-
 	virtual void Attack() override;
 	
 	void Throw();
-
-protected:
-	virtual void HandleDead() override;
-
-	UPROPERTY()
-	TObjectPtr<APCRSpearActor> Spear;
 
 private:
 	UPROPERTY()
