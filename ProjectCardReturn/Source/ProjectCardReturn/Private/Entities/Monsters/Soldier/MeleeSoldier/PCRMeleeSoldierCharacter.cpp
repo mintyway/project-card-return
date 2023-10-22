@@ -12,7 +12,7 @@
 
 APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
-	if (IsValid(GetParameterDataAsset()))
+	if (ParameterDataAsset)
 	{
 		MaxHP = ParameterDataAsset->MeleeSoldierMaxHP;
 		CurrentHP = MaxHP;
@@ -43,10 +43,7 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	MeleeSoldierAnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
-	if (!MeleeSoldierAnimInstance)
-	{
-		NULL_POINTER_EXCEPTION(MeleeSoldierAnimInstance);
-	}
+	check(MeleeSoldierAnimInstance);
 
 	SpawnAndAttachShield();
 }

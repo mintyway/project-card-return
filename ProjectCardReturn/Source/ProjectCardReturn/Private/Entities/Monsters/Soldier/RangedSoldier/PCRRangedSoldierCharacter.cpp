@@ -13,7 +13,7 @@
 
 APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 {
-	if (IsValid(ParameterDataAsset))
+	if (ParameterDataAsset)
 	{
 		MaxHP = ParameterDataAsset->RangedSoldierMaxHP;
 		CurrentHP = MaxHP;
@@ -33,7 +33,7 @@ APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 		}
 	}
 
-	if (GetCharacterMovement() && MonsterDataAsset && ParameterDataAsset)
+	if (GetCharacterMovement() && ParameterDataAsset)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->RangedSoldierMoveSpeed;
 	}

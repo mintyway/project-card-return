@@ -44,7 +44,7 @@ void APCRGameModeBase::BeginPlay()
 		// MonsterGenerator2->Start(APCRMeleeSoldierCharacter::StaticClass(), 3.f);
 		MonsterGenerator3->Start(APCRMeleeSoldierCharacter::StaticClass(), 10.f);
 		MonsterGenerator4->Start(APCRRangedSoldierCharacter::StaticClass(), 10.f);
-		// MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 10.f);
+		MonsterGenerator5->Start(APCRRabbitCharacter::StaticClass(), 10.f);
 		// MonsterGenerator6->Start(APCRRabbitCharacter::StaticClass(), 3.f);
 	}
 }
