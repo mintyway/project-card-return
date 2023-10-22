@@ -23,32 +23,34 @@ public:
 	APCREricaPlayerController();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
 
-public:
+public: // 동작 섹션
 	FVector GetMouseDirection() const;
-	void EnableUIInputMode();
-	void DisableUIInputMode();
 
-private:
+private: // 내부 함수 섹션
 	void GamePause();
 
+private: // 데이터 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
 
+private: // 캐시 섹션
+	UPROPERTY()
+	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
+
+private: // UI 섹션
 	UPROPERTY()
 	TSubclassOf<UPCRMainUserWidget> MainUserWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UPCRMainUserWidget> MainUserWidget;
-	
-	UPROPERTY()
-	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
 
 	UPROPERTY()
 	TSubclassOf<UPCRPauseUserWidget> PauseUserWidgetClass;
@@ -56,5 +58,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
 
-	uint32 bUseCharacterRotationByCursorDirection:1;
+private: // 상태 섹션
+	uint32 bUseCharacterRotationByCursorDirection : 1;
 };

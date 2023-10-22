@@ -4,56 +4,20 @@
 #include "Game/PCRParameterDataAsset.h"
 
 UPCRParameterDataAsset::UPCRParameterDataAsset()
-{
-	bIsMonsterSpawn = true;
+	: bIsMonsterSpawn(true),
 
-	CameraFOV = 60.f;
-	CameraDistance = 2000.f;
-	CameraPitch = 38.f;
-	CameraOffset = -125.0;
-	CameraLagSpeed = 18.f;
-	CameraLagMaxDistance = 100.f;
+	  CameraFOV(60.f), CameraDistance(2000.f), CameraPitch(38.f), CameraOffset(-125.0), CameraLagSpeed(18.f), CameraLagMaxDistance(100.f),
 
-	EricaMoveSpeed = 750.f;
-	BuckShotCount = 3;
-	BuckShotAngle = 30.f;
-	EricaNormalShotForwardDamage = 1.f;
-	EricaNormalShotBackwardDamage = 2.5f;
-	EricaBuckShotForwardDamage = 0.5f;
-	EricaBuckShotBackwardDamage = 1.5f;
-	EricaNormalShotCooldownTime = 0.8f;
-	EricaBuckShotCooldownTime = 0.6f;
-	EricaReturnCardCooldownTime = 1.f;
-	EricaDashCooldownTime = 1.f;
-	EricaMaxDashTime = 0.1f;
-	EricaDashDistance = 500.f;
-	EricaCardCount = 9;
-	EricaCardSpeed = 5000.f;
-	EricaCardReturnSpeed = 6000.f;
-	EricaCardNormalShotRange = 1300.f;
-	EricaCardBuckShotRange = 700.f;
-	EricaCardReleaseRange = 50.f;
+	  EricaMaxHP(100.f), EricaMoveSpeed(750.f), EricaCardCount(9), EricaSingleShotFiringRate(1.25f), EricaMultiShotFiringRate(1.5f), EricaRecallCooldownTime(1.f), EricaSingleShotForwardDamage(1.f), EricaSingleShotBackwardDamage(2.5f), EricaMultiShotForwardDamage(0.5f), EricaMultiShotBackwardDamage(1.5f),
 
-	DeadAfterDestroyTime = 1.f;
+	  EricaDashCooldownTime(1.f), EricaDashDistance(500.f), EricaMaxDashTime(0.1f),
 
-	RabbitMaxHealthPoint = 3.f;
-	RabbitAttackPower = 3.f;
-	RabbitMoveSpeed = EricaMoveSpeed * 0.7f;
-	RabbitAttackRange = 300.f;
-	RabbitAttackSpeed = 1.f;
+	  EricaMultiShotCount(3), EricaMultiShotAngle(30.f), EricaCardSpeed(5000.f), EricaCardReturnSpeed(6000.f), EricaSingleShotRange(1300.f), EricaMultiShotRange(700.f), EricaCardReleaseRange(50.f),
 
-	MeleeSoldierMaxHealthPoint = 6.f;
-	MeleeSoldierAttackPower = 10.f;
-	MeleeSoldierMoveSpeed = EricaMoveSpeed * 0.5f;
-	MeleeSoldierAttackRange = 300.f;
-	MeleeSoldierAttackSpeed = 1.f;
-	ShieldDestroyTimeAfterDrop = 3.f;
-	
-	RangedSoldierMaxHealthPoint = 6.f;
-	RangedSoldierAttackPower = 10.f;
-	RangedSoldierMoveSpeed = 300.f;
-	RangedSoldierAttackRange = 1500.f;
-	RangedSoldierAttackSpeed = 1.f;
-	SpearDestroyTimeAfterDrop = 3.f;
-	SpearSpeed = 2000.f;
-}
+	  DeadAfterDestroyTime(1.f),
+
+	  MeleeSoldierMaxHP(6.f), MeleeSoldierAttackPower(10.f), MeleeSoldierMoveSpeed(300.f), MeleeSoldierAttackRange(300.f), MeleeSoldierAttackRate(1.f), ShieldDestroyTimeAfterDrop(1.f),
+
+	  RangedSoldierMaxHP(3.f), RangedSoldierAttackPower(5.f), RangedSoldierMoveSpeed(300.f), RangedSoldierAttackRange(1500.f), RangedSoldierAttackRate(1.f), SpearDestroyTimeAfterDrop(1.f), SpearSpeed(2000.f),
+
+	  RabbitMaxHealthPoint(3.f), RabbitAttackPower(5.f), RabbitMoveSpeed(EricaMoveSpeed * 0.7f), RabbitAttackRange(300.f), RabbitAttackRate(1.f) {}

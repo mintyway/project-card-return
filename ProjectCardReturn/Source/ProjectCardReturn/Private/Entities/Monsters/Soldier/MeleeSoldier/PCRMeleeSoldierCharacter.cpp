@@ -14,11 +14,11 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 {
 	if (IsValid(GetParameterDataAsset()))
 	{
-		MaxHealthPoint = ParameterDataAsset->MeleeSoldierMaxHealthPoint;
-		HealthPoint = MaxHealthPoint;
+		MaxHP = ParameterDataAsset->MeleeSoldierMaxHP;
+		CurrentHP = MaxHP;
 		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower;
 		AttackRange = ParameterDataAsset->MeleeSoldierAttackRange;
-		AttackSpeed = ParameterDataAsset->MeleeSoldierAttackSpeed;
+		AttackRate = ParameterDataAsset->MeleeSoldierAttackRate;
 	}
 	
 	// TODO: 모델링 작업 완료되면 활성화

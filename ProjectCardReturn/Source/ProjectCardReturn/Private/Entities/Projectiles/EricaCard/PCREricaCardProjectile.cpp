@@ -22,7 +22,7 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 	{
 		ProjectileSpeed = ParameterDataAsset->EricaCardSpeed;
 		CardReturnSpeed = ParameterDataAsset->EricaCardReturnSpeed;
-		CardRange = ParameterDataAsset->EricaCardNormalShotRange;
+		CardRange = ParameterDataAsset->EricaSingleShotRange;
 		CardReleaseRange = ParameterDataAsset->EricaCardReleaseRange;
 	}
 

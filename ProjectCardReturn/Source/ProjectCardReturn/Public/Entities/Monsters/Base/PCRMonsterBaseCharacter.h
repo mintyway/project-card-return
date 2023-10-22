@@ -60,14 +60,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UProgressBar> HPProgressBar;
 
-	float HealthPoint;
-	float MaxHealthPoint;
+	float CurrentHP;
+	float MaxHP;
 	uint32 bIsAlive : 1;
 
 	float AttackPower;
 	float MoveSpeed;
 	float AttackRange;
-	float AttackSpeed;
+	float AttackRate;
 	float StunTime;
 
 	void DestroyTimeCallback();

@@ -28,14 +28,12 @@ APCREricaCharacter::APCREricaCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
 
-	MaxHP = 100.f;
-	CurrentHP = MaxHP;
 	bIsAlive = true;
 
 	MovementKeys = {EKeys::W, EKeys::S, EKeys::D, EKeys::A};
-	CurrentShootMode = ShootMode::Normal;
-	bCanRapidShot = true;
-	bCanBuckShot = true;
+	CurrentShotMode = ShootMode::Normal;
+	bCanSingleShot = true;
+	bCanMultiShot = true;
 
 	bCanDash = true;
 	bIsDashing = false;
@@ -48,49 +46,51 @@ APCREricaCharacter::APCREricaCharacter()
 	{
 		EricaDataAsset = DA_Erica.Object;
 	}
-
+	
 	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
 	if (DA_Parameter.Succeeded())
 	{
 		ParameterDataAsset = DA_Parameter.Object;
 	}
-
+	
 	if (ParameterDataAsset)
 	{
-		BuckShotCount = ParameterDataAsset->BuckShotCount;
-		BuckShotAngle = ParameterDataAsset->BuckShotAngle;
-		NormalShotForwardDamage = ParameterDataAsset->EricaNormalShotForwardDamage;
-		NormalShotBackwardDamage = ParameterDataAsset->EricaNormalShotBackwardDamage;
-		BuckShotForwardDamage = ParameterDataAsset->EricaBuckShotForwardDamage;
-		BuckShotBackwardDamage = ParameterDataAsset->EricaBuckShotBackwardDamage;
-		RapidShotCooldownTime = ParameterDataAsset->EricaNormalShotCooldownTime;
-		BuckShotCooldownTime = ParameterDataAsset->EricaBuckShotCooldownTime;
-		ReturnCardCooldownTime = ParameterDataAsset->EricaReturnCardCooldownTime;
+		MaxHP = ParameterDataAsset->EricaMaxHP;
+		CurrentHP = MaxHP;
+		MultiShotCount = ParameterDataAsset->EricaMultiShotCount;
+		MultiShotAngle = ParameterDataAsset->EricaMultiShotAngle;
+		SingleShotForwardDamage = ParameterDataAsset->EricaSingleShotForwardDamage;
+		SingleShotBackwardDamage = ParameterDataAsset->EricaSingleShotBackwardDamage;
+		MultiShotForwardDamage = ParameterDataAsset->EricaMultiShotForwardDamage;
+		MultiShotBackwardDamage = ParameterDataAsset->EricaMultiShotBackwardDamage;
+		SingleShotFiringRate = ParameterDataAsset->EricaSingleShotFiringRate;
+		MultiShotFiringRate = ParameterDataAsset->EricaMultiShotFiringRate;
+		RecallCooldownTime = ParameterDataAsset->EricaRecallCooldownTime;
 		DashCooldownTime = ParameterDataAsset->EricaDashCooldownTime;
 		MaxDashTime = ParameterDataAsset->EricaMaxDashTime;
 		DashDistance = ParameterDataAsset->EricaDashDistance;
 		MaxCardCount = ParameterDataAsset->EricaCardCount;
 		CurrentCardCount = MaxCardCount;
 	}
-
+	
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		GetCapsuleComponent()->InitCapsuleSize(30.f, 75.f);
 	}
-
+	
 	if (GetMesh() && EricaDataAsset)
 	{
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-
+	
 		if (UClass* EricaAnimationBlueprint = EricaDataAsset->AnimationBlueprint.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(EricaAnimationBlueprint);
 		}
 	}
-
+	
 	if (GetCharacterMovement() && ParameterDataAsset)
 	{
 		GetCharacterMovement()->BrakingFriction = 1.f;
@@ -98,7 +98,7 @@ APCREricaCharacter::APCREricaCharacter()
 		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->EricaMoveSpeed;
 		GetCharacterMovement()->RotationRate = FRotator(0.0, 720.0, 0.0);
 	}
-
+	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	if (CameraBoom && ParameterDataAsset)
 	{
@@ -114,14 +114,14 @@ APCREricaCharacter::APCREricaCharacter()
 		CameraBoom->CameraLagSpeed = ParameterDataAsset->CameraLagSpeed;
 		CameraBoom->CameraLagMaxDistance = ParameterDataAsset->CameraLagMaxDistance;
 	}
-
+	
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	if (FollowCamera && ParameterDataAsset)
 	{
 		FollowCamera->SetupAttachment(CameraBoom);
 		FollowCamera->SetFieldOfView(ParameterDataAsset->CameraFOV);
 	}
-
+	
 	AimingPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AimingPlane"));
 	if (AimingPlane && EricaDataAsset)
 	{
@@ -134,7 +134,7 @@ APCREricaCharacter::APCREricaCharacter()
 		AimingPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel5, ECR_Block);
 		AimingPlane->SetHiddenInGame(true);
 	}
-
+	
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
 	if (DashNiagaraComponent && EricaDataAsset)
 	{
@@ -150,12 +150,12 @@ void APCREricaCharacter::PostInitializeComponents()
 	// 데이터 에셋의 nullptr여부를 체크합니다.
 	// 생성자에서 체크하지 않는 이유는 생성자는 게임을 시작한 상황이 아닌 일반 에디터 상황에서도 호출될 수 있고 이 상황이 nullptr일 수 있기 때문입니다.
 	check(EricaDataAsset);
-	
+
 	// 카드 풀을 생성하는 코드입니다.
 	check(GetWorld());
-	CardPool = GetWorld()->SpawnActor<APCREricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
-	check(CardPool);
-	CardPool->InitProjectilePool(APCREricaCardProjectile::StaticClass());
+	CardProjectilePool = GetWorld()->SpawnActor<APCREricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
+	check(CardProjectilePool);
+	CardProjectilePool->InitProjectilePool(APCREricaCardProjectile::StaticClass());
 
 	// 애님 인스턴스를 캐싱해두는 코드입니다.
 	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
@@ -173,7 +173,7 @@ void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(EricaDataAsset->DashInputAction, ETriggerEvent::Started, this, &APCREricaCharacter::Dash);
 		EnhancedInputComponent->BindAction(EricaDataAsset->ChangeInputAction, ETriggerEvent::Started, this, &APCREricaCharacter::Change);
 		EnhancedInputComponent->BindAction(EricaDataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::ShootCard);
-		EnhancedInputComponent->BindAction(EricaDataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::ReturnCard);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::RecallCard);
 	}
 }
 
@@ -222,7 +222,7 @@ void APCREricaCharacter::ShootCard()
 /**
  * 필드에 발사된 카드를 회수합니다.
  */
-void APCREricaCharacter::ReturnCard()
+void APCREricaCharacter::RecallCard()
 {
 	if (bCanReturnCard)
 	{
@@ -231,16 +231,16 @@ void APCREricaCharacter::ReturnCard()
 		FTimerHandle ReturnCardCooldownTimerHandle;
 		FTimerDelegate ReturnCardCooldownTimerDelegate;
 		ReturnCardCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ReturnCardCooldownTimerCallback);
-		GetWorldTimerManager().SetTimer(ReturnCardCooldownTimerHandle, ReturnCardCooldownTimerDelegate, ReturnCardCooldownTime, false);
+		GetWorldTimerManager().SetTimer(ReturnCardCooldownTimerHandle, ReturnCardCooldownTimerDelegate, RecallCooldownTime, false);
 
-		if (CardProjectiles.IsEmpty())
+		if (InUseCardProjectiles.IsEmpty())
 		{
 			return;
 		}
 
 		TArray<APCREricaCardProjectile*> CardsToRemove;
 
-		for (const auto& CardProjectile : CardProjectiles)
+		for (const auto& CardProjectile : InUseCardProjectiles)
 		{
 			if (CardProjectile->GetCurrentCardState() == ECardState::Stop)
 			{
@@ -251,10 +251,10 @@ void APCREricaCharacter::ReturnCard()
 		for (const auto& CardToRemove : CardsToRemove)
 		{
 			int32 Index;
-			if (CardProjectiles.Find(CardToRemove, Index))
+			if (InUseCardProjectiles.Find(CardToRemove, Index))
 			{
-				APCREricaCardProjectile* ReturningCard = CardProjectiles[Index];
-				CardProjectiles.RemoveAt(Index);
+				APCREricaCardProjectile* ReturningCard = InUseCardProjectiles[Index];
+				InUseCardProjectiles.RemoveAt(Index);
 				ReturningCard->ReturnCard();
 			}
 		}
@@ -303,7 +303,7 @@ void APCREricaCharacter::Move(const FInputActionValue& InputActionValue)
  */
 void APCREricaCharacter::HandleShootMode()
 {
-	switch (CurrentShootMode)
+	switch (CurrentShotMode)
 	{
 		case ShootMode::Normal:
 		{
@@ -327,22 +327,24 @@ void APCREricaCharacter::HandleShootMode()
  */
 void APCREricaCharacter::NormalShot()
 {
-	if (bCanRapidShot)
+	if (bCanSingleShot)
 	{
 		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
-		if (RapidShotCooldownTime > SMALL_NUMBER)
+		if (SingleShotFiringRate > SMALL_NUMBER)
 		{
-			bCanRapidShot = false;
-			bCanBuckShot = false;
+			bCanSingleShot = false;
+			bCanMultiShot = false;
 
 			FTimerHandle ShotCooldownTimerHandle;
 			FTimerDelegate ShotCooldownTimerDelegate;
 			ShotCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ShotCooldownTimerCallback);
-			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, RapidShotCooldownTime, false);
+
+			const float CoolDownTime = 1.f / SingleShotFiringRate;
+			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
 		}
 
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardNormalShotRange);
+		HandleShootCard(MouseDirection, ParameterDataAsset->EricaSingleShotRange);
 	}
 }
 
@@ -351,48 +353,51 @@ void APCREricaCharacter::NormalShot()
  */
 void APCREricaCharacter::BuckShot()
 {
-	if (bCanBuckShot)
+	if (bCanMultiShot)
 	{
 		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
-		if (BuckShotCooldownTime > SMALL_NUMBER)
+		if (MultiShotFiringRate > SMALL_NUMBER)
 		{
-			bCanRapidShot = false;
-			bCanBuckShot = false;
+			bCanSingleShot = false;
+			bCanMultiShot = false;
+
 			FTimerHandle ShotCooldownTimerHandle;
 			FTimerDelegate ShotCooldownTimerDelegate;
 			ShotCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ShotCooldownTimerCallback);
-			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, BuckShotCooldownTime, false);
+
+			const float CoolDownTime = 1.f / MultiShotFiringRate;
+			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
 		}
 
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		const float DegreeInterval = BuckShotAngle / (BuckShotCount - 1);
+		const float DegreeInterval = MultiShotAngle / (MultiShotCount - 1);
 
-		for (int32 i = 0; i < BuckShotCount; ++i)
+		for (int32 i = 0; i < MultiShotCount; ++i)
 		{
-			const float CurrentRotation = -BuckShotAngle / 2 + DegreeInterval * i;
+			const float CurrentRotation = -MultiShotAngle / 2 + DegreeInterval * i;
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
-			HandleShootCard(CurrentDirection, ParameterDataAsset->EricaCardBuckShotRange);
+			HandleShootCard(CurrentDirection, ParameterDataAsset->EricaMultiShotRange);
 		}
 	}
 }
 
 void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 {
-	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->Acquire());
+	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardProjectilePool->Acquire());
 	if (CardProjectile)
 	{
-		CardProjectiles.Insert(CardProjectile, 0);
-		switch (CurrentShootMode)
+		InUseCardProjectiles.Insert(CardProjectile, 0);
+		switch (CurrentShotMode)
 		{
 			case ShootMode::Normal:
 			{
-				CardProjectile->SetDamage(NormalShotForwardDamage, NormalShotBackwardDamage);
+				CardProjectile->SetDamage(SingleShotForwardDamage, SingleShotBackwardDamage);
 				break;
 			}
 			case ShootMode::Buckshot:
 			{
-				CardProjectile->SetDamage(BuckShotForwardDamage, BuckShotBackwardDamage);
+				CardProjectile->SetDamage(MultiShotForwardDamage, MultiShotBackwardDamage);
 				break;
 			}
 			default:
@@ -410,7 +415,7 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 	}
 
 	HandleChangeCardCount();
-	UE_LOG(PCRLogEricaCharacter, Log, TEXT("필드에 발사된 카드 개수: %d"), CardProjectiles.Num());
+	UE_LOG(PCRLogEricaCharacter, Log, TEXT("필드에 발사된 카드 개수: %d"), InUseCardProjectiles.Num());
 }
 
 /**
@@ -485,21 +490,21 @@ void APCREricaCharacter::Change()
 		return;
 	}
 
-	switch (CurrentShootMode)
+	switch (CurrentShotMode)
 	{
 		case ShootMode::Normal:
 		{
-			CurrentShootMode = ShootMode::Buckshot;
+			CurrentShotMode = ShootMode::Buckshot;
 			break;
 		}
 		case ShootMode::Buckshot:
 		{
-			CurrentShootMode = ShootMode::Normal;
+			CurrentShotMode = ShootMode::Normal;
 			break;
 		}
 		default:
 		{
-			CurrentShootMode = ShootMode::Normal;
+			CurrentShotMode = ShootMode::Normal;
 			break;
 		}
 	}
@@ -512,8 +517,8 @@ void APCREricaCharacter::ReturnCardCooldownTimerCallback()
 
 void APCREricaCharacter::ShotCooldownTimerCallback()
 {
-	bCanRapidShot = true;
-	bCanBuckShot = true;
+	bCanSingleShot = true;
+	bCanMultiShot = true;
 }
 
 void APCREricaCharacter::DashCooldownTimerCallback()
@@ -558,12 +563,12 @@ void APCREricaCharacter::HandleDead()
 
 	bIsAlive = false;
 	DisableInput(CachedEricaPlayerController);
-	
+
 	OnDead.Broadcast();
 }
 
 void APCREricaCharacter::HandleChangeCardCount()
 {
-	CurrentCardCount = MaxCardCount - CardProjectiles.Num();
+	CurrentCardCount = MaxCardCount - InUseCardProjectiles.Num();
 	OnChangeCardCount.Broadcast(MaxCardCount, CurrentCardCount);
 }

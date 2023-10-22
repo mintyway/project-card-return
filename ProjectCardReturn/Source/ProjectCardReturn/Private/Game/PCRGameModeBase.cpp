@@ -29,6 +29,7 @@ void APCRGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(ParameterDataAsset);
 	if (ParameterDataAsset->bIsMonsterSpawn)
 	{
 		RETURN_IF_INVALID(IsValid(GetWorld()));

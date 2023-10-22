@@ -17,9 +17,11 @@ class PROJECTCARDRETURN_API UPCRParameterDataAsset : public UDataAsset
 public:
 	UPCRParameterDataAsset();
 
+public: // 게임
 	UPROPERTY(EditAnywhere, Category = "Game")
-	bool bIsMonsterSpawn;
-	
+	uint32 bIsMonsterSpawn : 1;
+
+public: // 카메라
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraFOV;
 
@@ -38,48 +40,53 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraLagMaxDistance;
 
+public: // 에리카 스탯
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaMaxHP;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaMoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	int32 BuckShotCount;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float BuckShotAngle;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaNormalShotForwardDamage;
+	int32 EricaCardCount;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaNormalShotBackwardDamage;
+	float EricaSingleShotFiringRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaBuckShotForwardDamage;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaBuckShotBackwardDamage;
+	float EricaMultiShotFiringRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaNormalShotCooldownTime;
+	float EricaRecallCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaBuckShotCooldownTime;
+	float EricaSingleShotForwardDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaReturnCardCooldownTime;
-	
+	float EricaSingleShotBackwardDamage;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaMaxDashTime;
+	float EricaMultiShotForwardDamage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaMultiShotBackwardDamage;
+
+public: // 에리카 대시
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaDashCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaDashDistance;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaDashCooldownTime;
+	float EricaMaxDashTime;
+
+public: // 에리카 카드
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	int32 EricaMultiShotCount;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	int32 EricaCardCount;
+	float EricaMultiShotAngle;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardSpeed;
@@ -88,19 +95,60 @@ public:
 	float EricaCardReturnSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaCardNormalShotRange;
+	float EricaSingleShotRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaCardBuckShotRange;
+	float EricaMultiShotRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardReleaseRange;
 
-
+public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;
 
+public: // 근접 병사
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierMaxHP;
 
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackPower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierMoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float ShieldDestroyTimeAfterDrop;
+
+public: // 원거리 병사
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierMaxHP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackPower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierMoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearDestroyTimeAfterDrop;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearSpeed;
+
+public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMaxHealthPoint;
 
@@ -114,46 +162,5 @@ public:
 	float RabbitAttackRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
-	float RabbitAttackSpeed;
-
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierMaxHealthPoint;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierAttackPower;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierMoveSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierAttackRange;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierAttackSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float ShieldDestroyTimeAfterDrop;
-
-	
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierMaxHealthPoint;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierAttackPower;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierMoveSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierAttackRange;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierAttackSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float SpearDestroyTimeAfterDrop;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float SpearSpeed;
+	float RabbitAttackRate;
 };

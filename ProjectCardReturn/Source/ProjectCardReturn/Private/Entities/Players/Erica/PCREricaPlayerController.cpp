@@ -43,6 +43,15 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 	}
 }
 
+void APCREricaPlayerController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	// 데이터 에셋의 유효성을 체크합니다. 이는 추후 nullptr 체크를 하지 않기 위해 여기서 체크합니다.
+	check(EricaDataAsset);
+	check(UIDataAsset);
+}
+
 void APCREricaPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -57,14 +66,18 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	verify((CachedEricaCharacter = Cast<APCREricaCharacter>(InPawn)));
-
-	verify((MainUserWidget = CreateWidget<UPCRMainUserWidget>(this, MainUserWidgetClass)));
+	CachedEricaCharacter = Cast<APCREricaCharacter>(InPawn);
+	check(CachedEricaCharacter);
+	
+	MainUserWidget = CreateWidget<UPCRMainUserWidget>(this, MainUserWidgetClass);
+	check(MainUserWidget);
 	MainUserWidget->AddToViewport(-1);
 
 	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateHP);
-	MainUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
 	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateCardCount);
+
+	// UI 상태를 초기화 해줍니다.
+	MainUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
 	MainUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
 }
 
@@ -74,7 +87,6 @@ void APCREricaPlayerController::BeginPlay()
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		RETURN_IF_INVALID(IsValid(EricaDataAsset));
 		Subsystem->AddMappingContext(EricaDataAsset->DefaultInputMappingContext, 0);
 	}
 }
@@ -92,25 +104,14 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 		FVector MouseClickedLocation = MouseClickedResult.Location;
 		MouseClickedLocation.Z = 0.0;
 
-		RETURN_IF_INVALID(CachedEricaCharacter, FVector::ZeroVector);
 		FVector EricaRossLocation = CachedEricaCharacter->GetActorLocation();
 		EricaRossLocation.Z = 0.0;
 
-		FVector MouseDirection = (MouseClickedLocation - EricaRossLocation).GetSafeNormal();
+		const FVector MouseDirection = (MouseClickedLocation - EricaRossLocation).GetSafeNormal();
 		return MouseDirection;
 	}
 
 	return FVector::ZeroVector;
-}
-
-void APCREricaPlayerController::EnableUIInputMode()
-{
-	bUseCharacterRotationByCursorDirection = false;
-}
-
-void APCREricaPlayerController::DisableUIInputMode()
-{
-	bUseCharacterRotationByCursorDirection = true;
 }
 
 void APCREricaPlayerController::GamePause()
@@ -121,5 +122,4 @@ void APCREricaPlayerController::GamePause()
 	PauseUserWidget->AddToViewport(3);
 
 	SetPause(true);
-	EnableUIInputMode();
 }

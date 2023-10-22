@@ -20,8 +20,8 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// TODO: 모두 파라미터화 필요
-	MaxHealthPoint = 100.f;
-	HealthPoint = MaxHealthPoint;
+	MaxHP = 100.f;
+	CurrentHP = MaxHP;
 	AttackPower = 3.f;
 	bIsAlive = true;
 	MoveSpeed = 300.f;
@@ -109,7 +109,7 @@ void APCRMonsterBaseCharacter::Attack()
  */
 void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 {
-	HealthPoint += Amount;
+	CurrentHP += Amount;
 	HandleChangeHP();
 }
 
@@ -155,15 +155,15 @@ float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
  */
 void APCRMonsterBaseCharacter::HandleChangeHP()
 {
-	if (HealthPoint <= 0.f)
+	if (CurrentHP <= 0.f)
 	{
-		HealthPoint = 0.f;
+		CurrentHP = 0.f;
 		HandleDead();
 	}
 
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
-	const float HPRatio = HealthPoint / MaxHealthPoint;
+	const float HPRatio = CurrentHP / MaxHP;
 	HPProgressBar->SetPercent(HPRatio);
 
 	OnHPChange.Broadcast();

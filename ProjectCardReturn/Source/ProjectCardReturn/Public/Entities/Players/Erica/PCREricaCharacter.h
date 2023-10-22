@@ -50,35 +50,37 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-public:
+public: // 동작 섹션
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	
+
+	void ShootCard();
+	void RecallCard();
+
+public: // 델리게이트 섹션
+	FAttackSignature OnCardShoot;
+	FAttackSignature OnCardRecall;
+
+	FChangeHPSignature OnChangeHP;
+	FDeadSignature OnDead;
+
+	FChangeCardCountSignature OnChangeCardCount;
+
+public: // Getter, Setter 섹션
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
-	
-	FORCEINLINE float GetNormalShotForwardDamage() const { return NormalShotForwardDamage; }
-	FORCEINLINE float GetNormalShotBackwardDamage() const { return NormalShotBackwardDamage; }
-	FORCEINLINE float GetBuckShotForwardDamage() const { return BuckShotForwardDamage; }
-	FORCEINLINE float GetBuckShotBackwardDamage() const { return BuckShotBackwardDamage; }
-	
+
+	FORCEINLINE float GetSingleShotForwardDamage() const { return SingleShotForwardDamage; }
+	FORCEINLINE float GetSingleShotBackwardDamage() const { return SingleShotBackwardDamage; }
+	FORCEINLINE float GetMultiShotForwardDamage() const { return MultiShotForwardDamage; }
+	FORCEINLINE float GetMultiShotBackwardDamage() const { return MultiShotBackwardDamage; }
+
 	FORCEINLINE int32 GetMaxCardCount() const { return MaxCardCount; }
 	FORCEINLINE int32 GetCurrentCardCount() const { return CurrentCardCount; }
 
 	bool GetIsDashing() const { return bIsDashing; }
 
-	void ShootCard();
-	void ReturnCard();
-
-	FAttackSignature OnCardShoot;
-	FAttackSignature OnCardReturn;
-	
-	FChangeHPSignature OnChangeHP;
-	FDeadSignature OnDead;
-
-	FChangeCardCountSignature OnChangeCardCount;
-	
-private:
+private: // 내부 함수 섹션
 	void Move(const FInputActionValue& InputActionValue);
 	void Dash();
 	void HandleDash(float DeltaTime);
@@ -99,7 +101,15 @@ private:
 	void HandleDead();
 
 	void HandleChangeCardCount();
-	
+
+private: // 데이터 섹션
+	UPROPERTY()
+	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
@@ -108,62 +118,67 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Aim")
 	TObjectPtr<UStaticMeshComponent> AimingPlane;
-	
+
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
-
-	UPROPERTY()
-	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
-
-	UPROPERTY()
-	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
-
-	UPROPERTY()
-	TObjectPtr<APCREricaCardProjectilePool> CardPool;
-
+	
+private: // 캐시 섹션
 	UPROPERTY()
 	TObjectPtr<APCREricaPlayerController> CachedEricaPlayerController;
-	
+
 	UPROPERTY()
 	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
-	UPROPERTY()
-	TArray<TObjectPtr<APCREricaCardProjectile>> CardProjectiles;
 
+private: // 스탯 섹션
 	float MaxHP;
 	float CurrentHP;
-	uint32 bIsAlive:1;
 	
-	int32 BuckShotCount;
-	float BuckShotAngle;
+	int32 SingleShotFiringRate;
+	int32 MultiShotFiringRate;
 	
-	float NormalShotForwardDamage;
-	float NormalShotBackwardDamage;
-	float BuckShotForwardDamage;
-	float BuckShotBackwardDamage;
+	float RecallCooldownTime;
+	
+	float SingleShotForwardDamage;
+	float SingleShotBackwardDamage;
+	float MultiShotForwardDamage;
+	float MultiShotBackwardDamage;
 
-	int32 MaxCardCount;
-	int32 CurrentCardCount;
+private: // 상태 섹션
+	uint32 bIsAlive : 1;
 
+	uint32 bCanDash : 1;
+	uint32 bIsDashing : 1;
+	
+	uint32 bCanSingleShot : 1;
+	uint32 bCanMultiShot : 1;
+	uint32 bCanReturnCard : 1;
+
+	ShootMode CurrentShotMode;
+
+private: // 대시 섹션
 	TArray<FKey> MovementKeys;
 	FVector LastInputMoveDirection;
 
-	uint32 bCanDash:1;
-	uint32 bIsDashing:1;
-	uint32 bCanRapidShot:1;
-	uint32 bCanBuckShot:1;
-	uint32 bCanReturnCard:1;
-
-	float DashCooldownTime;
-	float MaxDashTime;
-	float ElapsedDashTime;
-	float DashDistance;
-	float ReturnCardCooldownTime;
 	FVector CachedDashStartLocation;
 	FVector CachedDashDirection;
 	
-	ShootMode CurrentShootMode;
-	float RapidShotCooldownTime;
-	float BuckShotCooldownTime;
+	float DashCooldownTime;
+	float MaxDashTime;
 	
+	float ElapsedDashTime;
+	float DashDistance;
+	
+private: // 카드 섹션
+	UPROPERTY()
+	TObjectPtr<APCREricaCardProjectilePool> CardProjectilePool;
+
+	UPROPERTY()
+	TArray<TObjectPtr<APCREricaCardProjectile>> InUseCardProjectiles;
+
+	int32 MaxCardCount;
+	int32 CurrentCardCount;
+	
+	int32 MultiShotCount;
+	float MultiShotAngle;
 };

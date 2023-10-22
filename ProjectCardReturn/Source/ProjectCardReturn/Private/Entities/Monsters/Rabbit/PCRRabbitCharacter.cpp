@@ -16,11 +16,11 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 {
 	if (IsValid(ParameterDataAsset))
 	{
-		MaxHealthPoint = ParameterDataAsset->RabbitMaxHealthPoint;
-		HealthPoint = MaxHealthPoint;
+		MaxHP = ParameterDataAsset->RabbitMaxHealthPoint;
+		CurrentHP = MaxHP;
 		AttackPower = ParameterDataAsset->RabbitAttackPower;
 		AttackRange = ParameterDataAsset->RabbitAttackRange;
-		AttackSpeed = ParameterDataAsset->RabbitAttackSpeed;
+		AttackRate = ParameterDataAsset->RabbitAttackRate;
 	}
 
 	// TODO: 모델링 작업 완료되면 활성화

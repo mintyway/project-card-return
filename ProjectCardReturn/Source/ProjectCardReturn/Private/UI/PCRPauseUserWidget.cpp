@@ -37,7 +37,6 @@ void UPCRPauseUserWidget::HandleResumeClicked()
 	if (APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(GetOwningPlayer()))
 	{
 		EricaPlayerController->SetPause(false);
-		EricaPlayerController->DisableUIInputMode();
 
 		RemoveFromParent();
 	}
@@ -48,7 +47,6 @@ void UPCRPauseUserWidget::HandleRestartClicked()
 	if (APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(GetOwningPlayer()))
 	{
 		EricaPlayerController->SetPause(false);
-		EricaPlayerController->DisableUIInputMode();
 	
 		RemoveFromParent();
 	}

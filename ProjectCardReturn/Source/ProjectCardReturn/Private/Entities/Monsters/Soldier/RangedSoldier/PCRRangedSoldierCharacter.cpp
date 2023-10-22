@@ -15,11 +15,11 @@ APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 {
 	if (IsValid(ParameterDataAsset))
 	{
-		MaxHealthPoint = ParameterDataAsset->RangedSoldierMaxHealthPoint;
-		HealthPoint = MaxHealthPoint;
+		MaxHP = ParameterDataAsset->RangedSoldierMaxHP;
+		CurrentHP = MaxHP;
 		AttackPower = ParameterDataAsset->RangedSoldierAttackPower;
 		AttackRange = ParameterDataAsset->RangedSoldierAttackRange;
-		AttackSpeed = ParameterDataAsset->RangedSoldierAttackSpeed;
+		AttackRate = ParameterDataAsset->RangedSoldierAttackRate;
 	}
 	
 	// TODO: 모델링 작업 완료되면 활성화
