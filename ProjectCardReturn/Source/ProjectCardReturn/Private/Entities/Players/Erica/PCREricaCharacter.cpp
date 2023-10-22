@@ -19,6 +19,7 @@
 #include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
+#include "GameFramework/GameModeBase.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
@@ -30,7 +31,7 @@ APCREricaCharacter::APCREricaCharacter()
 	MaxHP = 100.f;
 	CurrentHP = MaxHP;
 	bIsAlive = true;
-	
+
 	MovementKeys = {EKeys::W, EKeys::S, EKeys::D, EKeys::A};
 	CurrentShootMode = ShootMode::Normal;
 	bCanRapidShot = true;
@@ -146,23 +147,20 @@ void APCREricaCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	// 데이터 에셋의 nullptr여부를 체크합니다.
+	// 생성자에서 체크하지 않는 이유는 생성자는 게임을 시작한 상황이 아닌 일반 에디터 상황에서도 호출될 수 있고 이 상황이 nullptr일 수 있기 때문입니다.
+	check(EricaDataAsset);
+	
 	// 카드 풀을 생성하는 코드입니다.
-	RETURN_IF_INVALID(IsValid(GetWorld()));
+	check(GetWorld());
 	CardPool = GetWorld()->SpawnActor<APCREricaCardProjectilePool>(FVector::ZeroVector, FRotator::ZeroRotator);
-	RETURN_IF_INVALID(IsValid(CardPool));
+	check(CardPool);
 	CardPool->InitProjectilePool(APCREricaCardProjectile::StaticClass());
 
+	// 애님 인스턴스를 캐싱해두는 코드입니다.
 	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
-	if (!AnimInstance)
-	{
-		NULL_POINTER_EXCEPTION(AnimInstance);
-	}
-
 	CachedEricaAnimInstance = Cast<UPCREricaAnimInstance>(AnimInstance);
-	if (!CachedEricaAnimInstance)
-	{
-		NULL_POINTER_EXCEPTION(CachedEricaAnimInstance);
-	}
+	check(CachedEricaAnimInstance)
 }
 
 void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -171,10 +169,11 @@ void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		RETURN_IF_INVALID(EricaDataAsset)
 		EnhancedInputComponent->BindAction(EricaDataAsset->MoveInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::Move);
 		EnhancedInputComponent->BindAction(EricaDataAsset->DashInputAction, ETriggerEvent::Started, this, &APCREricaCharacter::Dash);
 		EnhancedInputComponent->BindAction(EricaDataAsset->ChangeInputAction, ETriggerEvent::Started, this, &APCREricaCharacter::Change);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::ShootCard);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::ReturnCard);
 	}
 }
 
@@ -184,7 +183,7 @@ void APCREricaCharacter::PossessedBy(AController* NewController)
 
 	// 사용중인 컨트롤러를 캐싱해두는 코드입니다.
 	CachedEricaPlayerController = Cast<APCREricaPlayerController>(NewController);
-	RETURN_IF_INVALID(CachedEricaPlayerController);
+	check(CachedEricaPlayerController);
 }
 
 void APCREricaCharacter::BeginPlay()
@@ -195,6 +194,16 @@ void APCREricaCharacter::BeginPlay()
 void APCREricaCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// 만약 플레이어가 죽었다면 Tick 함수 내 어떠한 동작도 수행하지 않도록 합니다.
+	if (!bIsAlive)
+	{
+		return;
+	}
+
+	// 플레이어가 항상 마우스 방향을 바라보도록 합니다.
+	const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(CachedEricaPlayerController->GetMouseDirection()).Rotator();
+	SetActorRotation(MouseDirectionRotator);
 
 	if (bIsDashing)
 	{
@@ -273,7 +282,7 @@ void APCREricaCharacter::Move(const FInputActionValue& InputActionValue)
 	{
 		return;
 	}
-	
+
 	FVector2D MoveScalar = InputActionValue.Get<FVector2D>();
 	MoveScalar.Normalize();
 
@@ -332,7 +341,6 @@ void APCREricaCharacter::NormalShot()
 			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, RapidShotCooldownTime, false);
 		}
 
-		RETURN_IF_INVALID(CachedEricaPlayerController);
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		HandleShootCard(MouseDirection, ParameterDataAsset->EricaCardNormalShotRange);
 	}
@@ -371,7 +379,6 @@ void APCREricaCharacter::BuckShot()
 
 void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 {
-	RETURN_IF_INVALID(CardPool);
 	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardPool->Acquire());
 	if (CardProjectile)
 	{
@@ -415,7 +422,7 @@ void APCREricaCharacter::Dash()
 	{
 		return;
 	}
-	
+
 	if (bCanDash)
 	{
 		bCanDash = false;
@@ -435,7 +442,6 @@ void APCREricaCharacter::Dash()
 
 		CachedDashStartLocation = GetActorLocation();
 
-		RETURN_IF_INVALID(IsValid(CachedEricaPlayerController));
 		bool bAnyMovementKeyDown = false;
 		for (const auto& MovementKey : MovementKeys)
 		{
@@ -551,7 +557,7 @@ void APCREricaCharacter::HandleDead()
 	UE_LOG(PCRLogEricaCharacter, Log, TEXT("%s 주인공 캐릭터가 죽었습니다."), *this->GetName());
 
 	bIsAlive = false;
-	
+	DisableInput(CachedEricaPlayerController);
 	
 	OnDead.Broadcast();
 }

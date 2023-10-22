@@ -49,9 +49,6 @@ void APCREricaPlayerController::SetupInputComponent()
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		RETURN_IF_INVALID(EricaDataAsset);
-		EnhancedInputComponent->BindAction(EricaDataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Shoot);
-		EnhancedInputComponent->BindAction(EricaDataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaPlayerController::Return);
 		EnhancedInputComponent->BindAction(EricaDataAsset->MenuInputAction, ETriggerEvent::Started, this, &APCREricaPlayerController::GamePause);
 	}
 }
@@ -79,18 +76,6 @@ void APCREricaPlayerController::BeginPlay()
 	{
 		RETURN_IF_INVALID(IsValid(EricaDataAsset));
 		Subsystem->AddMappingContext(EricaDataAsset->DefaultInputMappingContext, 0);
-	}
-}
-
-void APCREricaPlayerController::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (bUseCharacterRotationByCursorDirection && CachedEricaCharacter->GetIsAlive())
-	{
-		const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(GetMouseDirection()).Rotator();
-		RETURN_IF_INVALID(IsValid(CachedEricaCharacter));
-		CachedEricaCharacter->SetActorRotation(MouseDirectionRotator);
 	}
 }
 
@@ -128,38 +113,13 @@ void APCREricaPlayerController::DisableUIInputMode()
 	bUseCharacterRotationByCursorDirection = true;
 }
 
-void APCREricaPlayerController::Shoot()
-{
-	if (!CachedEricaCharacter->GetIsAlive())
-	{
-		return;
-	}
-	
-	CachedEricaCharacter->ShootCard();
-}
-
-void APCREricaPlayerController::Return()
-{
-	if (!CachedEricaCharacter->GetIsAlive())
-	{
-		return;
-	}
-	
-	CachedEricaCharacter->ReturnCard();
-}
-
 void APCREricaPlayerController::GamePause()
 {
 	PauseUserWidget = CreateWidget<UPCRPauseUserWidget>(this, PauseUserWidgetClass);
-	if (PauseUserWidget)
-	{
-		PauseUserWidget->AddToViewport(3);
+	check(PauseUserWidget);
 
-		SetPause(true);
-		EnableUIInputMode();
-	}
-	else
-	{
-		NULL_POINTER_EXCEPTION(PauseUserWidget);
-	}
+	PauseUserWidget->AddToViewport(3);
+
+	SetPause(true);
+	EnableUIInputMode();
 }

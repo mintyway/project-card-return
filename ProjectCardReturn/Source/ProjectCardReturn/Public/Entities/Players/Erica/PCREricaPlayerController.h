@@ -26,7 +26,6 @@ protected:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	FVector GetMouseDirection() const;
@@ -34,8 +33,6 @@ public:
 	void DisableUIInputMode();
 
 private:
-	void Shoot();
-	void Return();
 	void GamePause();
 
 	UPROPERTY()
