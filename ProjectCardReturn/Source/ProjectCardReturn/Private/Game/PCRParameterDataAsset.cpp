@@ -4,7 +4,7 @@
 #include "Game/PCRParameterDataAsset.h"
 
 UPCRParameterDataAsset::UPCRParameterDataAsset()
-	: bIsMonsterSpawn(true),
+	: bIsMonsterSpawn(true), SpawnerGenerateInterval(10.f),
 
 	  CameraFOV(60.f), CameraDistance(2000.f), CameraPitch(38.f), CameraOffset(-125.0), CameraLagSpeed(18.f), CameraLagMaxDistance(100.f),
 

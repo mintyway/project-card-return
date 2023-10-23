@@ -21,6 +21,9 @@ public: // 게임
 	UPROPERTY(EditAnywhere, Category = "Game")
 	uint32 bIsMonsterSpawn : 1;
 
+	UPROPERTY(EditAnywhere, Category = "Game")
+	float SpawnerGenerateInterval;
+
 public: // 카메라
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraFOV;

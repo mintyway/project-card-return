@@ -191,7 +191,7 @@ void APCRMonsterBaseCharacter::HandleDead()
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
 
-	OnDead.Broadcast();
+	OnDead.Broadcast(this);
 }
 
 void APCRMonsterBaseCharacter::DestroyTimeCallback()
