@@ -34,7 +34,7 @@ public: // 동작 섹션
 private: // 내부 함수 섹션
 	void GamePause();
 
-private: // 데이터 섹션
+private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 

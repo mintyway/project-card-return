@@ -15,7 +15,7 @@ class UPCRMonsterDataAsset;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE(FOnHPChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnDeadDelegate);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeadDelegate, APCRMonsterBaseCharacter*);
 
 UCLASS()
 class PROJECTCARDRETURN_API APCRMonsterBaseCharacter : public ACharacter
@@ -31,6 +31,9 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+	                         AController* EventInstigator, AActor* DamageCauser) override;
+
 	virtual void Attack();
 
 	void ChangeHP(float Amount);
@@ -48,9 +51,6 @@ public:
 	FOnDeadDelegate OnDead;
 
 protected:
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	                         AActor* DamageCauser) override;
-
 	virtual void HandleChangeHP();
 	virtual void HandleDead();
 
@@ -71,10 +71,10 @@ protected:
 	float StunTime;
 
 	void DestroyTimeCallback();
-	
+
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
-	
+
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 
