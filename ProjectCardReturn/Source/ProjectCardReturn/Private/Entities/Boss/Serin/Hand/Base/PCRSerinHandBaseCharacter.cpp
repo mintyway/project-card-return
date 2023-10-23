@@ -3,10 +3,20 @@
 
 #include "Entities/Boss/Serin/Hand/Base/PCRSerinHandBaseCharacter.h"
 
+#include "Components/CapsuleComponent.h"
+#include "Entities/Boss/Serin/Base/PCRSerinPrimaryDataAsset.h"
+
 APCRSerinHandBaseCharacter::APCRSerinHandBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// TODO: 모델링 구현시 제거
+	DummyStaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyStaticMeshComponent"));
+	if (SerinDataAsset)
+	{
+		DummyStaticMeshComponent->SetupAttachment(GetCapsuleComponent());
+		DummyStaticMeshComponent->SetStaticMesh(SerinDataAsset->CubeDummyMesh);
+	}
 }
 
 void APCRSerinHandBaseCharacter::BeginPlay()

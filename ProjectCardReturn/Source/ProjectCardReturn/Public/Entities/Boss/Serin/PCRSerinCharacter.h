@@ -22,6 +22,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+private: // 컴포넌트 섹션
+	UPROPERTY(VisibleAnywhere, Category = "Dummy")
+	TObjectPtr<UStaticMeshComponent> DummyMeshComponent; 
+	
 private: // 소유 액터 섹션
 	UPROPERTY()
 	TObjectPtr<APCRSerinLeftHandCharacter> LeftHand;

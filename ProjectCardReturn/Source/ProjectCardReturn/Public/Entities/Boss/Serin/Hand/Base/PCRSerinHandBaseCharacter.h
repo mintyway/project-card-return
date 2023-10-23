@@ -18,4 +18,9 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	// TODO: 더미 스켈레탈 메시 구현시 제거
+	UPROPERTY(VisibleAnywhere, Category = "DummyMeshComponent")
+	TObjectPtr<UStaticMeshComponent> DummyStaticMeshComponent;
 };

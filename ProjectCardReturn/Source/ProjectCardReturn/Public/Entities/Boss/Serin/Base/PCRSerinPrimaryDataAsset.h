@@ -16,5 +16,11 @@ class PROJECTCARDRETURN_API UPCRSerinPrimaryDataAsset : public UPrimaryDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, Category = "DummyMesh")
-	TObjectPtr<UStaticMesh> DummyMesh;
+	TObjectPtr<UStaticMesh> SerinDummyMesh;
+
+	UPROPERTY(EditAnywhere, Category = "DummyMesh")
+	TObjectPtr<UStaticMesh> CubeDummyMesh;
+	
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	TObjectPtr<USkeletalMesh> SerinMesh;
 };
