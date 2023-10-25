@@ -110,7 +110,7 @@ APCREricaCharacter::APCREricaCharacter()
 		CameraBoom->bDoCollisionTest = false;
 		CameraBoom->bEnableCameraLag = true;
 		CameraBoom->TargetArmLength = ParameterDataAsset->CameraDistance;
-		CameraBoom->TargetOffset = FVector(ParameterDataAsset->CameraOffset, 0.0, 0.0);
+		CameraBoom->TargetOffset = FVector(ParameterDataAsset->CameraOffset);
 		CameraBoom->CameraLagSpeed = ParameterDataAsset->CameraLagSpeed;
 		CameraBoom->CameraLagMaxDistance = ParameterDataAsset->CameraLagMaxDistance;
 	}

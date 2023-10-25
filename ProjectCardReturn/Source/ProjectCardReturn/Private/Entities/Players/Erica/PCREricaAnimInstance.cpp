@@ -11,7 +11,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogEricaAnimInstance);
 
-UPCREricaAnimInstance::UPCREricaAnimInstance(): ShouldMove(false), IsDashing(false), GroundSpeed(0.f), LocalVelocityDirectionAngle(0.f), CurrentLocalVelocityDirection(ELocalVelocityDirection::Invalid)
+UPCREricaAnimInstance::UPCREricaAnimInstance(): ShouldMove(false), IsDashing(false), GroundSpeed(0.f), LocalVelocityDirectionAngle(0.f), CurrentLocalVelocityDirection(ELocalVelocityDirection::Invalid), CurrentIdleRotation(EIdleRotation::Invalid)
 {
 	static ConstructorHelpers::FObjectFinder<UPCREricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.PCREricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -26,7 +26,6 @@ void UPCREricaAnimInstance::NativeInitializeAnimation()
 
 	CachedEricaCharacter = Cast<APCREricaCharacter>(GetOwningActor());
 	CachedCharacterMovement = CachedEricaCharacter ? CachedEricaCharacter->GetCharacterMovement() : nullptr;
-
 }
 
 void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -50,8 +49,12 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(InputDirection, CachedEricaCharacter->GetActorRotation());
 
 	SetLocalVelocityDirectionAngle();
+	SetIdleRotationDirection();
 
+	UE_LOG(PCRLogEricaAnimInstance, Warning, TEXT("%d"), CurrentIdleRotation);
+	
 	IsDashing = CachedEricaCharacter->GetIsDashing();
+	LastRotation = CachedEricaCharacter->GetActorRotation();
 }
 
 void UPCREricaAnimInstance::Attack()
@@ -64,13 +67,29 @@ void UPCREricaAnimInstance::SetLocalVelocityDirectionAngle()
 {
 	const float ABSLocalVelocityDirectionAngle = FMath::Abs(LocalVelocityDirectionAngle);
 
-	if (ABSLocalVelocityDirectionAngle <= 60)
+	if (ABSLocalVelocityDirectionAngle <= 22.5f)
 	{
 		CurrentLocalVelocityDirection = ELocalVelocityDirection::Forward;
 	}
-	else if (ABSLocalVelocityDirectionAngle >= 120)
+	else if (ABSLocalVelocityDirectionAngle >= 157.5f)
 	{
 		CurrentLocalVelocityDirection = ELocalVelocityDirection::Backward;
+	}
+	else if (22.5f < LocalVelocityDirectionAngle && LocalVelocityDirectionAngle <= 67.5f)
+	{
+		CurrentLocalVelocityDirection = ELocalVelocityDirection::ForwardRight;
+	}
+	else if (-22.5f > LocalVelocityDirectionAngle && LocalVelocityDirectionAngle >= -67.5f)
+	{
+		CurrentLocalVelocityDirection = ELocalVelocityDirection::ForwardLeft;
+	}
+	else if (112.5f < LocalVelocityDirectionAngle && LocalVelocityDirectionAngle <= 157.5f)
+	{
+		CurrentLocalVelocityDirection = ELocalVelocityDirection::BackwardRight;
+	}
+	else if (-112.5f > LocalVelocityDirectionAngle && LocalVelocityDirectionAngle >= -157.5)
+	{
+		CurrentLocalVelocityDirection = ELocalVelocityDirection::BackwardLeft;
 	}
 	else if (LocalVelocityDirectionAngle >= 0)
 	{
@@ -79,5 +98,22 @@ void UPCREricaAnimInstance::SetLocalVelocityDirectionAngle()
 	else
 	{
 		CurrentLocalVelocityDirection = ELocalVelocityDirection::Left;
+	}
+}
+
+void UPCREricaAnimInstance::SetIdleRotationDirection()
+{
+	const FRotator DeltaRotation = CachedEricaCharacter->GetActorRotation() - LastRotation;
+	if (DeltaRotation == FRotator::ZeroRotator)
+	{
+		CurrentIdleRotation = EIdleRotation::None;
+	}
+	else if (DeltaRotation.Yaw > 0.0)
+	{
+		CurrentIdleRotation = EIdleRotation::Right;
+	}
+	else
+	{
+		CurrentIdleRotation = EIdleRotation::Left;
 	}
 }

@@ -32,7 +32,8 @@ UENUM()
 enum class ShootMode : uint8
 {
 	Normal,
-	Buckshot
+	NarrowShot,
+	WideShot
 };
 
 UCLASS()
@@ -87,6 +88,7 @@ private: // 내부 함수 섹션
 
 	void HandleShootMode();
 	void NormalShot();
+	void NarrowShot();
 	void BuckShot();
 	void HandleShootCard(const FVector& Direction, float Range);
 	void Change();

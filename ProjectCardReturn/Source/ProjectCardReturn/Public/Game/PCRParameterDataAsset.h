@@ -35,8 +35,8 @@ public: // 카메라
 	float CameraPitch;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
-	double CameraOffset;
-
+	FVector CameraOffset;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraLagSpeed;
 

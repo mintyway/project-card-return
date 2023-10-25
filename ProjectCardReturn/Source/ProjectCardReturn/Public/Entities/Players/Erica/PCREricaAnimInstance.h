@@ -11,13 +11,26 @@ class UCharacterMovementComponent;
 class APCREricaCharacter;
 
 UENUM(BlueprintType)
+enum class EIdleRotation : uint8
+{
+	None,
+	Left,
+	Right,
+	Invalid
+};
+
+UENUM(BlueprintType)
 enum class ELocalVelocityDirection : uint8
 {
 	Forward,
-	Backward,
+	ForwardRight,
 	Right,
+	BackwardRight,
+	Backward,
+	BackwardLeft,
 	Left,
-	Invalid,
+	ForwardLeft,
+	Invalid
 };
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaAnimInstance, Log, All);
@@ -48,7 +61,9 @@ protected:
 	
 private:
 	void SetLocalVelocityDirectionAngle();
-	
+	void SetIdleRotationDirection();
+
+private:
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	uint32 ShouldMove:1;
 
@@ -73,9 +88,15 @@ private:
 	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	ELocalVelocityDirection CurrentLocalVelocityDirection;
 	
+	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
+	EIdleRotation CurrentIdleRotation;
+	
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
 
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CachedCharacterMovement;
+
+	
+	FRotator LastRotation;
 };
