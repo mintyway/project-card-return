@@ -51,8 +51,6 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	SetLocalVelocityDirectionAngle();
 	SetIdleRotationDirection();
 
-	UE_LOG(PCRLogEricaAnimInstance, Warning, TEXT("%d"), CurrentIdleRotation);
-	
 	IsDashing = CachedEricaCharacter->GetIsDashing();
 	LastRotation = CachedEricaCharacter->GetActorRotation();
 }

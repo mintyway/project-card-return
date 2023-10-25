@@ -89,8 +89,9 @@ private: // 내부 함수 섹션
 	void HandleShootMode();
 	void NormalShot();
 	void NarrowShot();
+	void HandleNarrowShot(FVector StartLocation, FVector MouseDirection);
 	void BuckShot();
-	void HandleShootCard(const FVector& Direction, float Range);
+	void HandleShootCard(const FVector& StartLocation, const FVector& Direction, float Range);
 	void Change();
 
 	void ReturnCardCooldownTimerCallback();
@@ -183,4 +184,7 @@ private: // 카드 섹션
 	
 	int32 MultiShotCount;
 	float MultiShotAngle;
+
+	int32 NarrowShotElapsedCount;
+	int32 NarrowShotCount;
 };

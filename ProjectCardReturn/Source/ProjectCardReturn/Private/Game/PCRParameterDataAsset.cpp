@@ -8,7 +8,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  CameraFOV(30.f), CameraDistance(3000.f), CameraPitch(25.f), CameraOffset(0.0, 0.0, 0.0), CameraLagSpeed(18.f), CameraLagMaxDistance(100.f),
 
-	  EricaMaxHP(100.f), EricaMoveSpeed(750.f), EricaCardCount(9), EricaSingleShotFiringRate(1.25f), EricaMultiShotFiringRate(1.5f), EricaRecallCooldownTime(1.f), EricaSingleShotForwardDamage(1.f), EricaSingleShotBackwardDamage(2.5f), EricaMultiShotForwardDamage(0.5f), EricaMultiShotBackwardDamage(1.5f),
+	  EricaMaxHP(100.f), EricaMoveSpeed(750.f), EricaCardCount(15), EricaSingleShotFiringRate(2.f), EricaMultiShotFiringRate(2.f), EricaRecallCooldownTime(1.f), EricaSingleShotForwardDamage(1.f), EricaSingleShotBackwardDamage(2.5f), EricaMultiShotForwardDamage(0.5f), EricaMultiShotBackwardDamage(1.5f),
 
 	  EricaDashCooldownTime(1.f), EricaDashDistance(500.f), EricaMaxDashTime(0.1f),
 

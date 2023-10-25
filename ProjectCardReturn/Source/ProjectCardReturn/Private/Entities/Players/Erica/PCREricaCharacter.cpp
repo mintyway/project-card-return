@@ -23,7 +23,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
-APCREricaCharacter::APCREricaCharacter()
+APCREricaCharacter::APCREricaCharacter() : NarrowShotElapsedCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
@@ -46,19 +46,21 @@ APCREricaCharacter::APCREricaCharacter()
 	{
 		EricaDataAsset = DA_Erica.Object;
 	}
-	
+
 	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
 	if (DA_Parameter.Succeeded())
 	{
 		ParameterDataAsset = DA_Parameter.Object;
 	}
-	
+
 	if (ParameterDataAsset)
 	{
 		MaxHP = ParameterDataAsset->EricaMaxHP;
 		CurrentHP = MaxHP;
 		MultiShotCount = ParameterDataAsset->EricaMultiShotCount;
 		MultiShotAngle = ParameterDataAsset->EricaMultiShotAngle;
+		// TODO: 파라미터화 필요
+		NarrowShotCount = 3;
 		SingleShotForwardDamage = ParameterDataAsset->EricaSingleShotForwardDamage;
 		SingleShotBackwardDamage = ParameterDataAsset->EricaSingleShotBackwardDamage;
 		MultiShotForwardDamage = ParameterDataAsset->EricaMultiShotForwardDamage;
@@ -72,25 +74,25 @@ APCREricaCharacter::APCREricaCharacter()
 		MaxCardCount = ParameterDataAsset->EricaCardCount;
 		CurrentCardCount = MaxCardCount;
 	}
-	
+
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		GetCapsuleComponent()->InitCapsuleSize(30.f, 75.f);
 	}
-	
+
 	if (GetMesh() && EricaDataAsset)
 	{
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	
+
 		if (UClass* EricaAnimationBlueprint = EricaDataAsset->AnimationBlueprint.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(EricaAnimationBlueprint);
 		}
 	}
-	
+
 	if (GetCharacterMovement() && ParameterDataAsset)
 	{
 		GetCharacterMovement()->BrakingFriction = 1.f;
@@ -98,7 +100,7 @@ APCREricaCharacter::APCREricaCharacter()
 		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->EricaMoveSpeed;
 		GetCharacterMovement()->RotationRate = FRotator(0.0, 720.0, 0.0);
 	}
-	
+
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	if (CameraBoom && ParameterDataAsset)
 	{
@@ -114,14 +116,14 @@ APCREricaCharacter::APCREricaCharacter()
 		CameraBoom->CameraLagSpeed = ParameterDataAsset->CameraLagSpeed;
 		CameraBoom->CameraLagMaxDistance = ParameterDataAsset->CameraLagMaxDistance;
 	}
-	
+
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	if (FollowCamera && ParameterDataAsset)
 	{
 		FollowCamera->SetupAttachment(CameraBoom);
 		FollowCamera->SetFieldOfView(ParameterDataAsset->CameraFOV);
 	}
-	
+
 	AimingPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AimingPlane"));
 	if (AimingPlane && EricaDataAsset)
 	{
@@ -134,7 +136,7 @@ APCREricaCharacter::APCREricaCharacter()
 		AimingPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel5, ECR_Block);
 		AimingPlane->SetHiddenInGame(true);
 	}
-	
+
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
 	if (DashNiagaraComponent && EricaDataAsset)
 	{
@@ -310,7 +312,12 @@ void APCREricaCharacter::HandleShootMode()
 			NormalShot();
 			break;
 		}
-		case ShootMode::Buckshot:
+		case ShootMode::NarrowShot:
+		{
+			NarrowShot();
+			break;
+		}
+		case ShootMode::WideShot:
 		{
 			BuckShot();
 			break;
@@ -343,10 +350,64 @@ void APCREricaCharacter::NormalShot()
 			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
 		}
 
+		// TODO: 애님노티파이로 변경 필요
+		if (CachedEricaAnimInstance)
+		{
+			CachedEricaAnimInstance->Attack();
+		}
+		
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
-		HandleShootCard(MouseDirection, ParameterDataAsset->EricaSingleShotRange);
+		HandleShootCard(GetActorLocation(), MouseDirection, ParameterDataAsset->EricaSingleShotRange);
 	}
 }
+
+// TODO: 임시구현
+void APCREricaCharacter::NarrowShot()
+{
+	if (bCanSingleShot)
+	{
+		// 연사속도를 0으로 주면 쿨타임을 제거합니다.
+		if (SingleShotFiringRate > SMALL_NUMBER)
+		{
+			bCanSingleShot = false;
+			bCanMultiShot = false;
+
+			FTimerHandle ShotCooldownTimerHandle;
+			FTimerDelegate ShotCooldownTimerDelegate;
+			ShotCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::ShotCooldownTimerCallback);
+
+			const float CoolDownTime = 1.f / SingleShotFiringRate;
+			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
+		}
+
+		// TODO: 애님노티파이로 변경 필요
+		if (CachedEricaAnimInstance)
+		{
+			CachedEricaAnimInstance->Attack();
+		}
+		
+		FTimerDelegate NarrowShotDelayDelegate;
+		const float NarrowShotRate = 0.1f;
+		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		HandleNarrowShot(GetActorLocation(), MouseDirection);
+		TArray<FVector> ShotDirections;
+		ShotDirections.Emplace(GetActorLocation() + GetActorRightVector() * 30);
+		ShotDirections.Emplace(GetActorLocation() - GetActorRightVector() * 30);
+		for (int32 i = 1; i < NarrowShotCount; ++i)
+		{
+			FTimerHandle NarrowShotDelayHandle;
+			NarrowShotDelayDelegate.BindUObject(this, &APCREricaCharacter::HandleNarrowShot, ShotDirections[i - 1], MouseDirection);
+			GetWorldTimerManager().SetTimer(NarrowShotDelayHandle, NarrowShotDelayDelegate, NarrowShotRate * i, false);
+		}
+	}
+}
+
+// ReSharper disable CppPassValueParameterByConstReference
+void APCREricaCharacter::HandleNarrowShot(FVector StartLocation, FVector MouseDirection)
+{
+	HandleShootCard(StartLocation, MouseDirection, ParameterDataAsset->EricaSingleShotRange);
+}
+// ReSharper restore CppPassValueParameterByConstReference
 
 /**
  * 벅샷 모드의 발사입니다.
@@ -369,6 +430,12 @@ void APCREricaCharacter::BuckShot()
 			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
 		}
 
+		// TODO: 애님노티파이로 변경 필요
+		if (CachedEricaAnimInstance)
+		{
+			CachedEricaAnimInstance->Attack();
+		}
+
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		const float DegreeInterval = MultiShotAngle / (MultiShotCount - 1);
 
@@ -377,12 +444,12 @@ void APCREricaCharacter::BuckShot()
 			const float CurrentRotation = -MultiShotAngle / 2 + DegreeInterval * i;
 			FQuat QuatRotation = FQuat::MakeFromEuler(FVector(0.0, 0.0, CurrentRotation));
 			FVector CurrentDirection = QuatRotation.RotateVector(MouseDirection);
-			HandleShootCard(CurrentDirection, ParameterDataAsset->EricaMultiShotRange);
+			HandleShootCard(GetActorLocation(), CurrentDirection, ParameterDataAsset->EricaMultiShotRange);
 		}
 	}
 }
 
-void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
+void APCREricaCharacter::HandleShootCard(const FVector& StartLocation, const FVector& Direction, float Range)
 {
 	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardProjectilePool->Acquire());
 	if (CardProjectile)
@@ -395,9 +462,15 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 				CardProjectile->SetDamage(SingleShotForwardDamage, SingleShotBackwardDamage);
 				break;
 			}
-			case ShootMode::Buckshot:
+			case ShootMode::NarrowShot:
 			{
-				CardProjectile->SetDamage(MultiShotForwardDamage, MultiShotBackwardDamage);
+				// TODO: 임시로 와이드샷의 데미지를 가져옴
+				CardProjectile->SetDamage(MultiShotForwardDamage, MultiShotForwardDamage);
+				break;
+			}
+			case ShootMode::WideShot:
+			{
+				CardProjectile->SetDamage(MultiShotForwardDamage, MultiShotForwardDamage);
 				break;
 			}
 			default:
@@ -406,12 +479,7 @@ void APCREricaCharacter::HandleShootCard(const FVector& Direction, float Range)
 			}
 		}
 		CardProjectile->SetRange(Range);
-		CardProjectile->LaunchProjectile(this, GetActorLocation(), Direction);
-
-		if (CachedEricaAnimInstance)
-		{
-			CachedEricaAnimInstance->Attack();
-		}
+		CardProjectile->LaunchProjectile(this, StartLocation, Direction);
 	}
 
 	HandleChangeCardCount();
@@ -494,10 +562,15 @@ void APCREricaCharacter::Change()
 	{
 		case ShootMode::Normal:
 		{
-			CurrentShotMode = ShootMode::Buckshot;
+			CurrentShotMode = ShootMode::NarrowShot;
 			break;
 		}
-		case ShootMode::Buckshot:
+		case ShootMode::NarrowShot:
+		{
+			CurrentShotMode = ShootMode::WideShot;
+			break;
+		}
+		case ShootMode::WideShot:
 		{
 			CurrentShotMode = ShootMode::Normal;
 			break;
