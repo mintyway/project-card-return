@@ -501,7 +501,7 @@ void APCREricaCharacter::Dash()
 		bCanDash = false;
 		bIsDashing = true;
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-		DashNiagaraComponent->ActivateSystem();
+		
 		FTimerHandle DashCooldownTimerHandle;
 		FTimerDelegate DashCooldownTimerDelegate;
 		DashCooldownTimerDelegate.BindUObject(this, &APCREricaCharacter::DashCooldownTimerCallback);
@@ -534,7 +534,10 @@ void APCREricaCharacter::Dash()
 			CachedDashDirection = CachedEricaPlayerController->GetMouseDirection();
 		}
 
-		SetActorRotation(FRotationMatrix::MakeFromX(CachedDashDirection).Rotator());
+		const FRotator DashRotation = FRotationMatrix::MakeFromX(CachedDashDirection).Rotator();
+		DashNiagaraComponent->SetWorldRotation(DashRotation);
+		DashNiagaraComponent->ActivateSystem();
+		SetActorRotation(DashRotation);
 	}
 }
 
