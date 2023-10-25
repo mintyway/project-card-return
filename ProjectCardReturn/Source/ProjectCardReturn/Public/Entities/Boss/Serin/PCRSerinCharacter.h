@@ -24,7 +24,7 @@ protected:
 
 private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Dummy")
-	TObjectPtr<UStaticMeshComponent> DummyMeshComponent; 
+	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
 	
 private: // 소유 액터 섹션
 	UPROPERTY()

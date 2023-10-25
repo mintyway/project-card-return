@@ -28,6 +28,7 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 	if (GetMesh() && MonsterDataAsset)
 	{
 		GetMesh()->SetSkeletalMesh(MonsterDataAsset->RabbitMesh);
+		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0, 0.0, -86.5), FRotator(0.0, -90.0, 0.0));
 		
 		if (UClass* AnimationBlueprint = MonsterDataAsset->RabbitAnimationBlueprint.LoadSynchronous())
 		{
