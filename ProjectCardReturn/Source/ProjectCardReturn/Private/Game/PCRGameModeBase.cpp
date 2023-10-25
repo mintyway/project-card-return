@@ -63,10 +63,13 @@ void APCRGameModeBase::BeginPlay()
 	// 태그로 Lift를 찾는 코드입니다.
 	TArray<AActor*> ActorsWithTag;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Lift")), ActorsWithTag);
-	APCRLiftActor* Lift = Cast<APCRLiftActor>(ActorsWithTag[0]);
-	if (Lift)
+	if (!ActorsWithTag.IsEmpty())
 	{
-		LiftActor = Lift;
+		APCRLiftActor* Lift = Cast<APCRLiftActor>(ActorsWithTag[0]);
+		if (Lift)
+		{
+			LiftActor = Lift;
+		}
 	}
 
 	SpawnMonsterGenerators();
