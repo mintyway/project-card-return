@@ -192,12 +192,12 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	if (DotResult <= 0)
 	{
 		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 %s와 정면으로 충돌했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName());
-		// TODO: 현재는 해당 액터가 밀리면서 여러번 오버랩될 수 있는 상황입니다. 나중에 충돌 당하는 액터에게 오버랩 쿨타임을 구현해 이를 막아야합니다.
+
+		// 만약 대상이 몬스터인 경우 넉백을 발생시키는 코드입니다.
 		APCRMonsterBaseCharacter* MonsterCharacter = Cast<APCRMonsterBaseCharacter>(OtherCharacter);
 		if (MonsterCharacter)
 		{
-			MonsterCharacter->HitStop();
-			MonsterCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 1000.f, true, false);
+			MonsterCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 1500.f, true, false);
 		}
 
 		const APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());

@@ -158,6 +158,10 @@ float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 		return ActualDamage;
 	}
 
+	HitStop();
+	// TODO: 나중에 델리게이트 만들어서 애님 인스턴스 내부에서 처리하도록 변경해야함.
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+	
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	ChangeHP(-ActualDamage);
 	return ActualDamage;
