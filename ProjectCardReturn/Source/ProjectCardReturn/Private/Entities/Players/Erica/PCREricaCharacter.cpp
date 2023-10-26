@@ -223,7 +223,6 @@ void APCREricaCharacter::Tick(float DeltaTime)
 	}
 }
 
-// TODO: 공격 구현중
 /**
  * 카드를 발사합니다.
  */
@@ -277,11 +276,9 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 void APCREricaCharacter::Attack()
 {
 	LastMouseClickedLocation = CachedEricaPlayerController->GetMouseDirection();
-	
+
 	if (bCanAttack)
 	{
-		UE_LOG(PCRLogEricaCharacter, Warning, TEXT("애니메이션 시작"));
-
 		CachedEricaAnimInstance->PlayAttackMontage();
 
 		FOnMontageEnded AttackEndedDelegate;
@@ -322,7 +319,6 @@ void APCREricaCharacter::HandleOnChainEnd()
 
 void APCREricaCharacter::HandleOnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	UE_LOG(PCRLogEricaCharacter, Warning, TEXT("애니메이션 종료"));
 	bCanAttack = true;
 	CurrentCombo = 0;
 	bIsAttackKeyPressed = false;
@@ -400,12 +396,7 @@ void APCREricaCharacter::NarrowShot()
 			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
 		}
 
-		// TODO: 애님노티파이로 변경 필요
-		// if (CachedEricaAnimInstance)
-		// {
-		// 	CachedEricaAnimInstance->PlayAttackMontage();
-		// }
-
+		// TODO: 공격 방향고민중
 		// 첫발을 먼저 발사합니다.
 		// FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		FVector MouseDirection = LastMouseClickedLocation;
@@ -454,12 +445,7 @@ void APCREricaCharacter::WideShot()
 			GetWorldTimerManager().SetTimer(ShotCooldownTimerHandle, ShotCooldownTimerDelegate, CoolDownTime, false);
 		}
 
-		// TODO: 애님노티파이로 변경 필요
-		// if (CachedEricaAnimInstance)
-		// {
-		// 	CachedEricaAnimInstance->PlayAttackMontage();
-		// }
-
+		// TODO: 공격 방향고민중
 		// const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		const FVector MouseDirection = LastMouseClickedLocation;
 		const float DegreeInterval = WideShotAngle / (WideShotCount - 1);

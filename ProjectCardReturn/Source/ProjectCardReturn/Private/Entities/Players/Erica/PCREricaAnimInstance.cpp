@@ -62,18 +62,12 @@ void UPCREricaAnimInstance::PlayAttackMontage()
 
 void UPCREricaAnimInstance::JumpToAttackMontageSection(int32 InSectionNumber)
 {
-	bool Test = Montage_IsPlaying(EricaDataAsset->AttackAnimationMontage);
-	if (Test)
+	if (Montage_IsPlaying(EricaDataAsset->AttackAnimationMontage))
 	{
 		const FString SectionString = FString::Printf(TEXT("Combo%d"), InSectionNumber);
 		const FName SectionName(SectionString);
 		Montage_JumpToSection(SectionName, EricaDataAsset->AttackAnimationMontage);
 		UE_LOG(LogTemp, Warning, TEXT("SectionNumber: %d"), InSectionNumber);
-	}
-
-	if (InSectionNumber == 4)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Text"));
 	}
 }
 
