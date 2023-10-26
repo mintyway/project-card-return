@@ -36,7 +36,7 @@ public: // 카메라
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	FVector CameraOffset;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraLagSpeed;
 
@@ -52,7 +52,7 @@ public: // 에리카 스탯
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	int32 EricaCardCount;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaNarrowShotFiringRate;
 
@@ -99,6 +99,9 @@ public: // 에리카 카드
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaWideShotRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaCardKnockBackPower;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardReleaseRange;

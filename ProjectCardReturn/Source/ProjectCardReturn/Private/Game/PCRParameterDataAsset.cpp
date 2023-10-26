@@ -8,9 +8,9 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  CameraFOV(30.f), CameraDistance(3500.f), CameraPitch(25.f), CameraOffset(0.0, 0.0, 0.0), CameraLagSpeed(18.f), CameraLagMaxDistance(100.f),
 
-	  EricaMaxHP(100.f), EricaMoveSpeed(750.f), EricaCardCount(15), EricaNarrowShotFiringRate(2.f), EricaWideShotFiringRate(2.f), EricaRecallCooldownTime(1.f), EricaNarrowShotForwardDamage(1.f), EricaNarrowShotBackwardDamage(2.5f), EricaWideShotForwardDamage(0.5f), EricaWideShotBackwardDamage(1.5f),
+	  EricaMaxHP(100.f), EricaMoveSpeed(750.f), EricaCardCount(15), EricaNarrowShotFiringRate(2.f), EricaWideShotFiringRate(2.f), EricaRecallCooldownTime(1.f), EricaNarrowShotForwardDamage(1.f), EricaNarrowShotBackwardDamage(2.f), EricaWideShotForwardDamage(1.5f), EricaWideShotBackwardDamage(3.f),
 
-	  EricaDashCooldownTime(1.f), EricaDashDistance(500.f), EricaMaxDashTime(0.1f), EricaWideShotAngle(30.f), EricaCardSpeed(5000.f), EricaCardReturnSpeed(6000.f), EricaNarrowShotRange(1300.f), EricaWideShotRange(700.f), EricaCardReleaseRange(50.f),
+	  EricaDashCooldownTime(1.f), EricaDashDistance(500.f), EricaMaxDashTime(0.1f), EricaWideShotAngle(30.f), EricaCardSpeed(5000.f), EricaCardReturnSpeed(6000.f), EricaNarrowShotRange(1300.f), EricaWideShotRange(700.f), EricaCardKnockBackPower(1500.f), EricaCardReleaseRange(50.f),
 
 	  DeadAfterDestroyTime(1.f), HitStopTime(0.1f),
 

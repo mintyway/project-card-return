@@ -78,6 +78,7 @@ private: // 데이터
 	float BackwardDamage;
 	float CardReturnSpeed;
 	float CardRange;
+	float KnockBackPower;
 	// 카드가 플레이어로부터 얼마나 가까워지면 회수될지 거리를 나타냅니다.
 	float CardReleaseRange;
 

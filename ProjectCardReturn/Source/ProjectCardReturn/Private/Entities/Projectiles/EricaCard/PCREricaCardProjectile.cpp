@@ -24,6 +24,7 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 		ProjectileSpeed = ParameterDataAsset->EricaCardSpeed;
 		CardReturnSpeed = ParameterDataAsset->EricaCardReturnSpeed;
 		CardRange = ParameterDataAsset->EricaNarrowShotRange;
+		KnockBackPower = ParameterDataAsset->EricaCardKnockBackPower;
 		CardReleaseRange = ParameterDataAsset->EricaCardReleaseRange;
 	}
 
@@ -197,7 +198,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		APCRMonsterBaseCharacter* MonsterCharacter = Cast<APCRMonsterBaseCharacter>(OtherCharacter);
 		if (MonsterCharacter)
 		{
-			MonsterCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 1500.f, true, false);
+			MonsterCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * KnockBackPower, true, false);
 		}
 
 		const APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
