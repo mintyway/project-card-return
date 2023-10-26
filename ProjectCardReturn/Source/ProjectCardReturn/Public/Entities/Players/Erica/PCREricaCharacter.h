@@ -201,6 +201,7 @@ private: // 카드
 	float WideShotAngle;
 
 private: // 공격
+	FVector LastMouseClickedLocation;
 	int32 CurrentCombo;
 	int32 MaxCombo;
 	uint32 bIsAttackKeyPressed:1;

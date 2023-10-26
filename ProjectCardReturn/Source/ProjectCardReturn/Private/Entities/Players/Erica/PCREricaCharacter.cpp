@@ -276,16 +276,18 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 void APCREricaCharacter::Attack()
 {
+	LastMouseClickedLocation = CachedEricaPlayerController->GetMouseDirection();
+	
 	if (bCanAttack)
 	{
 		UE_LOG(PCRLogEricaCharacter, Warning, TEXT("애니메이션 시작"));
 
 		CachedEricaAnimInstance->PlayAttackMontage();
-		
+
 		FOnMontageEnded AttackEndedDelegate;
 		AttackEndedDelegate.BindUObject(this, &APCREricaCharacter::HandleOnAttackMontageEnded);
 		CachedEricaAnimInstance->Montage_SetEndDelegate(AttackEndedDelegate, EricaDataAsset->AttackAnimationMontage);
-		
+
 		CurrentCombo = 1;
 		bCanAttack = false;
 	}
@@ -302,7 +304,7 @@ void APCREricaCharacter::HandleCombo()
 	{
 		CurrentCombo = 1;
 	}
-	
+
 	CachedEricaAnimInstance->JumpToAttackMontageSection(CurrentCombo);
 	bCanChainable = false;
 }
@@ -405,7 +407,8 @@ void APCREricaCharacter::NarrowShot()
 		// }
 
 		// 첫발을 먼저 발사합니다.
-		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		// FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		FVector MouseDirection = LastMouseClickedLocation;
 		HandleNarrowShot(GetActorLocation(), MouseDirection);
 
 		// 좌우 방향에서 2발이 순서대로 발사됩니다.
@@ -457,7 +460,8 @@ void APCREricaCharacter::WideShot()
 		// 	CachedEricaAnimInstance->PlayAttackMontage();
 		// }
 
-		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		// const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
+		const FVector MouseDirection = LastMouseClickedLocation;
 		const float DegreeInterval = WideShotAngle / (WideShotCount - 1);
 
 		for (int32 i = 0; i < WideShotCount; ++i)
