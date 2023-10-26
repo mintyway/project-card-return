@@ -6,7 +6,7 @@
 UPCRParameterDataAsset::UPCRParameterDataAsset()
 	: bIsMonsterSpawn(true), SpawnerGenerateInterval(10.f),
 
-	  CameraFOV(30.f), CameraDistance(3500.f), CameraPitch(25.f), CameraOffset(0.0, 0.0, 0.0), CameraLagSpeed(18.f), CameraLagMaxDistance(100.f),
+	  CameraFOV(40.f), CameraDistance(3500.f), CameraPitch(35.f), CameraOffset(0.0, 0.0, 0.0), CameraLagSpeed(18.f), CameraLagMaxDistance(100.f),
 
 	  EricaMaxHP(100.f), EricaMoveSpeed(750.f), EricaCardCount(15), EricaNarrowShotFiringRate(2.f), EricaWideShotFiringRate(2.f), EricaRecallCooldownTime(1.f), EricaNarrowShotForwardDamage(1.f), EricaNarrowShotBackwardDamage(2.f), EricaWideShotForwardDamage(1.5f), EricaWideShotBackwardDamage(3.f),
 
