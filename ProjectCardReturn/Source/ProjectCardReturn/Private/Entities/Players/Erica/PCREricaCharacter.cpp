@@ -24,11 +24,12 @@
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
 APCREricaCharacter::APCREricaCharacter()
-	: bIsAlive(true), bCanDash(true), bIsDashing(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true),
+	: bIsAlive(true), bCanDash(true), bIsDashing(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true), bCanAttack(true),
 	  CurrentShotMode(ShootMode::NarrowShot),
 	  MovementKeys{EKeys::W, EKeys::S, EKeys::D, EKeys::A},
 	  ElapsedDashTime(0.f),
-	  NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3)
+	  NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3),
+	  CurrentCombo(0), MaxCombo(4), bIsAttackKeyPressed(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
@@ -164,6 +165,9 @@ void APCREricaCharacter::PostInitializeComponents()
 	UAnimInstance* AnimInstance = GetMesh() ? GetMesh()->GetAnimInstance() : nullptr;
 	CachedEricaAnimInstance = Cast<UPCREricaAnimInstance>(AnimInstance);
 	check(CachedEricaAnimInstance)
+
+	CachedEricaAnimInstance->OnChainable.BindUObject(this, &APCREricaCharacter::HandleOnChainable);
+	CachedEricaAnimInstance->OnChainEnd.BindUObject(this, &APCREricaCharacter::HandleOnChainEnd);
 }
 
 void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -175,7 +179,7 @@ void APCREricaCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(EricaDataAsset->MoveInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::Move);
 		EnhancedInputComponent->BindAction(EricaDataAsset->DashInputAction, ETriggerEvent::Started, this, &APCREricaCharacter::Dash);
 		EnhancedInputComponent->BindAction(EricaDataAsset->ChangeInputAction, ETriggerEvent::Started, this, &APCREricaCharacter::Change);
-		EnhancedInputComponent->BindAction(EricaDataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::ShootCard);
+		EnhancedInputComponent->BindAction(EricaDataAsset->ShootInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::Attack);
 		EnhancedInputComponent->BindAction(EricaDataAsset->ReturnInputAction, ETriggerEvent::Triggered, this, &APCREricaCharacter::RecallCard);
 	}
 }
@@ -208,12 +212,18 @@ void APCREricaCharacter::Tick(float DeltaTime)
 	const FRotator MouseDirectionRotator = FRotationMatrix::MakeFromX(CachedEricaPlayerController->GetMouseDirection()).Rotator();
 	SetActorRotation(MouseDirectionRotator);
 
+	if (bCanChainable && bIsAttackKeyPressed)
+	{
+		HandleCombo();
+	}
+
 	if (bIsDashing)
 	{
 		HandleDash(DeltaTime);
 	}
 }
 
+// TODO: 공격 구현중
 /**
  * 카드를 발사합니다.
  */
@@ -262,6 +272,59 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 	ChangeHP(-ActualDamage);
 	return ActualDamage;
+}
+
+void APCREricaCharacter::Attack()
+{
+	if (bCanAttack)
+	{
+		UE_LOG(PCRLogEricaCharacter, Warning, TEXT("애니메이션 시작"));
+
+		CachedEricaAnimInstance->PlayAttackMontage();
+		
+		FOnMontageEnded AttackEndedDelegate;
+		AttackEndedDelegate.BindUObject(this, &APCREricaCharacter::HandleOnAttackMontageEnded);
+		CachedEricaAnimInstance->Montage_SetEndDelegate(AttackEndedDelegate, EricaDataAsset->AttackAnimationMontage);
+		
+		CurrentCombo = 1;
+		bCanAttack = false;
+	}
+	else
+	{
+		bIsAttackKeyPressed = true;
+	}
+}
+
+void APCREricaCharacter::HandleCombo()
+{
+	++CurrentCombo;
+	if (CurrentCombo > MaxCombo)
+	{
+		CurrentCombo = 1;
+	}
+	
+	CachedEricaAnimInstance->JumpToAttackMontageSection(CurrentCombo);
+	bCanChainable = false;
+}
+
+void APCREricaCharacter::HandleOnChainable()
+{
+	bIsAttackKeyPressed = false;
+	bCanChainable = true;
+}
+
+void APCREricaCharacter::HandleOnChainEnd()
+{
+	bCanChainable = false;
+}
+
+void APCREricaCharacter::HandleOnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	UE_LOG(PCRLogEricaCharacter, Warning, TEXT("애니메이션 종료"));
+	bCanAttack = true;
+	CurrentCombo = 0;
+	bIsAttackKeyPressed = false;
+	bCanChainable = false;
 }
 
 /**
@@ -336,10 +399,10 @@ void APCREricaCharacter::NarrowShot()
 		}
 
 		// TODO: 애님노티파이로 변경 필요
-		if (CachedEricaAnimInstance)
-		{
-			CachedEricaAnimInstance->Attack();
-		}
+		// if (CachedEricaAnimInstance)
+		// {
+		// 	CachedEricaAnimInstance->PlayAttackMontage();
+		// }
 
 		// 첫발을 먼저 발사합니다.
 		FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
@@ -364,6 +427,7 @@ void APCREricaCharacter::HandleNarrowShot(FVector StartLocation, FVector MouseDi
 {
 	HandleShootCard(StartLocation, MouseDirection, NarrowShotForwardDamage, NarrowShotBackwardDamage, NarrowShotRange);
 }
+
 // ReSharper restore CppPassValueParameterByConstReference
 
 /**
@@ -388,10 +452,10 @@ void APCREricaCharacter::WideShot()
 		}
 
 		// TODO: 애님노티파이로 변경 필요
-		if (CachedEricaAnimInstance)
-		{
-			CachedEricaAnimInstance->Attack();
-		}
+		// if (CachedEricaAnimInstance)
+		// {
+		// 	CachedEricaAnimInstance->PlayAttackMontage();
+		// }
 
 		const FVector MouseDirection = CachedEricaPlayerController->GetMouseDirection();
 		const float DegreeInterval = WideShotAngle / (WideShotCount - 1);

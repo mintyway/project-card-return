@@ -10,6 +10,8 @@ class UPCREricaDataAsset;
 class UCharacterMovementComponent;
 class APCREricaCharacter;
 
+DECLARE_DELEGATE(FAttackEventSignature);
+
 UENUM(BlueprintType)
 enum class EIdleRotation : uint8
 {
@@ -52,30 +54,51 @@ protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-public:
-	void Attack();
+public: // 동작
+	void PlayAttackMontage();
+	void JumpToAttackMontageSection(int32 InSectionNumber);
+
+public: // 델리게이트
+	FAttackEventSignature OnChainable;
+	FAttackEventSignature OnChainEnd;
 
 protected:
 	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
-	
+
 private:
 	void SetLocalVelocityDirectionAngle();
 	void SetIdleRotationDirection();
 
-private:
+	UFUNCTION()
+	void AnimNotify_Shoot();
+
+	UFUNCTION()
+	void AnimNotify_Chainable();
+
+	UFUNCTION()
+	void AnimNotify_ChainEnd();
+
+private: // 캐시
+	UPROPERTY()
+	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UCharacterMovementComponent> CachedCharacterMovement;
+
+private: // 로코모션
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
-	uint32 ShouldMove:1;
+	uint32 ShouldMove : 1;
 
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
-	uint32 IsDashing:1;
-	
+	uint32 IsDashing : 1;
+
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	FVector Velocity;
 
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	FVector InputDirection;
-	
+
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	FVector EricaCharacterForwardDirection;
 
@@ -87,16 +110,9 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	ELocalVelocityDirection CurrentLocalVelocityDirection;
-	
+
 	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	EIdleRotation CurrentIdleRotation;
-	
-	UPROPERTY()
-	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
 
-	UPROPERTY()
-	TObjectPtr<UCharacterMovementComponent> CachedCharacterMovement;
-
-	
 	FRotator LastRotation;
 };

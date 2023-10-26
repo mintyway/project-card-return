@@ -55,10 +55,26 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	LastRotation = CachedEricaCharacter->GetActorRotation();
 }
 
-void UPCREricaAnimInstance::Attack()
+void UPCREricaAnimInstance::PlayAttackMontage()
 {
 	Montage_Play(EricaDataAsset->AttackAnimationMontage);
-	Montage_JumpToSection(FName(TEXT("Combo1")), EricaDataAsset->AttackAnimationMontage);
+}
+
+void UPCREricaAnimInstance::JumpToAttackMontageSection(int32 InSectionNumber)
+{
+	bool Test = Montage_IsPlaying(EricaDataAsset->AttackAnimationMontage);
+	if (Test)
+	{
+		const FString SectionString = FString::Printf(TEXT("Combo%d"), InSectionNumber);
+		const FName SectionName(SectionString);
+		Montage_JumpToSection(SectionName, EricaDataAsset->AttackAnimationMontage);
+		UE_LOG(LogTemp, Warning, TEXT("SectionNumber: %d"), InSectionNumber);
+	}
+
+	if (InSectionNumber == 4)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Text"));
+	}
 }
 
 void UPCREricaAnimInstance::SetLocalVelocityDirectionAngle()
@@ -113,5 +129,26 @@ void UPCREricaAnimInstance::SetIdleRotationDirection()
 	else
 	{
 		CurrentIdleRotation = EIdleRotation::Left;
+	}
+}
+
+void UPCREricaAnimInstance::AnimNotify_Shoot()
+{
+	CachedEricaCharacter->ShootCard();
+}
+
+void UPCREricaAnimInstance::AnimNotify_Chainable()
+{
+	if (OnChainable.IsBound())
+	{
+		OnChainable.Execute();
+	}
+}
+
+void UPCREricaAnimInstance::AnimNotify_ChainEnd()
+{
+	if (OnChainEnd.IsBound())
+	{
+		OnChainEnd.Execute();
 	}
 }

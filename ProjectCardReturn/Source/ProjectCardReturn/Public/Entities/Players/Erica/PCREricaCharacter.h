@@ -82,6 +82,12 @@ public: // Getter, Setter
 	bool GetIsDashing() const { return bIsDashing; }
 
 private: // 내부 함수
+	void Attack();
+	void HandleCombo();
+	void HandleOnChainable();
+	void HandleOnChainEnd();
+	void HandleOnAttackMontageEnded(UAnimMontage* AnimMontage, bool bArg);
+
 	void Move(const FInputActionValue& InputActionValue);
 	void Dash();
 	void HandleDash(float DeltaTime);
@@ -160,6 +166,8 @@ private: // 상태
 	uint32 bCanWideShot : 1;
 	uint32 bCanReturnCard : 1;
 
+	uint32 bCanAttack:1;
+
 	ShootMode CurrentShotMode;
 
 private: // 대시
@@ -191,4 +199,10 @@ private: // 카드
 	
 	int32 WideShotCount;
 	float WideShotAngle;
+
+private: // 공격
+	int32 CurrentCombo;
+	int32 MaxCombo;
+	uint32 bIsAttackKeyPressed:1;
+	uint32 bCanChainable:1;
 };
