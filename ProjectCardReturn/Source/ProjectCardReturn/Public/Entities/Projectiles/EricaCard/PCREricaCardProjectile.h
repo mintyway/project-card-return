@@ -36,21 +36,24 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-public:
+public: // 동작
 	virtual void LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction) override;
 	virtual void ReleaseToProjectilePool() override;
 	
 	void ReturnCard();
+
+public: // Getter, Setter
 	void SetDamage(float InForwardDamage, float InBackwardDamage);
 	void SetRange(float NewRange) { CardRange = NewRange; }
 	FORCEINLINE ECardState GetCurrentCardState() const { return CurrentCardState; }
 
+public: // 델리게이트
 	FReturnCardBeginSignature OnReturnCardBegin;
 
 protected:
 	virtual void EnableCollisionDetection() override;
 	
-private:
+private: // 내부 함수
 	UFUNCTION()
 	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
@@ -62,15 +65,15 @@ private:
 	void HandleCardReturn(float DeltaSeconds);
 	void CheckCardRangeAndStop(float DeltaSeconds);
 	void HandleCardMaxRange();
-	void EnableCardFloatingFX();
-	void DisableCardFloatingFX();
 
+private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	TObjectPtr<UNiagaraComponent> CardRibbonFXComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	TObjectPtr<UNiagaraComponent> CardFloatingFXComponent;
 
+private: // 데이터
 	float ForwardDamage;
 	float BackwardDamage;
 	float CardReturnSpeed;
@@ -79,4 +82,7 @@ private:
 	float CardReleaseRange;
 
 	ECardState CurrentCardState;
+
+	UPROPERTY()
+	TArray<TObjectPtr<ACharacter>> AttackedCharacter;
 };

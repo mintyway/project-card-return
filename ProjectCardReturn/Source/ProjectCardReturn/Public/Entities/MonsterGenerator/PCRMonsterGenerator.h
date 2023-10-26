@@ -23,6 +23,7 @@ public:
 	APCRMonsterGenerator();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 public: // 동작 섹션
@@ -32,7 +33,7 @@ public: // 동작 섹션
 
 public: // 델리게이트 섹션
 	FSpawnedMonsterDeadSignature OnSpawnedMonsterDead;
-	
+
 public: // Getter, Setter 섹션
 	FORCEINLINE int32 GetMonsterKillCount() const { return MonsterKillCount; }
 
@@ -41,6 +42,10 @@ private: // 내부 함수 섹션
 
 	void RemoveDeadMonster(APCRMonsterBaseCharacter* ApcrMonsterBaseCharacter);
 
+private: // 데이터 에셋
+	UPROPERTY()
+	TObjectPtr<UPCRParameterDataAsset> ParameterDataAsset;
+	
 private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Root")
 	TObjectPtr<USceneComponent> RootSceneComponent;

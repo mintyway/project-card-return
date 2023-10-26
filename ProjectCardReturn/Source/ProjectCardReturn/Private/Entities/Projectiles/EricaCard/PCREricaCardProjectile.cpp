@@ -12,6 +12,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
@@ -22,7 +23,7 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 	{
 		ProjectileSpeed = ParameterDataAsset->EricaCardSpeed;
 		CardReturnSpeed = ParameterDataAsset->EricaCardReturnSpeed;
-		CardRange = ParameterDataAsset->EricaSingleShotRange;
+		CardRange = ParameterDataAsset->EricaNarrowShotRange;
 		CardReleaseRange = ParameterDataAsset->EricaCardReleaseRange;
 	}
 
@@ -64,8 +65,9 @@ void APCREricaCardProjectile::PostInitializeComponents()
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
 
+	check(CardRibbonFXComponent && CardFloatingFXComponent);
 	CardRibbonFXComponent->Deactivate();
-	DisableCardFloatingFX();
+	CardFloatingFXComponent->Deactivate();
 }
 
 void APCREricaCardProjectile::Tick(float DeltaSeconds)
@@ -98,7 +100,7 @@ void APCREricaCardProjectile::Tick(float DeltaSeconds)
 void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
 	Super::LaunchProjectile(NewOwner, StartLocation, Direction);
-	CardRibbonFXComponent->Activate();
+	CardRibbonFXComponent->Activate(true);
 
 	CurrentCardState = ECardState::Flying;
 }
@@ -107,8 +109,9 @@ void APCREricaCardProjectile::ReleaseToProjectilePool()
 {
 	Super::ReleaseToProjectilePool();
 
+	AttackedCharacter.Reset();
 	CardRibbonFXComponent->Deactivate();
-	DisableCardFloatingFX();
+	CardFloatingFXComponent->Deactivate();
 	OnReturnCardBegin.Clear();
 }
 
@@ -121,8 +124,9 @@ void APCREricaCardProjectile::ReturnCard()
 	CurrentCardState = ECardState::Returning;
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
+	AttackedCharacter.Reset();
 	CardRibbonFXComponent->Activate();
-	DisableCardFloatingFX();
+	CardFloatingFXComponent->Deactivate();
 	StaticMeshComponent->SetVisibility(true);
 
 	OnReturnCardBegin.Broadcast(this);
@@ -176,6 +180,12 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		return;
 	}
 
+	// 이미 맞은 상태면 다시 공격되지 않도록 하는 코드입니다.
+	if (AttackedCharacter.Find(OtherCharacter) != INDEX_NONE)
+	{
+		return;
+	}
+
 	const FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
@@ -183,7 +193,12 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 	{
 		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 %s와 정면으로 충돌했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName());
 		// TODO: 현재는 해당 액터가 밀리면서 여러번 오버랩될 수 있는 상황입니다. 나중에 충돌 당하는 액터에게 오버랩 쿨타임을 구현해 이를 막아야합니다.
-		OtherCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 500.f, false, false);
+		APCRMonsterBaseCharacter* MonsterCharacter = Cast<APCRMonsterBaseCharacter>(OtherCharacter);
+		if (MonsterCharacter)
+		{
+			MonsterCharacter->HitStop();
+			MonsterCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * 1000.f, true, false);
+		}
 
 		const APCREricaCharacter* EricaCharacter = Cast<APCREricaCharacter>(GetOwner());
 		const FDamageEvent DamageEvent;
@@ -196,6 +211,8 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		const FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(BackwardDamage, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
+
+	AttackedCharacter.Add(OtherCharacter);
 }
 
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
@@ -261,19 +278,5 @@ void APCREricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 void APCREricaCardProjectile::HandleCardMaxRange()
 {
 	StaticMeshComponent->SetVisibility(false);
-	EnableCardFloatingFX();
-}
-
-void APCREricaCardProjectile::EnableCardFloatingFX()
-{
-	RETURN_IF_INVALID(CardFloatingFXComponent);
-	CardFloatingFXComponent->SetVisibility(true);
-	CardFloatingFXComponent->Activate();
-}
-
-void APCREricaCardProjectile::DisableCardFloatingFX()
-{
-	RETURN_IF_INVALID(CardFloatingFXComponent);
-	CardFloatingFXComponent->SetVisibility(false);
-	CardFloatingFXComponent->Deactivate();
+	CardFloatingFXComponent->Activate(true);
 }
