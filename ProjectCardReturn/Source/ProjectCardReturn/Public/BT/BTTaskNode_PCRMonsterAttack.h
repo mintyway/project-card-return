@@ -4,7 +4,7 @@
 
 #include "ProjectCardReturn.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskNode_PCRMonsterTask.generated.h"
+#include "BTTaskNode_PCRMonsterAttack.generated.h"
 
 UENUM()
 enum class EMonsterTask
@@ -15,12 +15,12 @@ enum class EMonsterTask
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UBTTaskNode_PCRMonsterTask : public UBTTaskNode
+class PROJECTCARDRETURN_API UBTTaskNode_PCRMonsterAttack : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTaskNode_PCRMonsterTask();
+	UBTTaskNode_PCRMonsterAttack();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

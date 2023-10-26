@@ -6,6 +6,13 @@
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 #include "PCRRabbitCharacter.generated.h"
 
+UENUM()
+enum class EDirection : uint8
+{
+	Left,
+	Right
+};
+
 class UPCRRabbitAnimInstance;
 /**
  * 
@@ -20,6 +27,9 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
+
+public:
+	virtual void Attack() override;
 	
 private:
 	UPROPERTY()

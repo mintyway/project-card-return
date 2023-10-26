@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BT/BTTaskNode_PCRMonsterTask.h"
+#include "BT/BTTaskNode_PCRMonsterAttack.h"
 
 #include "AIController.h"
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 
-UBTTaskNode_PCRMonsterTask::UBTTaskNode_PCRMonsterTask()
+UBTTaskNode_PCRMonsterAttack::UBTTaskNode_PCRMonsterAttack()
 {
 	MonsterTask = EMonsterTask::Attack;
 }
 
-EBTNodeResult::Type UBTTaskNode_PCRMonsterTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTaskNode_PCRMonsterAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
@@ -31,6 +31,7 @@ EBTNodeResult::Type UBTTaskNode_PCRMonsterTask::ExecuteTask(UBehaviorTreeCompone
 			break;
 		}
 	}
-
+	
+	
 	return EBTNodeResult::Succeeded;
 }

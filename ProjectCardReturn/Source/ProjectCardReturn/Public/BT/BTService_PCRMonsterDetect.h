@@ -4,18 +4,18 @@
 
 #include "ProjectCardReturn.h"
 #include "BehaviorTree/BTService.h"
-#include "BTService_PCRSoldierDetect.generated.h"
+#include "BTService_PCRMonsterDetect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UBTService_PCRSoldierDetect : public UBTService
+class PROJECTCARDRETURN_API UBTService_PCRMonsterDetect : public UBTService
 {
 	GENERATED_BODY()
 
 public:
-	UBTService_PCRSoldierDetect();
+	UBTService_PCRMonsterDetect();
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

@@ -23,12 +23,12 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 public:
+	virtual void Attack() override;
+	
 	FORCEINLINE bool GetHasShield() const { return Shield != nullptr; }
-
+	
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
-
-	virtual void Attack() override;
 
 	void AttackHit();
 

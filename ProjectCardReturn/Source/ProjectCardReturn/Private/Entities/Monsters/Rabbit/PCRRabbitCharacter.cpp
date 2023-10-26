@@ -49,3 +49,8 @@ void APCRRabbitCharacter::PostInitializeComponents()
 	RabbitAnimInstance = Cast<UPCRRabbitAnimInstance>(GetMesh()->GetAnimInstance());
 	check(RabbitAnimInstance);
 }
+
+void APCRRabbitCharacter::Attack()
+{
+	Super::Attack();
+}

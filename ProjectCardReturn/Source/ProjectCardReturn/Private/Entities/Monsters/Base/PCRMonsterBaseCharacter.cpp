@@ -179,13 +179,13 @@ void APCRMonsterBaseCharacter::HandleDead()
 
 	bIsAlive = false;
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-	const auto MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	RETURN_IF_INVALID(MonsterBaseAIController);
+	APCRMonsterBaseAIController* const MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
+	check(MonsterBaseAIController);
 	MonsterBaseAIController->StopMovement();
-	RETURN_IF_INVALID(MonsterBaseAIController->GetBrainComponent());
+	check(MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
 
-	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
+	check(ParameterDataAsset);
 	FTimerHandle DestroyTimeHandle;
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
