@@ -52,7 +52,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	}
 
 	HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComponent"));
-	if (IsValid(HPBarWidgetComponent) && IsValid(UIDataAsset))
+	if (HPBarWidgetComponent && UIDataAsset)
 	{
 		HPBarWidgetComponent->SetupAttachment(RootComponent);
 		HPBarWidgetComponent->SetRelativeLocation(FVector(0.0, 0.0, 200.0));
@@ -65,7 +65,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 		}
 	}
 
-	if (IsValid(GetCapsuleComponent()))
+	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	}
