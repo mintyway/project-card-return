@@ -166,4 +166,7 @@ public: // 토끼
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitAttackRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitGimmickMoveRange;
 };

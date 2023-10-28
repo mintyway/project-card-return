@@ -30,8 +30,12 @@ protected:
 
 public:
 	virtual void Attack() override;
+
+	FORCEINLINE float GetGimmickMoveRange() const { return GimmickMoveRange; }
 	
 private:
 	UPROPERTY()
 	TObjectPtr<UPCRRabbitAnimInstance> RabbitAnimInstance;
+
+	float GimmickMoveRange;
 };

@@ -23,6 +23,7 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 		AttackPower = ParameterDataAsset->RabbitAttackPower;
 		AttackRange = ParameterDataAsset->RabbitAttackRange;
 		AttackRate = ParameterDataAsset->RabbitAttackRate;
+		GimmickMoveRange = ParameterDataAsset->RabbitGimmickMoveRange;
 	}
 
 	AIControllerClass = APCRRabbitAIController::StaticClass();
