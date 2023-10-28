@@ -2,20 +2,17 @@
 
 #pragma once
 
-#include "ProjectCardReturn.h"
-#include "BehaviorTree/BTService.h"
-#include "BTService_PCRSoldierDetect.generated.h"
+#include "CoreMinimal.h"
+#include "BT/BTService_PCRMonsterDetect.h"
+#include "BTService_PCRRabbitDetect.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UBTService_PCRSoldierDetect : public UBTService
+class PROJECTCARDRETURN_API UBTService_PCRRabbitDetect : public UBTService_PCRMonsterDetect
 {
 	GENERATED_BODY()
-
-public:
-	UBTService_PCRSoldierDetect();
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

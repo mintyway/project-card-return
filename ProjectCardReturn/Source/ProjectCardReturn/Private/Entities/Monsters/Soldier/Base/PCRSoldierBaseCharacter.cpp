@@ -6,6 +6,7 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Entities/Monsters/Soldier/Base/PCRSoldierBaseAIController.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -15,7 +16,10 @@ APCRSoldierBaseCharacter::APCRSoldierBaseCharacter()
 {
 	bCanAttack = true;
 
-	if (IsValid(GetCapsuleComponent()))
+	AIControllerClass = APCRSoldierBaseAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->InitCapsuleSize(50.f, 50.f);
 	}

@@ -6,6 +6,13 @@
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 #include "PCRRabbitCharacter.generated.h"
 
+UENUM()
+enum class EDirection : uint8
+{
+	Left,
+	Right
+};
+
 class UPCRRabbitAnimInstance;
 /**
  * 
@@ -20,8 +27,27 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
+
+public:
+	virtual void Attack() override;
+
+	FORCEINLINE float GetGimmickMoveRange() const { return GimmickMoveRange; }
+	FORCEINLINE float GetJumpProbability() const { return JumpProbability; }
+	FORCEINLINE float GetWaitAndJumpProbability() const { return WaitAndJumpProbability; }
+	FORCEINLINE float GetMoveRightDiagonalProbability() const { return MoveRightDiagonalProbability; }
+	FORCEINLINE float GetMoveLeftDiagonalProbability() const { return MoveLeftDiagonalProbability; }
+
+	FVector GetRightDiagonal() const;
+	FVector GetLeftDiagonal() const;
 	
 private:
 	UPROPERTY()
 	TObjectPtr<UPCRRabbitAnimInstance> RabbitAnimInstance;
+
+	float GimmickMoveRange;
+	float JumpProbability;
+	float WaitAndJumpProbability;
+	float MoveRightDiagonalProbability;
+	float MoveLeftDiagonalProbability;
+	float MoveDiagonalDistance;
 };

@@ -9,6 +9,7 @@
 
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Entities/Monsters/Rabbit/PCRRabbitAIController.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitAnimInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,7 +23,16 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 		AttackPower = ParameterDataAsset->RabbitAttackPower;
 		AttackRange = ParameterDataAsset->RabbitAttackRange;
 		AttackRate = ParameterDataAsset->RabbitAttackRate;
+		GimmickMoveRange = ParameterDataAsset->RabbitGimmickMoveRange;
+		JumpProbability = ParameterDataAsset->RabbitJumpProbability;
+		WaitAndJumpProbability = ParameterDataAsset->RabbitWaitAndJumpProbability;
+		MoveRightDiagonalProbability = ParameterDataAsset->RabbitMoveRightDiagonalProbability;
+		MoveLeftDiagonalProbability = ParameterDataAsset->RabbitMoveLeftDiagonalProbability;
+		MoveDiagonalDistance = ParameterDataAsset->RabbitMoveDiagonalDistance;
 	}
+
+	AIControllerClass = APCRRabbitAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	// TODO: 모델링 작업 완료되면 활성화
 	if (GetMesh() && MonsterDataAsset)
@@ -48,4 +58,31 @@ void APCRRabbitCharacter::PostInitializeComponents()
 
 	RabbitAnimInstance = Cast<UPCRRabbitAnimInstance>(GetMesh()->GetAnimInstance());
 	check(RabbitAnimInstance);
+}
+
+void APCRRabbitCharacter::Attack()
+{
+	Super::Attack();
+}
+
+FVector APCRRabbitCharacter::GetRightDiagonal() const
+{
+	const FVector ForwardVector = GetActorForwardVector();
+	const FVector RightVector = GetActorRightVector();
+
+	const FVector RightDiagonalVector = (ForwardVector + RightVector).GetSafeNormal();
+	const FVector RightDiagonalLocation = GetActorLocation() + RightDiagonalVector * MoveDiagonalDistance;
+
+	return RightDiagonalLocation;
+}
+
+FVector APCRRabbitCharacter::GetLeftDiagonal() const
+{
+	const FVector ForwardVector = GetActorForwardVector();
+	const FVector RightVector = GetActorRightVector();
+
+	const FVector LeftDiagonalVector = (ForwardVector - RightVector).GetSafeNormal();
+	const FVector LeftDiagonalLocation = GetActorLocation() + LeftDiagonalVector * MoveDiagonalDistance;
+
+	return LeftDiagonalLocation;
 }

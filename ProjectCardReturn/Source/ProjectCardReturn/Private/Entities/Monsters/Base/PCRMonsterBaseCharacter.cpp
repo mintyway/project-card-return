@@ -30,9 +30,6 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 
 	bUseControllerRotationYaw = false;
 
-	AIControllerClass = APCRMonsterBaseAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_Monster.Succeeded())
 	{
@@ -57,7 +54,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	}
 
 	HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComponent"));
-	if (IsValid(HPBarWidgetComponent) && IsValid(UIDataAsset))
+	if (HPBarWidgetComponent && UIDataAsset)
 	{
 		HPBarWidgetComponent->SetupAttachment(RootComponent);
 		HPBarWidgetComponent->SetRelativeLocation(FVector(0.0, 0.0, 200.0));
@@ -70,7 +67,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 		}
 	}
 
-	if (IsValid(GetCapsuleComponent()))
+	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	}
@@ -87,9 +84,9 @@ void APCRMonsterBaseCharacter::BeginPlay()
 
 	// 위젯의 포인터를 멤버변수로 가져오는 코드입니다.
 	const UUserWidget* HPBarWidgetInstance = HPBarWidgetComponent->GetUserWidgetObject();
-	RETURN_IF_INVALID(HPBarWidgetInstance);
+	check(HPBarWidgetInstance);
 	HPProgressBar = Cast<UProgressBar>(HPBarWidgetInstance->GetWidgetFromName(TEXT("PB_HPBar")));
-	RETURN_IF_INVALID(HPProgressBar);
+	check(HPProgressBar);
 
 	// HP초기화를 위해 호출합니다.
 	HandleChangeHP();
@@ -179,7 +176,8 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
 		HandleDead();
 	}
 
-	RETURN_IF_INVALID(HPProgressBar);
+	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("남은 체력: %f"), HealthPoint);
+	check(HPProgressBar);
 	const float HPRatio = CurrentHP / MaxHP;
 	HPProgressBar->SetPercent(HPRatio);
 
@@ -196,12 +194,13 @@ void APCRMonsterBaseCharacter::HandleDead()
 
 	bIsAlive = false;
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-	const auto MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	check(MonsterBaseAIController && MonsterBaseAIController->GetBrainComponent());
+	APCRMonsterBaseAIController* const MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
+	check(MonsterBaseAIController);
 	MonsterBaseAIController->StopMovement();
+	check(MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
 
-	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
+	check(ParameterDataAsset);
 	FTimerHandle DestroyTimeHandle;
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);

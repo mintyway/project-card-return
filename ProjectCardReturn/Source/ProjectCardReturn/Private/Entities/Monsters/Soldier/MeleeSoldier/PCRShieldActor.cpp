@@ -49,7 +49,7 @@ void APCRShieldActor::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	RETURN_IF_INVALID(BoxComponent);
+	check(BoxComponent);
 	BoxComponent->SetMassOverrideInKg(EName::None, 3.f, true);
 }
 
@@ -77,7 +77,7 @@ void APCRShieldActor::BeginDestroy()
  */
 void APCRShieldActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
-	RETURN_IF_INVALID(AttachedCard);
+	check(AttachedCard);
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);
 	OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
 }
@@ -93,7 +93,7 @@ void APCRShieldActor::DetachAndDelayedDestroy()
 
 	OnDetachedShield.Broadcast();
 
-	RETURN_IF_INVALID(BoxComponent);
+	check(BoxComponent);
 	BoxComponent->SetSimulatePhysics(true);
 
 	DelayedDestroy();

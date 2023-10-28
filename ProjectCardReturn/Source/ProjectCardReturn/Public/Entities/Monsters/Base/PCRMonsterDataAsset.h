@@ -17,11 +17,11 @@ class PROJECTCARDRETURN_API UPCRMonsterDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	TObjectPtr<UBehaviorTree> DefaultBehaviorTree;
+	UPROPERTY(EditDefaultsOnly, Category = "Soldier")
+	TObjectPtr<UBehaviorTree> SoldierBehaviorTree;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	TObjectPtr<UBlackboardData> DefaultBlackBoard;
+	UPROPERTY(EditDefaultsOnly, Category = "Soldier")
+	TObjectPtr<UBlackboardData> SoldierBlackBoard;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	TObjectPtr<USkeletalMesh> MeleeSoldierMesh;
@@ -49,6 +49,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	TObjectPtr<UAnimMontage> RangedSoldierThrowAnimationMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	TObjectPtr<UBehaviorTree> RabbitBehaviorTree;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	TObjectPtr<UBlackboardData> RabbitBlackBoard;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<USkeletalMesh> RabbitMesh;

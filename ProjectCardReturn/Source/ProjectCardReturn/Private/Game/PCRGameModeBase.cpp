@@ -40,6 +40,7 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 	if (StageDataAsset)
 	{
 		UClass* LiftBP = StageDataAsset->LiftBlueprint.LoadSynchronous();
+		if (LiftBP)
 		{
 			LiftActorClass = LiftBP;
 		}
@@ -119,10 +120,17 @@ void APCRGameModeBase::SpawnMonsterGenerators()
 
 void APCRGameModeBase::StartAllMonsterGenerators()
 {
-	MonsterGenerators[0]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
+	/*MonsterGenerators[0]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[1]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[2]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[3]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[4]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[5]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);*/
+
+	MonsterGenerators[0]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[1]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[2]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[3]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[4]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[5]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
 }

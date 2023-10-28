@@ -29,32 +29,6 @@ APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 	}
 }
 
-void APCRMonsterBaseAIController::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	check(MonsterDataAsset);
-}
-
-void APCRMonsterBaseAIController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-
-	CachedMonsterCharacter = Cast<APCRMonsterBaseCharacter>(InPawn);
-	check(CachedMonsterCharacter);
-
-	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
-	if (UseBlackboard(MonsterDataAsset->DefaultBlackBoard, BlackboardComponent))
-	{
-		if (!RunBehaviorTree(MonsterDataAsset->DefaultBehaviorTree))
-		{
-			UE_LOG(PCRLogMonsterBaseAIController, Error, TEXT("AIController couldn't run behavior tree!"));
-		}
-
-		SetTarget();
-	}
-}
-
 void APCRMonsterBaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -72,12 +46,13 @@ void APCRMonsterBaseAIController::Tick(float DeltaSeconds)
 	if (!bIsStunned)
 	{
 		APCRMonsterBaseCharacter* ControllingMonster = Cast<APCRMonsterBaseCharacter>(GetPawn());
-		RETURN_IF_INVALID(ControllingMonster);
+		check(ControllingMonster);
 		if (ControllingMonster->IsAlive())
 		{
-			RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
+			check(GetBlackboardComponent());
 			const AActor* Target = Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(APCRMonsterBaseAIController::TargetKey));
-			RETURN_IF_INVALID(Target)
+			
+			check(Target);
 			const FVector TargetLocation = Target->GetActorLocation();
 			const FVector TargetDirection = (TargetLocation - ControllingMonster->GetActorLocation()).GetSafeNormal();
 
@@ -105,9 +80,10 @@ void APCRMonsterBaseAIController::ApplyStun(float StunTime)
 
 void APCRMonsterBaseAIController::SetTarget()
 {
-	RETURN_IF_INVALID(IsValid(GetBlackboardComponent()));
-	const AController* PlayerController = IsValid(GetWorld()) ? GetWorld()->GetFirstPlayerController() : nullptr;
-	RETURN_IF_INVALID(IsValid(PlayerController));
+	check(GetBlackboardComponent());
+	check(GetWorld());
+	const AController* PlayerController = GetWorld()->GetFirstPlayerController();
+	check(PlayerController);
 	GetBlackboardComponent()->SetValueAsObject(APCRMonsterBaseAIController::TargetKey, PlayerController->GetPawn());
 }
 

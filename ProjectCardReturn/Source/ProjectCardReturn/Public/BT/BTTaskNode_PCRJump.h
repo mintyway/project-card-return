@@ -2,30 +2,21 @@
 
 #pragma once
 
-#include "ProjectCardReturn.h"
+#include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskNode_PCRMonsterTask.generated.h"
+#include "BTTaskNode_PCRJump.generated.h"
 
-UENUM()
-enum class EMonsterTask
-{
-	Attack
-};
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UBTTaskNode_PCRMonsterTask : public UBTTaskNode
+class PROJECTCARDRETURN_API UBTTaskNode_PCRJump : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTaskNode_PCRMonsterTask();
-
+	UBTTaskNode_PCRJump();
+	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
-private:
-	UPROPERTY(EditAnywhere)
-	EMonsterTask MonsterTask;
 };

@@ -24,8 +24,6 @@ public:
 	APCRMonsterBaseAIController();
 
 protected:
-	virtual void PostInitializeComponents() override;
-	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -37,12 +35,14 @@ public:
 	static const FName TargetKey;
 	static const FName IsDetectedKey;
 
-private:
+protected:
 	void SetTarget();
-	void StunTimerCallback();
 
 private: // 데이터 에셋
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+
+private:
+	void StunTimerCallback();
 
 private: // 캐시
 	TObjectPtr<APCRMonsterBaseCharacter> CachedMonsterCharacter;

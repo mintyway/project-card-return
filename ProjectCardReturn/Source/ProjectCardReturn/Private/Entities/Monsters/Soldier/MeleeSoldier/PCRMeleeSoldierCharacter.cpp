@@ -53,12 +53,12 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
  */
 void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 {
-	RETURN_IF_INVALID(GetWorld());
+	check(GetWorld());
 	Shield = GetWorld()->SpawnActor<APCRShieldActor>();
-	RETURN_IF_INVALID(Shield);
+	check(Shield);
 	const FName SocketName = TEXT("Bip001-L-Finger0Socket");
 	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	RETURN_IF_INVALID(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
+	check(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
 	// Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
 	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 }
