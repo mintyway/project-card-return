@@ -23,10 +23,10 @@ void APCRSerinRightHandCharacter::Tick(float DeltaTime)
 
 }
 
-void APCRSerinRightHandCharacter::HandleChase(float DeltaTime)
+void APCRSerinRightHandCharacter::HandleBasicChase(float DeltaTime)
 {
-	TargetLocation = CachedSerinCharacter->CachedErica->GetActorLocation() + CachedSerinCharacter->RightHandChaseDistance;
-	Super::HandleChase(DeltaTime);
+	TargetLocation = CachedSerinCharacter->CachedErica->GetActorLocation() + CachedSerinCharacter->RightHandBasicChaseDistance;
+	Super::HandleBasicChase(DeltaTime);
 }
 
 void APCRSerinRightHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

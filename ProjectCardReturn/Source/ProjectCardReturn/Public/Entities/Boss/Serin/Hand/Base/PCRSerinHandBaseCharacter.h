@@ -11,12 +11,16 @@ class APCRSerinHandBaseCharacter;
 class APCRSerinLeftHandCharacter;
 class APCRSerinRightHandCharacter;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinHandBaseCharacter, Log, All);
+DECLARE_DELEGATE(FChaseEndSignature);
+
 UENUM()
 enum class ESerinState
 {
 	Idle,
 	Move,
 	Chase,
+	BasicChase,
 	Rock,
 	Paper,
 	Scissors,
@@ -40,11 +44,19 @@ protected:
 public: // 동작
 	void SetTarget(AActor* TargetActor);
 	void Move(const FVector& InLocation);
+	void BasicChase();
 	void Chase();
+	void Rock();
+
+public:
+	FChaseEndSignature OnChaseEnd;
 	
 protected: // 내부 함수
 	void HandleMove(float DeltaTime);
-	virtual void HandleChase(float DeltaTime);
+	virtual void HandleBasicChase(float DeltaTime);
+	void HandleChase(float DeltaTime);
+	void RockCallback();
+	void HandleRock(float DeltaTime);
 
 protected:
 	// TODO: 더미 스켈레탈 메시 구현시 제거

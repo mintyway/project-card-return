@@ -49,6 +49,6 @@ private: // 핸드
 	UPROPERTY()
 	TObjectPtr<APCRSerinRightHandCharacter> RightHand;
 
-	FVector LeftHandChaseDistance;
-	FVector RightHandChaseDistance;
+	FVector LeftHandBasicChaseDistance;
+	FVector RightHandBasicChaseDistance;
 };

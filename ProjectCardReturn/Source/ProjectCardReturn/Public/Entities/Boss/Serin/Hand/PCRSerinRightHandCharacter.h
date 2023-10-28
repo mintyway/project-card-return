@@ -20,5 +20,5 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 protected: // 내부 함수
-	virtual void HandleChase(float DeltaTime) override;
+	virtual void HandleBasicChase(float DeltaTime) override;
 };

@@ -16,7 +16,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 APCRSerinCharacter::APCRSerinCharacter()
-	: LeftHandChaseDistance(0.0, 700.0, 300.0), RightHandChaseDistance(0.0, -700.0, 300.0)
+	: LeftHandBasicChaseDistance(0.0, 700.0, 300.0), RightHandBasicChaseDistance(0.0, -700.0, 300.0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -62,7 +62,21 @@ void APCRSerinCharacter::BeginPlay()
 
 	const FVector NewLocation = CachedErica->GetActorLocation() + FVector(0.0, 0.0, 300.0);
 	LeftHand->Move(NewLocation);
-	RightHand->Chase();
+	
+	// TODO: 테스트용 코드
+	FTimerHandle TestTimerHandle1;
+	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		LeftHand->Rock();
+	}), 5.f, true, 0.f);
+
+	FTimerHandle TestTimerHandle2;
+	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		RightHand->Rock();
+	}), 5.f, true, 2.5f);
+	
+	RightHand->Rock();
 }
 
 void APCRSerinCharacter::Tick(float DeltaTime)
