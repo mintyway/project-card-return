@@ -53,7 +53,7 @@ APCRBaseProjectile::APCRBaseProjectile() : 	ProjectileSpeed(1000.f)
 void APCRBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	
+
 	SetActorHiddenInGame(true);
 	DisableProjectile();
 }

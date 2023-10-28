@@ -6,6 +6,8 @@
 #include "Entities/Boss/Serin/Base/PCRSerinBaseCharacter.h"
 #include "PCRSerinCharacter.generated.h"
 
+class APCREricaCharacter;
+class APCRSerinHandBaseCharacter;
 class APCRSerinLeftHandCharacter;
 class APCRSerinRightHandCharacter;
 
@@ -17,19 +19,36 @@ class PROJECTCARDRETURN_API APCRSerinCharacter : public APCRSerinBaseCharacter
 public:
 	APCRSerinCharacter();
 
+	friend class APCRSerinHandBaseCharacter;
+	friend class APCRSerinLeftHandCharacter;
+	friend class APCRSerinRightHandCharacter;
+	
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-private: // 컴포넌트 섹션
+public: // Getter, Setter
+
+private: // 내부 함수
+	void SpawnHands();
+
+private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Dummy")
 	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
-	
-private: // 소유 액터 섹션
+
+private: // 캐시
+	UPROPERTY()
+	TObjectPtr<APCREricaCharacter> CachedErica;
+
+private: // 핸드
 	UPROPERTY()
 	TObjectPtr<APCRSerinLeftHandCharacter> LeftHand;
 
 	UPROPERTY()
 	TObjectPtr<APCRSerinRightHandCharacter> RightHand;
+
+	FVector LeftHandBasicChaseDistance;
+	FVector RightHandBasicChaseDistance;
 };

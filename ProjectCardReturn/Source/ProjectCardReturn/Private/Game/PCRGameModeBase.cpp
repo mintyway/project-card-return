@@ -74,12 +74,6 @@ void APCRGameModeBase::BeginPlay()
 
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
-
-	// FTimerHandle KillCountHandle;
-	// FTimerDelegate KillCountDelegate;
-	// KillCountDelegate.BindUObject(this, &APCRGameModeBase::DisplayLogMonsterKillCount);
-	//
-	// GetWorldTimerManager().SetTimer(KillCountHandle, KillCountDelegate, 1.f, true);
 }
 
 void APCRGameModeBase::Tick(float DeltaSeconds)

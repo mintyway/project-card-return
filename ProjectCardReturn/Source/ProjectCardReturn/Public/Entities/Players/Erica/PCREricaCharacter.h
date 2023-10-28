@@ -4,6 +4,7 @@
 
 #include "InputActionValue.h"
 #include "ProjectCardReturn.h"
+#include "Entities/Projectiles/Base/PCRBaseProjectile.h"
 #include "GameFramework/Character.h"
 #include "PCREricaCharacter.generated.h"
 
@@ -31,7 +32,6 @@ DECLARE_MULTICAST_DELEGATE(FDeadSignature);
 UENUM()
 enum class ShootMode : uint8
 {
-	Normal,
 	NarrowShot,
 	WideShot
 };
@@ -51,13 +51,13 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-public: // 동작 섹션
+public: // 동작
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	void ShootCard();
 	void RecallCard();
 
-public: // 델리게이트 섹션
+public: // 델리게이트
 	FAttackSignature OnCardShoot;
 	FAttackSignature OnCardRecall;
 
@@ -66,32 +66,37 @@ public: // 델리게이트 섹션
 
 	FChangeCardCountSignature OnChangeCardCount;
 
-public: // Getter, Setter 섹션
+public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
 
-	FORCEINLINE float GetSingleShotForwardDamage() const { return SingleShotForwardDamage; }
-	FORCEINLINE float GetSingleShotBackwardDamage() const { return SingleShotBackwardDamage; }
-	FORCEINLINE float GetMultiShotForwardDamage() const { return MultiShotForwardDamage; }
-	FORCEINLINE float GetMultiShotBackwardDamage() const { return MultiShotBackwardDamage; }
+	// FORCEINLINE float GetSingleShotForwardDamage() const { return NarrowShotForwardDamage; }
+	// FORCEINLINE float GetSingleShotBackwardDamage() const { return NarrowShotBackwardDamage; }
+	// FORCEINLINE float GetMultiShotForwardDamage() const { return WideShotForwardDamage; }
+	// FORCEINLINE float GetMultiShotBackwardDamage() const { return WideShotBackwardDamage; }
 
 	FORCEINLINE int32 GetMaxCardCount() const { return MaxCardCount; }
 	FORCEINLINE int32 GetCurrentCardCount() const { return CurrentCardCount; }
 
 	bool GetIsDashing() const { return bIsDashing; }
 
-private: // 내부 함수 섹션
+private: // 내부 함수
+	void Attack();
+	void HandleCombo();
+	void HandleOnChainable();
+	void HandleOnChainEnd();
+	void HandleOnAttackMontageEnded(UAnimMontage* AnimMontage, bool bArg);
+
 	void Move(const FInputActionValue& InputActionValue);
 	void Dash();
 	void HandleDash(float DeltaTime);
 
 	void HandleShootMode();
-	void NormalShot();
 	void NarrowShot();
 	void HandleNarrowShot(FVector StartLocation, FVector MouseDirection);
-	void BuckShot();
-	void HandleShootCard(const FVector& StartLocation, const FVector& Direction, float Range);
+	void WideShot();
+	void HandleShootCard(const FVector& StartLocation, const FVector& Direction, float ForwardDamage, float BackwardDamage, float Range);
 	void Change();
 
 	void ReturnCardCooldownTimerCallback();
@@ -103,16 +108,17 @@ private: // 내부 함수 섹션
 	void HandleChangeHP();
 	void HandleDead();
 
-	void HandleChangeCardCount();
+	void HandleRemoveInUseCard(APCREricaCardProjectile* ApcrEricaCardProjectile);
+	void HandleChangeInUseCardsCount();
 
-private: // 데이터 에셋 섹션
+private: // 데이터 에셋
 	UPROPERTY()
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 
-private: // 컴포넌트 섹션
+private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
@@ -125,7 +131,7 @@ private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
 	
-private: // 캐시 섹션
+private: // 캐시
 	UPROPERTY()
 	TObjectPtr<APCREricaPlayerController> CachedEricaPlayerController;
 
@@ -133,33 +139,38 @@ private: // 캐시 섹션
 	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
 
-private: // 스탯 섹션
+private: // 스탯
 	float MaxHP;
 	float CurrentHP;
 	
-	int32 SingleShotFiringRate;
-	int32 MultiShotFiringRate;
+	float NarrowShotFiringRate;
+	float WideShotFiringRate;
 	
 	float RecallCooldownTime;
 	
-	float SingleShotForwardDamage;
-	float SingleShotBackwardDamage;
-	float MultiShotForwardDamage;
-	float MultiShotBackwardDamage;
+	float NarrowShotForwardDamage;
+	float NarrowShotBackwardDamage;
+	float WideShotForwardDamage;
+	float WideShotBackwardDamage;
 
-private: // 상태 섹션
+	float NarrowShotRange;
+	float WideShotRange;
+
+private: // 상태
 	uint32 bIsAlive : 1;
 
 	uint32 bCanDash : 1;
 	uint32 bIsDashing : 1;
 	
-	uint32 bCanSingleShot : 1;
-	uint32 bCanMultiShot : 1;
+	uint32 bCanNarrowShot : 1;
+	uint32 bCanWideShot : 1;
 	uint32 bCanReturnCard : 1;
+
+	uint32 bCanAttack:1;
 
 	ShootMode CurrentShotMode;
 
-private: // 대시 섹션
+private: // 대시
 	TArray<FKey> MovementKeys;
 	FVector LastInputMoveDirection;
 
@@ -172,7 +183,7 @@ private: // 대시 섹션
 	float ElapsedDashTime;
 	float DashDistance;
 	
-private: // 카드 섹션
+private: // 카드
 	UPROPERTY()
 	TObjectPtr<APCREricaCardProjectilePool> CardProjectilePool;
 
@@ -181,10 +192,18 @@ private: // 카드 섹션
 
 	int32 MaxCardCount;
 	int32 CurrentCardCount;
-	
-	int32 MultiShotCount;
-	float MultiShotAngle;
 
-	int32 NarrowShotElapsedCount;
 	int32 NarrowShotCount;
+	int32 NarrowShotElapsedCount;
+	float NarrowShotInterval;
+	
+	int32 WideShotCount;
+	float WideShotAngle;
+
+private: // 공격
+	FVector LastMouseClickedLocation;
+	int32 CurrentCombo;
+	int32 MaxCombo;
+	uint32 bIsAttackKeyPressed:1;
+	uint32 bCanChainable:1;
 };

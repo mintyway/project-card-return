@@ -25,6 +25,7 @@ public:
 	FORCEINLINE bool GetCanAttack() const { return bCanAttack; }
 
 protected:
+	void HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster);
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 

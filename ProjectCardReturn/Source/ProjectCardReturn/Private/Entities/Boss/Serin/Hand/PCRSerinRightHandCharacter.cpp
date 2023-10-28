@@ -3,12 +3,12 @@
 
 #include "Entities/Boss/Serin/Hand/PCRSerinRightHandCharacter.h"
 
-// Sets default values
+#include "Entities/Boss/Serin/PCRSerinCharacter.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
+
 APCRSerinRightHandCharacter::APCRSerinRightHandCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	AIControllerClass = nullptr;
-	
 }
 
 void APCRSerinRightHandCharacter::BeginPlay()
@@ -21,6 +21,12 @@ void APCRSerinRightHandCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void APCRSerinRightHandCharacter::HandleBasicChase(float DeltaTime)
+{
+	TargetLocation = CachedSerinCharacter->CachedErica->GetActorLocation() + CachedSerinCharacter->RightHandBasicChaseDistance;
+	Super::HandleBasicChase(DeltaTime);
 }
 
 void APCRSerinRightHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -13,11 +13,24 @@ APCRMonsterGenerator::APCRMonsterGenerator() : SpawnRangeRadius(300.f), MonsterK
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	if (DA_Parameter.Succeeded())
+	{
+		ParameterDataAsset = DA_Parameter.Object;
+	}
+	
 	RootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootSceneComponent"));
 	if (RootSceneComponent)
 	{
 		RootComponent = RootSceneComponent;
 	}
+}
+
+void APCRMonsterGenerator::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	check(ParameterDataAsset);
 }
 
 void APCRMonsterGenerator::BeginPlay()
@@ -29,6 +42,11 @@ void APCRMonsterGenerator::BeginPlay()
 
 void APCRMonsterGenerator::Start(UClass* MonsterClass, float Interval)
 {
+	if (!ParameterDataAsset->bIsMonsterSpawn)
+	{
+		return;
+	}
+	
 	FTimerDelegate SpawnMonsterDelegate;
 	SpawnMonsterDelegate.BindUObject(this, &APCRMonsterGenerator::SpawnMonster, MonsterClass);
 

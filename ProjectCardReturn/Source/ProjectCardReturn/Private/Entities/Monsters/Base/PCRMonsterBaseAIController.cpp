@@ -29,11 +29,20 @@ APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 	}
 }
 
+void APCRMonsterBaseAIController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	check(MonsterDataAsset);
+}
+
 void APCRMonsterBaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	RETURN_IF_INVALID(IsValid(MonsterDataAsset));
+	CachedMonsterCharacter = Cast<APCRMonsterBaseCharacter>(InPawn);
+	check(CachedMonsterCharacter);
+
 	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
 	if (UseBlackboard(MonsterDataAsset->DefaultBlackBoard, BlackboardComponent))
 	{
@@ -58,7 +67,7 @@ void APCRMonsterBaseAIController::BeginPlay()
 void APCRMonsterBaseAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
+
 	// 타겟을 계속 바라보도록 하는 코드입니다.
 	if (!bIsStunned)
 	{
@@ -87,7 +96,6 @@ void APCRMonsterBaseAIController::ApplyStun(float StunTime)
 	bIsStunned = true;
 
 	BrainComponent->StopLogic("Stunned");
-	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s가 %f.1초간 스턴에 빠집니다."), *GetPawn()->GetName(), StunTime);
 
 	GetWorldTimerManager().ClearTimer(StunTimerHandle);
 	FTimerDelegate StunTimerDelegate;
@@ -106,6 +114,8 @@ void APCRMonsterBaseAIController::SetTarget()
 void APCRMonsterBaseAIController::StunTimerCallback()
 {
 	bIsStunned = false;
-	BrainComponent->RestartLogic();
-	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s의 스턴이 풀렸습니다."), *GetPawn()->GetName());
+	if (CachedMonsterCharacter->IsAlive())
+	{
+		BrainComponent->RestartLogic();
+	}
 }

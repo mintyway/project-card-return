@@ -51,6 +51,11 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 		UIDataAsset = DA_UI.Object;
 	}
 
+	if (ParameterDataAsset)
+	{
+		HitStopTime = ParameterDataAsset->HitStopTime;
+	}
+
 	HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComponent"));
 	if (IsValid(HPBarWidgetComponent) && IsValid(UIDataAsset))
 	{
@@ -99,9 +104,7 @@ void APCRMonsterBaseCharacter::Tick(float DeltaTime)
  * 공격합니다.
  * TODO: 구현 필요
  */
-void APCRMonsterBaseCharacter::Attack()
-{
-}
+void APCRMonsterBaseCharacter::Attack() {}
 
 /**
  * 매개변수 값에 따라 HP에 더하거나 빼며 변경시킵니다.
@@ -114,13 +117,24 @@ void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 }
 
 /**
+ * 피격 시 경직됩니다.
+ */
+void APCRMonsterBaseCharacter::HitStop()
+{
+	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
+	check(MonsterBaseAIController);
+	MonsterBaseAIController->ApplyStun(HitStopTime);
+}
+
+/**
  * 잠시동안 스턴에 빠집니다.
  */
 void APCRMonsterBaseCharacter::Stun()
 {
 	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	RETURN_IF_INVALID(MonsterBaseAIController);
+	check(MonsterBaseAIController);
 	MonsterBaseAIController->ApplyStun(StunTime);
+	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s가 %f.1초간 스턴에 빠집니다."), *this->GetName(), StunTime);
 }
 
 /**
@@ -144,6 +158,10 @@ float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 		return ActualDamage;
 	}
 
+	HitStop();
+	// TODO: 나중에 델리게이트 만들어서 애님 인스턴스 내부에서 처리하도록 변경해야함.
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+	
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	ChangeHP(-ActualDamage);
 	return ActualDamage;
@@ -161,7 +179,6 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
 		HandleDead();
 	}
 
-	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("남은 체력: %f"), HealthPoint);
 	RETURN_IF_INVALID(HPProgressBar);
 	const float HPRatio = CurrentHP / MaxHP;
 	HPProgressBar->SetPercent(HPRatio);
@@ -180,9 +197,8 @@ void APCRMonsterBaseCharacter::HandleDead()
 	bIsAlive = false;
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
 	const auto MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	RETURN_IF_INVALID(MonsterBaseAIController);
+	check(MonsterBaseAIController && MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->StopMovement();
-	RETURN_IF_INVALID(MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
 
 	RETURN_IF_INVALID(IsValid(ParameterDataAsset));
@@ -190,7 +206,7 @@ void APCRMonsterBaseCharacter::HandleDead()
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
-
+	
 	OnDead.Broadcast(this);
 }
 

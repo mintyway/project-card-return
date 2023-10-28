@@ -29,10 +29,10 @@ APCRBaseProjectilePool::APCRBaseProjectilePool()
  */
 void APCRBaseProjectilePool::InitProjectilePool(UClass* ProjectileClass)
 {
-	RETURN_IF_INVALID(IsValid(GetWorld()));
 	for (int32 i = 0; i < ProjectilePoolSize; ++i)
 	{
 		APCRBaseProjectile* NewProjectile = GetWorld()->SpawnActor<APCRBaseProjectile>(ProjectileClass, FVector::ZeroVector, FRotator::ZeroRotator);
+		FName FolderName = TEXT("Projectiles");
 		ProjectilePool.Enqueue(NewProjectile);
 	}
 }

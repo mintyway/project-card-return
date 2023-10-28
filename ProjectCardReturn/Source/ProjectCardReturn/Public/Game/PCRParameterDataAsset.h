@@ -36,7 +36,7 @@ public: // 카메라
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	FVector CameraOffset;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraLagSpeed;
 
@@ -52,27 +52,27 @@ public: // 에리카 스탯
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	int32 EricaCardCount;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaSingleShotFiringRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaMultiShotFiringRate;
+	float EricaNarrowShotFiringRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaWideShotFiringRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaRecallCooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaSingleShotForwardDamage;
+	float EricaNarrowShotForwardDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaSingleShotBackwardDamage;
+	float EricaNarrowShotBackwardDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaMultiShotForwardDamage;
+	float EricaWideShotForwardDamage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaMultiShotBackwardDamage;
+	float EricaWideShotBackwardDamage;
 
 public: // 에리카 대시
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
@@ -86,10 +86,7 @@ public: // 에리카 대시
 
 public: // 에리카 카드
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	int32 EricaMultiShotCount;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaMultiShotAngle;
+	float EricaWideShotAngle;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardSpeed;
@@ -98,10 +95,13 @@ public: // 에리카 카드
 	float EricaCardReturnSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaSingleShotRange;
+	float EricaNarrowShotRange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaMultiShotRange;
+	float EricaWideShotRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaCardKnockBackPower;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardReleaseRange;
@@ -109,6 +109,8 @@ public: // 에리카 카드
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	float HitStopTime;
 
 public: // 근접 병사
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")

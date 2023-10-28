@@ -30,15 +30,17 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-public:
+public: // 동작
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	                         AController* EventInstigator, AActor* DamageCauser) override;
 
 	virtual void Attack();
 
 	void ChangeHP(float Amount);
+	void HitStop();
 	void Stun();
 
+public: // Getter, Setter
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE const UPCRUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
@@ -47,6 +49,7 @@ public:
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
 	FORCEINLINE float GetStunTime() const { return StunTime; }
 
+public: // 델리게이트
 	FOnHPChangeDelegate OnHPChange;
 	FOnDeadDelegate OnDead;
 
@@ -68,6 +71,7 @@ protected:
 	float MoveSpeed;
 	float AttackRange;
 	float AttackRate;
+	float HitStopTime;
 	float StunTime;
 
 	void DestroyTimeCallback();
