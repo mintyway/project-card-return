@@ -208,7 +208,7 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
 
 	PauseCard();
-	RETURN_IF_INVALID(OtherActor);
+	check(OtherActor);
 	AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
 
 	if (IPCREricaCardInteractable* EricaCardAttachableInterface = Cast<IPCREricaCardInteractable>(OtherActor))
@@ -223,7 +223,7 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
  */
 void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 {
-	RETURN_IF_INVALID(GetOwner());
+	check(GetOwner());
 	const FVector MoveDirection = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
 	const FVector MoveVector = MoveDirection * CardReturnSpeed;
@@ -266,14 +266,14 @@ void APCREricaCardProjectile::HandleCardMaxRange()
 
 void APCREricaCardProjectile::EnableCardFloatingFX()
 {
-	RETURN_IF_INVALID(CardFloatingFXComponent);
+	check(CardFloatingFXComponent);
 	CardFloatingFXComponent->SetVisibility(true);
 	CardFloatingFXComponent->Activate();
 }
 
 void APCREricaCardProjectile::DisableCardFloatingFX()
 {
-	RETURN_IF_INVALID(CardFloatingFXComponent);
+	check(CardFloatingFXComponent);
 	CardFloatingFXComponent->SetVisibility(false);
 	CardFloatingFXComponent->Deactivate();
 }

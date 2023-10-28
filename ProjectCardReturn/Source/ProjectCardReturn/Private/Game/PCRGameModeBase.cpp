@@ -40,7 +40,10 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 	if (StageDataAsset)
 	{
 		UClass* LiftBP = StageDataAsset->LiftBlueprint.LoadSynchronous();
-		LiftActorClass = LiftBP;
+		if (LiftBP)
+		{
+			LiftActorClass = LiftBP;
+		}
 	}
 
 	DefaultPawnClass = APCREricaCharacter::StaticClass();

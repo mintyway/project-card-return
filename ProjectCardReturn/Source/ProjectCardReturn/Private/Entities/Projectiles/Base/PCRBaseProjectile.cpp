@@ -84,7 +84,7 @@ void APCRBaseProjectile::EnableProjectile()
 {
 	SetActorTickEnabled(true);
 	EnableCollisionDetection();
-	RETURN_IF_INVALID(ProjectileMovementComponent);
+	check(ProjectileMovementComponent);
 	ProjectileMovementComponent->Activate();
 }
 
@@ -95,7 +95,7 @@ void APCRBaseProjectile::DisableProjectile()
 {
 	SetActorTickEnabled(false);
 	DisableCollisionDetection();
-	RETURN_IF_INVALID(ProjectileMovementComponent);
+	check(ProjectileMovementComponent);
 	ProjectileMovementComponent->Deactivate();
 }
 
