@@ -3,3 +3,9 @@
 
 #include "Entities/Boss/Serin/PCRSerinAIController.h"
 
+APCRSerinAIController::APCRSerinAIController() {}
+
+void APCRSerinAIController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}

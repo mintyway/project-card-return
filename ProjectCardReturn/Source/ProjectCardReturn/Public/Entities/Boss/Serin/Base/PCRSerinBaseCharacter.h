@@ -17,6 +17,7 @@ class PROJECTCARDRETURN_API APCRSerinBaseCharacter : public ACharacter
 public:
 	APCRSerinBaseCharacter();
 
+
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;

@@ -34,7 +34,7 @@ APCREricaCharacter::APCREricaCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
 
-	// MovementKeys = {EKeys::W, EKeys::S, EKeys::D, EKeys::A};
+	Tags.AddUnique(TEXT("Erica"));
 
 	static ConstructorHelpers::FObjectFinder<UPCREricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.PCREricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -152,6 +152,8 @@ void APCREricaCharacter::PostInitializeComponents()
 	// 생성자에서 체크하지 않는 이유는 생성자는 게임을 시작한 상황이 아닌 일반 에디터 상황에서도 호출될 수 있고 이 상황이 nullptr일 수 있기 때문입니다.
 	check(EricaDataAsset);
 
+	SetFolderPath(TEXT("Erica"));
+	
 	check(DashNiagaraComponent);
 	DashNiagaraComponent->Deactivate();
 

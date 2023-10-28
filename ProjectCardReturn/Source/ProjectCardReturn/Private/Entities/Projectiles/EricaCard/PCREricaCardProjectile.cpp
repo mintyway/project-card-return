@@ -63,6 +63,8 @@ void APCREricaCardProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	SetFolderPath(TEXT("Erica/Cards"));
+	
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
 

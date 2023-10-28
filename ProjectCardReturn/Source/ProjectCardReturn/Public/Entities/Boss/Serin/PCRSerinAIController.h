@@ -13,5 +13,10 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRSerinAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRSerinAIController();
+
+protected:
+	virtual void Tick(float DeltaSeconds) override;
 };
