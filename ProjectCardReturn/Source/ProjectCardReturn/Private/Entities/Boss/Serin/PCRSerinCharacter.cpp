@@ -76,7 +76,7 @@ void APCRSerinCharacter::BeginPlay()
 		RightHand->Rock();
 	}), 5.f, true, 2.5f);
 	
-	RightHand->Rock();
+	RightHand->Chase();
 }
 
 void APCRSerinCharacter::Tick(float DeltaTime)
