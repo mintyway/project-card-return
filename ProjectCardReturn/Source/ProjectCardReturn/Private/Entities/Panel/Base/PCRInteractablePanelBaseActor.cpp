@@ -87,7 +87,7 @@ void APCRInteractablePanelBaseActor::Tick(float DeltaTime)
  */
 void APCRInteractablePanelBaseActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
-	RETURN_IF_INVALID(AttachedCard);
+	check(AttachedCard);
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRInteractablePanelBaseActor::HandleReturnCard);
 	OnReturnCardBeginDelegateMap.Add(AttachedCard, NewHandle);
 }
@@ -187,7 +187,7 @@ void APCRInteractablePanelBaseActor::HandleReturnCard(APCREricaCardProjectile* A
 
 	CurrentState = EState::Tipping;
 	SetActorTickEnabled(true);
-	RETURN_IF_INVALID(StaticMeshComponent);
+	check(StaticMeshComponent);
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
 	const FVector CardReturnDirection = AttachedCard->GetOwner()->GetActorLocation() - AttachedCard->GetActorLocation();
 	const float DotResult = FVector::DotProduct(GetActorForwardVector(), CardReturnDirection);
@@ -206,7 +206,7 @@ void APCRInteractablePanelBaseActor::HandleReturnCard(APCREricaCardProjectile* A
  */
 void APCRInteractablePanelBaseActor::EnableCollisionDetection()
 {
-	RETURN_IF_INVALID(StaticMeshComponent);
+	check(StaticMeshComponent);
 	StaticMeshComponent->SetCollisionProfileName("BlockPlayerProjectile");
 }
 
@@ -215,6 +215,6 @@ void APCRInteractablePanelBaseActor::EnableCollisionDetection()
  */
 void APCRInteractablePanelBaseActor::DisableCollisionDetection()
 {
-	RETURN_IF_INVALID(StaticMeshComponent);
+	check(StaticMeshComponent);
 	StaticMeshComponent->SetCollisionProfileName("NoCollision");
 }
