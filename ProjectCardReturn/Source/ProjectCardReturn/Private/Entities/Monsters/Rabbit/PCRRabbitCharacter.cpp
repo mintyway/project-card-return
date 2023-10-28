@@ -24,6 +24,10 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 		AttackRange = ParameterDataAsset->RabbitAttackRange;
 		AttackRate = ParameterDataAsset->RabbitAttackRate;
 		GimmickMoveRange = ParameterDataAsset->RabbitGimmickMoveRange;
+		JumpProbability = ParameterDataAsset->RabbitJumpProbability;
+		WaitAndJumpProbability = ParameterDataAsset->RabbitWaitAndJumpProbability;
+		MoveRightDiagonalProbability = ParameterDataAsset->RabbitMoveRightDiagonalProbability;
+		MoveLeftDiagonalProbability = ParameterDataAsset->RabbitMoveLeftDiagonalProbability;
 	}
 
 	AIControllerClass = APCRRabbitAIController::StaticClass();

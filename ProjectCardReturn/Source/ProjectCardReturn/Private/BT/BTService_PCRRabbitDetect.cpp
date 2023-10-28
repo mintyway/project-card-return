@@ -21,7 +21,16 @@ void UBTService_PCRRabbitDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 	check(TargetActor);
 
 	const float Distance = ControllingMonster->GetDistanceTo(TargetActor);
-	const float GimmickMoveRange = ControllingMonster->GetAttackRange();
+	const float GimmickMoveRange = ControllingMonster->GetGimmickMoveRange();
+	const bool bGimmickMove = Distance <= GimmickMoveRange;
+	const bool bJump = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetJumpProbability();
+	const bool bWaitAndJump = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetWaitAndJumpProbability();
+	const bool bMoveRightDiagonal = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetMoveRightDiagonalProbability();
+	const bool bMoveLeftDiagonal = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetMoveLeftDiagonalProbability();
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsGimmickMoveKey, Distance <= GimmickMoveRange);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsGimmickMoveKey, bGimmickMove);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsJumpKey, bJump);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsWaitAndJumpKey, bWaitAndJump);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsMoveRightDiagonalKey, bMoveRightDiagonal);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsMoveLeftDiagonalKey, bMoveLeftDiagonal);
 }

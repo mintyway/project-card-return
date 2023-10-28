@@ -32,10 +32,18 @@ public:
 	virtual void Attack() override;
 
 	FORCEINLINE float GetGimmickMoveRange() const { return GimmickMoveRange; }
+	FORCEINLINE float GetJumpProbability() const { return JumpProbability; }
+	FORCEINLINE float GetWaitAndJumpProbability() const { return WaitAndJumpProbability; }
+	FORCEINLINE float GetMoveRightDiagonalProbability() const { return MoveRightDiagonalProbability; }
+	FORCEINLINE float GetMoveLeftDiagonalProbability() const { return MoveLeftDiagonalProbability; }
 	
 private:
 	UPROPERTY()
 	TObjectPtr<UPCRRabbitAnimInstance> RabbitAnimInstance;
 
 	float GimmickMoveRange;
+	float JumpProbability;
+	float WaitAndJumpProbability;
+	float MoveRightDiagonalProbability;
+	float MoveLeftDiagonalProbability;
 };

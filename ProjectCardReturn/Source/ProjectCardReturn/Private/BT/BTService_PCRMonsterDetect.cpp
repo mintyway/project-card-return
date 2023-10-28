@@ -27,6 +27,7 @@ void UBTService_PCRMonsterDetect::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
 	const float Distance = ControllingMonster->GetDistanceTo(TargetActor);
 	const float AttackRange = ControllingMonster->GetAttackRange();
+	const bool bDetected = Distance <= AttackRange;
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRMonsterBaseAIController::IsDetectedKey, Distance <= AttackRange);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRMonsterBaseAIController::IsDetectedKey, bDetected);
 }

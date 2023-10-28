@@ -169,4 +169,16 @@ public: // 토끼
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitGimmickMoveRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitJumpProbability;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitWaitAndJumpProbability;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitMoveRightDiagonalProbability;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitMoveLeftDiagonalProbability;
 };
