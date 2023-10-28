@@ -28,6 +28,7 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 		WaitAndJumpProbability = ParameterDataAsset->RabbitWaitAndJumpProbability;
 		MoveRightDiagonalProbability = ParameterDataAsset->RabbitMoveRightDiagonalProbability;
 		MoveLeftDiagonalProbability = ParameterDataAsset->RabbitMoveLeftDiagonalProbability;
+		MoveDiagonalDistance = ParameterDataAsset->RabbitMoveDiagonalDistance;
 	}
 
 	AIControllerClass = APCRRabbitAIController::StaticClass();
@@ -62,4 +63,26 @@ void APCRRabbitCharacter::PostInitializeComponents()
 void APCRRabbitCharacter::Attack()
 {
 	Super::Attack();
+}
+
+FVector APCRRabbitCharacter::GetRightDiagonal() const
+{
+	const FVector ForwardVector = GetActorForwardVector();
+	const FVector RightVector = GetActorRightVector();
+
+	const FVector RightDiagonalVector = (ForwardVector + RightVector).GetSafeNormal();
+	const FVector RightDiagonalLocation = GetActorLocation() + RightDiagonalVector * MoveDiagonalDistance;
+
+	return RightDiagonalLocation;
+}
+
+FVector APCRRabbitCharacter::GetLeftDiagonal() const
+{
+	const FVector ForwardVector = GetActorForwardVector();
+	const FVector RightVector = GetActorRightVector();
+
+	const FVector LeftDiagonalVector = (ForwardVector - RightVector).GetSafeNormal();
+	const FVector LeftDiagonalLocation = GetActorLocation() + LeftDiagonalVector * MoveDiagonalDistance;
+
+	return LeftDiagonalLocation;
 }

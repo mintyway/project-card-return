@@ -36,6 +36,9 @@ public:
 	FORCEINLINE float GetWaitAndJumpProbability() const { return WaitAndJumpProbability; }
 	FORCEINLINE float GetMoveRightDiagonalProbability() const { return MoveRightDiagonalProbability; }
 	FORCEINLINE float GetMoveLeftDiagonalProbability() const { return MoveLeftDiagonalProbability; }
+
+	FVector GetRightDiagonal() const;
+	FVector GetLeftDiagonal() const;
 	
 private:
 	UPROPERTY()
@@ -46,4 +49,5 @@ private:
 	float WaitAndJumpProbability;
 	float MoveRightDiagonalProbability;
 	float MoveLeftDiagonalProbability;
+	float MoveDiagonalDistance;
 };

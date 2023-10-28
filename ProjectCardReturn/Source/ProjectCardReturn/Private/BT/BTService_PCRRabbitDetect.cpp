@@ -27,10 +27,14 @@ void UBTService_PCRRabbitDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 	const bool bWaitAndJump = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetWaitAndJumpProbability();
 	const bool bMoveRightDiagonal = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetMoveRightDiagonalProbability();
 	const bool bMoveLeftDiagonal = FMath::RandRange(0.f, 1.f) < ControllingMonster->GetMoveLeftDiagonalProbability();
+	const FVector RightDiagonal = ControllingMonster->GetRightDiagonal();
+	const FVector LeftDiagonal = ControllingMonster->GetLeftDiagonal();
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsGimmickMoveKey, bGimmickMove);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsJumpKey, bJump);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsWaitAndJumpKey, bWaitAndJump);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsMoveRightDiagonalKey, bMoveRightDiagonal);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(APCRRabbitAIController::IsMoveLeftDiagonalKey, bMoveLeftDiagonal);
+	OwnerComp.GetBlackboardComponent()->SetValueAsVector(APCRRabbitAIController::RightDiagonalKey, RightDiagonal);
+	OwnerComp.GetBlackboardComponent()->SetValueAsVector(APCRRabbitAIController::LeftDiagonalKey, LeftDiagonal);
 }

@@ -181,4 +181,7 @@ public: // 토끼
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveLeftDiagonalProbability;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitMoveDiagonalDistance;
 };
