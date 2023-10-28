@@ -26,6 +26,12 @@ protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 private:
+	//UPROPERTY()
+	//TObjectPtr<UBehaviorTreeComponent> CachedOwnerComp;
+
+	//UFUNCTION()
+	//void HandleAttackEnded(UAnimMontage* Montage, bool bInterrupted);
+
 	UPROPERTY(EditAnywhere)
 	EMonsterTask MonsterTask;
 };

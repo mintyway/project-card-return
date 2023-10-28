@@ -82,9 +82,9 @@ void APCRMonsterBaseCharacter::BeginPlay()
 
 	// 위젯의 포인터를 멤버변수로 가져오는 코드입니다.
 	const UUserWidget* HPBarWidgetInstance = HPBarWidgetComponent->GetUserWidgetObject();
-	RETURN_IF_INVALID(HPBarWidgetInstance);
+	check(HPBarWidgetInstance);
 	HPProgressBar = Cast<UProgressBar>(HPBarWidgetInstance->GetWidgetFromName(TEXT("PB_HPBar")));
-	RETURN_IF_INVALID(HPProgressBar);
+	check(HPProgressBar);
 
 	// HP초기화를 위해 호출합니다.
 	HandleChangeHP();
@@ -119,7 +119,7 @@ void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 void APCRMonsterBaseCharacter::Stun()
 {
 	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	RETURN_IF_INVALID(MonsterBaseAIController);
+	check(MonsterBaseAIController);
 	MonsterBaseAIController->ApplyStun(StunTime);
 }
 
@@ -162,7 +162,7 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
 	}
 
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("남은 체력: %f"), HealthPoint);
-	RETURN_IF_INVALID(HPProgressBar);
+	check(HPProgressBar);
 	const float HPRatio = CurrentHP / MaxHP;
 	HPProgressBar->SetPercent(HPRatio);
 

@@ -15,23 +15,50 @@ EBTNodeResult::Type UBTTaskNode_PCRMonsterAttack::ExecuteTask(UBehaviorTreeCompo
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	//CachedOwnerComp = &OwnerComp;
+
 	switch (MonsterTask)
 	{
-		case EMonsterTask::Attack:
+	case EMonsterTask::Attack:
 		{
-			RETURN_IF_INVALID(OwnerComp.GetAIOwner(), EBTNodeResult::Failed);
+			check(OwnerComp.GetAIOwner());
 			APCRMonsterBaseCharacter* Monster = Cast<APCRMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
-			RETURN_IF_INVALID(Monster, EBTNodeResult::Failed);
-			Monster->Attack();
+		
+			/*FOnMontageEnded MontageEndedDelegate;
+			MontageEndedDelegate.BindLambda(
+				[&]()
+				{
+					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				}
+			);*/
+
+			check(Monster);
+			UAnimInstance* AnimInstance = Monster->GetMesh()->GetAnimInstance();
 			
-			break;
-		}
-		default:
-		{
-			break;
+			/*check(AnimInstance);
+			if (!AnimInstance->OnMontageEnded.IsAlreadyBound(this, &UBTTaskNode_PCRMonsterAttack::HandleAttackEnded))
+			{
+				AnimInstance->OnMontageEnded.AddDynamic(this, &UBTTaskNode_PCRMonsterAttack::HandleAttackEnded);
+			}*/
+			
+			Monster->Attack();
+
+			return EBTNodeResult::Succeeded;
 		}
 	}
 	
-	
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Failed;
 }
+
+/*void UBTTaskNode_PCRMonsterAttack::HandleAttackEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (const APCRMonsterBaseCharacter* Monster = Cast<APCRMonsterBaseCharacter>(CachedOwnerComp->GetAIOwner()->GetPawn()))
+	{
+		if (UAnimInstance* AnimInstance = Monster->GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->OnMontageEnded.RemoveDynamic(this, &UBTTaskNode_PCRMonsterAttack::HandleAttackEnded);
+		}
+	}
+	
+	FinishLatentTask(*CachedOwnerComp, EBTNodeResult::Succeeded);
+}*/
