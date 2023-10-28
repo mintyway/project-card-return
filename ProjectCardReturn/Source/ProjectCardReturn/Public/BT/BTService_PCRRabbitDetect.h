@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API UBTService_PCRRabbitDetect : public UBTService_PCRMonsterDetect
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

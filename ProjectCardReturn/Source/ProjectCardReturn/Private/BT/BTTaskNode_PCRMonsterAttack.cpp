@@ -8,6 +8,7 @@
 
 UBTTaskNode_PCRMonsterAttack::UBTTaskNode_PCRMonsterAttack()
 {
+	NodeName = TEXT("Attack");
 	MonsterTask = EMonsterTask::Attack;
 }
 

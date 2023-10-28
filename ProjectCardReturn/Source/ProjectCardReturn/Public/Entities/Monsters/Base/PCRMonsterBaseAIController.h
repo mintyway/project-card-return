@@ -23,7 +23,6 @@ public:
 	APCRMonsterBaseAIController();
 
 protected:
-	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -35,11 +34,13 @@ public:
 	static const FName TargetKey;
 	static const FName IsDetectedKey;
 
-private:
+protected:
 	void SetTarget();
-	void StunTimerCallback();
 
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+
+private:
+	void StunTimerCallback();
 
 	FTimerHandle StunTimerHandle;
 	uint32 bIsStunned:1;

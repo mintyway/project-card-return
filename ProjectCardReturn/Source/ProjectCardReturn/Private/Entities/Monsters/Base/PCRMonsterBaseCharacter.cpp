@@ -30,9 +30,6 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 
 	bUseControllerRotationYaw = false;
 
-	AIControllerClass = APCRMonsterBaseAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_Monster(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_Monster.Succeeded())
 	{

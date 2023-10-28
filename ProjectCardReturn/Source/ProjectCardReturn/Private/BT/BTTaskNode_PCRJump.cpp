@@ -6,6 +6,11 @@
 #include "AIController.h"
 #include "GameFramework/Character.h"
 
+UBTTaskNode_PCRJump::UBTTaskNode_PCRJump()
+{
+	NodeName = TEXT("Jump");
+}
+
 EBTNodeResult::Type UBTTaskNode_PCRJump::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);

@@ -9,6 +9,7 @@
 
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Entities/Monsters/Rabbit/PCRRabbitAIController.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitAnimInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -23,6 +24,9 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 		AttackRange = ParameterDataAsset->RabbitAttackRange;
 		AttackRate = ParameterDataAsset->RabbitAttackRate;
 	}
+
+	AIControllerClass = APCRRabbitAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	// TODO: 모델링 작업 완료되면 활성화
 	if (GetMesh() && MonsterDataAsset)

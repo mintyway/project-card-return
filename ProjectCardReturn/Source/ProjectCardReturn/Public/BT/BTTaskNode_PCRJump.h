@@ -14,6 +14,9 @@ class PROJECTCARDRETURN_API UBTTaskNode_PCRJump : public UBTTaskNode
 {
 	GENERATED_BODY()
 
+public:
+	UBTTaskNode_PCRJump();
+	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

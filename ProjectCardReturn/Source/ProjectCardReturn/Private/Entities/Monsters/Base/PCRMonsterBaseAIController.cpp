@@ -29,23 +29,6 @@ APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 	}
 }
 
-void APCRMonsterBaseAIController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-
-	check(MonsterDataAsset);
-	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
-	if (UseBlackboard(MonsterDataAsset->DefaultBlackBoard, BlackboardComponent))
-	{
-		if (!RunBehaviorTree(MonsterDataAsset->DefaultBehaviorTree))
-		{
-			UE_LOG(PCRLogMonsterBaseAIController, Error, TEXT("AIController couldn't run behavior tree!"));
-		}
-
-		SetTarget();
-	}
-}
-
 void APCRMonsterBaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
