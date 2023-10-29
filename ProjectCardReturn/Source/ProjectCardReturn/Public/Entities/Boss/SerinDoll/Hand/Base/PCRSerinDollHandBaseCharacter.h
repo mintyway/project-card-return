@@ -30,6 +30,14 @@ enum class ESerinState
 	Invalid
 };
 
+UENUM()
+enum class EScissorsState
+{
+	Stay,
+	Attack,
+	Invalid
+};
+
 UCLASS(Abstract)
 class PROJECTCARDRETURN_API APCRSerinDollHandBaseCharacter : public APCRSerinDollBaseCharacter
 {
@@ -52,7 +60,7 @@ public: // 동작
 	void Chase(bool bUsePredictive = false, bool bUseReset = true);
 	void RockAttack(bool bUseReset = true);
 	void PaperAttack(bool bUseReset = true);
-	void Scissors(bool bUseReset = true);
+	void ScissorsAttack(bool bUseReset = true);
 
 public:
 	FHandStateSignature OnChaseEnd;
@@ -67,6 +75,8 @@ protected: // 내부 함수
 	void HandleRock(float DeltaTime);
 	void PaperCallback();
 	void HandlePaper(float DeltaTime);
+	void ScissorsCallback();
+	void HandleScissors(float DeltaTime);
 
 protected: // 캐시
 	UPROPERTY()
@@ -77,10 +87,17 @@ protected: // 캐시
 
 protected: // 상태
 	ESerinState CurrentSerinState;
+	EScissorsState CurrentScissorsState;
 
 	uint32 bUsePredictiveChase : 1;
 
 protected: // 데이터
 	FVector MoveLocation;
 	FVector ChaseLocation;
+	
+	int32 ScissorsAttackCount;
+	int32 ScissorsAttackMaxCount;
+	
+	float ScissorsCoolDown;
+	float ScissorsCoolDownElapsedTime;
 };

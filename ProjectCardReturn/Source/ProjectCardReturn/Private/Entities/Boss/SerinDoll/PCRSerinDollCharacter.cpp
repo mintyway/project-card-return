@@ -69,23 +69,45 @@ void APCRSerinDollCharacter::BeginPlay()
 	LeftHand->SetTarget(CachedErica);
 	RightHand->SetTarget(CachedErica);
 
-	const FVector NewLocation = CachedErica->GetActorLocation() + FVector(0.0, 0.0, 300.0);
-	LeftHand->Move(NewLocation);
-
+	LeftHand->BasicChase();
+	RightHand->BasicChase();
+	
 	// TODO: 테스트용 코드
 	FTimerHandle TestTimerHandle1;
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->PaperAttack();
-	}), 10.f, true, 0.f);
+		LeftHand->RockAttack();
+	}), 30.f, true, 0.f);
 
 	FTimerHandle TestTimerHandle2;
 	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		RightHand->RockAttack();
-	}), 10.f, true, 5.f);
+		RightHand->ScissorsAttack();
+	}), 30.f, true, 5.f);
 
-	RightHand->Chase();
+	FTimerHandle TestTimerHandle3;
+	GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		LeftHand->PaperAttack();
+	}), 30.f, true, 10.f);
+
+	FTimerHandle TestTimerHandle4;
+	GetWorldTimerManager().SetTimer(TestTimerHandle4, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		RightHand->RockAttack();
+	}), 30.f, true, 15.f);
+
+	FTimerHandle TestTimerHandle5;
+	GetWorldTimerManager().SetTimer(TestTimerHandle5, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		LeftHand->ScissorsAttack();
+	}), 30.f, true, 20.f);
+
+	FTimerHandle TestTimerHandle6;
+	GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		RightHand->PaperAttack();
+	}), 30.f, true, 25.f);
 }
 
 void APCRSerinDollCharacter::Tick(float DeltaTime)
