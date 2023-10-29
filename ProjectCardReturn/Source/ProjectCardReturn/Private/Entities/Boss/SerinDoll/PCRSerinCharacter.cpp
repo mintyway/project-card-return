@@ -78,14 +78,14 @@ void APCRSerinCharacter::BeginPlay()
 	FTimerHandle TestTimerHandle1;
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->Rock();
-	}), 5.f, true, 0.f);
+		LeftHand->RockAttack();
+	}), 10.f, true, 0.f);
 
 	FTimerHandle TestTimerHandle2;
 	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		RightHand->Rock();
-	}), 5.f, true, 2.5f);
+		RightHand->RockAttack();
+	}), 10.f, true, 5.f);
 
 	RightHand->Chase();
 }

@@ -116,6 +116,9 @@ public: // 세린
 	UPROPERTY(EditDefaultsOnly, Category = "Serin")
 	float SerinChaseSpeed;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	float SerinRockSpeed;
+
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;

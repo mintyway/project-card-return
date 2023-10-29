@@ -50,7 +50,9 @@ public: // 동작
 	void Move(const FVector& InLocation, bool bUseReset = true);
 	void BasicChase(bool bUseReset = true);
 	void Chase(bool bUsePredictive = false, bool bUseReset = true);
-	void Rock(bool bUseReset = true);
+	void RockAttack(bool bUseReset = true);
+	void PaperAttack(bool bUseReset = true);
+	void Scissors(bool bUseReset = true);
 
 public:
 	FChaseEndSignature OnChaseEnd;
@@ -80,7 +82,7 @@ protected: // 상태
 
 	uint32 bUsePredictiveChase : 1;
 
-protected: // 이동
+protected: // 데이터
 	FVector MoveLocation;
 	FVector ChaseLocation;
 };

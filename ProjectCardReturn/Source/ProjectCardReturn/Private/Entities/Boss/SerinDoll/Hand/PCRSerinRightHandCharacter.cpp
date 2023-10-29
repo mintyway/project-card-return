@@ -26,7 +26,7 @@ void APCRSerinRightHandCharacter::Tick(float DeltaTime)
 void APCRSerinRightHandCharacter::HandleBasicChase(float DeltaTime)
 {
 	ChaseLocation = CachedSerinCharacter->CachedErica->GetActorLocation();
-	ChaseLocation.Y = CachedSerinCharacter->RightHandBasicChaseYDistance;
+	ChaseLocation.Y += CachedSerinCharacter->RightHandBasicChaseYDistance;
 	Super::HandleBasicChase(DeltaTime);
 }
 

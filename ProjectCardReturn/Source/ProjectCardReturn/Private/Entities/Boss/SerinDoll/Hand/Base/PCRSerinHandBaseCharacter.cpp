@@ -27,6 +27,7 @@ APCRSerinHandBaseCharacter::APCRSerinHandBaseCharacter()
 		DummyStaticMeshComponent->SetupAttachment(GetCapsuleComponent());
 		DummyStaticMeshComponent->SetStaticMesh(SerinDataAsset->CubeDummyMesh);
 	}
+	SetActorEnableCollision(false);
 
 	if (GetCharacterMovement())
 	{
@@ -152,7 +153,7 @@ void APCRSerinHandBaseCharacter::Chase(bool bUsePredictive, bool bUseReset)
 /**
  * 타겟에게 빠르게 접근 한 뒤에 주먹으로 내려칩니다.
  */
-void APCRSerinHandBaseCharacter::Rock(bool bUseReset)
+void APCRSerinHandBaseCharacter::RockAttack(bool bUseReset)
 {
 	if (bUseReset)
 	{
@@ -160,7 +161,26 @@ void APCRSerinHandBaseCharacter::Rock(bool bUseReset)
 	}
 
 	OnChaseEnd.BindUObject(this, &APCRSerinHandBaseCharacter::RockCallback);
+	// RockAttackPredictiveTime = 
 	Chase(true, false);
+}
+
+void APCRSerinHandBaseCharacter::PaperAttack(bool bUseReset)
+{
+	if (bUseReset)
+	{
+		StateReset();
+	}
+	
+}
+
+void APCRSerinHandBaseCharacter::Scissors(bool bUseReset)
+{
+	if (bUseReset)
+	{
+		StateReset();
+	}
+	
 }
 
 /**
@@ -194,12 +214,29 @@ void APCRSerinHandBaseCharacter::HandleBasicChase(float DeltaTime)
 
 void APCRSerinHandBaseCharacter::HandleChase(float DeltaTime)
 {
-	ChaseLocation = CachedTarget->GetActorLocation();
-	ChaseLocation.Z = CachedSerinCharacter->DefaultFloatingHeight;
+	if (bUsePredictiveChase)
+	{
+		TIME_CHECK_START(0);
+		ChaseLocation = CachedTarget->GetActorLocation();
+		FVector RockAttackLocation = GetActorLocation();
+		RockAttackLocation.Z = CachedSerinCharacter->GetLiftHeight();
+		const float RockAttackPredictiveTime = FVector::Dist(GetActorLocation(), RockAttackLocation) / ParameterDataAsset->SerinRockSpeed;
+		UE_LOG(PCRLogSerinHandBaseCharacter, Warning, TEXT("%f"), RockAttackPredictiveTime);
+		const FVector Velocity = CachedTarget->GetVelocity() * RockAttackPredictiveTime;
+		ChaseLocation += Velocity;
+		ChaseLocation.Z = CachedSerinCharacter->DefaultFloatingHeight;
+		TIME_CHECK_END(0);
+	}
+	else
+	{
+		ChaseLocation = CachedTarget->GetActorLocation();
+		ChaseLocation.Z = CachedSerinCharacter->DefaultFloatingHeight;
+	}
+
 	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), ChaseLocation, DeltaTime, ParameterDataAsset->SerinChaseSpeed);
 	SetActorLocation(NewLocation);
 
-	const float DistSquare2D = FVector::DistSquared2D(NewLocation, CachedTarget->GetActorLocation());
+	const float DistSquare2D = FVector::DistSquared2D(NewLocation, ChaseLocation);
 	if (DistSquare2D <= FMath::Square(CachedSerinCharacter->ContactDistance))
 	{
 		if (OnChaseEnd.IsBound())
@@ -217,21 +254,19 @@ void APCRSerinHandBaseCharacter::HandleChase(float DeltaTime)
 void APCRSerinHandBaseCharacter::RockCallback()
 {
 	CurrentSerinState = ESerinState::Rock;
-	UE_LOG(LogTemp, Warning, TEXT("주먹 공격 시작"));
+	UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("주먹 공격 시작"));
 	ChaseLocation = GetActorLocation();
-	TIME_CHECK_START(0);
 	ChaseLocation.Z = CachedSerinCharacter->GetLiftHeight();
-	TIME_CHECK_END(0);
 }
 
 void APCRSerinHandBaseCharacter::HandleRock(float DeltaTime)
 {
-	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), ChaseLocation, DeltaTime, 3000.f);
+	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), ChaseLocation, DeltaTime, ParameterDataAsset->SerinRockSpeed);
 	SetActorLocation(NewLocation);
 	const float DistSquare = FVector::DistSquared(NewLocation, ChaseLocation);
 	if (DistSquare <= FMath::Square(10.f))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("주먹 공격 끝"));
+		UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("주먹 공격 끝"));
 		CurrentSerinState = ESerinState::BasicChase;
 	}
 }

@@ -12,7 +12,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  EricaDashCooldownTime(1.f), EricaDashDistance(500.f), EricaMaxDashTime(0.1f), EricaWideShotAngle(30.f), EricaCardSpeed(10000.f), EricaCardReturnSpeed(10000.f), EricaNarrowShotRange(1300.f), EricaWideShotRange(700.f), EricaCardKnockBackPower(1500.f), EricaCardReleaseRange(150.f),
 
-	  SerinMoveSpeed(500.f), SerinBasicChaseSpeed(500.f), SerinChaseSpeed(1000.f),
+	  SerinMoveSpeed(500.f), SerinBasicChaseSpeed(500.f), SerinChaseSpeed(1000.f), SerinRockSpeed(3000.f),
 
 	  DeadAfterDestroyTime(1.f), HitStopTime(0.1f),
 
