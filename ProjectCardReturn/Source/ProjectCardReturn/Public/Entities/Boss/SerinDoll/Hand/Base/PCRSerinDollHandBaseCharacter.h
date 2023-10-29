@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Entities/Boss/SerinDoll/Base/PCRSerinBaseCharacter.h"
-#include "PCRSerinHandBaseCharacter.generated.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
+#include "PCRSerinDollHandBaseCharacter.generated.h"
 
-class APCRSerinCharacter;
-class APCRSerinHandBaseCharacter;
-class APCRSerinLeftHandCharacter;
-class APCRSerinRightHandCharacter;
+class APCRSerinDollCharacter;
+class APCRSerinDollHandBaseCharacter;
+class APCRSerinDollLeftHandCharacter;
+class APCRSerinDollRightHandCharacter;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinHandBaseCharacter, Log, All);
 
-DECLARE_DELEGATE(FChaseEndSignature);
+DECLARE_DELEGATE(FHandStateSignature);
 DECLARE_DELEGATE(FMoveEndSignature);
 
 
@@ -31,12 +31,12 @@ enum class ESerinState
 };
 
 UCLASS(Abstract)
-class PROJECTCARDRETURN_API APCRSerinHandBaseCharacter : public APCRSerinBaseCharacter
+class PROJECTCARDRETURN_API APCRSerinDollHandBaseCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinHandBaseCharacter();
+	APCRSerinDollHandBaseCharacter();
 
 protected:
 	virtual void PostInitializeComponents() override;
@@ -55,7 +55,8 @@ public: // 동작
 	void Scissors(bool bUseReset = true);
 
 public:
-	FChaseEndSignature OnChaseEnd;
+	FHandStateSignature OnChaseEnd;
+	FMoveEndSignature OnMoveEnd;
 
 protected: // 내부 함수
 	void StateReset();
@@ -65,14 +66,9 @@ protected: // 내부 함수
 	void RockCallback();
 	void HandleRock(float DeltaTime);
 
-protected:
-	// TODO: 더미 스켈레탈 메시 구현시 제거
-	UPROPERTY(VisibleAnywhere, Category = "DummyMeshComponent")
-	TObjectPtr<UStaticMeshComponent> DummyStaticMeshComponent;
-
 protected: // 캐시
 	UPROPERTY()
-	TObjectPtr<APCRSerinCharacter> CachedSerinCharacter;
+	TObjectPtr<APCRSerinDollCharacter> CachedSerinDollCharacter;
 
 	UPROPERTY()
 	TObjectPtr<AActor> CachedTarget;

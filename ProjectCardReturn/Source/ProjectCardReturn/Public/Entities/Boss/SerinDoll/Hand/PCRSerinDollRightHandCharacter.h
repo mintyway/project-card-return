@@ -3,16 +3,16 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
-#include "Entities/Boss/SerinDoll/Hand/Base/PCRSerinHandBaseCharacter.h"
-#include "PCRSerinRightHandCharacter.generated.h"
+#include "Entities/Boss/SerinDoll/Hand/Base/PCRSerinDollHandBaseCharacter.h"
+#include "PCRSerinDollRightHandCharacter.generated.h"
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRSerinRightHandCharacter : public APCRSerinHandBaseCharacter
+class PROJECTCARDRETURN_API APCRSerinDollRightHandCharacter : public APCRSerinDollHandBaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinRightHandCharacter();
+	APCRSerinDollRightHandCharacter();
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

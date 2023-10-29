@@ -3,26 +3,26 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
-#include "Entities/Boss/SerinDoll/Base/PCRSerinBaseCharacter.h"
-#include "PCRSerinCharacter.generated.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
+#include "PCRSerinDollCharacter.generated.h"
 
 class APCRLiftActor;
 class APCREricaCharacter;
-class APCRSerinHandBaseCharacter;
-class APCRSerinLeftHandCharacter;
-class APCRSerinRightHandCharacter;
+class APCRSerinDollHandBaseCharacter;
+class APCRSerinDollLeftHandCharacter;
+class APCRSerinDollRightHandCharacter;
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRSerinCharacter : public APCRSerinBaseCharacter
+class PROJECTCARDRETURN_API APCRSerinDollCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinCharacter();
+	APCRSerinDollCharacter();
 
-	friend class APCRSerinHandBaseCharacter;
-	friend class APCRSerinLeftHandCharacter;
-	friend class APCRSerinRightHandCharacter;
+	friend class APCRSerinDollHandBaseCharacter;
+	friend class APCRSerinDollLeftHandCharacter;
+	friend class APCRSerinDollRightHandCharacter;
 	
 protected:
 	virtual void PostInitializeComponents() override;
@@ -37,11 +37,8 @@ private: // 내부 함수
 
 private: // 내부 Getter
 	FORCEINLINE float GetLiftHeight();
+	FORCEINLINE float GetHandWorldHeight();
 	
-private: // 컴포넌트
-	UPROPERTY(VisibleAnywhere, Category = "Dummy")
-	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
-
 private: // 캐시
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedErica;
@@ -51,13 +48,13 @@ private: // 캐시
 
 private: // 핸드
 	UPROPERTY()
-	TObjectPtr<APCRSerinLeftHandCharacter> LeftHand;
+	TObjectPtr<APCRSerinDollLeftHandCharacter> LeftHand;
 
 	UPROPERTY()
-	TObjectPtr<APCRSerinRightHandCharacter> RightHand;
+	TObjectPtr<APCRSerinDollRightHandCharacter> RightHand;
 
 	static const float ContactDistance;
-	static const float DefaultFloatingHeight;
+	static const float FloatingHandHeight;
 	
 	static const float LeftHandBasicChaseYDistance;
 	static const float RightHandBasicChaseYDistance;

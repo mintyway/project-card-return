@@ -4,18 +4,18 @@
 
 #include "ProjectCardReturn.h"
 #include "AIController.h"
-#include "PCRSerinAIController.generated.h"
+#include "PCRSerinDollAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRSerinAIController : public AAIController
+class PROJECTCARDRETURN_API APCRSerinDollAIController : public AAIController
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinAIController();
+	APCRSerinDollAIController();
 
 protected:
 	virtual void Tick(float DeltaSeconds) override;

@@ -4,18 +4,18 @@
 
 #include "ProjectCardReturn.h"
 #include "GameFramework/Character.h"
-#include "PCRSerinBaseCharacter.generated.h"
+#include "PCRSerinDollBaseCharacter.generated.h"
 
-class UPCRSerinPrimaryDataAsset;
+class UPCRSerinDollPrimaryDataAsset;
 class UPCRParameterDataAsset;
 
 UCLASS(Abstract)
-class PROJECTCARDRETURN_API APCRSerinBaseCharacter : public ACharacter
+class PROJECTCARDRETURN_API APCRSerinDollBaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinBaseCharacter();
+	APCRSerinDollBaseCharacter();
 
 
 protected:
@@ -25,7 +25,7 @@ protected:
 
 protected: // 데이터 에셋 섹션
 	UPROPERTY()
-	TObjectPtr<const UPCRSerinPrimaryDataAsset> SerinDataAsset;
+	TObjectPtr<const UPCRSerinDollPrimaryDataAsset> SerinDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;

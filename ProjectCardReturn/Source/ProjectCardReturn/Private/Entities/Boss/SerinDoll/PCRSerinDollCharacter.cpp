@@ -1,38 +1,36 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/SerinDoll//PCRSerinCharacter.h"
+#include "Entities/Boss/SerinDoll//PCRSerinDollCharacter.h"
 
 #include "Entities/Players/Erica/PCREricaCharacter.h"
-#include "Entities/Boss/SerinDoll/PCRSerinAIController.h"
-#include "Entities/Boss/SerinDoll/Base/PCRSerinPrimaryDataAsset.h"
-#include "Entities/Boss/SerinDoll/Hand/PCRSerinLeftHandCharacter.h"
-#include "Entities/Boss/SerinDoll/Hand/PCRSerinRightHandCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollAIController.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandCharacter.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollRightHandCharacter.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-const float APCRSerinCharacter::ContactDistance = 10.f;
-const float APCRSerinCharacter::DefaultFloatingHeight = 1200.f;
-const float APCRSerinCharacter::LeftHandBasicChaseYDistance = 700.f;
-const float APCRSerinCharacter::RightHandBasicChaseYDistance = -700.f;
+const float APCRSerinDollCharacter::ContactDistance = 10.f;
+const float APCRSerinDollCharacter::FloatingHandHeight = 500.f;
+const float APCRSerinDollCharacter::LeftHandBasicChaseYDistance = 700.f;
+const float APCRSerinDollCharacter::RightHandBasicChaseYDistance = -700.f;
 
-APCRSerinCharacter::APCRSerinCharacter()
+APCRSerinDollCharacter::APCRSerinDollCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	AIControllerClass = APCRSerinAIController::StaticClass();
+	AIControllerClass = APCRSerinDollAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	DummyMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMeshComponent"));
-	if (DummyMeshComponent && SerinDataAsset)
+	if (GetMesh() && SerinDataAsset)
 	{
-		DummyMeshComponent->SetupAttachment(GetCapsuleComponent());
-		DummyMeshComponent->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-		DummyMeshComponent->SetRelativeScale3D(FVector(4.0, 4.0, 4.0));
-		DummyMeshComponent->SetStaticMesh(SerinDataAsset->SerinDummyMesh);
+		GetMesh()->SetupAttachment(GetCapsuleComponent());
+		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
+		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollMesh);
 	}
 
 	if (GetCharacterMovement())
@@ -41,7 +39,7 @@ APCRSerinCharacter::APCRSerinCharacter()
 	}
 }
 
-void APCRSerinCharacter::PostInitializeComponents()
+void APCRSerinDollCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
@@ -58,7 +56,7 @@ void APCRSerinCharacter::PostInitializeComponents()
 	SpawnHands();
 }
 
-void APCRSerinCharacter::BeginPlay()
+void APCRSerinDollCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -90,12 +88,12 @@ void APCRSerinCharacter::BeginPlay()
 	RightHand->Chase();
 }
 
-void APCRSerinCharacter::Tick(float DeltaTime)
+void APCRSerinDollCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void APCRSerinCharacter::SpawnHands()
+void APCRSerinDollCharacter::SpawnHands()
 {
 	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-300.0, 1000.0, 0.0);
 	LeftHandSpawnLocation.Z = 1000.0;
@@ -104,7 +102,7 @@ void APCRSerinCharacter::SpawnHands()
 	LeftHandSpawnParameters.Owner = this;
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
-	LeftHand = GetWorld()->SpawnActor<APCRSerinLeftHandCharacter>(APCRSerinLeftHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
+	LeftHand = GetWorld()->SpawnActor<APCRSerinDollLeftHandCharacter>(APCRSerinDollLeftHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
 
 	FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
 	RightHandSpawnLocation.Z = 1000.0;
@@ -113,7 +111,7 @@ void APCRSerinCharacter::SpawnHands()
 	RightHandSpawnParameters.Owner = this;
 	const FName RightHandName = TEXT("RightHand");
 	RightHandSpawnParameters.Name = RightHandName;
-	RightHand = GetWorld()->SpawnActor<APCRSerinRightHandCharacter>(APCRSerinRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
+	RightHand = GetWorld()->SpawnActor<APCRSerinDollRightHandCharacter>(APCRSerinDollRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
 
 #if WITH_EDITOR
 	LeftHand->SetActorLabel(LeftHand->GetName());
@@ -123,13 +121,19 @@ void APCRSerinCharacter::SpawnHands()
 #endif
 }
 
-float APCRSerinCharacter::GetLiftHeight()
+float APCRSerinDollCharacter::GetLiftHeight()
 {
 	const float LiftHeight = CachedLift->GetActorLocation().Z;
 	return LiftHeight;
 }
 
-void APCRSerinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+float APCRSerinDollCharacter::GetHandWorldHeight()
+{
+	const float HandWorldHeight = GetLiftHeight() + FloatingHandHeight;
+	return HandWorldHeight;
+}
+
+void APCRSerinDollCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
