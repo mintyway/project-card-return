@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "Animation/AnimInstance.h"
 #include "PCRMonsterBaseAnimInstance.generated.h"
 

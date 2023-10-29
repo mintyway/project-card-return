@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "GameFramework/Actor.h"
 #include "PCRLiftActor.generated.h"
 
