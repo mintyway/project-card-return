@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/Serin/Hand/PCRSerinLeftHandCharacter.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinLeftHandCharacter.h"
 
-#include "Entities/Boss/Serin/PCRSerinCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinCharacter.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 
 APCRSerinLeftHandCharacter::APCRSerinLeftHandCharacter()
@@ -23,7 +23,8 @@ void APCRSerinLeftHandCharacter::Tick(float DeltaTime)
 
 void APCRSerinLeftHandCharacter::HandleBasicChase(float DeltaTime)
 {
-	TargetLocation = CachedSerinCharacter->CachedErica->GetActorLocation() + CachedSerinCharacter->LeftHandBasicChaseDistance;
+	ChaseLocation = CachedSerinCharacter->CachedErica->GetActorLocation();
+	ChaseLocation.Y = CachedSerinCharacter->LeftHandBasicChaseYDistance;
 	Super::HandleBasicChase(DeltaTime);
 }
 

@@ -1,22 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/Serin/PCRSerinCharacter.h"
+#include "Entities/Boss/SerinDoll//PCRSerinCharacter.h"
+
+#include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinAIController.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinPrimaryDataAsset.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinLeftHandCharacter.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinRightHandCharacter.h"
 
 #include "Components/CapsuleComponent.h"
-#include "Entities/Boss/Serin/PCRSerinAIController.h"
-#include "Entities/Boss/Serin/Base/PCRSerinPrimaryDataAsset.h"
-#include "Entities/Boss/Serin/Hand/PCRSerinLeftHandCharacter.h"
-#include "Entities/Boss/Serin/Hand/PCRSerinRightHandCharacter.h"
+#include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Kismet/GameplayStatics.h"
-
-// 테스트
-#include "EngineUtils.h"
-#include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+const float APCRSerinCharacter::ContactDistance = 10.f;
+const float APCRSerinCharacter::DefaultFloatingHeight = 1200.f;
+const float APCRSerinCharacter::LeftHandBasicChaseYDistance = 700.f;
+const float APCRSerinCharacter::RightHandBasicChaseYDistance = -700.f;
+
 APCRSerinCharacter::APCRSerinCharacter()
-	: LeftHandBasicChaseDistance(0.0, 700.0, 300.0), RightHandBasicChaseDistance(0.0, -700.0, 300.0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -42,8 +45,16 @@ void APCRSerinCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+#if WITH_EDITOR
+	SetActorLabel(TEXT("Serin"));
 	SetFolderPath(TEXT("Serin"));
+#endif
 
+	TArray<AActor*> Lifts;
+	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), APCRLiftActor::StaticClass(), TEXT("Lift"), Lifts);
+	CachedLift = Cast<APCRLiftActor>(Lifts[0]);
+	check(CachedLift);
+	
 	SpawnHands();
 }
 
@@ -62,7 +73,7 @@ void APCRSerinCharacter::BeginPlay()
 
 	const FVector NewLocation = CachedErica->GetActorLocation() + FVector(0.0, 0.0, 300.0);
 	LeftHand->Move(NewLocation);
-	
+
 	// TODO: 테스트용 코드
 	FTimerHandle TestTimerHandle1;
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
@@ -75,7 +86,7 @@ void APCRSerinCharacter::BeginPlay()
 	{
 		RightHand->Rock();
 	}), 5.f, true, 2.5f);
-	
+
 	RightHand->Chase();
 }
 
@@ -86,7 +97,7 @@ void APCRSerinCharacter::Tick(float DeltaTime)
 
 void APCRSerinCharacter::SpawnHands()
 {
-	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-300.0, 300.0, 0.0);
+	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-300.0, 1000.0, 0.0);
 	LeftHandSpawnLocation.Z = 1000.0;
 	const FRotator LeftHandSpawnRotation = FRotator::ZeroRotator;
 	FActorSpawnParameters LeftHandSpawnParameters;
@@ -94,19 +105,28 @@ void APCRSerinCharacter::SpawnHands()
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
 	LeftHand = GetWorld()->SpawnActor<APCRSerinLeftHandCharacter>(APCRSerinLeftHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
-	LeftHand->SetActorLabel(LeftHand->GetName());
-	LeftHand->SetFolderPath(TEXT("Serin"));
 
-	FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -300.0, 0.0);
-	RightHandSpawnLocation.Z = 1000.0; 
+	FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
+	RightHandSpawnLocation.Z = 1000.0;
 	const FRotator RightHandSpawnRotation = FRotator::ZeroRotator;
 	FActorSpawnParameters RightHandSpawnParameters;
 	RightHandSpawnParameters.Owner = this;
 	const FName RightHandName = TEXT("RightHand");
 	RightHandSpawnParameters.Name = RightHandName;
 	RightHand = GetWorld()->SpawnActor<APCRSerinRightHandCharacter>(APCRSerinRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
+
+#if WITH_EDITOR
+	LeftHand->SetActorLabel(LeftHand->GetName());
 	RightHand->SetActorLabel(RightHand->GetName());
+	LeftHand->SetFolderPath(TEXT("Serin"));
 	RightHand->SetFolderPath(TEXT("Serin"));
+#endif
+}
+
+float APCRSerinCharacter::GetLiftHeight()
+{
+	const float LiftHeight = CachedLift->GetActorLocation().Z;
+	return LiftHeight;
 }
 
 void APCRSerinCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

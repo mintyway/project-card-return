@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/Serin/PCRSerinAIController.h"
+#include "Entities/Boss/SerinDoll/PCRSerinAIController.h"
 
 APCRSerinAIController::APCRSerinAIController() {}
 

@@ -3,9 +3,10 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
-#include "Entities/Boss/Serin/Base/PCRSerinBaseCharacter.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinBaseCharacter.h"
 #include "PCRSerinCharacter.generated.h"
 
+class APCRLiftActor;
 class APCREricaCharacter;
 class APCRSerinHandBaseCharacter;
 class APCRSerinLeftHandCharacter;
@@ -34,6 +35,9 @@ public: // Getter, Setter
 private: // 내부 함수
 	void SpawnHands();
 
+private: // 내부 Getter
+	FORCEINLINE float GetLiftHeight();
+	
 private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Dummy")
 	TObjectPtr<UStaticMeshComponent> DummyMeshComponent;
@@ -42,6 +46,9 @@ private: // 캐시
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedErica;
 
+	UPROPERTY()
+	TObjectPtr<APCRLiftActor> CachedLift;
+
 private: // 핸드
 	UPROPERTY()
 	TObjectPtr<APCRSerinLeftHandCharacter> LeftHand;
@@ -49,6 +56,9 @@ private: // 핸드
 	UPROPERTY()
 	TObjectPtr<APCRSerinRightHandCharacter> RightHand;
 
-	FVector LeftHandBasicChaseDistance;
-	FVector RightHandBasicChaseDistance;
+	static const float ContactDistance;
+	static const float DefaultFloatingHeight;
+	
+	static const float LeftHandBasicChaseYDistance;
+	static const float RightHandBasicChaseYDistance;
 };

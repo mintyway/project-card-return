@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Entities/Boss/Serin/Base/PCRSerinBaseCharacter.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinBaseCharacter.h"
 #include "PCRSerinHandBaseCharacter.generated.h"
 
 class APCRSerinCharacter;
@@ -12,7 +12,10 @@ class APCRSerinLeftHandCharacter;
 class APCRSerinRightHandCharacter;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinHandBaseCharacter, Log, All);
+
 DECLARE_DELEGATE(FChaseEndSignature);
+DECLARE_DELEGATE(FMoveEndSignature);
+
 
 UENUM()
 enum class ESerinState
@@ -43,15 +46,17 @@ protected:
 
 public: // 동작
 	void SetTarget(AActor* TargetActor);
-	void Move(const FVector& InLocation);
-	void BasicChase();
-	void Chase();
-	void Rock();
+
+	void Move(const FVector& InLocation, bool bUseReset = true);
+	void BasicChase(bool bUseReset = true);
+	void Chase(bool bUsePredictive = false, bool bUseReset = true);
+	void Rock(bool bUseReset = true);
 
 public:
 	FChaseEndSignature OnChaseEnd;
-	
+
 protected: // 내부 함수
+	void StateReset();
 	void HandleMove(float DeltaTime);
 	virtual void HandleBasicChase(float DeltaTime);
 	void HandleChase(float DeltaTime);
@@ -68,12 +73,14 @@ protected: // 캐시
 	TObjectPtr<APCRSerinCharacter> CachedSerinCharacter;
 
 	UPROPERTY()
-	TObjectPtr<AActor> CachedTarget; 
+	TObjectPtr<AActor> CachedTarget;
+
+protected: // 상태
+	ESerinState CurrentSerinState;
+
+	uint32 bUsePredictiveChase : 1;
 
 protected: // 이동
 	FVector MoveLocation;
-	FVector TargetLocation;
-
-protected: // 공격 패턴
-	ESerinState CurrentSerinState;
+	FVector ChaseLocation;
 };
