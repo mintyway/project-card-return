@@ -307,16 +307,14 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 		}
 	}
 
-	if (!bShouldRelease)
-	{
-		SetActorLocationAndRotation(CurrentTickLocation, MoveRotator);
-	}
-
-	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
-	if ((OwnerDistanceSquared <= (CardReleaseRange * CardReleaseRange)) || bShouldRelease)
+	if (bShouldRelease)
 	{
 		CurrentCardState = ECardState::Invalid;
 		ReleaseToProjectilePool();
+	}
+	else
+	{
+		SetActorLocationAndRotation(CurrentTickLocation, MoveRotator);
 	}
 }
 

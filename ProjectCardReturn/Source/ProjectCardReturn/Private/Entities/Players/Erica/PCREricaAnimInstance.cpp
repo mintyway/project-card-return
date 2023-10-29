@@ -67,7 +67,7 @@ void UPCREricaAnimInstance::JumpToAttackMontageSection(int32 InSectionNumber)
 		const FString SectionString = FString::Printf(TEXT("Combo%d"), InSectionNumber);
 		const FName SectionName(SectionString);
 		Montage_JumpToSection(SectionName, EricaDataAsset->AttackAnimationMontage);
-		UE_LOG(LogTemp, Warning, TEXT("SectionNumber: %d"), InSectionNumber);
+		UE_LOG(PCRLogEricaAnimInstance, Log, TEXT("SectionNumber: %d"), InSectionNumber);
 	}
 }
 
