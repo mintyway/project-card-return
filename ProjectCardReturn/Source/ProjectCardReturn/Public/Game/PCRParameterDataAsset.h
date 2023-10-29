@@ -103,9 +103,6 @@ public: // 에리카 카드
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardKnockBackPower;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Erica")
-	float EricaCardReleaseRange;
-
 public: // 세린
 	UPROPERTY(EditDefaultsOnly, Category = "Serin")
 	float SerinMoveSpeed;

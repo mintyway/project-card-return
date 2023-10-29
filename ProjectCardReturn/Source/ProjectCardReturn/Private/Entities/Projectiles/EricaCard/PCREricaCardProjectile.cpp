@@ -26,7 +26,6 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 		CardReturnSpeed = ParameterDataAsset->EricaCardReturnSpeed;
 		CardRange = ParameterDataAsset->EricaNarrowShotRange;
 		KnockBackPower = ParameterDataAsset->EricaCardKnockBackPower;
-		CardReleaseRange = ParameterDataAsset->EricaCardReleaseRange;
 	}
 
 	if (BoxComponent)
