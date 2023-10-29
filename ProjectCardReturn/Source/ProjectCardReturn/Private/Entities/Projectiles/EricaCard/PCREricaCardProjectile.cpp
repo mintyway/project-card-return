@@ -66,7 +66,7 @@ void APCREricaCardProjectile::PostInitializeComponents()
 #if WITH_EDITOR
 	SetFolderPath(TEXT("Erica/Cards"));
 #endif
-	
+
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
 
@@ -78,6 +78,8 @@ void APCREricaCardProjectile::PostInitializeComponents()
 void APCREricaCardProjectile::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	LastTickLocation = GetActorLocation();
 
 	switch (CurrentCardState)
 	{
@@ -256,7 +258,23 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
 	}
 
-	SetActorLocationAndRotation(GetActorLocation() + (MoveVector * DeltaSeconds), MoveRotator);
+	FVector CurrentTickLocation = GetActorLocation() + (MoveVector * DeltaSeconds);
+
+	TIME_CHECK_START(0);
+	FHitResult HitResult;
+	bool bRaycastResult = GetWorld()->LineTraceSingleByChannel(HitResult, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel7);
+	if (bRaycastResult)
+	{
+		CurrentCardState = ECardState::Invalid;
+		ReleaseToProjectilePool();
+	}
+	else
+	{
+		SetActorLocationAndRotation(CurrentTickLocation, MoveRotator);
+	}
+	TIME_CHECK_END(0);
+	
+	SetActorLocationAndRotation(CurrentTickLocation, MoveRotator);
 
 	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
 	if (OwnerDistanceSquared <= (CardReleaseRange * CardReleaseRange))
