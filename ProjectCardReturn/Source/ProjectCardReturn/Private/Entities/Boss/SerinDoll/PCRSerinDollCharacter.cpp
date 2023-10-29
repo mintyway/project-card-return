@@ -76,7 +76,7 @@ void APCRSerinDollCharacter::BeginPlay()
 	FTimerHandle TestTimerHandle1;
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->RockAttack();
+		LeftHand->PaperAttack();
 	}), 10.f, true, 0.f);
 
 	FTimerHandle TestTimerHandle2;

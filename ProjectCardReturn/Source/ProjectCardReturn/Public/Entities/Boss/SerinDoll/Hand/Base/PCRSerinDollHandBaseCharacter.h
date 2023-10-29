@@ -65,6 +65,8 @@ protected: // 내부 함수
 	void HandleChase(float DeltaTime);
 	void RockCallback();
 	void HandleRock(float DeltaTime);
+	void PaperCallback();
+	void HandlePaper(float DeltaTime);
 
 protected: // 캐시
 	UPROPERTY()

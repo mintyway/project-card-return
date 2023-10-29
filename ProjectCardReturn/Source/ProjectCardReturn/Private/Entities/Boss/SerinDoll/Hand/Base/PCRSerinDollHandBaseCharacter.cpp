@@ -86,6 +86,7 @@ void APCRSerinDollHandBaseCharacter::Tick(float DeltaTime)
 		}
 		case ESerinState::Paper:
 		{
+			HandlePaper(DeltaTime);
 			break;
 		}
 		case ESerinState::Scissors:
@@ -173,6 +174,11 @@ void APCRSerinDollHandBaseCharacter::PaperAttack(bool bUseReset)
 		StateReset();
 	}
 	
+	FVector NewLocation = GetActorLocation();
+	NewLocation.X = CachedTarget->GetActorLocation().X;
+	NewLocation.Z = CachedTarget->GetActorLocation().Z;
+	OnMoveEnd.BindUObject(this, &APCRSerinDollHandBaseCharacter::PaperCallback);
+	Move(NewLocation, false);
 }
 
 void APCRSerinDollHandBaseCharacter::Scissors(bool bUseReset)
@@ -197,8 +203,8 @@ void APCRSerinDollHandBaseCharacter::HandleMove(float DeltaTime)
 	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), MoveLocation, DeltaTime, ParameterDataAsset->SerinMoveSpeed);
 	SetActorLocation(NewLocation);
 
-	const float DistSquare2D = FVector::DistSquared2D(NewLocation, MoveLocation);
-	if (DistSquare2D <= FMath::Square(CachedSerinDollCharacter->ContactDistance))
+	const float DistSquare = FVector::DistSquared(NewLocation, MoveLocation);
+	if (DistSquare <= FMath::Square(CachedSerinDollCharacter->ContactDistance))
 	{
 		if (OnMoveEnd.IsBound())
 		{
@@ -216,7 +222,7 @@ void APCRSerinDollHandBaseCharacter::HandleBasicChase(float DeltaTime)
 {
 	// 각 손의 해당 함수도 참고해주세요.
 	ChaseLocation.Z = CachedSerinDollCharacter->GetHandWorldHeight();
-	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), ChaseLocation, DeltaTime, ParameterDataAsset->SerinBasicChaseSpeed);
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ChaseLocation, DeltaTime, /*ParameterDataAsset->SerinBasicChaseSpeed*/ 3.f);
 	SetActorLocation(NewLocation);
 }
 
@@ -262,19 +268,43 @@ void APCRSerinDollHandBaseCharacter::HandleChase(float DeltaTime)
 void APCRSerinDollHandBaseCharacter::RockCallback()
 {
 	CurrentSerinState = ESerinState::Rock;
-	UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("주먹 공격 시작"));
+	UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("바위 공격 시작"));
 	ChaseLocation = GetActorLocation();
 	ChaseLocation.Z = CachedSerinDollCharacter->GetLiftHeight();
 }
 
 void APCRSerinDollHandBaseCharacter::HandleRock(float DeltaTime)
 {
-	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), ChaseLocation, DeltaTime, ParameterDataAsset->SerinRockSpeed);
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ChaseLocation, DeltaTime, /*ParameterDataAsset->SerinRockSpeed*/ 15.f);
 	SetActorLocation(NewLocation);
+	
 	const float DistSquare = FVector::DistSquared(NewLocation, ChaseLocation);
 	if (DistSquare <= FMath::Square(10.f))
 	{
-		UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("주먹 공격 끝"));
+		UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("바위 공격 끝"));
+		CurrentSerinState = ESerinState::BasicChase;
+	}
+}
+
+void APCRSerinDollHandBaseCharacter::PaperCallback()
+{
+	CurrentSerinState = ESerinState::Paper;
+	UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("보 공격 시작"));
+	const FVector Direction = (CachedTarget->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	// TODO: 파라미터화 필요
+	ChaseLocation = GetActorLocation() + (Direction * 1500.f);
+}
+
+void APCRSerinDollHandBaseCharacter::HandlePaper(float DeltaTime)
+{
+	
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ChaseLocation, DeltaTime, 10.f);
+	SetActorLocation(NewLocation);
+	
+	const float DistSquare = FVector::DistSquared(NewLocation, ChaseLocation);
+	if (DistSquare <= FMath::Square(10.f))
+	{
+		UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("보 공격 끝"));
 		CurrentSerinState = ESerinState::BasicChase;
 	}
 }
