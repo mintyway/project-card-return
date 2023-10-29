@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "ProjectCardReturn.h"zsdaf
+#include "ProjectCardReturn.h"
 #include "BT/BTService_PCRMonsterDetect.h"
 #include "BTService_PCRRabbitDetect.generated.h"
 
