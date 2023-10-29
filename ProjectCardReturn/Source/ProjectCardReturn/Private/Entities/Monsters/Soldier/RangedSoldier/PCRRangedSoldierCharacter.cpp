@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierAnimInstance.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRSpearActor.h"
@@ -20,6 +21,11 @@ APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 		AttackPower = ParameterDataAsset->RangedSoldierAttackPower;
 		AttackRange = ParameterDataAsset->RangedSoldierAttackRange;
 		AttackRate = ParameterDataAsset->RangedSoldierAttackRate;
+	}
+
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->InitCapsuleSize(60.f, 87.5f);
 	}
 	
 	// TODO: 모델링 작업 완료되면 활성화

@@ -9,10 +9,11 @@
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "Interfaces/PCREricaCardInteractable.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
+#include "Entities/Panel/Base/PCRInteractablePanelBaseActor.h"
 
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
-#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
@@ -80,6 +81,7 @@ void APCREricaCardProjectile::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	LastTickLocation = GetActorLocation();
+	LastTickForwardDirection = GetActorForwardVector();
 
 	switch (CurrentCardState)
 	{
@@ -129,6 +131,11 @@ void APCREricaCardProjectile::ReturnCard()
 {
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 복귀를 시작합니다."), *GetName());
 	CurrentCardState = ECardState::Returning;
+
+	const FVector Direction = (GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	const FRotator Rotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+	SetActorRotation(Rotation);
+
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
 	AttackedCharacter.Reset();
@@ -193,7 +200,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		return;
 	}
 
-	const FVector CurrentDirection = OverlappedActor->GetActorForwardVector();
+	const FVector CurrentDirection = LastTickForwardDirection;
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
 	if (DotResult <= 0)
@@ -258,26 +265,55 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
 	}
 
-	FVector CurrentTickLocation = GetActorLocation() + (MoveVector * DeltaSeconds);
+	const FVector CurrentTickLocation = GetActorLocation() + (MoveVector * DeltaSeconds);
+	bool bShouldRelease = false;
+	
+	FHitResult EricaHitResult;
+	const bool bEricaRaycastResult = GetWorld()->LineTraceSingleByObjectType(EricaHitResult, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel1);
 
-	TIME_CHECK_START(0);
-	FHitResult HitResult;
-	bool bRaycastResult = GetWorld()->LineTraceSingleByChannel(HitResult, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel7);
-	if (bRaycastResult)
+	TArray<FHitResult> MonsterHitResults;
+	const bool bMonsterRaycastResult = GetWorld()->LineTraceMultiByObjectType(MonsterHitResults, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel2);
+
+	TArray<FHitResult> BlockPlayerProjectileHitResults;
+	const bool bBlockPlayerProjectileRaycastResult = GetWorld()->LineTraceMultiByObjectType(BlockPlayerProjectileHitResults, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel6);
+
+	DrawDebugLine(GetWorld(), LastTickLocation, CurrentTickLocation, FColor::Green, false, 3, 0, 1);
+
+	if (bEricaRaycastResult)
 	{
-		CurrentCardState = ECardState::Invalid;
-		ReleaseToProjectilePool();
+		bShouldRelease = true;
 	}
-	else
+
+	if (bMonsterRaycastResult)
+	{
+		for (const auto& MonsterHitResult : MonsterHitResults)
+		{
+			HandleBeginOverlap(this, MonsterHitResult.GetActor());
+			UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s"), *MonsterHitResult.GetActor()->GetName());
+		}
+	}
+
+	if (bBlockPlayerProjectileRaycastResult)
+	{
+		for (const auto& BlockPlayerProjectileHitResult : BlockPlayerProjectileHitResults)
+		{
+			HandleBeginOverlap(this, BlockPlayerProjectileHitResult.GetActor());
+			APCRInteractablePanelBaseActor* Panel = Cast<APCRInteractablePanelBaseActor>(BlockPlayerProjectileHitResult.GetActor());
+			if (Panel)
+			{
+				Panel->HandleBeginOverlap(Panel, this);
+			}
+			UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s"), *BlockPlayerProjectileHitResult.GetActor()->GetName());
+		}
+	}
+
+	if (!bShouldRelease)
 	{
 		SetActorLocationAndRotation(CurrentTickLocation, MoveRotator);
 	}
-	TIME_CHECK_END(0);
-	
-	SetActorLocationAndRotation(CurrentTickLocation, MoveRotator);
 
 	const float OwnerDistanceSquared = FVector::DistSquared(GetOwner()->GetActorLocation(), GetActorLocation());
-	if (OwnerDistanceSquared <= (CardReleaseRange * CardReleaseRange))
+	if ((OwnerDistanceSquared <= (CardReleaseRange * CardReleaseRange)) || bShouldRelease)
 	{
 		CurrentCardState = ECardState::Invalid;
 		ReleaseToProjectilePool();

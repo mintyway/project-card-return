@@ -82,10 +82,10 @@ APCREricaCharacter::APCREricaCharacter()
 
 	if (GetMesh() && EricaDataAsset)
 	{
+		GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-
 		if (UClass* EricaAnimationBlueprint = EricaDataAsset->AnimationBlueprint.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(EricaAnimationBlueprint);

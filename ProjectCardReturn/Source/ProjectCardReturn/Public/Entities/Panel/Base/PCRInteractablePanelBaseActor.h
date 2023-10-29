@@ -37,12 +37,12 @@ protected:
 public:
 	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
 
+	UFUNCTION()
+	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	
 	FORCEINLINE const UPCRInteractablePanelDataAsset* GetMonsterDataAsset() { return MonsterDataAsset; }
 
 private:
-	UFUNCTION()
-	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
-
 	void HandleTipping(float DeltaTime);
 	void StandUpCooldownTimerCallback();
 	void HandleStandingUp(float DeltaTime);

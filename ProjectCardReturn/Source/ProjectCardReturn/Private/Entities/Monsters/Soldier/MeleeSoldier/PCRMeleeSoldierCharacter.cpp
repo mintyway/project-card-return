@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
@@ -19,6 +20,11 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower;
 		AttackRange = ParameterDataAsset->MeleeSoldierAttackRange;
 		AttackRate = ParameterDataAsset->MeleeSoldierAttackRate;
+	}
+
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->InitCapsuleSize(60.f, 87.5f);
 	}
 	
 	// TODO: 모델링 작업 완료되면 활성화
