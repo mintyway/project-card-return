@@ -29,6 +29,21 @@ APCRMonsterBaseAIController::APCRMonsterBaseAIController()
 	}
 }
 
+void APCRMonsterBaseAIController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	check(MonsterDataAsset);
+}
+
+void APCRMonsterBaseAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	CachedMonsterCharacter = Cast<APCRMonsterBaseCharacter>(InPawn);
+	check(CachedMonsterCharacter);
+}
+
 void APCRMonsterBaseAIController::BeginPlay()
 {
 	Super::BeginPlay();

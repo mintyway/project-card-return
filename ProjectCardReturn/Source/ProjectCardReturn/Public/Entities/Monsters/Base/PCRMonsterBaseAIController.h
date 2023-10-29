@@ -24,6 +24,8 @@ public:
 	APCRMonsterBaseAIController();
 
 protected:
+	virtual void PostInitializeComponents() override;
+	virtual void OnPossess(APawn* InPawn) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -38,7 +40,7 @@ public:
 protected:
 	void SetTarget();
 
-private: // 데이터 에셋
+protected: // 데이터 에셋
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
 
 private:

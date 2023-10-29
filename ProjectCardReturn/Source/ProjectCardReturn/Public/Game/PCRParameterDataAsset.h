@@ -106,6 +106,19 @@ public: // 에리카 카드
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaCardReleaseRange;
 
+public: // 세린
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	float SerinMoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	float SerinBasicChaseSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	float SerinChaseSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	float SerinRockSpeed;
+
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;

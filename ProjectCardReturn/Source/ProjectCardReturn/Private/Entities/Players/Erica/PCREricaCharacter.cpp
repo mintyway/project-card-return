@@ -152,7 +152,10 @@ void APCREricaCharacter::PostInitializeComponents()
 	// 생성자에서 체크하지 않는 이유는 생성자는 게임을 시작한 상황이 아닌 일반 에디터 상황에서도 호출될 수 있고 이 상황이 nullptr일 수 있기 때문입니다.
 	check(EricaDataAsset);
 
+#if WITH_EDITOR
+	SetActorLabel(TEXT("Erica"));
 	SetFolderPath(TEXT("Erica"));
+# endif
 	
 	check(DashNiagaraComponent);
 	DashNiagaraComponent->Deactivate();

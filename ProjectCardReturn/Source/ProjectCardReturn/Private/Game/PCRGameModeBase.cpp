@@ -20,6 +20,10 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+
+	DefaultPawnClass = APCREricaCharacter::StaticClass();
+	PlayerControllerClass = APCREricaPlayerController::StaticClass();
+	
 	static ConstructorHelpers::FObjectFinder<UPCRStagePrimaryDataAsset> DA_Stage(TEXT("/Script/ProjectCardReturn.PCRStagePrimaryDataAsset'/Game/DataAssets/DA_Stage.DA_Stage'"));
 	if (DA_Stage.Succeeded())
 	{
@@ -45,9 +49,6 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 			LiftActorClass = LiftBP;
 		}
 	}
-
-	DefaultPawnClass = APCREricaCharacter::StaticClass();
-	PlayerControllerClass = APCREricaPlayerController::StaticClass();
 }
 
 void APCRGameModeBase::PostInitializeComponents()
@@ -120,17 +121,10 @@ void APCRGameModeBase::SpawnMonsterGenerators()
 
 void APCRGameModeBase::StartAllMonsterGenerators()
 {
-	/*MonsterGenerators[0]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[0]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[1]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[2]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[3]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[4]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[5]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);*/
-
-	MonsterGenerators[0]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[1]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[2]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[3]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[4]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[5]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
 }
@@ -153,7 +147,6 @@ void APCRGameModeBase::DisplayLogMonsterKillCount()
 
 void APCRGameModeBase::HandleKillCount()
 {
-	// TotalMonsterKillCount = FMath::Clamp(TotalMonsterKillCount + 1, 0, Stage1TargetKillCount);
 	++TotalMonsterKillCount;
 	DisplayLogMonsterKillCount();
 

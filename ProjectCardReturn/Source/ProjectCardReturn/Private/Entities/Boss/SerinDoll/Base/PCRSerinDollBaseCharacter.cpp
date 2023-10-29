@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/Serin/Base/PCRSerinBaseCharacter.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 
-#include "Entities/Boss/Serin/Base/PCRSerinPrimaryDataAsset.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
 
-APCRSerinBaseCharacter::APCRSerinBaseCharacter()
+APCRSerinDollBaseCharacter::APCRSerinDollBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
-	static ConstructorHelpers::FObjectFinder<UPCRSerinPrimaryDataAsset> DA_Serin(TEXT("/Script/ProjectCardReturn.PCRSerinPrimaryDataAsset'/Game/DataAssets/DA_Serin.DA_Serin'"));
+	static ConstructorHelpers::FObjectFinder<UPCRSerinDollPrimaryDataAsset> DA_Serin(TEXT("/Script/ProjectCardReturn.PCRSerinDollPrimaryDataAsset'/Game/DataAssets/DA_SerinDoll.DA_SerinDoll'"));
 	if (DA_Serin.Succeeded())
 	{
 		SerinDataAsset = DA_Serin.Object;
@@ -23,19 +23,19 @@ APCRSerinBaseCharacter::APCRSerinBaseCharacter()
 	}
 }
 
-void APCRSerinBaseCharacter::BeginPlay()
+void APCRSerinDollBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void APCRSerinBaseCharacter::Tick(float DeltaTime)
+void APCRSerinDollBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void APCRSerinBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APCRSerinDollBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
