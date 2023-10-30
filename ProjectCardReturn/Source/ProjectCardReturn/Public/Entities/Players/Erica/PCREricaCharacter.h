@@ -71,15 +71,12 @@ public: // Getter, Setter
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
 
-	// FORCEINLINE float GetSingleShotForwardDamage() const { return NarrowShotForwardDamage; }
-	// FORCEINLINE float GetSingleShotBackwardDamage() const { return NarrowShotBackwardDamage; }
-	// FORCEINLINE float GetMultiShotForwardDamage() const { return WideShotForwardDamage; }
-	// FORCEINLINE float GetMultiShotBackwardDamage() const { return WideShotBackwardDamage; }
-
 	FORCEINLINE int32 GetMaxCardCount() const { return MaxCardCount; }
 	FORCEINLINE int32 GetCurrentCardCount() const { return CurrentCardCount; }
 
-	bool GetIsDashing() const { return bIsDashing; }
+	FORCEINLINE bool GetIsDashing() const { return bIsDashing; }
+
+	FORCEINLINE const FVector& GetCachedDashDirection() const { return CachedDashDirection; }
 
 private: // 내부 함수
 	void Attack();

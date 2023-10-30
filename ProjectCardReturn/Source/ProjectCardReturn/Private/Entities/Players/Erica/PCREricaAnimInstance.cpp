@@ -11,7 +11,11 @@
 
 DEFINE_LOG_CATEGORY(PCRLogEricaAnimInstance);
 
-UPCREricaAnimInstance::UPCREricaAnimInstance(): ShouldMove(false), IsDashing(false), GroundSpeed(0.f), LocalVelocityDirectionAngle(0.f), CurrentLocalVelocityDirection(ELocalVelocityDirection::Invalid), CurrentIdleRotation(EIdleRotation::Invalid)
+UPCREricaAnimInstance::UPCREricaAnimInstance()
+	: ShouldMove(false), IsDashing(false), GroundSpeed(0.f),
+	  LocalVelocityMoveDirectionAngle(0.f), CurrentLocalVelocityMoveDirection(ELocalVelocityDirection::Invalid),
+	  LocalVelocityDashDirectionAngle(0.f), CurrentLocalVelocityDashDirection(ELocalVelocityDirection::Invalid),
+	  CurrentIdleRotation(EIdleRotation::Invalid)
 {
 	static ConstructorHelpers::FObjectFinder<UPCREricaDataAsset> DA_Erica(TEXT("/Script/ProjectCardReturn.PCREricaDataAsset'/Game/DataAssets/DA_Erica.DA_Erica'"));
 	if (DA_Erica.Succeeded())
@@ -45,13 +49,20 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	const bool IsMoveInput = InputDirection != FVector::ZeroVector;
 	ShouldMove = IsMoveInput && GroundSpeed;
 
-	EricaCharacterForwardDirection = CachedEricaCharacter->GetActorForwardVector();
-	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(InputDirection, CachedEricaCharacter->GetActorRotation());
-
-	SetLocalVelocityDirectionAngle();
+	LocalVelocityMoveDirectionAngle = UKismetAnimationLibrary::CalculateDirection(InputDirection, CachedEricaCharacter->GetActorRotation());
+	
+	SetLocalVelocityMoveDirectionAngle();
 	SetIdleRotationDirection();
 
 	IsDashing = CachedEricaCharacter->GetIsDashing();
+	if (IsDashing)
+	{
+		LocalVelocityDashDirectionAngle = UKismetAnimationLibrary::CalculateDirection(CachedEricaCharacter->GetCachedDashDirection(), CachedEricaCharacter->GetActorRotation());
+		SetLocalVelocityDashDirectionAngle();
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Move: %d\tDash: %d "), CurrentLocalVelocityMoveDirection, CurrentLocalVelocityDashDirection);
+	
 	LastRotation = CachedEricaCharacter->GetActorRotation();
 }
 
@@ -71,41 +82,79 @@ void UPCREricaAnimInstance::JumpToAttackMontageSection(int32 InSectionNumber)
 	}
 }
 
-void UPCREricaAnimInstance::SetLocalVelocityDirectionAngle()
+void UPCREricaAnimInstance::SetLocalVelocityMoveDirectionAngle()
 {
-	const float ABSLocalVelocityDirectionAngle = FMath::Abs(LocalVelocityDirectionAngle);
+	const float ABSLocalVelocityMoveDirectionAngle = FMath::Abs(LocalVelocityMoveDirectionAngle);
 
-	if (ABSLocalVelocityDirectionAngle <= 22.5f)
+	if (ABSLocalVelocityMoveDirectionAngle <= 22.5f)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::Forward;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::Forward;
 	}
-	else if (ABSLocalVelocityDirectionAngle >= 157.5f)
+	else if (ABSLocalVelocityMoveDirectionAngle >= 157.5f)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::Backward;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::Backward;
 	}
-	else if (22.5f < LocalVelocityDirectionAngle && LocalVelocityDirectionAngle <= 67.5f)
+	else if (22.5f < LocalVelocityMoveDirectionAngle && LocalVelocityMoveDirectionAngle <= 67.5f)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::ForwardRight;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::ForwardRight;
 	}
-	else if (-22.5f > LocalVelocityDirectionAngle && LocalVelocityDirectionAngle >= -67.5f)
+	else if (-22.5f > LocalVelocityMoveDirectionAngle && LocalVelocityMoveDirectionAngle >= -67.5f)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::ForwardLeft;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::ForwardLeft;
 	}
-	else if (112.5f < LocalVelocityDirectionAngle && LocalVelocityDirectionAngle <= 157.5f)
+	else if (112.5f < LocalVelocityMoveDirectionAngle && LocalVelocityMoveDirectionAngle <= 157.5f)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::BackwardRight;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::BackwardRight;
 	}
-	else if (-112.5f > LocalVelocityDirectionAngle && LocalVelocityDirectionAngle >= -157.5)
+	else if (-112.5f > LocalVelocityMoveDirectionAngle && LocalVelocityMoveDirectionAngle >= -157.5)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::BackwardLeft;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::BackwardLeft;
 	}
-	else if (LocalVelocityDirectionAngle >= 0)
+	else if (LocalVelocityMoveDirectionAngle >= 0)
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::Right;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::Right;
 	}
 	else
 	{
-		CurrentLocalVelocityDirection = ELocalVelocityDirection::Left;
+		CurrentLocalVelocityMoveDirection = ELocalVelocityDirection::Left;
+	}
+}
+
+void UPCREricaAnimInstance::SetLocalVelocityDashDirectionAngle()
+{
+	const float ABSLocalVelocityDashDirectionAngle = FMath::Abs(LocalVelocityDashDirectionAngle);
+
+	if (ABSLocalVelocityDashDirectionAngle <= 22.5f)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::Forward;
+	}
+	else if (ABSLocalVelocityDashDirectionAngle >= 157.5f)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::Backward;
+	}
+	else if (22.5f < LocalVelocityDashDirectionAngle && LocalVelocityDashDirectionAngle <= 67.5f)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::ForwardRight;
+	}
+	else if (-22.5f > LocalVelocityDashDirectionAngle && LocalVelocityDashDirectionAngle >= -67.5f)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::ForwardLeft;
+	}
+	else if (112.5f < LocalVelocityDashDirectionAngle && LocalVelocityDashDirectionAngle <= 157.5f)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::BackwardRight;
+	}
+	else if (-112.5f > LocalVelocityDashDirectionAngle && LocalVelocityDashDirectionAngle >= -157.5)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::BackwardLeft;
+	}
+	else if (LocalVelocityDashDirectionAngle >= 0)
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::Right;
+	}
+	else
+	{
+		CurrentLocalVelocityDashDirection = ELocalVelocityDirection::Left;
 	}
 }
 

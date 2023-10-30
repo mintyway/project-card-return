@@ -530,7 +530,6 @@ void APCREricaCharacter::Dash()
 		const FRotator DashRotation = FRotationMatrix::MakeFromX(CachedDashDirection).Rotator();
 		DashNiagaraComponent->SetWorldRotation(DashRotation);
 		DashNiagaraComponent->Activate(true);
-		SetActorRotation(DashRotation);
 	}
 }
 

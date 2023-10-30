@@ -67,7 +67,8 @@ protected:
 	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 
 private:
-	void SetLocalVelocityDirectionAngle();
+	void SetLocalVelocityMoveDirectionAngle();
+	void SetLocalVelocityDashDirectionAngle();
 	void SetIdleRotationDirection();
 
 	UFUNCTION()
@@ -100,18 +101,21 @@ private: // 로코모션
 	FVector InputDirection;
 
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
-	FVector EricaCharacterForwardDirection;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	float GroundSpeed;
 
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
-	float LocalVelocityDirectionAngle;
+	float LocalVelocityMoveDirectionAngle;
 
-	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
-	ELocalVelocityDirection CurrentLocalVelocityDirection;
+	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
+	ELocalVelocityDirection CurrentLocalVelocityMoveDirection;
 
-	UPROPERTY(BlueprintReadWrite, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
+	float LocalVelocityDashDirectionAngle;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
+	ELocalVelocityDirection CurrentLocalVelocityDashDirection;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	EIdleRotation CurrentIdleRotation;
 
 	FRotator LastRotation;
