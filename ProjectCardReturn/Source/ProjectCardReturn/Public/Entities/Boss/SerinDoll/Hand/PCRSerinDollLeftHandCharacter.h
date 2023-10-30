@@ -20,5 +20,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 protected: // 내부 함수
+	virtual void PaperChase(bool bUseReset) override;
 	virtual void HandleBasicChase(float DeltaTime) override;
+	virtual void HandlePaperChase(float DeltaTime) override;
 };

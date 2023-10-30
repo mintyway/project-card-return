@@ -13,7 +13,7 @@ class APCRSerinDollRightHandCharacter;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinHandBaseCharacter, Log, All);
 
-DECLARE_DELEGATE(FHandStateSignature);
+DECLARE_DELEGATE(FChaseEndSignature);
 DECLARE_DELEGATE(FMoveEndSignature);
 
 
@@ -22,8 +22,9 @@ enum class ESerinState
 {
 	Idle,
 	Move,
-	Chase,
 	BasicChase,
+	PaperChase,
+	RockChase,
 	Rock,
 	Paper,
 	Scissors,
@@ -57,23 +58,26 @@ public: // 동작
 
 	void Move(const FVector& InLocation, bool bUseReset = true);
 	void BasicChase(bool bUseReset = true);
-	void Chase(bool bUsePredictive = false, bool bUseReset = true);
+	virtual void PaperChase(bool bUseReset = true);
+	void RockChase(bool bUsePredictive = false, bool bUseReset = true);
 	void RockAttack(bool bUseReset = true);
 	void PaperAttack(bool bUseReset = true);
 	void ScissorsAttack(bool bUseReset = true);
 
 public:
-	FHandStateSignature OnChaseEnd;
 	FMoveEndSignature OnMoveEnd;
+	FChaseEndSignature OnPaperChaseEnd;
+	FChaseEndSignature OnHighChaseEnd;
 
 protected: // 내부 함수
 	void StateReset();
 	void HandleMove(float DeltaTime);
 	virtual void HandleBasicChase(float DeltaTime);
-	void HandleChase(float DeltaTime);
+	virtual void HandlePaperChase(float DeltaTime);
+	void HandleRockChase(float DeltaTime);
 	void RockCallback();
 	void HandleRock(float DeltaTime);
-	void PaperCallback();
+	virtual void PaperCallback();
 	void HandlePaper(float DeltaTime);
 	void ScissorsCallback();
 	void HandleScissors(float DeltaTime);
@@ -94,10 +98,11 @@ protected: // 상태
 protected: // 데이터
 	FVector MoveLocation;
 	FVector ChaseLocation;
+	FRotator PaperRotation;
+	
+	float CoolDown;
+	float CoolDownElapsedTime;
 	
 	int32 ScissorsAttackCount;
 	int32 ScissorsAttackMaxCount;
-	
-	float ScissorsCoolDown;
-	float ScissorsCoolDownElapsedTime;
 };

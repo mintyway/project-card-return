@@ -56,6 +56,5 @@ private: // 핸드
 	static const float ContactDistance;
 	static const float FloatingHandHeight;
 	
-	static const float LeftHandBasicChaseYDistance;
-	static const float RightHandBasicChaseYDistance;
+	static const float BasicChaseYDistance;
 };

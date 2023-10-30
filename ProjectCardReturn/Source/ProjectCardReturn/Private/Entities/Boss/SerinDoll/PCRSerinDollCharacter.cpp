@@ -16,8 +16,7 @@
 
 const float APCRSerinDollCharacter::ContactDistance = 10.f;
 const float APCRSerinDollCharacter::FloatingHandHeight = 500.f;
-const float APCRSerinDollCharacter::LeftHandBasicChaseYDistance = 700.f;
-const float APCRSerinDollCharacter::RightHandBasicChaseYDistance = -700.f;
+const float APCRSerinDollCharacter::BasicChaseYDistance = 700.f;
 
 APCRSerinDollCharacter::APCRSerinDollCharacter()
 {

@@ -28,12 +28,27 @@ void APCRSerinDollLeftHandCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void APCRSerinDollLeftHandCharacter::PaperChase(bool bUseReset)
+{
+	Super::PaperChase(bUseReset);
+	
+	PaperRotation = FRotator(0, 180.0, -90.0);
+}
+
 void APCRSerinDollLeftHandCharacter::HandleBasicChase(float DeltaTime)
 {
 	ChaseLocation = CachedSerinDollCharacter->CachedErica->GetActorLocation();
-	ChaseLocation.Y += CachedSerinDollCharacter->LeftHandBasicChaseYDistance;
+	ChaseLocation.Y += CachedSerinDollCharacter->BasicChaseYDistance;
 	Super::HandleBasicChase(DeltaTime);
 }
+
+void APCRSerinDollLeftHandCharacter::HandlePaperChase(float DeltaTime)
+{
+	ChaseLocation = CachedSerinDollCharacter->CachedErica->GetActorLocation();
+	ChaseLocation.Y += CachedSerinDollCharacter->BasicChaseYDistance + 300.f;
+	Super::HandlePaperChase(DeltaTime);
+}
+
 
 void APCRSerinDollLeftHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
