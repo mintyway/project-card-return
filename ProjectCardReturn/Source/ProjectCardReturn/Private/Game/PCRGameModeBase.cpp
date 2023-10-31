@@ -20,10 +20,9 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-
 	DefaultPawnClass = APCREricaCharacter::StaticClass();
 	PlayerControllerClass = APCREricaPlayerController::StaticClass();
-	
+
 	static ConstructorHelpers::FObjectFinder<UPCRStagePrimaryDataAsset> DA_Stage(TEXT("/Script/ProjectCardReturn.PCRStagePrimaryDataAsset'/Game/DataAssets/DA_Stage.DA_Stage'"));
 	if (DA_Stage.Succeeded())
 	{
@@ -55,12 +54,15 @@ void APCRGameModeBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	check(ParameterDataAsset);
-}
+	// 블루프린트 에디터 실행 방지
+#if WITH_EDITOR
+	if (!GetWorld()->IsPlayInEditor())
+	{
+		return;
+	}
+#endif
 
-void APCRGameModeBase::BeginPlay()
-{
-	Super::BeginPlay();
+	check(ParameterDataAsset);
 
 	// 태그로 Lift를 찾는 코드입니다.
 	TArray<AActor*> ActorsWithTag;
@@ -74,6 +76,17 @@ void APCRGameModeBase::BeginPlay()
 		}
 	}
 
+	check(LiftActor);
+	LiftActor->OnLiftUpEnd.AddDynamic(this, &APCRGameModeBase::SpawnSerinDoll);
+
+	OnStage1End.AddDynamic(this, &APCRGameModeBase::LiftFloor);
+	SIMPLE_LOG;
+}
+
+void APCRGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
 }
@@ -86,11 +99,6 @@ void APCRGameModeBase::Tick(float DeltaSeconds)
 	{
 		case EStageNumber::Stage1:
 		{
-			break;
-		}
-		case EStageNumber::PostStage2:
-		{
-			LiftFloor();
 			break;
 		}
 		case EStageNumber::Stage2:
@@ -153,7 +161,7 @@ void APCRGameModeBase::HandleKillCount()
 	if (TotalMonsterKillCount >= Stage1TargetKillCount)
 	{
 		StopAllMonsterGeneratorsAndKillSpawnedMonsters();
-		CurrentStageNumber = EStageNumber::PostStage2;
+		OnStage1End.Broadcast();
 	}
 }
 
@@ -167,4 +175,9 @@ void APCRGameModeBase::LiftFloor()
 	PlayerCharacter->SetActorLocation(ResetLocation);
 
 	CurrentStageNumber = EStageNumber::Stage2;
+}
+
+void APCRGameModeBase::SpawnSerinDoll()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *this->GetName());
 }

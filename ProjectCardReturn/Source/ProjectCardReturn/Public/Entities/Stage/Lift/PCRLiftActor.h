@@ -2,9 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "GameFramework/Actor.h"
 #include "PCRLiftActor.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLiftUpDelegate);
 
 class UPCRStagePrimaryDataAsset;
 
@@ -21,10 +23,18 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public: // 동작 섹션
+	UFUNCTION()
 	void LiftUp();
 
 private: // 내부 함수 섹션
 	void HandleLeftUp(float DeltaTime);
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Event", DisplayName = "리프트 상승 시작 시")
+	FLiftUpDelegate OnLiftUpStart;
+
+	UPROPERTY(BlueprintAssignable, Category = "Event", DisplayName = "리프트 상승 종료 시")
+	FLiftUpDelegate OnLiftUpEnd;
 	
 private: // 데이터 에셋 섹션
 	UPROPERTY()

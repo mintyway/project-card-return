@@ -11,14 +11,16 @@ class UPCRStagePrimaryDataAsset;
 class UPCRParameterDataAsset;
 class APCRMonsterGenerator;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStage1EndSignature);
+
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameModeBase, Log, All);
 
 UENUM()
 enum class EStageNumber : uint8
 {
 	Stage1 = 1,
-	PostStage2,
-	Stage2
+	Stage2,
+	StageBoss
 };
 
 /**
@@ -45,7 +47,15 @@ private: // 내부 함수 섹션
 	
 	void DisplayLogMonsterKillCount();
 	void HandleKillCount();
+
+	UFUNCTION()
 	void LiftFloor();
+
+	UFUNCTION()
+	void SpawnSerinDoll();
+
+public:
+	FStage1EndSignature OnStage1End;
 	
 private: // 데이터 에셋 섹션
 	UPROPERTY()
@@ -58,11 +68,8 @@ private: // 서브 액터 섹션
 	UPROPERTY()
 	TSubclassOf<APCRLiftActor> LiftActorClass;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Actor")
+	UPROPERTY(BlueprintReadOnly, Category = "Actor", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCRLiftActor> LiftActor;
-
-	UPROPERTY(VisibleAnywhere, Category = "Actor")
-	TObjectPtr<APCRLiftActor> LiftActorTemp;
 
 private: // 데이터 섹션
 	UPROPERTY()

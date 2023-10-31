@@ -42,6 +42,7 @@ void APCRLiftActor::LiftUp()
 	SetActorTickEnabled(true);
 	StartLiftLocation = GetActorLocation();
 	EndLiftLocation = FVector(StartLiftLocation.X, StartLiftLocation.Y, MaxLiftHeight);
+	OnLiftUpStart.Broadcast();
 }
 
 void APCRLiftActor::HandleLeftUp(float DeltaTime)
@@ -54,5 +55,6 @@ void APCRLiftActor::HandleLeftUp(float DeltaTime)
 	if (alpha >= 1.f)
 	{
 		SetActorTickEnabled(false);
+		OnLiftUpEnd.Broadcast();
 	}
 }

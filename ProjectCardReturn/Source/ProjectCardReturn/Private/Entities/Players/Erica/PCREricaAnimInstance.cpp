@@ -61,8 +61,6 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		SetLocalVelocityDashDirectionAngle();
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("Move: %d\tDash: %d "), CurrentLocalVelocityMoveDirection, CurrentLocalVelocityDashDirection);
-	
 	LastRotation = CachedEricaCharacter->GetActorRotation();
 }
 
