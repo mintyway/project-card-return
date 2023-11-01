@@ -1,5 +1,5 @@
 # Visual Studio
-.vs/
+.vs
 *.sln
 *.vsconfig
 
@@ -8,12 +8,39 @@
 *.uproject.DotSettings.user
 
 # Unreal Engine
-Binaries/
-Build/
-DerivedDataCache/
-Intermediate/
-Platforms/
-Saved/
+ProjectCardReturn/Binaries
+ProjectCardReturn/Build
+ProjectCardReturn/DerivedDataCache
+ProjectCardReturn/Intermediate
+ProjectCardReturn/Platforms
+ProjectCardReturn/Saved
+
+# FMOD Project
+FMOD/ShowdownSound/.cache
+FMOD/ShowdownSound/.user
+FMOD/ShowdownSound/Build
+
+# FMOD Module
+ProjectCardReturn/Plugins/FMODStudio/Docs
+ProjectCardReturn/Plugins/FMODStudio/Binaries/Android
+ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmod.dll
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmod_vc.lib
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodL.dll
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodL_vc.lib
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodstudio.dll
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodstudio_vc.lib
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodstudioL.dll
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodstudioL_vc.lib
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/resonanceaudio.dll
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor.modules
+ProjectCardReturn/Plugins/FMODStudio/Intermediate
+
+#ProjectCardReturn/Plugins/FMODStudio/Docs/
+#ProjectCardReturn/Plugins/FMODStudio/Binaries/Android/
+#ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
+#!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmod.dll
+
 
 # Misc
 .DS_Store/
