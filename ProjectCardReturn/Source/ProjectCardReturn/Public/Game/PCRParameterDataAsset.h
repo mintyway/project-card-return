@@ -163,6 +163,9 @@ public: // 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float SpearSpeed;
 
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearPredictionRate;
+
 public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMaxHealthPoint;
