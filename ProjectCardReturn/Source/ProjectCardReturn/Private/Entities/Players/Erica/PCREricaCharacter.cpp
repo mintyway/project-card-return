@@ -510,7 +510,8 @@ void APCREricaCharacter::Dash()
 	{
 		bCanDash = false;
 		bIsDashing = true;
-		GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
+
+		GetCapsuleComponent()->SetCollisionProfileName("PlayerDash");
 
 		FTimerHandle DashCooldownTimerHandle;
 		FTimerDelegate DashCooldownTimerDelegate;
