@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "PCRSerinDollBaseCharacter.generated.h"
 
+class UPCRSoundPrimaryDataAsset;
 class UPCRSerinDollPrimaryDataAsset;
 class UPCRParameterDataAsset;
 
@@ -16,9 +17,9 @@ class PROJECTCARDRETURN_API APCRSerinDollBaseCharacter : public ACharacter
 
 public:
 	APCRSerinDollBaseCharacter();
-
-
+	
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -29,4 +30,7 @@ protected: // 데이터 에셋 섹션
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 };

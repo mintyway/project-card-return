@@ -4,6 +4,7 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
 
 APCRSerinDollBaseCharacter::APCRSerinDollBaseCharacter()
@@ -21,6 +22,21 @@ APCRSerinDollBaseCharacter::APCRSerinDollBaseCharacter()
 	{
 		ParameterDataAsset = DA_Parameter.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
+	}
+}
+
+void APCRSerinDollBaseCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	check(SerinDataAsset);
+	check(ParameterDataAsset);
+	check(SoundDataAsset);
 }
 
 void APCRSerinDollBaseCharacter::BeginPlay()

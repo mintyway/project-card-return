@@ -54,6 +54,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public: // 동작
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void SetTarget(AActor* TargetActor);
 
 	void Move(const FVector& InLocation, bool bUseReset = true);
@@ -94,15 +95,16 @@ protected: // 상태
 	EScissorsState CurrentScissorsState;
 
 	uint32 bUsePredictiveChase : 1;
+	uint32 bPaperStartFlag : 1;
 
 protected: // 데이터
 	FVector MoveLocation;
 	FVector ChaseLocation;
 	FRotator PaperRotation;
-	
+
 	float CoolDown;
 	float CoolDownElapsedTime;
-	
+
 	int32 ScissorsAttackCount;
 	int32 ScissorsAttackMaxCount;
 };

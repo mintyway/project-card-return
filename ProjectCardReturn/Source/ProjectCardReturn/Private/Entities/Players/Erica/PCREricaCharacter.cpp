@@ -259,7 +259,7 @@ void APCREricaCharacter::RecallCard()
 
 		const FTransform RecallCardTransform = FTransform(GetActorRotation(), GetActorLocation());
 		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->ReturnCard, RecallCardTransform, true);
-		
+
 		bool bIsCardReturnable = false;
 		for (const auto& CardProjectile : InUseCardProjectiles)
 		{
@@ -288,7 +288,7 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 	const FTransform DamagedTransform = FTransform(GetActorRotation(), GetActorLocation());
 	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Damaged, DamagedTransform, true);
-	
+
 	ChangeHP(-ActualDamage);
 	return ActualDamage;
 }

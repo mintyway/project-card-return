@@ -33,4 +33,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	TObjectPtr<UFMODEvent> Move;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	TObjectPtr<UFMODEvent> Rock;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	TObjectPtr<UFMODEvent> Paper;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	TObjectPtr<UFMODEvent> Scissors;
 };

@@ -6,11 +6,13 @@
 #include "GameFramework/PlayerController.h"
 #include "PCREricaPlayerController.generated.h"
 
+class UPCRBossUserWidget;
 class UPCRMainUserWidget;
 class UPCRPauseUserWidget;
 class UPCRUIDataAsset;
 class APCREricaCharacter;
 class UPCREricaDataAsset;
+class APCRSerinDollCharacter;
 /**
  * 
  */
@@ -30,6 +32,7 @@ protected:
 
 public: // 동작 섹션
 	FVector GetMouseDirection() const;
+	void BindSerinUI(APCRSerinDollCharacter* Serin);
 
 private: // 내부 함수 섹션
 	void GamePause();
@@ -57,6 +60,12 @@ private: // UI 섹션
 
 	UPROPERTY()
 	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
+
+	UPROPERTY()
+	TSubclassOf<UPCRBossUserWidget> BossUserWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UPCRBossUserWidget> BossUserWidget;
 
 private: // 상태 섹션
 	uint32 bUseCharacterRotationByCursorDirection : 1;
