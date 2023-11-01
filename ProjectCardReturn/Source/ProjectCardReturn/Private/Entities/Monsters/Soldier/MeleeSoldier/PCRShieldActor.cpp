@@ -104,12 +104,12 @@ void APCRShieldActor::DetachAndDelayedDestroy()
  */
 void APCRShieldActor::DelayedDestroy()
 {
-	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
 	DestroyTimerDelegate.BindUObject(this, &APCRShieldActor::DestroyTimerCallback);
 
 	if (ParameterDataAsset)
 	{
+		FTimerHandle DestroyTimerHandle;
 		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ShieldDestroyTimeAfterDrop, false);
 	}
 }
