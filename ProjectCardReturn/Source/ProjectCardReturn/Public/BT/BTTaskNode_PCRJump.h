@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTaskNode_PCRJump.generated.h"
 
