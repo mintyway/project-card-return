@@ -37,11 +37,5 @@ ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor.modules
 ProjectCardReturn/Plugins/FMODStudio/Intermediate
 
-#ProjectCardReturn/Plugins/FMODStudio/Docs/
-#ProjectCardReturn/Plugins/FMODStudio/Binaries/Android/
-#ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
-#!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmod.dll
-
-
 # Misc
 .DS_Store/
