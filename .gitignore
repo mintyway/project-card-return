@@ -16,9 +16,10 @@ ProjectCardReturn/Platforms
 ProjectCardReturn/Saved
 
 # FMOD Project
-FMOD/ShowdownSound/.cache
-FMOD/ShowdownSound/.user
-FMOD/ShowdownSound/Build
+FMODProject/ShowdownSound/*
+!FMODProject/ShowdownSound/Assets
+!FMODProject/ShowdownSound/Metadata
+!FMODProject/ShowdownSound/ShowdownSound.fspro
 
 # FMOD Module
 ProjectCardReturn/Plugins/FMODStudio/Docs
