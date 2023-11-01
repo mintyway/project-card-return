@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 
@@ -10,6 +9,8 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectilePool.h"
 #include "Game/PCRGameInstance.h"
 #include "Game/PCRParameterDataAsset.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
+#include "FMODBlueprintStatics.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -48,6 +49,12 @@ APCREricaCharacter::APCREricaCharacter()
 		ParameterDataAsset = DA_Parameter.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
+	}
+
 	if (ParameterDataAsset)
 	{
 		MaxHP = ParameterDataAsset->EricaMaxHP;
@@ -77,14 +84,14 @@ APCREricaCharacter::APCREricaCharacter()
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-		GetCapsuleComponent()->InitCapsuleSize(30.f, 75.f);
+		GetCapsuleComponent()->InitCapsuleSize(30.f, 84.5f);
 	}
 
 	if (GetMesh() && EricaDataAsset)
 	{
 		GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 		GetMesh()->SetSkeletalMesh(EricaDataAsset->SkeletalMesh);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -77.0), FRotator(0.0, -90.0, 0.0));
+		GetMesh()->SetRelativeLocationAndRotation(FVector(8.0, 0.0, -84.5), FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		if (UClass* EricaAnimationBlueprint = EricaDataAsset->AnimationBlueprint.LoadSynchronous())
 		{
@@ -156,7 +163,7 @@ void APCREricaCharacter::PostInitializeComponents()
 	SetActorLabel(TEXT("Erica"));
 	SetFolderPath(TEXT("Erica"));
 # endif
-	
+
 	check(DashNiagaraComponent);
 	DashNiagaraComponent->Deactivate();
 
@@ -196,6 +203,8 @@ void APCREricaCharacter::PossessedBy(AController* NewController)
 	// 사용중인 컨트롤러를 캐싱해두는 코드입니다.
 	CachedEricaPlayerController = Cast<APCREricaPlayerController>(NewController);
 	check(CachedEricaPlayerController);
+
+	CachedEricaPlayerController->SetAudioListenerOverride(GetCapsuleComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
 }
 
 void APCREricaCharacter::BeginPlay()
@@ -248,6 +257,9 @@ void APCREricaCharacter::RecallCard()
 			return;
 		}
 
+		const FTransform RecallCardTransform = FTransform(GetActorRotation(), GetActorLocation());
+		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->ReturnCard, RecallCardTransform, true);
+		
 		bool bIsCardReturnable = false;
 		for (const auto& CardProjectile : InUseCardProjectiles)
 		{
@@ -274,6 +286,9 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	const FTransform DamagedTransform = FTransform(GetActorRotation(), GetActorLocation());
+	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Damaged, DamagedTransform, true);
+	
 	ChangeHP(-ActualDamage);
 	return ActualDamage;
 }
@@ -470,6 +485,8 @@ void APCREricaCharacter::HandleShootCard(const FVector& StartLocation, const FVe
 	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardProjectilePool->Acquire());
 	if (CardProjectile)
 	{
+		const FTransform SoundPlayTransform = FTransform(GetActorRotation(), GetActorLocation());
+		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Shot, SoundPlayTransform, true);
 		InUseCardProjectiles.Insert(CardProjectile, 0);
 		CardProjectile->SetDamage(ForwardDamage, BackwardDamage);
 		CardProjectile->SetRange(Range);
@@ -530,6 +547,8 @@ void APCREricaCharacter::Dash()
 		const FRotator DashRotation = FRotationMatrix::MakeFromX(CachedDashDirection).Rotator();
 		DashNiagaraComponent->SetWorldRotation(DashRotation);
 		DashNiagaraComponent->Activate(true);
+
+		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->Dash, true);
 	}
 }
 

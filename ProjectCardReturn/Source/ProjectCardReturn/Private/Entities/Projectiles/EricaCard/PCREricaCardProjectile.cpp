@@ -3,6 +3,7 @@
 
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
+#include "FMODBlueprintStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
@@ -235,6 +236,9 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileDataAsset->CardBlockedHit, GetActorLocation(), GetActorRotation());
 	}
 
+	const FTransform BlockedCardTransform = FTransform(GetActorRotation(), GetActorLocation());
+	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->BlockedCard, BlockedCardTransform, true);
+
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
 
 	PauseCard();
@@ -266,7 +270,7 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 
 	const FVector CurrentTickLocation = GetActorLocation() + (MoveVector * DeltaSeconds);
 	bool bShouldRelease = false;
-	
+
 	FHitResult EricaHitResult;
 	const bool bEricaRaycastResult = GetWorld()->LineTraceSingleByObjectType(EricaHitResult, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel1);
 

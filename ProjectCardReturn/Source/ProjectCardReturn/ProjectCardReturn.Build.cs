@@ -8,7 +8,7 @@ public class ProjectCardReturn : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule", "UMG", "Niagara", "AnimGraphRuntime" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "AIModule", "UMG", "Niagara", "AnimGraphRuntime", "FMODStudio"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

@@ -8,6 +8,7 @@
 #include "Game/PCRParameterDataAsset.h"
 
 #include "Components/BoxComponent.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 APCRBaseProjectile::APCRBaseProjectile() : 	ProjectileSpeed(1000.f)
@@ -24,6 +25,12 @@ APCRBaseProjectile::APCRBaseProjectile() : 	ProjectileSpeed(1000.f)
 	if (DA_Parameter.Succeeded())
 	{
 		ParameterDataAsset = DA_Parameter.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
 	}
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
 	<object class="Workspace" id="{f96a3ca9-5035-4f6c-af3d-25308a136434}">
+		<property name="builtBanksOutputDirectory">
+			<value>E:/Programming/Git Repository/project-card-return/ProjectCardReturn/Content/FMOD</value>
+		</property>
 		<relationship name="masterEventFolder">
 			<destination>{a3fd7a61-c15f-4dd0-8b66-fcb71c98e5e6}</destination>
 		</relationship>

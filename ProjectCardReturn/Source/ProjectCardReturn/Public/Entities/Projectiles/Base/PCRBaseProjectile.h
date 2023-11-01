@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ProjectCardReturn.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
 #include "GameFramework/Actor.h"
 #include "PCRBaseProjectile.generated.h"
 
@@ -10,6 +11,7 @@ class UPCRParameterDataAsset;
 class UBoxComponent;
 class UPCRProjectileDataAsset;
 class UProjectileMovementComponent;
+class UPCRSoundPrimaryDataAsset;
 
 DECLARE_MULTICAST_DELEGATE(FLaunchProjectileSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FReleaseProjectileSignature, APCRBaseProjectile*);
@@ -60,6 +62,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 	
 	FVector ShootLocation;
 	float ProjectileSpeed;

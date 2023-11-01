@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "PCREricaCharacter.generated.h"
 
+class UPCRSoundPrimaryDataAsset;
 class UPCREricaAnimInstance;
 class UPCRParameterDataAsset;
 class APCREricaCardProjectile;
@@ -114,6 +115,9 @@ private: // 데이터 에셋
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 
 private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
