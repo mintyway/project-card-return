@@ -10,6 +10,7 @@
 #include "FMODBlueprintStatics.h"
 
 #include "AIController.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandCharacter.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,6 +35,7 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 	
 	if (GetMesh())
 	{
+		GetMesh()->SetRelativeScale3D(FVector(0.25, 0.25, 0.25));
 		GetMesh()->SetCollisionObjectType(ECC_GameTraceChannel9);
 		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
@@ -426,6 +428,11 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 
 			if (CoolDownElapsedTime >= CoolDown)
 			{
+				if (Cast<APCRSerinDollLeftHandCharacter>(this))
+				{
+					GetMesh()->GetAnimInstance()->Montage_Play(SerinDataAsset->LeftHandAnimMontage);
+				}
+				
 				UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Scissors, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true, true, true);
 				
 				CoolDownElapsedTime = 0.f;

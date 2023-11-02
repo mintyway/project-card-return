@@ -257,8 +257,8 @@ void APCREricaCharacter::RecallCard()
 			return;
 		}
 
-		const FTransform RecallCardTransform = FTransform(GetActorRotation(), GetActorLocation());
-		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->ReturnCard, RecallCardTransform, true);
+		CachedEricaAnimInstance->PlayRecallMontage();
+		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->ReturnCard, GetActorTransform(), true);
 
 		bool bIsCardReturnable = false;
 		for (const auto& CardProjectile : InUseCardProjectiles)
@@ -638,6 +638,11 @@ void APCREricaCharacter::HandleDead()
 {
 	UE_LOG(PCRLogEricaCharacter, Log, TEXT("%s 주인공 캐릭터가 죽었습니다."), *this->GetName());
 
+	SetActorRotation(FRotator(0.0, 180.0, 0.0));
+	CameraBoom->TargetArmLength = 1000.f;
+	CachedEricaAnimInstance->PlayDeadMontage();
+
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Ragdoll"));
 	bIsAlive = false;
 	DisableInput(CachedEricaPlayerController);
 

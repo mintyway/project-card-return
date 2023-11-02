@@ -12,7 +12,7 @@
 DEFINE_LOG_CATEGORY(PCRLogEricaAnimInstance);
 
 UPCREricaAnimInstance::UPCREricaAnimInstance()
-	: ShouldMove(false), IsDashing(false), GroundSpeed(0.f),
+	: IsAlive(true), ShouldMove(false), IsDashing(false), GroundSpeed(0.f),
 	  LocalVelocityMoveDirectionAngle(0.f), CurrentLocalVelocityMoveDirection(ELocalVelocityDirection::Invalid),
 	  LocalVelocityDashDirectionAngle(0.f), CurrentLocalVelocityDashDirection(ELocalVelocityDirection::Invalid),
 	  CurrentIdleRotation(EIdleRotation::Invalid)
@@ -43,6 +43,7 @@ void UPCREricaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	check(CachedCharacterMovement);
 
+	IsAlive = CachedEricaCharacter->GetIsAlive();
 	Velocity = CachedEricaCharacter->GetVelocity();
 	GroundSpeed = Velocity.Size2D();
 	InputDirection = CachedCharacterMovement->GetCurrentAcceleration().GetSafeNormal();
@@ -78,6 +79,16 @@ void UPCREricaAnimInstance::JumpToAttackMontageSection(int32 InSectionNumber)
 		Montage_JumpToSection(SectionName, EricaDataAsset->AttackAnimationMontage);
 		UE_LOG(PCRLogEricaAnimInstance, Log, TEXT("SectionNumber: %d"), InSectionNumber);
 	}
+}
+
+void UPCREricaAnimInstance::PlayRecallMontage()
+{
+	Montage_Play(EricaDataAsset->RecallAnimationMontage);
+}
+
+void UPCREricaAnimInstance::PlayDeadMontage()
+{
+	Montage_Play(EricaDataAsset->DeadAnimationMontage);
 }
 
 void UPCREricaAnimInstance::SetLocalVelocityMoveDirectionAngle()

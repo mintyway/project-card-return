@@ -10,11 +10,16 @@
 APCRSerinDollLeftHandCharacter::APCRSerinDollLeftHandCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	if (GetMesh() && SerinDataAsset)
 	{
-		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 90.0));
+		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollLeftHandMesh);
+		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+		if (UClass* SerinDollLeftAnimInstance = SerinDataAsset->SerinDollLeftAnimInstance.LoadSynchronous())
+		{
+			GetMesh()->SetAnimInstanceClass(SerinDollLeftAnimInstance);
+		}
 	}
 }
 
@@ -31,7 +36,7 @@ void APCRSerinDollLeftHandCharacter::Tick(float DeltaTime)
 void APCRSerinDollLeftHandCharacter::PaperChase(bool bUseReset)
 {
 	Super::PaperChase(bUseReset);
-	
+
 	PaperRotation = FRotator(0, 180.0, -90.0);
 }
 

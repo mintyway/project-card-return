@@ -13,7 +13,7 @@ APCRSerinDollRightHandCharacter::APCRSerinDollRightHandCharacter()
 
 	if (GetMesh() && SerinDataAsset)
 	{
-		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 90.0));
+		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollRightHandMesh);
 	}
 }

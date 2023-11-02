@@ -58,6 +58,10 @@ public: // 동작
 	void PlayAttackMontage();
 	void JumpToAttackMontageSection(int32 InSectionNumber);
 
+	void PlayRecallMontage();
+
+	void PlayDeadMontage();
+
 public: // 델리게이트
 	FAttackEventSignature OnChainable;
 	FAttackEventSignature OnChainEnd;
@@ -88,6 +92,8 @@ private: // 캐시
 	TObjectPtr<UCharacterMovementComponent> CachedCharacterMovement;
 
 private: // 로코모션
+	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
+	uint32 IsAlive : 1;
 	UPROPERTY(BlueprintReadOnly, Category = "LocomotionData", meta = (AllowPrivateAccess = true))
 	uint32 ShouldMove : 1;
 
