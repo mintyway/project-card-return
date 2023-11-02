@@ -12,6 +12,8 @@ class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
+
 UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollCharacter : public APCRSerinDollBaseCharacter
 {
@@ -23,22 +25,34 @@ public:
 	friend class APCRSerinDollHandBaseCharacter;
 	friend class APCRSerinDollLeftHandCharacter;
 	friend class APCRSerinDollRightHandCharacter;
-	
+
 protected:
 	virtual void PostInitializeComponents() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 public: // Getter, Setter
+	FORCEINLINE float GetMaxHP() const { return MaxHP; }
+	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
+
+	// 델리게이트
+	FChangeHPSignature OnChangeHP;
 
 private: // 내부 함수
 	void SpawnHands();
+	void ChangeHP(float Amount);
+	void HandleChangeHP();
+	void HandleDead();
+	void DelayedDestroy();
 
 private: // 내부 Getter
-	FORCEINLINE float GetLiftHeight();
-	FORCEINLINE float GetHandWorldHeight();
-	
+	float GetLiftHeight();
+	float GetHandWorldHeight();
+
 private: // 캐시
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedErica;
@@ -55,6 +69,13 @@ private: // 핸드
 
 	static const float ContactDistance;
 	static const float FloatingHandHeight;
-	
 	static const float BasicChaseYDistance;
+
+private: // 데이터
+	float MaxHP;
+	float CurrentHP;
+
+private:
+	TArray<FTimerHandle> TimerHandles;
+	uint32 bIsAlive : 1;
 };

@@ -6,6 +6,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
+#include "FMODBlueprintStatics.h"
 
 #include "AIController.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -17,20 +19,27 @@ DEFINE_LOG_CATEGORY(PCRLogSerinHandBaseCharacter);
 APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 	: CurrentSerinState(ESerinState::Invalid), CurrentScissorsState(EScissorsState::Invalid),
 	  bUsePredictiveChase(false),
-	  CoolDown(1.0f), CoolDownElapsedTime(0.f),
-	  ScissorsAttackCount(0), ScissorsAttackMaxCount(3)
+	  bPaperStartFlag(false), CoolDown(1.0f),
+	  CoolDownElapsedTime(0.f), ScissorsAttackCount(0), ScissorsAttackMaxCount(3)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AIControllerClass = nullptr;
 
 	SetActorRotation(FRotator(0.0, 180.0, 0.0));
 
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+	}
+	
 	if (GetMesh())
 	{
+		GetMesh()->SetCollisionObjectType(ECC_GameTraceChannel9);
+		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
+		GetMesh()->SetGenerateOverlapEvents(true);
 		GetMesh()->SetRelativeLocation(FVector(-340.0, 0.0, 0.0));
-		GetMesh()->SetupAttachment(GetCapsuleComponent());
 	}
-	SetActorEnableCollision(false);
 
 	if (GetCharacterMovement())
 	{
@@ -41,6 +50,13 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 void APCRSerinDollHandBaseCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+#if WITH_EDITOR
+	if (!GetWorld()->IsPlayInEditor())
+	{
+		return;
+	}
+#endif
 
 	CachedSerinDollCharacter = Cast<APCRSerinDollCharacter>(GetOwner());
 	check(CachedSerinDollCharacter);
@@ -110,6 +126,14 @@ void APCRSerinDollHandBaseCharacter::Tick(float DeltaTime)
 			break;
 		}
 	}
+}
+
+float APCRSerinDollHandBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	const float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	CachedSerinDollCharacter->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	return Damage;
 }
 
 void APCRSerinDollHandBaseCharacter::SetTarget(AActor* TargetActor)
@@ -286,7 +310,6 @@ void APCRSerinDollHandBaseCharacter::HandleRockChase(float DeltaTime)
 {
 	if (bUsePredictiveChase)
 	{
-		TIME_CHECK_START(0);
 		ChaseLocation = CachedTarget->GetActorLocation();
 		FVector RockAttackLocation = GetActorLocation();
 		RockAttackLocation.Z = CachedSerinDollCharacter->GetLiftHeight();
@@ -295,7 +318,6 @@ void APCRSerinDollHandBaseCharacter::HandleRockChase(float DeltaTime)
 		const FVector Velocity = CachedTarget->GetVelocity() * RockAttackPredictiveTime;
 		ChaseLocation += Velocity;
 		ChaseLocation.Z = CachedSerinDollCharacter->GetHandWorldHeight();
-		TIME_CHECK_END(0);
 	}
 	else
 	{
@@ -338,6 +360,7 @@ void APCRSerinDollHandBaseCharacter::HandleRock(float DeltaTime)
 	const float DistSquare = FVector::DistSquared(NewLocation, ChaseLocation);
 	if (DistSquare <= FMath::Square(10.f))
 	{
+		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Rock, GetActorTransform(), true);
 		UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("바위 공격 끝"));
 		CurrentSerinState = ESerinState::BasicChase;
 	}
@@ -351,6 +374,7 @@ void APCRSerinDollHandBaseCharacter::PaperCallback()
 	// TODO: 파라미터화 필요
 	ChaseLocation = GetActorLocation() + (Direction * 2500.f);
 	CoolDown = 0.25f;
+	bPaperStartFlag = true;
 }
 
 void APCRSerinDollHandBaseCharacter::HandlePaper(float DeltaTime)
@@ -360,7 +384,13 @@ void APCRSerinDollHandBaseCharacter::HandlePaper(float DeltaTime)
 	{
 		return;
 	}
-	
+
+	if (bPaperStartFlag)
+	{
+		UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Paper, GetCapsuleComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true, true, true);
+		bPaperStartFlag = false;
+	}
+
 	// TODO: 파라미터화 필요
 	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ChaseLocation, DeltaTime, 3.f);
 	SetActorLocation(NewLocation);
@@ -396,6 +426,8 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 
 			if (CoolDownElapsedTime >= CoolDown)
 			{
+				UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Scissors, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true, true, true);
+				
 				CoolDownElapsedTime = 0.f;
 				CurrentScissorsState = EScissorsState::Attack;
 

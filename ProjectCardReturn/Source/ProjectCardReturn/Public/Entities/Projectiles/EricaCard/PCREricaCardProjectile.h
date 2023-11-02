@@ -66,6 +66,8 @@ private: // 내부 함수
 	void CheckCardRangeAndStop(float DeltaSeconds);
 	void HandleCardMaxRange();
 
+	void InitCollisionObjectQueryParams();
+
 private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "FX")
 	TObjectPtr<UNiagaraComponent> CardRibbonFXComponent;
@@ -82,8 +84,9 @@ private: // 데이터
 	FVector LastTickLocation;
 	FVector LastTickForwardDirection;
 
-	ECardState CurrentCardState;
-
 	UPROPERTY()
-	TArray<TObjectPtr<ACharacter>> AttackedCharacter;
+	TArray<TObjectPtr<AActor>> AttackedActors;
+	
+	ECardState CurrentCardState;
+	FCollisionObjectQueryParams CollisionObjectQueryParams;
 };

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{f396ec1e-d878-499c-abe9-c3c110fc31c3}">
+		<property name="assetPath">
+			<value>Springy Bounce by EagleStealthTeam Id-238866.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>32</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>1.9316562500000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{743f847a-e0d1-421c-b27e-4c834fa93b8a}</destination>
+		</relationship>
+	</object>
+</objects>

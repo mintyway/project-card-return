@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{cfbc0ed9-0029-4e31-938d-37b519261990}">
+		<property name="assetPath">
+			<value>Coolspring_Power_Museum_Gas_Engine_slide_click_metal_machine_gear_gears_crank_rhythmic_clack_grind_motion.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>192</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>5.1380520833333332</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{743f847a-e0d1-421c-b27e-4c834fa93b8a}</destination>
+		</relationship>
+	</object>
+</objects>

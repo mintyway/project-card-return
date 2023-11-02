@@ -12,7 +12,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/PCRBossUserWidget.h"
 
 APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByCursorDirection(true)
 {
@@ -39,6 +41,10 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->Pause.LoadSynchronous())
 		{
 			PauseUserWidgetClass = PCRPauseUserWidgetClass;
+		}
+		if (const TSubclassOf<UPCRBossUserWidget> PCRBossUserWidgetClass = UIDataAsset->Boss.LoadSynchronous())
+		{
+			BossUserWidgetClass = PCRBossUserWidgetClass;
 		}
 	}
 }
@@ -112,6 +118,16 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 	}
 
 	return FVector::ZeroVector;
+}
+
+void APCREricaPlayerController::BindSerinUI(APCRSerinDollCharacter* Serin)
+{
+	BossUserWidget = CreateWidget<UPCRBossUserWidget>(this, BossUserWidgetClass);
+	check(BossUserWidget);
+	BossUserWidget->AddToViewport(-1);
+	
+	Serin->OnChangeHP.AddUObject(BossUserWidget, &UPCRBossUserWidget::HandleUpdateHP);
+	BossUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
 }
 
 void APCREricaPlayerController::GamePause()

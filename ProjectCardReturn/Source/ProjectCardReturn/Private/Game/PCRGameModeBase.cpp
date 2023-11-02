@@ -3,6 +3,7 @@
 
 #include "Game/PCRGameModeBase.h"
 
+#include "FMODStudioModule.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
@@ -11,7 +12,9 @@
 #include "Entities/MonsterGenerator/PCRMonsterGenerator.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
+#include "Game/PCRGameInstance.h"
 #include "Game/PCRParameterDataAsset.h"
+
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
@@ -61,7 +64,7 @@ void APCRGameModeBase::PostInitializeComponents()
 		return;
 	}
 #endif
-
+	
 	check(ParameterDataAsset);
 
 	// 태그로 Lift를 찾는 코드입니다.
@@ -80,13 +83,16 @@ void APCRGameModeBase::PostInitializeComponents()
 	LiftActor->OnLiftUpEnd.AddDynamic(this, &APCRGameModeBase::SpawnSerinDoll);
 
 	OnStage1End.AddDynamic(this, &APCRGameModeBase::LiftFloor);
-	SIMPLE_LOG;
 }
 
 void APCRGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UPCRGameInstance* PCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
+	check(PCRGameInstance);
+	PCRGameInstance->InitSoundSystem();
+	
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
 }

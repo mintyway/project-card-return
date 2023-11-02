@@ -3,6 +3,7 @@
 
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
+#include "FMODBlueprintStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
@@ -20,6 +21,8 @@ DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectile);
 
 APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), BackwardDamage(0.f), CurrentCardState(ECardState::Invalid)
 {
+	InitCollisionObjectQueryParams();
+	
 	if (ParameterDataAsset)
 	{
 		ProjectileSpeed = ParameterDataAsset->EricaCardSpeed;
@@ -27,7 +30,7 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 		CardRange = ParameterDataAsset->EricaNarrowShotRange;
 		KnockBackPower = ParameterDataAsset->EricaCardKnockBackPower;
 	}
-
+	
 	if (BoxComponent)
 	{
 		BoxComponent->InitBoxExtent(FVector(30.8, 21.7, 1.0));
@@ -117,7 +120,7 @@ void APCREricaCardProjectile::ReleaseToProjectilePool()
 {
 	Super::ReleaseToProjectilePool();
 
-	AttackedCharacter.Reset();
+	AttackedActors.Reset();
 	CardRibbonFXComponent->Deactivate();
 	CardFloatingFXComponent->Deactivate();
 	OnReturnCardBegin.Clear();
@@ -137,10 +140,19 @@ void APCREricaCardProjectile::ReturnCard()
 
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
-	AttackedCharacter.Reset();
+	AttackedActors.Reset();
+
 	CardRibbonFXComponent->Activate();
 	CardFloatingFXComponent->Deactivate();
 	StaticMeshComponent->SetVisibility(true);
+
+	// 겹친 상태를 유지하고 있는 대상이 있는 경우 즉시 데미지를 주기 위한 코드입니다. 만약 이 코드가 없다면 카드 복귀 시 BeginOverlap이 발생하지 않아 데미지가 들어가지 않습니다.
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors);
+	for (const auto& OverlappingActor : OverlappingActors)
+	{
+		HandleBeginOverlap(this, OverlappingActor);
+	}
 
 	OnReturnCardBegin.Broadcast(this);
 }
@@ -161,6 +173,7 @@ void APCREricaCardProjectile::EnableCollisionDetection()
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Block);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel8, ECR_Block);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel9, ECR_Overlap);
 	}
 }
 
@@ -180,11 +193,17 @@ void APCREricaCardProjectile::PauseCard()
  */
 void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
+	// 이미 맞은 상태면 다시 공격되지 않도록 하는 코드입니다.
+	if (AttackedActors.Find(OtherActor) != INDEX_NONE)
+	{
+		return;
+	}
+
 	if (ProjectileDataAsset)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileDataAsset->CardPenetratedHit, GetActorLocation(), GetActorRotation());
 	}
-
+	
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
 	if (!OtherCharacter)
 	{
@@ -192,13 +211,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 		return;
 	}
-
-	// 이미 맞은 상태면 다시 공격되지 않도록 하는 코드입니다.
-	if (AttackedCharacter.Find(OtherCharacter) != INDEX_NONE)
-	{
-		return;
-	}
-
+	
 	const FVector CurrentDirection = LastTickForwardDirection;
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
@@ -225,7 +238,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		OtherActor->TakeDamage(BackwardDamage, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
 
-	AttackedCharacter.Add(OtherCharacter);
+	AttackedActors.Add(OtherActor);
 }
 
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
@@ -234,6 +247,9 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileDataAsset->CardBlockedHit, GetActorLocation(), GetActorRotation());
 	}
+
+	const FTransform BlockedCardTransform = FTransform(GetActorRotation(), GetActorLocation());
+	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->BlockedCard, BlockedCardTransform, true);
 
 	UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 블로킹 당했습니다."), *SelfActor->GetName());
 
@@ -267,44 +283,33 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 	const FVector CurrentTickLocation = GetActorLocation() + (MoveVector * DeltaSeconds);
 	bool bShouldRelease = false;
 	
-	FHitResult EricaHitResult;
-	const bool bEricaRaycastResult = GetWorld()->LineTraceSingleByObjectType(EricaHitResult, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel1);
-
-	TArray<FHitResult> MonsterHitResults;
-	const bool bMonsterRaycastResult = GetWorld()->LineTraceMultiByObjectType(MonsterHitResults, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel2);
-
-	TArray<FHitResult> BlockPlayerProjectileHitResults;
-	const bool bBlockPlayerProjectileRaycastResult = GetWorld()->LineTraceMultiByObjectType(BlockPlayerProjectileHitResults, LastTickLocation, CurrentTickLocation, ECC_GameTraceChannel6);
+	TArray<FHitResult> HitResults;
+	const bool bSucceedRayCast = GetWorld()->LineTraceMultiByObjectType(HitResults, LastTickLocation, CurrentTickLocation, CollisionObjectQueryParams);
+	if (bSucceedRayCast)
+	{
+		for (const auto& TestResult : HitResults)
+		{
+			if (Cast<APCREricaCharacter>(TestResult.GetActor()))
+			{
+				bShouldRelease = true;
+			}
+			else if (Cast<APCRMonsterBaseCharacter>(TestResult.GetActor()))
+			{
+				HandleBeginOverlap(this, TestResult.GetActor());
+			}
+			else if (Cast<APCRInteractablePanelBaseActor>(TestResult.GetActor()))
+			{
+				HandleBeginOverlap(this, TestResult.GetActor());
+				APCRInteractablePanelBaseActor* Panel = Cast<APCRInteractablePanelBaseActor>(TestResult.GetActor());
+				if (Panel)
+				{
+					Panel->HandleBeginOverlap(Panel, this);
+				}
+			}
+		}
+	}
 
 	DrawDebugLine(GetWorld(), LastTickLocation, CurrentTickLocation, FColor::Green, false, 3, 0, 1);
-
-	if (bEricaRaycastResult)
-	{
-		bShouldRelease = true;
-	}
-
-	if (bMonsterRaycastResult)
-	{
-		for (const auto& MonsterHitResult : MonsterHitResults)
-		{
-			HandleBeginOverlap(this, MonsterHitResult.GetActor());
-			UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s"), *MonsterHitResult.GetActor()->GetName());
-		}
-	}
-
-	if (bBlockPlayerProjectileRaycastResult)
-	{
-		for (const auto& BlockPlayerProjectileHitResult : BlockPlayerProjectileHitResults)
-		{
-			HandleBeginOverlap(this, BlockPlayerProjectileHitResult.GetActor());
-			APCRInteractablePanelBaseActor* Panel = Cast<APCRInteractablePanelBaseActor>(BlockPlayerProjectileHitResult.GetActor());
-			if (Panel)
-			{
-				Panel->HandleBeginOverlap(Panel, this);
-			}
-			UE_LOG(PCRLogEricaCardProjectile, Warning, TEXT("%s"), *BlockPlayerProjectileHitResult.GetActor()->GetName());
-		}
-	}
 
 	if (bShouldRelease)
 	{
@@ -335,4 +340,11 @@ void APCREricaCardProjectile::HandleCardMaxRange()
 {
 	StaticMeshComponent->SetVisibility(false);
 	CardFloatingFXComponent->Activate(true);
+}
+
+void APCREricaCardProjectile::InitCollisionObjectQueryParams()
+{
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel1);
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel2);
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel6);
 }

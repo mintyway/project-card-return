@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{c04630b3-d119-4fa6-a50a-194d75524e77}">
+		<property name="assetPath">
+			<value>Lock04_outdoor_opening_lite04.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>14.181812499999999</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{743f847a-e0d1-421c-b27e-4c834fa93b8a}</destination>
+		</relationship>
+	</object>
+</objects>

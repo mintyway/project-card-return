@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{4a0ad3c9-0811-488f-b7a7-10e73c0da29d}">
+		<property name="assetPath">
+			<value>UI, ES_Boots Run 1 - SFX Producer (1), ES_Paper Turn - SFX Producer (10).wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.31777777777777777</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{743f847a-e0d1-421c-b27e-4c834fa93b8a}</destination>
+		</relationship>
+	</object>
+</objects>
