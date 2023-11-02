@@ -77,7 +77,7 @@ void APCRRangedSoldierCharacter::Throw()
 	const float SpearSpeed = ParameterDataAsset->SpearSpeed;
 	const float Distance = GetDistanceTo(CachedPlayerCharacter);
 	const FVector PredictedMove = CachedPlayerCharacter->GetVelocity() * (Distance / SpearSpeed);
-	const FVector PredictedLocation = CachedPlayerCharacter->GetActorLocation() + PredictedMove;
+	const FVector PredictedLocation = CachedPlayerCharacter->GetActorLocation() + PredictedMove * ParameterDataAsset->SpearPredictionRate;
 	const FVector Direction = (PredictedLocation - GetActorLocation()).GetSafeNormal();
 		
 	Spear->Throw(this, GetActorLocation(), Direction);
