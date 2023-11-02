@@ -89,9 +89,6 @@ void APCRGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto FMODStudioSystem = IFMODStudioModule::Get().GetStudioSystem(EFMODSystemContext::Runtime);
-	check(FMODStudioSystem);
-	
 	UPCRGameInstance* PCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
 	check(PCRGameInstance);
 	PCRGameInstance->InitSoundSystem();

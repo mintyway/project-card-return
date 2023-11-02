@@ -35,7 +35,7 @@ bool UPCRGameInstance::SoundUpdate(float DeltaTime)
 	{
 		if (MasterBus)
 		{
-			MasterBus->setVolume(1.0f);
+			MasterBus->setVolume(MasterVolume);
 		}
 	}
 
