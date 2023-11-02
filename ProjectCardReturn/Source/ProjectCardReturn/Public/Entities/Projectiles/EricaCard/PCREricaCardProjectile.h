@@ -85,7 +85,7 @@ private: // 데이터
 	FVector LastTickForwardDirection;
 
 	UPROPERTY()
-	TArray<TObjectPtr<ACharacter>> AttackedCharacter;
+	TArray<TObjectPtr<AActor>> AttackedActors;
 	
 	ECardState CurrentCardState;
 	FCollisionObjectQueryParams CollisionObjectQueryParams;

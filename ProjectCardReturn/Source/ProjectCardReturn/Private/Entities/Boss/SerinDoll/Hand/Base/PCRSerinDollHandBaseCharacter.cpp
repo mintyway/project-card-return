@@ -310,7 +310,6 @@ void APCRSerinDollHandBaseCharacter::HandleRockChase(float DeltaTime)
 {
 	if (bUsePredictiveChase)
 	{
-		TIME_CHECK_START(0);
 		ChaseLocation = CachedTarget->GetActorLocation();
 		FVector RockAttackLocation = GetActorLocation();
 		RockAttackLocation.Z = CachedSerinDollCharacter->GetLiftHeight();
@@ -319,7 +318,6 @@ void APCRSerinDollHandBaseCharacter::HandleRockChase(float DeltaTime)
 		const FVector Velocity = CachedTarget->GetVelocity() * RockAttackPredictiveTime;
 		ChaseLocation += Velocity;
 		ChaseLocation.Z = CachedSerinDollCharacter->GetHandWorldHeight();
-		TIME_CHECK_END(0);
 	}
 	else
 	{
@@ -429,6 +427,7 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 			if (CoolDownElapsedTime >= CoolDown)
 			{
 				UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Scissors, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true, true, true);
+				
 				CoolDownElapsedTime = 0.f;
 				CurrentScissorsState = EScissorsState::Attack;
 

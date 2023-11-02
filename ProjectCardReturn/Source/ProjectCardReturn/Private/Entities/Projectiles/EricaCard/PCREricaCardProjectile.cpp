@@ -120,7 +120,7 @@ void APCREricaCardProjectile::ReleaseToProjectilePool()
 {
 	Super::ReleaseToProjectilePool();
 
-	AttackedCharacter.Reset();
+	AttackedActors.Reset();
 	CardRibbonFXComponent->Deactivate();
 	CardFloatingFXComponent->Deactivate();
 	OnReturnCardBegin.Clear();
@@ -140,10 +140,19 @@ void APCREricaCardProjectile::ReturnCard()
 
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	EnableProjectile();
-	AttackedCharacter.Reset();
+	AttackedActors.Reset();
+
 	CardRibbonFXComponent->Activate();
 	CardFloatingFXComponent->Deactivate();
 	StaticMeshComponent->SetVisibility(true);
+
+	// 겹친 상태를 유지하고 있는 대상이 있는 경우 즉시 데미지를 주기 위한 코드입니다. 만약 이 코드가 없다면 카드 복귀 시 BeginOverlap이 발생하지 않아 데미지가 들어가지 않습니다.
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors);
+	for (const auto& OverlappingActor : OverlappingActors)
+	{
+		HandleBeginOverlap(this, OverlappingActor);
+	}
 
 	OnReturnCardBegin.Broadcast(this);
 }
@@ -184,11 +193,17 @@ void APCREricaCardProjectile::PauseCard()
  */
 void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
+	// 이미 맞은 상태면 다시 공격되지 않도록 하는 코드입니다.
+	if (AttackedActors.Find(OtherActor) != INDEX_NONE)
+	{
+		return;
+	}
+
 	if (ProjectileDataAsset)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ProjectileDataAsset->CardPenetratedHit, GetActorLocation(), GetActorRotation());
 	}
-
+	
 	ACharacter* OtherCharacter = Cast<ACharacter>(OtherActor);
 	if (!OtherCharacter)
 	{
@@ -196,13 +211,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 
 		return;
 	}
-
-	// 이미 맞은 상태면 다시 공격되지 않도록 하는 코드입니다.
-	if (AttackedCharacter.Find(OtherCharacter) != INDEX_NONE)
-	{
-		return;
-	}
-
+	
 	const FVector CurrentDirection = LastTickForwardDirection;
 	const FVector CurrentOtherActorDirection = OtherCharacter->GetActorForwardVector();
 	const float DotResult = FVector::DotProduct(CurrentDirection, CurrentOtherActorDirection);
@@ -229,7 +238,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		OtherActor->TakeDamage(BackwardDamage, DamageEvent, EricaCharacter->GetController(), EricaCharacter);
 	}
 
-	AttackedCharacter.Add(OtherCharacter);
+	AttackedActors.Add(OtherActor);
 }
 
 void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
