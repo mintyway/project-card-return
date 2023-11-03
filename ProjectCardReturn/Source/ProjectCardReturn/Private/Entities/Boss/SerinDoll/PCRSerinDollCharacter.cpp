@@ -86,16 +86,17 @@ void APCRSerinDollCharacter::BeginPlay()
 	LeftHand->SetTarget(CachedErica);
 	// RightHand->SetTarget(CachedErica);
 
-	LeftHand->BasicChase();
+	// LeftHand->BasicChase();
 	// RightHand->BasicChase();
-
+	
 	// TODO: 테스트용 코드
 	FTimerHandle TestTimerHandle1;
 	TimerHandles.Add(TestTimerHandle1);
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->ScissorsAttack();
-	}), 10.f, true, 0.f);
+		LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDataAsset->LeftHandScissorsAnimMontage);
+		// LeftHand->ScissorsAttack();
+	}), 5.f, true, 1.f);
 
 	// FTimerHandle TestTimerHandle2;
 	// TimerHandles.Add(TestTimerHandle2);
@@ -152,23 +153,23 @@ float APCRSerinDollCharacter::TakeDamage(float DamageAmount, FDamageEvent const&
 
 void APCRSerinDollCharacter::SpawnHands()
 {
-	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-300.0, 1000.0, 0.0);
-	LeftHandSpawnLocation.Z = 1000.0;
+	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-1000.0, 1000.0, 0.0);
+	LeftHandSpawnLocation.Z = 1500.0;
 	const FRotator LeftHandSpawnRotation = FRotator::ZeroRotator;
 	FActorSpawnParameters LeftHandSpawnParameters;
-	LeftHandSpawnParameters.Owner = this;
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
 	LeftHand = GetWorld()->SpawnActor<APCRSerinDollLeftHandCharacter>(APCRSerinDollLeftHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
+	LeftHand->SetSerinDollCharacter(this);
 
 	// FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
 	// RightHandSpawnLocation.Z = 1000.0;
 	// const FRotator RightHandSpawnRotation = FRotator::ZeroRotator;
 	// FActorSpawnParameters RightHandSpawnParameters;
-	// RightHandSpawnParameters.Owner = this;
 	// const FName RightHandName = TEXT("RightHand");
 	// RightHandSpawnParameters.Name = RightHandName;
 	// RightHand = GetWorld()->SpawnActor<APCRSerinDollRightHandCharacter>(APCRSerinDollRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
+	// RightHand->SetSerinDollCharacter(this);
 
 #if WITH_EDITOR
 	LeftHand->SetActorLabel(LeftHand->GetName());

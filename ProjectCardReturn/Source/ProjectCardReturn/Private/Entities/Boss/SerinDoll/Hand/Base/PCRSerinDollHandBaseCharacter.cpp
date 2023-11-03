@@ -26,7 +26,8 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 	  MaxScissorsAttackCount(3), CurrentScissorsAttackCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	AIControllerClass = nullptr;
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	// AIControllerClass = nullptr;
 
 	SetActorRotation(FRotator(0.0, 180.0, 0.0));
 
@@ -47,7 +48,7 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 
 	if (GetCharacterMovement())
 	{
-		// GetCharacterMovement()->GravityScale = 0.f;
+		GetCharacterMovement()->GravityScale = 0.f;
 	}
 }
 
@@ -61,9 +62,6 @@ void APCRSerinDollHandBaseCharacter::PostInitializeComponents()
 		return;
 	}
 #endif
-
-	CachedSerinDollCharacter = Cast<APCRSerinDollCharacter>(GetOwner());
-	check(CachedSerinDollCharacter);
 
 	CachedSerinDollHandBaseAnimInstance = Cast<UPCRSerinDollHandBaseAnimInstance>(GetMesh()->GetAnimInstance());
 	check(CachedSerinDollHandBaseAnimInstance);
@@ -85,57 +83,63 @@ void APCRSerinDollHandBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	switch (CurrentSerinState)
-	{
-		case ESerinState::Idle:
-		{
-			break;
-		}
-		case ESerinState::Move:
-		{
-			HandleMove(DeltaTime);
-			break;
-		}
-		case ESerinState::BasicChase:
-		{
-			HandleBasicChase(DeltaTime);
-			break;
-		}
-		case ESerinState::PaperChase:
-		{
-			HandlePaperChase(DeltaTime);
-			break;
-		}
-		case ESerinState::RockChase:
-		{
-			HandleRockChase(DeltaTime);
-			break;
-		}
-		case ESerinState::Rock:
-		{
-			HandleRock(DeltaTime);
-			break;
-		}
-		case ESerinState::Paper:
-		{
-			HandlePaper(DeltaTime);
-			break;
-		}
-		case ESerinState::Scissors:
-		{
-			SIMPLE_LOG;
-			// HandleScissors(DeltaTime);
-			break;
-		}
-		case ESerinState::Invalid:
-		{
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+	// switch (CurrentSerinState)
+	// {
+	// 	case ESerinState::Idle:
+	// 	{
+	// 		break;
+	// 	}
+	// 	case ESerinState::Move:
+	// 	{
+	// 		HandleMove(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::BasicChase:
+	// 	{
+	// 		HandleBasicChase(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::PaperChase:
+	// 	{
+	// 		HandlePaperChase(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::RockChase:
+	// 	{
+	// 		HandleRockChase(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::Rock:
+	// 	{
+	// 		HandleRock(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::Paper:
+	// 	{
+	// 		HandlePaper(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::Scissors:
+	// 	{
+	// 		SIMPLE_LOG;
+	// 		// HandleScissors(DeltaTime);
+	// 		break;
+	// 	}
+	// 	case ESerinState::Invalid:
+	// 	{
+	// 		break;
+	// 	}
+	// 	default:
+	// 	{
+	// 		break;
+	// 	}
+	// }
+}
+
+void APCRSerinDollHandBaseCharacter::SetSerinDollCharacter(APCRSerinDollCharacter* InSerinDollCharacter)
+{
+	CachedSerinDollCharacter = InSerinDollCharacter;
+	check(CachedSerinDollCharacter);
 }
 
 float APCRSerinDollHandBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -235,10 +239,10 @@ void APCRSerinDollHandBaseCharacter::PaperAttack(bool bUseReset)
 
 void APCRSerinDollHandBaseCharacter::ScissorsAttack(bool bUseReset)
 {
-	if (bUseReset)
-	{
-		StateReset();
-	}
+	// if (bUseReset)
+	// {
+	// 	StateReset();
+	// }
 
 	CachedSerinDollHandBaseAnimInstance->PlayScissorsAttack();
 	

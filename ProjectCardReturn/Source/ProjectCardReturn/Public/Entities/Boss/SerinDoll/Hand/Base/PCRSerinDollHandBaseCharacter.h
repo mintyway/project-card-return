@@ -55,6 +55,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public: // 동작
+	void SetSerinDollCharacter(APCRSerinDollCharacter* InSerinDollCharacter);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void SetTarget(AActor* TargetActor);
 
@@ -88,7 +89,7 @@ protected: // 내부 함수
 protected: // 캐시
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollHandBaseAnimInstance> CachedSerinDollHandBaseAnimInstance;
-	
+
 	UPROPERTY()
 	TObjectPtr<APCRSerinDollCharacter> CachedSerinDollCharacter;
 

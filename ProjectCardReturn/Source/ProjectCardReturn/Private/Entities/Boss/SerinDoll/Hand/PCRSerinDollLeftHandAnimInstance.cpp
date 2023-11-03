@@ -19,9 +19,9 @@ void UPCRSerinDollLeftHandAnimInstance::PlayScissorsAttack()
 	
 	Montage_Play(SerinDollDataAsset->LeftHandScissorsAnimMontage);
 
-	FOnMontageEnded ScissorsAttack;
-	ScissorsAttack.BindUObject(this, &UPCRSerinDollLeftHandAnimInstance::ScissorsAttackCallback);
-	Montage_SetEndDelegate(ScissorsAttack, SerinDollDataAsset->LeftHandScissorsAnimMontage);
+	// FOnMontageEnded ScissorsAttack;
+	// ScissorsAttack.BindUObject(this, &UPCRSerinDollLeftHandAnimInstance::ScissorsAttackCallback);
+	// Montage_SetEndDelegate(ScissorsAttack, SerinDollDataAsset->LeftHandScissorsAnimMontage);
 }
 
 void UPCRSerinDollLeftHandAnimInstance::ScissorsAttackCallback(UAnimMontage* AnimMontage, bool bArg)
