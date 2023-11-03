@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRSerinDollPrimaryDataAsset.generated.h"
 
+class UPCRSerinDollLeftHandAnimInstance;
 /**
  * 
  */
@@ -22,10 +23,10 @@ public:
 	TObjectPtr<USkeletalMesh> SerinDollLeftHandMesh;
 
 	UPROPERTY(EditAnywhere, Category = "SerinDollLeftHand", DisplayName = "세린 왼쪽 손 애니메이션 블루프린트")
-	TSoftClassPtr<UAnimInstance> SerinDollLeftAnimInstance;
+	TSoftClassPtr<UPCRSerinDollLeftHandAnimInstance> SerinDollLeftAnimInstance;
 
 	UPROPERTY(EditAnywhere, Category = "LeftHand", DisplayName = "왼쪽 손 가위 공격 애님 몽타주")
-	TObjectPtr<UAnimMontage> LeftHandAnimMontage;
+	TObjectPtr<UAnimMontage> LeftHandScissorsAnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "SerinDollRightHands")
 	TObjectPtr<USkeletalMesh> SerinDollRightHandMesh;

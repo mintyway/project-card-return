@@ -10,7 +10,7 @@ void UPCRGameInstance::Init()
 {
 	Super::Init();
 
-	MasterVolume = 1.f;
+	MasterVolume = 0.5f;
 }
 
 void UPCRGameInstance::InitSoundSystem()

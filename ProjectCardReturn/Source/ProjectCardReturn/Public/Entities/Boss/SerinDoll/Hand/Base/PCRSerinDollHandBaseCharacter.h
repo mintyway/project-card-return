@@ -6,6 +6,7 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 #include "PCRSerinDollHandBaseCharacter.generated.h"
 
+class UPCRSerinDollHandBaseAnimInstance;
 class APCRSerinDollCharacter;
 class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
@@ -82,8 +83,12 @@ protected: // 내부 함수
 	void HandlePaper(float DeltaTime);
 	void ScissorsCallback();
 	void HandleScissors(float DeltaTime);
+	void HandleEndedScissorsAttack();
 
 protected: // 캐시
+	UPROPERTY()
+	TObjectPtr<UPCRSerinDollHandBaseAnimInstance> CachedSerinDollHandBaseAnimInstance;
+	
 	UPROPERTY()
 	TObjectPtr<APCRSerinDollCharacter> CachedSerinDollCharacter;
 
@@ -105,6 +110,6 @@ protected: // 데이터
 	float CoolDown;
 	float CoolDownElapsedTime;
 
-	int32 ScissorsAttackCount;
-	int32 ScissorsAttackMaxCount;
+	int32 MaxScissorsAttackCount;
+	int32 CurrentScissorsAttackCount;
 };

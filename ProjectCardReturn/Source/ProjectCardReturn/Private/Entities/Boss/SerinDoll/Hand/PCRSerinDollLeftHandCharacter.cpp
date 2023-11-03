@@ -6,6 +6,7 @@
 #include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandAnimInstance.h"
 
 APCRSerinDollLeftHandCharacter::APCRSerinDollLeftHandCharacter()
 {
@@ -53,7 +54,6 @@ void APCRSerinDollLeftHandCharacter::HandlePaperChase(float DeltaTime)
 	ChaseLocation.Y += CachedSerinDollCharacter->BasicChaseYDistance + 300.f;
 	Super::HandlePaperChase(DeltaTime);
 }
-
 
 void APCRSerinDollLeftHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

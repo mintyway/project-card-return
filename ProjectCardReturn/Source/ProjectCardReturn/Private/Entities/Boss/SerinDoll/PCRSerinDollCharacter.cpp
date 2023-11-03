@@ -84,53 +84,53 @@ void APCRSerinDollCharacter::BeginPlay()
 	check(CachedErica);
 
 	LeftHand->SetTarget(CachedErica);
-	RightHand->SetTarget(CachedErica);
+	// RightHand->SetTarget(CachedErica);
 
 	LeftHand->BasicChase();
-	RightHand->BasicChase();
+	// RightHand->BasicChase();
 
 	// TODO: 테스트용 코드
 	FTimerHandle TestTimerHandle1;
 	TimerHandles.Add(TestTimerHandle1);
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->RockAttack();
-	}), 30.f, true, 0.f);
-
-	FTimerHandle TestTimerHandle2;
-	TimerHandles.Add(TestTimerHandle2);
-	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		RightHand->ScissorsAttack();
-	}), 30.f, true, 5.f);
-
-	FTimerHandle TestTimerHandle3;
-	TimerHandles.Add(TestTimerHandle3);
-	GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		LeftHand->PaperAttack();
-	}), 30.f, true, 10.f);
-
-	FTimerHandle TestTimerHandle4;
-	TimerHandles.Add(TestTimerHandle4);
-	GetWorldTimerManager().SetTimer(TestTimerHandle4, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		RightHand->RockAttack();
-	}), 30.f, true, 15.f);
-
-	FTimerHandle TestTimerHandle5;
-	TimerHandles.Add(TestTimerHandle5);
-	GetWorldTimerManager().SetTimer(TestTimerHandle5, FTimerDelegate::CreateLambda([this]() -> void
-	{
 		LeftHand->ScissorsAttack();
-	}), 30.f, true, 20.f);
+	}), 10.f, true, 0.f);
 
-	FTimerHandle TestTimerHandle6;
-	TimerHandles.Add(TestTimerHandle6);
-	GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		RightHand->PaperAttack();
-	}), 30.f, true, 25.f);
+	// FTimerHandle TestTimerHandle2;
+	// TimerHandles.Add(TestTimerHandle2);
+	// GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
+	// {
+	// 	RightHand->ScissorsAttack();
+	// }), 30.f, true, 5.f);
+	//
+	// FTimerHandle TestTimerHandle3;
+	// TimerHandles.Add(TestTimerHandle3);
+	// GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateLambda([this]() -> void
+	// {
+	// 	LeftHand->PaperAttack();
+	// }), 30.f, true, 10.f);
+	//
+	// FTimerHandle TestTimerHandle4;
+	// TimerHandles.Add(TestTimerHandle4);
+	// GetWorldTimerManager().SetTimer(TestTimerHandle4, FTimerDelegate::CreateLambda([this]() -> void
+	// {
+	// 	RightHand->RockAttack();
+	// }), 30.f, true, 15.f);
+	//
+	// FTimerHandle TestTimerHandle5;
+	// TimerHandles.Add(TestTimerHandle5);
+	// GetWorldTimerManager().SetTimer(TestTimerHandle5, FTimerDelegate::CreateLambda([this]() -> void
+	// {
+	// 	LeftHand->ScissorsAttack();
+	// }), 30.f, true, 20.f);
+	//
+	// FTimerHandle TestTimerHandle6;
+	// TimerHandles.Add(TestTimerHandle6);
+	// GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateLambda([this]() -> void
+	// {
+	// 	RightHand->PaperAttack();
+	// }), 30.f, true, 25.f);
 	
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(EricaPlayerController);
@@ -161,20 +161,20 @@ void APCRSerinDollCharacter::SpawnHands()
 	LeftHandSpawnParameters.Name = LeftHandName;
 	LeftHand = GetWorld()->SpawnActor<APCRSerinDollLeftHandCharacter>(APCRSerinDollLeftHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
 
-	FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
-	RightHandSpawnLocation.Z = 1000.0;
-	const FRotator RightHandSpawnRotation = FRotator::ZeroRotator;
-	FActorSpawnParameters RightHandSpawnParameters;
-	RightHandSpawnParameters.Owner = this;
-	const FName RightHandName = TEXT("RightHand");
-	RightHandSpawnParameters.Name = RightHandName;
-	RightHand = GetWorld()->SpawnActor<APCRSerinDollRightHandCharacter>(APCRSerinDollRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
+	// FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
+	// RightHandSpawnLocation.Z = 1000.0;
+	// const FRotator RightHandSpawnRotation = FRotator::ZeroRotator;
+	// FActorSpawnParameters RightHandSpawnParameters;
+	// RightHandSpawnParameters.Owner = this;
+	// const FName RightHandName = TEXT("RightHand");
+	// RightHandSpawnParameters.Name = RightHandName;
+	// RightHand = GetWorld()->SpawnActor<APCRSerinDollRightHandCharacter>(APCRSerinDollRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
 
 #if WITH_EDITOR
 	LeftHand->SetActorLabel(LeftHand->GetName());
-	RightHand->SetActorLabel(RightHand->GetName());
+	// RightHand->SetActorLabel(RightHand->GetName());
 	LeftHand->SetFolderPath(TEXT("Serin"));
-	RightHand->SetFolderPath(TEXT("Serin"));
+	// RightHand->SetFolderPath(TEXT("Serin"));
 #endif
 }
 

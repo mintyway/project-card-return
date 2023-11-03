@@ -11,6 +11,7 @@
 
 #include "AIController.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandCharacter.h"
+#include "Entities/Boss/SerinDoll/Hand/Base/PCRSerinDollHandBaseAnimInstance.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -21,7 +22,8 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 	: CurrentSerinState(ESerinState::Invalid), CurrentScissorsState(EScissorsState::Invalid),
 	  bUsePredictiveChase(false),
 	  bPaperStartFlag(false), CoolDown(1.0f),
-	  CoolDownElapsedTime(0.f), ScissorsAttackCount(0), ScissorsAttackMaxCount(3)
+	  CoolDownElapsedTime(0.f),
+	  MaxScissorsAttackCount(3), CurrentScissorsAttackCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AIControllerClass = nullptr;
@@ -32,7 +34,7 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 	{
 		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 	}
-	
+
 	if (GetMesh())
 	{
 		GetMesh()->SetRelativeScale3D(FVector(0.25, 0.25, 0.25));
@@ -40,12 +42,12 @@ APCRSerinDollHandBaseCharacter::APCRSerinDollHandBaseCharacter()
 		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 		GetMesh()->SetGenerateOverlapEvents(true);
-		GetMesh()->SetRelativeLocation(FVector(-340.0, 0.0, 0.0));
+		GetMesh()->SetRelativeLocation(FVector(0.0, 0.0, 0.0));
 	}
 
 	if (GetCharacterMovement())
 	{
-		GetCharacterMovement()->GravityScale = 0.f;
+		// GetCharacterMovement()->GravityScale = 0.f;
 	}
 }
 
@@ -62,6 +64,11 @@ void APCRSerinDollHandBaseCharacter::PostInitializeComponents()
 
 	CachedSerinDollCharacter = Cast<APCRSerinDollCharacter>(GetOwner());
 	check(CachedSerinDollCharacter);
+
+	CachedSerinDollHandBaseAnimInstance = Cast<UPCRSerinDollHandBaseAnimInstance>(GetMesh()->GetAnimInstance());
+	check(CachedSerinDollHandBaseAnimInstance);
+
+	CachedSerinDollHandBaseAnimInstance->OnScissorsAttackEnded.BindUObject(this, &APCRSerinDollHandBaseCharacter::HandleEndedScissorsAttack);
 }
 
 void APCRSerinDollHandBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -116,7 +123,8 @@ void APCRSerinDollHandBaseCharacter::Tick(float DeltaTime)
 		}
 		case ESerinState::Scissors:
 		{
-			HandleScissors(DeltaTime);
+			SIMPLE_LOG;
+			// HandleScissors(DeltaTime);
 			break;
 		}
 		case ESerinState::Invalid:
@@ -232,11 +240,13 @@ void APCRSerinDollHandBaseCharacter::ScissorsAttack(bool bUseReset)
 		StateReset();
 	}
 
-	FVector NewLocation = GetActorLocation();
-	NewLocation.X = CachedTarget->GetActorLocation().X;
-	NewLocation.Z = CachedTarget->GetActorLocation().Z;
-	OnMoveEnd.BindUObject(this, &APCRSerinDollHandBaseCharacter::ScissorsCallback);
-	Move(NewLocation, false);
+	CachedSerinDollHandBaseAnimInstance->PlayScissorsAttack();
+	
+	// FVector NewLocation = GetActorLocation();
+	// NewLocation.X = CachedTarget->GetActorLocation().X;
+	// NewLocation.Z = CachedTarget->GetActorLocation().Z;
+	// OnMoveEnd.BindUObject(this, &APCRSerinDollHandBaseCharacter::ScissorsCallback);
+	// Move(NewLocation, false);
 }
 
 /**
@@ -407,9 +417,10 @@ void APCRSerinDollHandBaseCharacter::HandlePaper(float DeltaTime)
 
 void APCRSerinDollHandBaseCharacter::ScissorsCallback()
 {
-	CurrentScissorsState = EScissorsState::Stay;
+	// CurrentScissorsState = EScissorsState::Stay;
 	CurrentSerinState = ESerinState::Scissors;
-	CoolDown = 1.f;
+	
+	CachedSerinDollHandBaseAnimInstance->PlayScissorsAttack();
 	UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("가위 공격 시작"));
 }
 
@@ -430,11 +441,11 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 			{
 				if (Cast<APCRSerinDollLeftHandCharacter>(this))
 				{
-					GetMesh()->GetAnimInstance()->Montage_Play(SerinDataAsset->LeftHandAnimMontage);
+					GetMesh()->GetAnimInstance()->Montage_Play(SerinDataAsset->LeftHandScissorsAnimMontage);
 				}
-				
+
 				UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Scissors, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true, true, true);
-				
+
 				CoolDownElapsedTime = 0.f;
 				CurrentScissorsState = EScissorsState::Attack;
 
@@ -452,11 +463,11 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 			const float DistSquare = FVector::DistSquared(NewLocation, ChaseLocation);
 			if (DistSquare <= FMath::Square(10.f))
 			{
-				++ScissorsAttackCount;
-				UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("%d차 가위 공격 끝"), ScissorsAttackCount);
-				if (ScissorsAttackCount >= ScissorsAttackMaxCount)
+				++CurrentScissorsAttackCount;
+				UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("%d차 가위 공격 끝"), CurrentScissorsAttackCount);
+				if (CurrentScissorsAttackCount >= MaxScissorsAttackCount)
 				{
-					ScissorsAttackCount = 0;
+					CurrentScissorsAttackCount = 0;
 					CurrentScissorsState = EScissorsState::Invalid;
 					CurrentSerinState = ESerinState::BasicChase;
 				}
@@ -472,5 +483,20 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 		{
 			break;
 		}
+	}
+}
+
+void APCRSerinDollHandBaseCharacter::HandleEndedScissorsAttack()
+{
+	if (CurrentScissorsAttackCount < MaxScissorsAttackCount)
+	{
+		// CachedSerinDollHandBaseAnimInstance->PlayScissorsAttack();
+		// ++CurrentScissorsAttackCount;
+	}
+	else
+	{
+		CurrentScissorsAttackCount = 0;
+		CurrentSerinState = ESerinState::BasicChase;
+		UE_LOG(PCRLogSerinHandBaseCharacter, Log, TEXT("가위 공격 끝"));
 	}
 }
