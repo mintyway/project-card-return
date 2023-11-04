@@ -4,7 +4,7 @@
 
 #include "ProjectCardReturn.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
-#include "PCRSerinDollCharacter.generated.h"
+#include "PCRSerinDollHeadCharacter.generated.h"
 
 class APCRLiftActor;
 class APCREricaCharacter;
@@ -15,12 +15,12 @@ class APCRSerinDollRightHandCharacter;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRSerinDollCharacter : public APCRSerinDollBaseCharacter
+class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinDollCharacter();
+	APCRSerinDollHeadCharacter();
 
 	friend class APCRSerinDollHandBaseCharacter;
 	friend class APCRSerinDollLeftHandCharacter;

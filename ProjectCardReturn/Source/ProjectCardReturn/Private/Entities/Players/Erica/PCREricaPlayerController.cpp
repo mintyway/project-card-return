@@ -12,7 +12,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
-#include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/PCRBossUserWidget.h"
 
@@ -120,7 +120,7 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 	return FVector::ZeroVector;
 }
 
-void APCREricaPlayerController::BindSerinUI(APCRSerinDollCharacter* Serin)
+void APCREricaPlayerController::BindSerinUI(APCRSerinDollHeadCharacter* Serin)
 {
 	BossUserWidget = CreateWidget<UPCRBossUserWidget>(this, BossUserWidgetClass);
 	check(BossUserWidget);

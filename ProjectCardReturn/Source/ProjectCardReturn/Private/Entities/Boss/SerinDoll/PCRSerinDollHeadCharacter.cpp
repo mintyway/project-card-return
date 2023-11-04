@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/SerinDoll//PCRSerinDollCharacter.h"
+#include "Entities/Boss/SerinDoll//PCRSerinDollHeadCharacter.h"
 
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Boss/SerinDoll/PCRSerinDollAIController.h"
@@ -15,11 +15,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-const float APCRSerinDollCharacter::ContactDistance = 10.f;
-const float APCRSerinDollCharacter::FloatingHandHeight = 500.f;
-const float APCRSerinDollCharacter::BasicChaseYDistance = 700.f;
+const float APCRSerinDollHeadCharacter::ContactDistance = 10.f;
+const float APCRSerinDollHeadCharacter::FloatingHandHeight = 500.f;
+const float APCRSerinDollHeadCharacter::BasicChaseYDistance = 700.f;
 
-APCRSerinDollCharacter::APCRSerinDollCharacter()
+APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	: MaxHP(1000.f), CurrentHP(0.f),
 	  bIsAlive(true)
 {
@@ -51,7 +51,7 @@ APCRSerinDollCharacter::APCRSerinDollCharacter()
 	}
 }
 
-void APCRSerinDollCharacter::PostInitializeComponents()
+void APCRSerinDollHeadCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
@@ -73,7 +73,7 @@ void APCRSerinDollCharacter::PostInitializeComponents()
 	SpawnHands();
 }
 
-void APCRSerinDollCharacter::BeginPlay()
+void APCRSerinDollHeadCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -138,12 +138,12 @@ void APCRSerinDollCharacter::BeginPlay()
 	EricaPlayerController->BindSerinUI(this);
 }
 
-void APCRSerinDollCharacter::Tick(float DeltaTime)
+void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-float APCRSerinDollCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
@@ -151,7 +151,7 @@ float APCRSerinDollCharacter::TakeDamage(float DamageAmount, FDamageEvent const&
 	return Damage;
 }
 
-void APCRSerinDollCharacter::SpawnHands()
+void APCRSerinDollHeadCharacter::SpawnHands()
 {
 	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-1000.0, 1000.0, 0.0);
 	LeftHandSpawnLocation.Z = 1500.0;
@@ -179,13 +179,13 @@ void APCRSerinDollCharacter::SpawnHands()
 #endif
 }
 
-void APCRSerinDollCharacter::ChangeHP(float Amount)
+void APCRSerinDollHeadCharacter::ChangeHP(float Amount)
 {
 	CurrentHP += Amount;
 	HandleChangeHP();
 }
 
-void APCRSerinDollCharacter::HandleChangeHP()
+void APCRSerinDollHeadCharacter::HandleChangeHP()
 {
 	if (CurrentHP <= 0.f)
 	{
@@ -196,17 +196,17 @@ void APCRSerinDollCharacter::HandleChangeHP()
 	OnChangeHP.Broadcast(MaxHP, CurrentHP);
 }
 
-void APCRSerinDollCharacter::HandleDead()
+void APCRSerinDollHeadCharacter::HandleDead()
 {
 	bIsAlive = false;
 
 	FTimerHandle DelayedDestroyHandle;
 	FTimerDelegate DelayedDestroyDelegate;
-	DelayedDestroyDelegate.BindUObject(this, &APCRSerinDollCharacter::DelayedDestroy);
+	DelayedDestroyDelegate.BindUObject(this, &APCRSerinDollHeadCharacter::DelayedDestroy);
 	GetWorldTimerManager().SetTimer(DelayedDestroyHandle, DelayedDestroyDelegate, 1.f, false);
 }
 
-void APCRSerinDollCharacter::DelayedDestroy()
+void APCRSerinDollHeadCharacter::DelayedDestroy()
 {
 	for (auto& TimerHandle : TimerHandles)
 	{
@@ -218,13 +218,13 @@ void APCRSerinDollCharacter::DelayedDestroy()
 	Destroy();
 }
 
-float APCRSerinDollCharacter::GetLiftHeight()
+float APCRSerinDollHeadCharacter::GetLiftHeight()
 {
 	const float LiftHeight = CachedLift->GetActorLocation().Z;
 	return LiftHeight;
 }
 
-float APCRSerinDollCharacter::GetHandWorldHeight()
+float APCRSerinDollHeadCharacter::GetHandWorldHeight()
 {
 	const float HandWorldHeight = GetLiftHeight() + FloatingHandHeight;
 	return HandWorldHeight;

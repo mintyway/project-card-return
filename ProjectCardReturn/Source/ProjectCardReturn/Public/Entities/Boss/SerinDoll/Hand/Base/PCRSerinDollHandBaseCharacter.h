@@ -7,7 +7,7 @@
 #include "PCRSerinDollHandBaseCharacter.generated.h"
 
 class UPCRSerinDollHandBaseAnimInstance;
-class APCRSerinDollCharacter;
+class APCRSerinDollHeadCharacter;
 class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
@@ -54,7 +54,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public: // 동작
-	void SetSerinDollCharacter(APCRSerinDollCharacter* InSerinDollCharacter);
+	void SetSerinDollCharacter(APCRSerinDollHeadCharacter* InSerinDollCharacter);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void SetTarget(AActor* TargetActor);
 
@@ -90,7 +90,7 @@ protected: // 캐시
 	TObjectPtr<UPCRSerinDollHandBaseAnimInstance> CachedSerinDollHandBaseAnimInstance;
 
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollCharacter> CachedSerinDollCharacter;
+	TObjectPtr<APCRSerinDollHeadCharacter> CachedSerinDollCharacter;
 
 	UPROPERTY()
 	TObjectPtr<AActor> CachedTarget;

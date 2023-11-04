@@ -3,3 +3,11 @@
 
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 
+APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
+{
+	
+}
+void APCRSerinDollHandCharacter::SetSerinDollHead(APCRSerinDollHeadCharacter* )
+{
+	
+}

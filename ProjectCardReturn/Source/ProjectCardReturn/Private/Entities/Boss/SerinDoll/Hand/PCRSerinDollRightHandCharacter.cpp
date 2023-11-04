@@ -3,7 +3,7 @@
 
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollRightHandCharacter.h"
 
-#include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 

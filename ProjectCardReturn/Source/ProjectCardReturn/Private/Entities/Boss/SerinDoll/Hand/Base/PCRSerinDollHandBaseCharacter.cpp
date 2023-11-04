@@ -4,7 +4,7 @@
 #include "Entities/Boss/SerinDoll/Hand/Base/PCRSerinDollHandBaseCharacter.h"
 
 #include "Components/CapsuleComponent.h"
-#include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Game/PCRSoundPrimaryDataAsset.h"
 #include "FMODBlueprintStatics.h"
@@ -131,7 +131,7 @@ void APCRSerinDollHandBaseCharacter::Tick(float DeltaTime)
 	// }
 }
 
-void APCRSerinDollHandBaseCharacter::SetSerinDollCharacter(APCRSerinDollCharacter* InSerinDollCharacter)
+void APCRSerinDollHandBaseCharacter::SetSerinDollCharacter(APCRSerinDollHeadCharacter* InSerinDollCharacter)
 {
 	CachedSerinDollCharacter = InSerinDollCharacter;
 	check(CachedSerinDollCharacter);
