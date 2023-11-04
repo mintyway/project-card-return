@@ -54,5 +54,7 @@ private: // 레퍼런스
 
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollHandAnimInstance> CachedSerinDollHandAnimInstance;
-	
+
+private: // 데이터
+	EState CurrentState; 
 };

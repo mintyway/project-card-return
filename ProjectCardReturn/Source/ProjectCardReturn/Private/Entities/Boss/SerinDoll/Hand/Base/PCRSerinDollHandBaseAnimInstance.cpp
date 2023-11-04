@@ -24,6 +24,6 @@ UPCRSerinDollHandBaseAnimInstance::UPCRSerinDollHandBaseAnimInstance()
 void UPCRSerinDollHandBaseAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-
+	
 	check(SerinDollDataAsset && ParameterDataAsset);
 }

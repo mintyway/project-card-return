@@ -24,6 +24,13 @@ UPCRSerinDollHandAnimInstance::UPCRSerinDollHandAnimInstance()
 void UPCRSerinDollHandAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
+	
+#if WITH_EDITOR
+	if (!GetWorld()->IsPlayInEditor())
+	{
+		return;
+	}
+#endif
 
 	check(SerinDollDataAsset && ParameterDataAsset);
 }

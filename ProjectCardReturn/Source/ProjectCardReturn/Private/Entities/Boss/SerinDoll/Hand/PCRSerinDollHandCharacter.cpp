@@ -13,12 +13,15 @@
 DEFINE_LOG_CATEGORY(PCRLogSerinHandCharacter);
 
 APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
+	: CurrentState(EState::Idle)
 {
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 	}
-	
+
 	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
@@ -28,7 +31,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 		GetMesh()->SetGenerateOverlapEvents(true);
-		
+
 		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->HandMesh);
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		if (UClass* NewAnimInstanceClass = SerinDollDataAsset->AnimInstanceClass.LoadSynchronous())
@@ -42,7 +45,6 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 		GetCharacterMovement()->DefaultLandMovementMode = MOVE_Flying;
 		GetCharacterMovement()->bCheatFlying = true;
 	}
-	
 }
 
 void APCRSerinDollHandCharacter::PostInitializeComponents()
@@ -55,7 +57,7 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 		return;
 	}
 #endif
-	
+
 	CachedSerinDollHandAnimInstance = Cast<UPCRSerinDollHandAnimInstance>(GetMesh()->GetAnimInstance());
 	check(CachedSerinDollHandAnimInstance);
 }
@@ -68,6 +70,34 @@ void APCRSerinDollHandCharacter::BeginPlay()
 void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	switch (CurrentState)
+	{
+		case EState::Idle:
+		{
+			break;
+		}
+		case EState::Move:
+		{
+			break;
+		}
+		case EState::Chase:
+		{
+			break;
+		}
+		case EState::RockAttack:
+		{
+			break;
+		}
+		case EState::PaperAttack:
+		{
+			break;
+		}
+		case EState::ScissorsAttack:
+		{
+			break;
+		}
+	}
 }
 
 void APCRSerinDollHandCharacter::SetSerinDollHead(APCRSerinDollHeadCharacter* NewSerinDollHead)
