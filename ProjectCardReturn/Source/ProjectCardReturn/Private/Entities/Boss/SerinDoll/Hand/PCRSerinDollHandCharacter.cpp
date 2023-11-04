@@ -8,6 +8,7 @@
 #include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogSerinHandCharacter);
@@ -16,6 +17,8 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	: CurrentState(EState::Idle)
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	IdleData = {};
+	IdleData.IdleChaseSpeed = 3.f;
 	
 	if (GetCapsuleComponent())
 	{
@@ -75,6 +78,7 @@ void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 	{
 		case EState::Idle:
 		{
+			UpdateIdle(DeltaSeconds);
 			break;
 		}
 		case EState::Move:
@@ -100,9 +104,10 @@ void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 	}
 }
 
-void APCRSerinDollHandCharacter::SetSerinDollHead(APCRSerinDollHeadCharacter* NewSerinDollHead)
+void APCRSerinDollHandCharacter::Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InIdleOffsetFromTarget)
 {
 	CachedSerinDollHead = NewSerinDollHead;
+	IdleOffsetFromTarget = InIdleOffsetFromTarget;
 }
 
 float APCRSerinDollHandCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -111,4 +116,18 @@ float APCRSerinDollHandCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 
 	CachedSerinDollHead->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	return Damage;
+}
+
+void APCRSerinDollHandCharacter::Idle(AActor* NewTarget)
+{
+	IdleData.Target = NewTarget;
+	CurrentState = EState::Idle;
+}
+
+void APCRSerinDollHandCharacter::UpdateIdle(float DeltaTime)
+{
+	const FVector TargetOffset = IdleData.Target->GetActorLocation() + IdleOffsetFromTarget;
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetOffset, DeltaTime, IdleData.IdleChaseSpeed);
+	const FRotator NewRotation = CachedSerinDollHead->GetActorRotation();
+	SetActorLocationAndRotation(NewLocation, NewRotation);
 }

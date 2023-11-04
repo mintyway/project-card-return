@@ -30,8 +30,10 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	void SetSerinDollHead(APCRSerinDollHeadCharacter* NewSerinDollHead);
+	void Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InIdleOffsetFromTarget);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	void Idle(AActor* NewTarget);
 
 private: // 타입
 	enum class EState
@@ -43,6 +45,17 @@ private: // 타입
 		PaperAttack,
 		ScissorsAttack
 	};
+
+	struct FIdleData
+	{
+		const AActor* Target;
+		float IdleChaseSpeed;
+	};
+
+private: // 업데이트 함수
+	void UpdateIdle(float DeltaTime);
+
+private: // 내부 함수
 	
 private: // 내부 델리게이트
 	FMoveCallbackSignature OnMoveEndedCallback;
@@ -56,5 +69,7 @@ private: // 레퍼런스
 	TObjectPtr<UPCRSerinDollHandAnimInstance> CachedSerinDollHandAnimInstance;
 
 private: // 데이터
-	EState CurrentState; 
+	EState CurrentState;
+	FVector IdleOffsetFromTarget;
+	FIdleData IdleData;
 };

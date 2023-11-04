@@ -23,6 +23,7 @@ class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBas
 public:
 	APCRSerinDollHeadCharacter();
 
+	friend class APCRSerinDollHandCharacter;
 	friend class APCRSerinDollHandBaseCharacter;
 	friend class APCRSerinDollLeftHandCharacter;
 	friend class APCRSerinDollRightHandCharacter;
@@ -62,7 +63,7 @@ private: // 캐시
 
 private: // 핸드
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollLeftHandCharacter> LeftHand;
+	TObjectPtr<APCRSerinDollHandCharacter> LeftHand;
 
 	UPROPERTY()
 	TObjectPtr<APCRSerinDollRightHandCharacter> RightHand;
@@ -72,10 +73,12 @@ private: // 핸드
 	static const float BasicChaseYDistance;
 
 private: // 데이터
+	float IdleWidthOffsetFromErica;
+	float IdleHeightOffsetFromErica;
 	float MaxHP;
 	float CurrentHP;
 
 private:
 	TArray<FTimerHandle> TimerHandles;
-	uint32 bIsAlive : 1;
+	uint32 bIsAlive:1;
 };

@@ -8,8 +8,10 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandCharacter.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollRightHandCharacter.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Kismet/GameplayStatics.h"
@@ -20,12 +22,15 @@ const float APCRSerinDollHeadCharacter::FloatingHandHeight = 500.f;
 const float APCRSerinDollHeadCharacter::BasicChaseYDistance = 700.f;
 
 APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
-	: MaxHP(1000.f), CurrentHP(0.f),
-	  bIsAlive(true)
+	: bIsAlive(true)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// 파라미터화 필요
+	MaxHP = 1000.f;
 	CurrentHP = MaxHP;
+	IdleWidthOffsetFromErica = 750.f;
+	IdleHeightOffsetFromErica = 300.f;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -37,7 +42,7 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 		GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 	}
-	
+
 	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetupAttachment(GetCapsuleComponent());
@@ -60,7 +65,7 @@ void APCRSerinDollHeadCharacter::PostInitializeComponents()
 	{
 		return;
 	}
-	
+
 	SetActorLabel(TEXT("Serin"));
 	SetFolderPath(TEXT("Serin"));
 #endif
@@ -83,20 +88,15 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	CachedErica = Cast<APCREricaCharacter>(FoundErica[0]);
 	check(CachedErica);
 
-	LeftHand->SetTarget(CachedErica);
-	// RightHand->SetTarget(CachedErica);
-
-	// LeftHand->BasicChase();
-	// RightHand->BasicChase();
-	
+	LeftHand->Idle(CachedErica);
 	// TODO: 테스트용 코드
-	FTimerHandle TestTimerHandle1;
-	TimerHandles.Add(TestTimerHandle1);
-	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
-		// LeftHand->ScissorsAttack();
-	}), 5.f, true, 1.f);
+	// FTimerHandle TestTimerHandle1;
+	// TimerHandles.Add(TestTimerHandle1);
+	// GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
+	// {
+	// 	LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
+	// 	// LeftHand->ScissorsAttack();
+	// }), 5.f, true, 1.f);
 
 	// FTimerHandle TestTimerHandle2;
 	// TimerHandles.Add(TestTimerHandle2);
@@ -132,7 +132,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	// {
 	// 	RightHand->PaperAttack();
 	// }), 30.f, true, 25.f);
-	
+
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(EricaPlayerController);
 	EricaPlayerController->BindSerinUI(this);
@@ -155,12 +155,15 @@ void APCRSerinDollHeadCharacter::SpawnHands()
 {
 	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-1000.0, 1000.0, 0.0);
 	LeftHandSpawnLocation.Z = 1500.0;
-	const FRotator LeftHandSpawnRotation = FRotator::ZeroRotator;
+	const FRotator LeftHandSpawnRotation = GetActorRotation();
 	FActorSpawnParameters LeftHandSpawnParameters;
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
-	LeftHand = GetWorld()->SpawnActor<APCRSerinDollLeftHandCharacter>(APCRSerinDollLeftHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
-	LeftHand->SetSerinDollCharacter(this);
+	LeftHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
+	const FVector LeftVector = GetActorRightVector() * -1;
+	FVector LeftIdleOffsetFromTarget = LeftVector * IdleWidthOffsetFromErica;
+	LeftIdleOffsetFromTarget += GetActorUpVector() * IdleHeightOffsetFromErica;
+	LeftHand->Init(this, LeftIdleOffsetFromTarget);
 
 	// FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
 	// RightHandSpawnLocation.Z = 1000.0;
@@ -212,7 +215,7 @@ void APCRSerinDollHeadCharacter::DelayedDestroy()
 	{
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 	}
-	
+
 	RightHand->Destroy();
 	LeftHand->Destroy();
 	Destroy();
