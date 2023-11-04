@@ -8,6 +8,7 @@
 
 class APCRLiftActor;
 class APCREricaCharacter;
+class APCRSerinDollHandCharacter;
 class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
