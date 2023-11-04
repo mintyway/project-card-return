@@ -14,7 +14,7 @@ APCRSerinDollBaseCharacter::APCRSerinDollBaseCharacter()
 	static ConstructorHelpers::FObjectFinder<UPCRSerinDollPrimaryDataAsset> DA_Serin(TEXT("/Script/ProjectCardReturn.PCRSerinDollPrimaryDataAsset'/Game/DataAssets/DA_SerinDoll.DA_SerinDoll'"));
 	if (DA_Serin.Succeeded())
 	{
-		SerinDataAsset = DA_Serin.Object;
+		SerinDollDataAsset = DA_Serin.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
@@ -34,7 +34,7 @@ void APCRSerinDollBaseCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	check(SerinDataAsset);
+	check(SerinDollDataAsset);
 	check(ParameterDataAsset);
 	check(SoundDataAsset);
 }

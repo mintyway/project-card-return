@@ -12,12 +12,12 @@ APCRSerinDollLeftHandCharacter::APCRSerinDollLeftHandCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (GetMesh() && SerinDataAsset)
+	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollLeftHandMesh);
+		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->SerinDollLeftHandMesh);
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		if (UClass* SerinDollLeftAnimInstance = SerinDataAsset->SerinDollLeftAnimInstance.LoadSynchronous())
+		if (UClass* SerinDollLeftAnimInstance = SerinDollDataAsset->SerinDollLeftAnimInstance.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(SerinDollLeftAnimInstance);
 		}

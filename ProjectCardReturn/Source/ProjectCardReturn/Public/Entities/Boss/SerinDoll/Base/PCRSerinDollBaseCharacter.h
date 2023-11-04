@@ -26,7 +26,7 @@ protected:
 
 protected: // 데이터 에셋 섹션
 	UPROPERTY()
-	TObjectPtr<const UPCRSerinDollPrimaryDataAsset> SerinDataAsset;
+	TObjectPtr<const UPCRSerinDollPrimaryDataAsset> SerinDollDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;

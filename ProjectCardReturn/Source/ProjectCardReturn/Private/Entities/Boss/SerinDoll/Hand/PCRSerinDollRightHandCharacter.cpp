@@ -11,10 +11,10 @@ APCRSerinDollRightHandCharacter::APCRSerinDollRightHandCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (GetMesh() && SerinDataAsset)
+	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollRightHandMesh);
+		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->SerinDollRightHandMesh);
 	}
 }
 

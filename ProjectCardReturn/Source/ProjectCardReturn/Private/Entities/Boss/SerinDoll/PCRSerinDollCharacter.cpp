@@ -38,11 +38,11 @@ APCRSerinDollCharacter::APCRSerinDollCharacter()
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 	}
 	
-	if (GetMesh() && SerinDataAsset)
+	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetupAttachment(GetCapsuleComponent());
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollMesh);
+		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->SerinDollMesh);
 	}
 
 	if (GetCharacterMovement())
@@ -94,7 +94,7 @@ void APCRSerinDollCharacter::BeginPlay()
 	TimerHandles.Add(TestTimerHandle1);
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDataAsset->LeftHandScissorsAnimMontage);
+		LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDollDataAsset->LeftHandScissorsAnimMontage);
 		// LeftHand->ScissorsAttack();
 	}), 5.f, true, 1.f);
 

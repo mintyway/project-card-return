@@ -445,7 +445,7 @@ void APCRSerinDollHandBaseCharacter::HandleScissors(float DeltaTime)
 			{
 				if (Cast<APCRSerinDollLeftHandCharacter>(this))
 				{
-					GetMesh()->GetAnimInstance()->Montage_Play(SerinDataAsset->LeftHandScissorsAnimMontage);
+					GetMesh()->GetAnimInstance()->Montage_Play(SerinDollDataAsset->LeftHandScissorsAnimMontage);
 				}
 
 				UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Scissors, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true, true, true);

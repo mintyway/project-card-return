@@ -100,8 +100,8 @@ protected: // 상태
 	ESerinState CurrentSerinState;
 	EScissorsState CurrentScissorsState;
 
-	uint32 bUsePredictiveChase : 1;
-	uint32 bPaperStartFlag : 1;
+	uint32 bUsePredictiveChase:1;
+	uint32 bPaperStartFlag:1;
 
 protected: // 데이터
 	FVector MoveLocation;
