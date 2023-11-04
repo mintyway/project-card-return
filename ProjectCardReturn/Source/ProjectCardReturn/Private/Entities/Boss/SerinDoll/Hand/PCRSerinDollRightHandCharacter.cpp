@@ -48,8 +48,3 @@ void APCRSerinDollRightHandCharacter::HandlePaperChase(float DeltaTime)
 	ChaseLocation.Y -= CachedSerinDollCharacter->BasicChaseYDistance + 300.f;
 	Super::HandlePaperChase(DeltaTime);
 }
-
-void APCRSerinDollRightHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}

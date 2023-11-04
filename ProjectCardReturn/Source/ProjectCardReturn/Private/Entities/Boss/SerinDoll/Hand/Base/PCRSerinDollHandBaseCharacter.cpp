@@ -69,11 +69,6 @@ void APCRSerinDollHandBaseCharacter::PostInitializeComponents()
 	CachedSerinDollHandBaseAnimInstance->OnScissorsAttackEnded.BindUObject(this, &APCRSerinDollHandBaseCharacter::HandleEndedScissorsAttack);
 }
 
-void APCRSerinDollHandBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
 void APCRSerinDollHandBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

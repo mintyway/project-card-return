@@ -20,9 +20,6 @@ public:
 	
 protected:
 	virtual void PostInitializeComponents() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 
 protected: // 데이터 에셋 섹션
 	UPROPERTY()

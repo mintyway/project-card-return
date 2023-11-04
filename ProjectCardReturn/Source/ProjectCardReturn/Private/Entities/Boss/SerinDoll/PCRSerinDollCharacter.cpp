@@ -229,8 +229,3 @@ float APCRSerinDollCharacter::GetHandWorldHeight()
 	const float HandWorldHeight = GetLiftHeight() + FloatingHandHeight;
 	return HandWorldHeight;
 }
-
-void APCRSerinDollCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}

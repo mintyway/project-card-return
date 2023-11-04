@@ -38,22 +38,3 @@ void APCRSerinDollBaseCharacter::PostInitializeComponents()
 	check(ParameterDataAsset);
 	check(SoundDataAsset);
 }
-
-void APCRSerinDollBaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-void APCRSerinDollBaseCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void APCRSerinDollBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
