@@ -17,7 +17,7 @@ void UPCRSerinDollLeftHandAnimInstance::PlayScissorsAttack()
 		return;
 	}
 	
-	Montage_Play(SerinDollDataAsset->LeftHandScissorsAnimMontage);
+	Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
 
 	// FOnMontageEnded ScissorsAttack;
 	// ScissorsAttack.BindUObject(this, &UPCRSerinDollLeftHandAnimInstance::ScissorsAttackCallback);

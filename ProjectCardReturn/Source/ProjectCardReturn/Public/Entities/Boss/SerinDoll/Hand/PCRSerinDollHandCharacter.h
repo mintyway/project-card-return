@@ -30,7 +30,8 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	void SetSerinDollHead(APCRSerinDollHeadCharacter* InSerinDollHead);
+	void SetSerinDollHead(APCRSerinDollHeadCharacter* NewSerinDollHead);
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private: // 타입
 	enum class EState
@@ -49,7 +50,7 @@ private: // 내부 델리게이트
 
 private: // 레퍼런스
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollHeadCharacter> SerinDollHead;
+	TObjectPtr<APCRSerinDollHeadCharacter> CachedSerinDollHead;
 
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollHandAnimInstance> CachedSerinDollHandAnimInstance;

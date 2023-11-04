@@ -6,6 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "PCRSerinDollPrimaryDataAsset.generated.h"
 
+class UPCRSerinDollHandAnimInstance;
+
 class UPCRSerinDollLeftHandAnimInstance;
 /**
  * 
@@ -16,18 +18,32 @@ class PROJECTCARDRETURN_API UPCRSerinDollPrimaryDataAsset : public UPrimaryDataA
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, Category = "SerinDoll", DisplayName = "세린 메시")
-	TObjectPtr<USkeletalMesh> SerinDollMesh;
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	TObjectPtr<USkeletalMesh> HeadMesh;
 
-	UPROPERTY(EditAnywhere, Category = "SerinDollLeftHand", DisplayName = "세린 왼쪽 손")
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	TObjectPtr<USkeletalMesh> HandMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TSoftClassPtr<UPCRSerinDollHandAnimInstance> AnimInstanceClass;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> RockAttackAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> PaperAttackAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> ScissorsAttackAnimMontage;
+
+	
+	// TODO: 지울 예정	
+	UPROPERTY(EditAnywhere, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> SerinDollLeftHandMesh;
 
-	UPROPERTY(EditAnywhere, Category = "SerinDollLeftHand", DisplayName = "세린 왼쪽 손 애니메이션 블루프린트")
-	TSoftClassPtr<UPCRSerinDollLeftHandAnimInstance> SerinDollLeftAnimInstance;
-
-	UPROPERTY(EditAnywhere, Category = "LeftHand", DisplayName = "왼쪽 손 가위 공격 애님 몽타주")
-	TObjectPtr<UAnimMontage> LeftHandScissorsAnimMontage;
-
-	UPROPERTY(EditAnywhere, Category = "SerinDollRightHands")
+	UPROPERTY(EditAnywhere, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> SerinDollRightHandMesh;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TSoftClassPtr<UPCRSerinDollLeftHandAnimInstance> SerinDollLeftAnimInstance;
 };
