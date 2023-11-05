@@ -26,8 +26,6 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	// 파라미터화 필요
 	MaxHP = 1000.f;
 	CurrentHP = MaxHP;
-	IdleWidthOffsetFromErica = 750.f;
-	IdleHeightOffsetFromErica = 300.f;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -93,7 +91,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	TimerHandles.Add(TestTimerHandle1);
 	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		LeftHand->RockAttack(CachedErica);
+		LeftPaperAttack();
 
 	}), 10.f, true, 0.f);
 
@@ -101,7 +99,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	TimerHandles.Add(TestTimerHandle2);
 	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
 	{
-		RightHand->RockAttack(CachedErica);
+		RightPaperAttack();
 	}), 10.f, true, 5.f);
 
 	// FTimerHandle TestTimerHandle3;
@@ -170,6 +168,26 @@ void APCRSerinDollHeadCharacter::RightRockAttack()
 	RightHand->RockAttack(CachedErica);
 }
 
+void APCRSerinDollHeadCharacter::LeftPaperAttack()
+{
+	if (CheckIsAttacking(LeftHand))
+	{
+		return;
+	}
+	
+	LeftHand->PaperAttack();
+}
+
+void APCRSerinDollHeadCharacter::RightPaperAttack()
+{
+	if (CheckIsAttacking(RightHand))
+	{
+		return;
+	}
+	
+	RightHand->PaperAttack();
+}
+
 void APCRSerinDollHeadCharacter::LeftScissorsAttack()
 {
 	if (CheckIsAttacking(LeftHand))
@@ -212,11 +230,8 @@ void APCRSerinDollHeadCharacter::LeftHandSpawn()
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
 	LeftHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
-
-	const FVector LeftVector = GetActorRightVector() * -1;
-	FVector LeftIdleOffsetFromTarget = LeftVector * IdleWidthOffsetFromErica;
-	LeftIdleOffsetFromTarget += GetActorUpVector() * IdleHeightOffsetFromErica;
-	LeftHand->Init(this, LeftIdleOffsetFromTarget);
+	
+	LeftHand->Init(this, -GetActorRightVector());
 }
 
 void APCRSerinDollHeadCharacter::RightHandSpawn()
@@ -228,10 +243,8 @@ void APCRSerinDollHeadCharacter::RightHandSpawn()
 	const FName RightHandName = TEXT("RightHand");
 	RightHandSpawnParameters.Name = RightHandName;
 	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
-
-	FVector RightIdleOffsetFromTarget = GetActorRightVector() * IdleWidthOffsetFromErica;
-	RightIdleOffsetFromTarget += GetActorUpVector() * IdleHeightOffsetFromErica;
-	RightHand->Init(this, RightIdleOffsetFromTarget);
+	
+	RightHand->Init(this, GetActorRightVector());
 
 	// 좌우 반전 코드
 	const FVector NewScale = RightHand->GetMesh()->GetRelativeScale3D() * FVector(-1.0, 1.0, 1.0);

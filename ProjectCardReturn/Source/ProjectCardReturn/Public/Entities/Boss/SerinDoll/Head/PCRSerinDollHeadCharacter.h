@@ -39,6 +39,9 @@ public:
 public: // 동작
 	void LeftRockAttack();
 	void RightRockAttack();
+
+	void LeftPaperAttack();
+	void RightPaperAttack();
 	
 	void LeftScissorsAttack();
 	void RightScissorsAttack();
@@ -83,8 +86,6 @@ private: // 핸드
 	static const float BasicChaseYDistance;
 
 private: // 데이터
-	float IdleWidthOffsetFromErica;
-	float IdleHeightOffsetFromErica;
 	float MaxHP;
 	float CurrentHP;
 

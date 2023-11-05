@@ -51,7 +51,7 @@ void UPCRSerinDollHandAnimInstance::PlayRockAttack()
 	Montage_Play(SerinDollDataAsset->RockAttackAnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::PlayPaper()
+void UPCRSerinDollHandAnimInstance::PlayPaperAttack()
 {
 	Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
 }

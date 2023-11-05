@@ -33,9 +33,10 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public: // 동작
-	void Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InIdleOffsetFromTarget);
+	void Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InSideVector);
 	void Idle(AActor* NewTarget);
 	void RockAttack(AActor* NewTarget);
+	void PaperAttack();
 	void ScissorsAttack(AActor* NewTarget);
 
 public: // Getter, Setter
@@ -70,6 +71,16 @@ private: // 타입
 		uint32 bIsChasing:1;
 	};
 
+	struct FPaperAttackData
+	{
+		const AActor* Lift;
+		FVector Offset;
+		FVector MoveLocation;
+		float MoveLocationSpeed;
+		float MoveRotationExponentialSpeed;
+		uint32 bIsMoving:1;
+	};
+
 	struct FScissorsAttackData
 	{
 		const AActor* Target;
@@ -84,6 +95,7 @@ private: // 타입
 private: // 업데이트 함수
 	void UpdateIdle(float DeltaSeconds);
 	void UpdateRockAttackChase(float DeltaSeconds);
+	void UpdatePaperAttackMove(float DeltaSeconds);
 	void UpdateScissorsAttackChase(float DeltaSeconds);
 
 private: // 내부 함수
@@ -107,8 +119,12 @@ private: // 데이터
 	EState CurrentState;
 	FIdleData IdleData;
 	FRockAttackData RockAttackData;
+	FPaperAttackData PaperAttackData;
 	FScissorsAttackData ScissorsAttackData;
 
+	FVector SideVector;
+	float IdleSideOffset;
+	float IdleUpOffset;
 	FVector IdleOffsetFromTarget;
 	float DefaultSpeed;
 };
