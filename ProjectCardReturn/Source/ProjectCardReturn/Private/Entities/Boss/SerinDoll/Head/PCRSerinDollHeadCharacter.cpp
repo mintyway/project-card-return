@@ -1,14 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Boss/SerinDoll//PCRSerinDollHeadCharacter.h"
+#include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 
 #include "Entities/Players/Erica/PCREricaCharacter.h"
-#include "Entities/Boss/SerinDoll/PCRSerinDollAIController.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollAIController.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
-#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandCharacter.h"
-#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollRightHandCharacter.h"
-#include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"

@@ -7,8 +7,6 @@
 #include "PCRSerinDollPrimaryDataAsset.generated.h"
 
 class UPCRSerinDollHandAnimInstance;
-
-class UPCRSerinDollLeftHandAnimInstance;
 /**
  * 
  */
@@ -43,7 +41,4 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> SerinDollRightHandMesh;
-	
-	UPROPERTY(EditAnywhere, Category = "Animation")
-	TSoftClassPtr<UPCRSerinDollLeftHandAnimInstance> SerinDollLeftAnimInstance;
 };
