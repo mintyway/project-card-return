@@ -89,22 +89,24 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	check(CachedErica);
 
 	LeftHand->Idle(CachedErica);
-	// TODO: 테스트용 코드
-	// FTimerHandle TestTimerHandle1;
-	// TimerHandles.Add(TestTimerHandle1);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
-	// 	// LeftHand->ScissorsAttack();
-	// }), 5.f, true, 1.f);
+	RightHand->Idle(CachedErica);
+	// LeftHand->ScissorsAttack(CachedErica);
 
-	// FTimerHandle TestTimerHandle2;
-	// TimerHandles.Add(TestTimerHandle2);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	RightHand->ScissorsAttack();
-	// }), 30.f, true, 5.f);
-	//
+	// TODO: 테스트용 코드
+	FTimerHandle TestTimerHandle1;
+	TimerHandles.Add(TestTimerHandle1);
+	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		LeftScissorsAttack();
+	}), 10.f, true, 0.f);
+
+	FTimerHandle TestTimerHandle2;
+	TimerHandles.Add(TestTimerHandle2);
+	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		RightScissorsAttack();
+	}), 10.f, true, 5.f);
+
 	// FTimerHandle TestTimerHandle3;
 	// TimerHandles.Add(TestTimerHandle3);
 	// GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateLambda([this]() -> void
@@ -151,35 +153,62 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 	return Damage;
 }
 
+void APCRSerinDollHeadCharacter::LeftScissorsAttack()
+{
+	LeftHand->ScissorsAttack(CachedErica);
+}
+
+void APCRSerinDollHeadCharacter::RightScissorsAttack()
+{
+	RightHand->ScissorsAttack(CachedErica);
+}
+
 void APCRSerinDollHeadCharacter::SpawnHands()
 {
-	FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-1000.0, 1000.0, 0.0);
-	LeftHandSpawnLocation.Z = 1500.0;
+	LeftHandSpawn();
+	RightHandSpawn();
+
+#if WITH_EDITOR
+	LeftHand->SetActorLabel(LeftHand->GetName());
+	RightHand->SetActorLabel(RightHand->GetName());
+	LeftHand->SetFolderPath(TEXT("Serin"));
+	RightHand->SetFolderPath(TEXT("Serin"));
+#endif
+}
+
+void APCRSerinDollHeadCharacter::LeftHandSpawn()
+{
+	const FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-1000.0, 1000.0, 500.0);
 	const FRotator LeftHandSpawnRotation = GetActorRotation();
+	
 	FActorSpawnParameters LeftHandSpawnParameters;
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
 	LeftHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
+	
 	const FVector LeftVector = GetActorRightVector() * -1;
 	FVector LeftIdleOffsetFromTarget = LeftVector * IdleWidthOffsetFromErica;
 	LeftIdleOffsetFromTarget += GetActorUpVector() * IdleHeightOffsetFromErica;
 	LeftHand->Init(this, LeftIdleOffsetFromTarget);
+}
 
-	// FVector RightHandSpawnLocation = GetActorLocation() + FVector(-300.0, -1000.0, 0.0);
-	// RightHandSpawnLocation.Z = 1000.0;
-	// const FRotator RightHandSpawnRotation = FRotator::ZeroRotator;
-	// FActorSpawnParameters RightHandSpawnParameters;
-	// const FName RightHandName = TEXT("RightHand");
-	// RightHandSpawnParameters.Name = RightHandName;
-	// RightHand = GetWorld()->SpawnActor<APCRSerinDollRightHandCharacter>(APCRSerinDollRightHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
-	// RightHand->SetSerinDollCharacter(this);
+void APCRSerinDollHeadCharacter::RightHandSpawn()
+{
+	const FVector RightHandSpawnLocation = GetActorLocation() + FVector(-1000.0, -1000.0, 500.0);
+	const FRotator RightHandSpawnRotation = GetActorRotation();
+	
+	FActorSpawnParameters RightHandSpawnParameters;
+	const FName RightHandName = TEXT("RightHand");
+	RightHandSpawnParameters.Name = RightHandName;
+	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
+	
+	FVector RightIdleOffsetFromTarget = GetActorRightVector() * IdleWidthOffsetFromErica;
+	RightIdleOffsetFromTarget += GetActorUpVector() * IdleHeightOffsetFromErica;
+	RightHand->Init(this, RightIdleOffsetFromTarget);
 
-#if WITH_EDITOR
-	LeftHand->SetActorLabel(LeftHand->GetName());
-	// RightHand->SetActorLabel(RightHand->GetName());
-	LeftHand->SetFolderPath(TEXT("Serin"));
-	// RightHand->SetFolderPath(TEXT("Serin"));
-#endif
+	// 좌우 반전 코드
+	const FVector NewScale = RightHand->GetMesh()->GetRelativeScale3D() * FVector(-1.0, 1.0, 1.0);
+	RightHand->GetMesh()->SetRelativeScale3D(NewScale);
 }
 
 void APCRSerinDollHeadCharacter::ChangeHP(float Amount)

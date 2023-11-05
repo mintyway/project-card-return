@@ -36,6 +36,10 @@ protected:
 public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+public: // 동작
+	void LeftScissorsAttack();
+	void RightScissorsAttack();
+
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
@@ -45,6 +49,8 @@ public: // Getter, Setter
 
 private: // 내부 함수
 	void SpawnHands();
+	void LeftHandSpawn();
+	void RightHandSpawn();
 	void ChangeHP(float Amount);
 	void HandleChangeHP();
 	void HandleDead();
@@ -66,7 +72,7 @@ private: // 핸드
 	TObjectPtr<APCRSerinDollHandCharacter> LeftHand;
 
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollRightHandCharacter> RightHand;
+	TObjectPtr<APCRSerinDollHandCharacter> RightHand;
 
 	static const float ContactDistance;
 	static const float FloatingHandHeight;

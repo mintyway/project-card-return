@@ -6,6 +6,9 @@
 #include "Animation/AnimInstance.h"
 #include "PCRSerinDollHandAnimInstance.generated.h"
 
+DECLARE_DELEGATE(FIdleSignature);
+
+class APCRSerinDollHandCharacter;
 class UPCRSerinDollPrimaryDataAsset;
 class UPCRParameterDataAsset;
 
@@ -22,16 +25,33 @@ public:
 
 protected:
 	virtual void NativeInitializeAnimation() override;
+	virtual void NativeBeginPlay() override;
 
 public:
 	void PlayRock();
 	void PlayPaper();
-	void PlayScissors();
+	void PlayScissorsAttack(APCRSerinDollHandCharacter* InSerinDollHand);
 
-private:
+public:
+	FIdleSignature OnToIdle;
+
+private: // 애님 노티파이
+	UFUNCTION()
+	void AnimNotify_ScissorsAttackCountCheck();
+
+	UFUNCTION()
+	void AnimNotify_ToIdle();
+
+private:  // 레퍼런스
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollPrimaryDataAsset> SerinDollDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<APCRSerinDollHandCharacter> CachedSerinDollHand;
+
+private: // 데이터
+	int32 CurrentScissorsAttackCount;
 };
