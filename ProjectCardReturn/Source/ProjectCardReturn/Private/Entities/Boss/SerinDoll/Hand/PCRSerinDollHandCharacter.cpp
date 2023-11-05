@@ -21,10 +21,19 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	// TODO: 파라미터화 필요
 	DefaultSpeed = 1000.f;
 	IdleData = {};
-	IdleData.ChaseExponentialSpeed = 2.f;
+	IdleData.ChaseLocationExponentialSpeed = 3.f;
+	IdleData.ChaseRotationExponentialSpeed = 2.f;
+	
+	RockAttackData = {};
+	RockAttackData.bIsChasing = false;
+	RockAttackData.ChaseLocationSpeed = 1000.f;
+	RockAttackData.ChaseRotationExponentialSpeed = 2.f;
+	RockAttackData.ChaseHeight = 500.f;
+	
 	ScissorsAttackData = {};
+	ScissorsAttackData.bIsChasing = false;
 	ScissorsAttackData.ChaseDistance = 500.f;
-	ScissorsAttackData.ChaseExponentialSpeed = 1.f;
+	ScissorsAttackData.ChaseLocationExponentialSpeed = 1.5f;
 	ScissorsAttackData.ChaseRotationExponentialSpeed = 10.f;
 	ScissorsAttackData.MaxAttackCount = 3;
 
@@ -73,6 +82,7 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	check(CachedSerinDollHandAnimInstance);
 
 	CachedSerinDollHandAnimInstance->OnToIdle.BindUObject(this, &APCRSerinDollHandCharacter::HandleToIdle);
+	CachedSerinDollHandAnimInstance->OnRockAttackEnded.BindUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackChaseEnded);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()
@@ -101,6 +111,11 @@ void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 		}
 		case EState::RockAttack:
 		{
+			if (RockAttackData.bIsChasing)
+			{
+				UpdateRockAttackChase(DeltaSeconds);
+			}
+			
 			break;
 		}
 		case EState::PaperAttack:
@@ -140,6 +155,14 @@ void APCRSerinDollHandCharacter::Idle(AActor* NewTarget)
 	CurrentState = EState::Idle;
 }
 
+void APCRSerinDollHandCharacter::RockAttack(AActor* NewTarget)
+{
+	RockAttackData.Target = NewTarget;
+	RockAttackData.bIsChasing = true;
+	CurrentState = EState::RockAttack;
+	CachedSerinDollHandAnimInstance->PlayRockAttack();
+}
+
 void APCRSerinDollHandCharacter::ScissorsAttack(AActor* NewTarget)
 {
 	ScissorsAttackData.Target = NewTarget;
@@ -151,8 +174,17 @@ void APCRSerinDollHandCharacter::ScissorsAttack(AActor* NewTarget)
 void APCRSerinDollHandCharacter::UpdateIdle(float DeltaSeconds)
 {
 	const FVector TargetOffset = IdleData.Target->GetActorLocation() + IdleOffsetFromTarget;
-	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetOffset, DeltaSeconds, IdleData.ChaseExponentialSpeed);
-	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), CachedSerinDollHead->GetActorRotation(), DeltaSeconds, IdleData.ChaseExponentialSpeed);
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetOffset, DeltaSeconds, IdleData.ChaseLocationExponentialSpeed);
+	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), CachedSerinDollHead->GetActorRotation(), DeltaSeconds, IdleData.ChaseRotationExponentialSpeed);
+	SetActorLocationAndRotation(NewLocation, NewRotation);
+}
+
+void APCRSerinDollHandCharacter::UpdateRockAttackChase(float DeltaSeconds)
+{
+	FVector TargetLocation = RockAttackData.Target->GetActorLocation();
+	TargetLocation.Z = CachedSerinDollHead->GetLiftHeight() + RockAttackData.ChaseHeight;
+	const FVector NewLocation =  FMath::VInterpConstantTo(GetActorLocation(), TargetLocation, DeltaSeconds, RockAttackData.ChaseLocationSpeed);
+	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), CachedSerinDollHead->GetActorRotation(), DeltaSeconds, RockAttackData.ChaseRotationExponentialSpeed);
 	SetActorLocationAndRotation(NewLocation, NewRotation);
 }
 
@@ -172,7 +204,7 @@ void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
 		return;
 	}
 
-	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ScissorsAttackData.Target->GetActorLocation(), DeltaSeconds, ScissorsAttackData.ChaseExponentialSpeed);
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ScissorsAttackData.Target->GetActorLocation(), DeltaSeconds, ScissorsAttackData.ChaseLocationExponentialSpeed);
 	const FVector Direction = (ScissorsAttackData.Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	const FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
 	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaSeconds, ScissorsAttackData.ChaseRotationExponentialSpeed);
@@ -181,7 +213,7 @@ void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
 	const float DistanceSquared = FVector::DistSquared2D(GetActorLocation(), ScissorsAttackData.Target->GetActorLocation());
 	if (DistanceSquared <= FMath::Square(ScissorsAttackData.ChaseDistance))
 	{
-		CachedSerinDollHandAnimInstance->PlayScissorsAttack(this);
+		CachedSerinDollHandAnimInstance->PlayScissorsAttack();
 		ScissorsAttackData.bIsChasing = false;
 	}
 }
@@ -189,4 +221,9 @@ void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
 void APCRSerinDollHandCharacter::HandleToIdle()
 {
 	CurrentState = EState::Idle;
+}
+
+void APCRSerinDollHandCharacter::HandleRockAttackChaseEnded()
+{
+	RockAttackData.bIsChasing = false;
 }

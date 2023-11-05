@@ -35,9 +35,11 @@ public:
 public: // 동작
 	void Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InIdleOffsetFromTarget);
 	void Idle(AActor* NewTarget);
+	void RockAttack(AActor* NewTarget);
 	void ScissorsAttack(AActor* NewTarget);
 
 public: // Getter, Setter
+	FORCEINLINE bool IsIdle() { return CurrentState == EState::Idle; }
 	FORCEINLINE int32 GetMaxScissorsAttackCount() { return ScissorsAttackData.MaxAttackCount; }
 	FORCEINLINE int32 GetCurrentScissorsAttackCount() { return ScissorsAttackData.CurrentAttackCount; }
 
@@ -55,13 +57,23 @@ private: // 타입
 	struct FIdleData
 	{
 		const AActor* Target;
-		float ChaseExponentialSpeed;
+		float ChaseLocationExponentialSpeed;
+		float ChaseRotationExponentialSpeed;
+	};
+
+	struct FRockAttackData
+	{
+		const AActor* Target;
+		float ChaseLocationSpeed;
+		float ChaseRotationExponentialSpeed;
+		float ChaseHeight;
+		uint32 bIsChasing:1;
 	};
 
 	struct FScissorsAttackData
 	{
 		const AActor* Target;
-		float ChaseExponentialSpeed;
+		float ChaseLocationExponentialSpeed;
 		float ChaseRotationExponentialSpeed;
 		float ChaseDistance;
 		int32 MaxAttackCount;
@@ -71,12 +83,14 @@ private: // 타입
 
 private: // 업데이트 함수
 	void UpdateIdle(float DeltaSeconds);
+	void UpdateRockAttackChase(float DeltaSeconds);
 	void UpdateScissorsAttackChase(float DeltaSeconds);
 
 private: // 내부 함수
 
 public: // 외부 콜백
 	void HandleToIdle();
+	void HandleRockAttackChaseEnded();
 
 private: // 내부 델리게이트
 	FMoveCallbackSignature OnMoveEndedCallback;
@@ -92,6 +106,7 @@ private: // 레퍼런스
 private: // 데이터
 	EState CurrentState;
 	FIdleData IdleData;
+	FRockAttackData RockAttackData;
 	FScissorsAttackData ScissorsAttackData;
 
 	FVector IdleOffsetFromTarget;

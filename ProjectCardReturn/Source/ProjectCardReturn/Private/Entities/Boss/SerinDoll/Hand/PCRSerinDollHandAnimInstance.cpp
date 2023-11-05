@@ -46,7 +46,7 @@ void UPCRSerinDollHandAnimInstance::NativeBeginPlay()
 	Super::NativeBeginPlay();
 }
 
-void UPCRSerinDollHandAnimInstance::PlayRock()
+void UPCRSerinDollHandAnimInstance::PlayRockAttack()
 {
 	Montage_Play(SerinDollDataAsset->RockAttackAnimMontage);
 }
@@ -56,10 +56,18 @@ void UPCRSerinDollHandAnimInstance::PlayPaper()
 	Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::PlayScissorsAttack(APCRSerinDollHandCharacter* InSerinDollHand)
+void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()
 {
 	CurrentScissorsAttackCount = 0;
 	Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_RockChaseEnd()
+{
+	if (OnRockAttackEnded.IsBound())
+	{
+		OnRockAttackEnded.Execute();
+	}
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()

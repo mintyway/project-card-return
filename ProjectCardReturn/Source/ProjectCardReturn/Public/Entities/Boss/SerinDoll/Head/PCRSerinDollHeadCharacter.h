@@ -37,6 +37,9 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public: // 동작
+	void LeftRockAttack();
+	void RightRockAttack();
+	
 	void LeftScissorsAttack();
 	void RightScissorsAttack();
 
@@ -55,6 +58,7 @@ private: // 내부 함수
 	void HandleChangeHP();
 	void HandleDead();
 	void DelayedDestroy();
+	bool CheckIsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
 
 private: // 내부 Getter
 	float GetLiftHeight();
