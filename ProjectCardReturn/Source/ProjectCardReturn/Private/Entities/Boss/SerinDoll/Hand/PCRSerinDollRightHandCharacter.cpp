@@ -3,7 +3,7 @@
 
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollRightHandCharacter.h"
 
-#include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 
@@ -11,10 +11,10 @@ APCRSerinDollRightHandCharacter::APCRSerinDollRightHandCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (GetMesh() && SerinDataAsset)
+	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollRightHandMesh);
+		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->SerinDollRightHandMesh);
 	}
 }
 
@@ -47,9 +47,4 @@ void APCRSerinDollRightHandCharacter::HandlePaperChase(float DeltaTime)
 	ChaseLocation = CachedSerinDollCharacter->CachedErica->GetActorLocation();
 	ChaseLocation.Y -= CachedSerinDollCharacter->BasicChaseYDistance + 300.f;
 	Super::HandlePaperChase(DeltaTime);
-}
-
-void APCRSerinDollRightHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

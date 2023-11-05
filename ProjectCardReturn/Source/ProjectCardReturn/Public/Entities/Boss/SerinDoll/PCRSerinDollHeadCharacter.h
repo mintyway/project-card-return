@@ -4,10 +4,11 @@
 
 #include "ProjectCardReturn.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
-#include "PCRSerinDollCharacter.generated.h"
+#include "PCRSerinDollHeadCharacter.generated.h"
 
 class APCRLiftActor;
 class APCREricaCharacter;
+class APCRSerinDollHandCharacter;
 class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
@@ -15,25 +16,29 @@ class APCRSerinDollRightHandCharacter;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRSerinDollCharacter : public APCRSerinDollBaseCharacter
+class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	APCRSerinDollCharacter();
+	APCRSerinDollHeadCharacter();
 
+	friend class APCRSerinDollHandCharacter;
 	friend class APCRSerinDollHandBaseCharacter;
 	friend class APCRSerinDollLeftHandCharacter;
 	friend class APCRSerinDollRightHandCharacter;
 
 protected:
 	virtual void PostInitializeComponents() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+public: // 동작
+	void LeftScissorsAttack();
+	void RightScissorsAttack();
 
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
@@ -44,6 +49,8 @@ public: // Getter, Setter
 
 private: // 내부 함수
 	void SpawnHands();
+	void LeftHandSpawn();
+	void RightHandSpawn();
 	void ChangeHP(float Amount);
 	void HandleChangeHP();
 	void HandleDead();
@@ -62,20 +69,22 @@ private: // 캐시
 
 private: // 핸드
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollLeftHandCharacter> LeftHand;
+	TObjectPtr<APCRSerinDollHandCharacter> LeftHand;
 
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollRightHandCharacter> RightHand;
+	TObjectPtr<APCRSerinDollHandCharacter> RightHand;
 
 	static const float ContactDistance;
 	static const float FloatingHandHeight;
 	static const float BasicChaseYDistance;
 
 private: // 데이터
+	float IdleWidthOffsetFromErica;
+	float IdleHeightOffsetFromErica;
 	float MaxHP;
 	float CurrentHP;
 
 private:
 	TArray<FTimerHandle> TimerHandles;
-	uint32 bIsAlive : 1;
+	uint32 bIsAlive:1;
 };

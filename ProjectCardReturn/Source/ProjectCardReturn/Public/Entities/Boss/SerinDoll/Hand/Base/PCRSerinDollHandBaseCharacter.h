@@ -6,7 +6,8 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 #include "PCRSerinDollHandBaseCharacter.generated.h"
 
-class APCRSerinDollCharacter;
+class UPCRSerinDollHandBaseAnimInstance;
+class APCRSerinDollHeadCharacter;
 class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
@@ -49,11 +50,11 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 public: // 동작
+	void SetSerinDollCharacter(APCRSerinDollHeadCharacter* InSerinDollCharacter);
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	void SetTarget(AActor* TargetActor);
 
@@ -82,10 +83,14 @@ protected: // 내부 함수
 	void HandlePaper(float DeltaTime);
 	void ScissorsCallback();
 	void HandleScissors(float DeltaTime);
+	void HandleEndedScissorsAttack();
 
 protected: // 캐시
 	UPROPERTY()
-	TObjectPtr<APCRSerinDollCharacter> CachedSerinDollCharacter;
+	TObjectPtr<UPCRSerinDollHandBaseAnimInstance> CachedSerinDollHandBaseAnimInstance;
+
+	UPROPERTY()
+	TObjectPtr<APCRSerinDollHeadCharacter> CachedSerinDollCharacter;
 
 	UPROPERTY()
 	TObjectPtr<AActor> CachedTarget;
@@ -94,8 +99,8 @@ protected: // 상태
 	ESerinState CurrentSerinState;
 	EScissorsState CurrentScissorsState;
 
-	uint32 bUsePredictiveChase : 1;
-	uint32 bPaperStartFlag : 1;
+	uint32 bUsePredictiveChase:1;
+	uint32 bPaperStartFlag:1;
 
 protected: // 데이터
 	FVector MoveLocation;
@@ -105,6 +110,6 @@ protected: // 데이터
 	float CoolDown;
 	float CoolDownElapsedTime;
 
-	int32 ScissorsAttackCount;
-	int32 ScissorsAttackMaxCount;
+	int32 MaxScissorsAttackCount;
+	int32 CurrentScissorsAttackCount;
 };

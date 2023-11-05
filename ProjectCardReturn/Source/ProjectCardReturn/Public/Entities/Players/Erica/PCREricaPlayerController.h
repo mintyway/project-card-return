@@ -12,7 +12,7 @@ class UPCRPauseUserWidget;
 class UPCRUIDataAsset;
 class APCREricaCharacter;
 class UPCREricaDataAsset;
-class APCRSerinDollCharacter;
+class APCRSerinDollHeadCharacter;
 /**
  * 
  */
@@ -32,7 +32,7 @@ protected:
 
 public: // 동작 섹션
 	FVector GetMouseDirection() const;
-	void BindSerinUI(APCRSerinDollCharacter* Serin);
+	void BindSerinUI(APCRSerinDollHeadCharacter* Serin);
 
 private: // 내부 함수 섹션
 	void GamePause();

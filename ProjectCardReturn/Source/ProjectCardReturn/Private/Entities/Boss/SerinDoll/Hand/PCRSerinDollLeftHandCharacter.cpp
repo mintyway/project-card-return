@@ -3,20 +3,21 @@
 
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandCharacter.h"
 
-#include "Entities/Boss/SerinDoll/PCRSerinDollCharacter.h"
+#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollLeftHandAnimInstance.h"
 
 APCRSerinDollLeftHandCharacter::APCRSerinDollLeftHandCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (GetMesh() && SerinDataAsset)
+	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-		GetMesh()->SetSkeletalMesh(SerinDataAsset->SerinDollLeftHandMesh);
+		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->SerinDollLeftHandMesh);
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		if (UClass* SerinDollLeftAnimInstance = SerinDataAsset->SerinDollLeftAnimInstance.LoadSynchronous())
+		if (UClass* SerinDollLeftAnimInstance = SerinDollDataAsset->SerinDollLeftAnimInstance.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(SerinDollLeftAnimInstance);
 		}
@@ -52,10 +53,4 @@ void APCRSerinDollLeftHandCharacter::HandlePaperChase(float DeltaTime)
 	ChaseLocation = CachedSerinDollCharacter->CachedErica->GetActorLocation();
 	ChaseLocation.Y += CachedSerinDollCharacter->BasicChaseYDistance + 300.f;
 	Super::HandlePaperChase(DeltaTime);
-}
-
-
-void APCRSerinDollLeftHandCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
