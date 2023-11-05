@@ -64,7 +64,7 @@
 	<object class="MarkerTrack" id="{33f311a7-e6dc-47e6-8d04-ce610c9edbf3}" />
 	<object class="GroupTrack" id="{35a9858d-4e60-4ae7-928e-f8550bfb5efc}">
 		<relationship name="modules">
-			<destination>{ff82641a-bcc1-473c-b382-d8458af1a939}</destination>
+			<destination>{424f620f-59d9-44a4-be56-9ec5cbd00fb6}</destination>
 		</relationship>
 		<relationship name="mixerGroup">
 			<destination>{b19b9c89-7c06-4397-86f5-21d35873004d}</destination>
@@ -72,7 +72,7 @@
 	</object>
 	<object class="Timeline" id="{07b4c682-c231-4a98-81d2-85f7d80e0dbd}">
 		<relationship name="modules">
-			<destination>{ff82641a-bcc1-473c-b382-d8458af1a939}</destination>
+			<destination>{424f620f-59d9-44a4-be56-9ec5cbd00fb6}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{604cfaef-7c66-43ee-829f-6aa38419a770}">
@@ -92,15 +92,21 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{3c4bce65-87d2-4473-a4ed-28a85150765c}" />
-	<object class="SingleSound" id="{ff82641a-bcc1-473c-b382-d8458af1a939}">
+	<object class="SingleSound" id="{424f620f-59d9-44a4-be56-9ec5cbd00fb6}">
 		<property name="length">
-			<value>0.32000000000000001</value>
+			<value>0.12499999999999986</value>
 		</property>
-		<relationship name="modulators">
-			<destination>{902e06c1-8f93-41c5-95a7-fbaa4d0f44f0}</destination>
+		<property name="timelockedOffset">
+			<value>0.23500000000000001</value>
+		</property>
+		<property name="pitch">
+			<value>-2</value>
+		</property>
+		<relationship name="fadeInCurve">
+			<destination>{57d6eba7-8614-4983-814c-1f73eab5907d}</destination>
 		</relationship>
 		<relationship name="audioFile">
-			<destination>{a9c5c321-00e6-4c91-897f-28c2c2e5f738}</destination>
+			<destination>{c070db59-8659-4e39-8bbb-adfd6dc4c983}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{b19b9c89-7c06-4397-86f5-21d35873004d}">
@@ -125,13 +131,13 @@
 	</object>
 	<object class="MixerBusPanner" id="{e748ecef-d5fd-41a1-8f42-7a5fbdfc681e}" />
 	<object class="MixerBusFader" id="{f71033bc-405f-4a68-98d8-b4bdd46d20dd}" />
-	<object class="RandomizerModulator" id="{902e06c1-8f93-41c5-95a7-fbaa4d0f44f0}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>pitch</value>
-		</property>
-		<property name="amount">
-			<value>3.125</value>
-		</property>
+	<object class="FadeCurve" id="{57d6eba7-8614-4983-814c-1f73eab5907d}">
+		<relationship name="startPoint">
+			<destination>{4eebe0d7-8beb-4d58-97dc-47ad04e8c8c2}</destination>
+		</relationship>
+		<relationship name="endPoint">
+			<destination>{150d6614-5247-4e46-9c87-24a31927c675}</destination>
+		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{badecd1e-7bf0-46ec-a2d4-470093e09ae6}">
 		<relationship name="effects">
@@ -143,16 +149,35 @@
 	<object class="MixerBusPanner" id="{27e3fd97-d887-4aa6-a6d2-7dc685116b42}" />
 	<object class="MixerBusFader" id="{86c31251-36ee-4445-9287-bb1f267d563d}" />
 	<object class="SpatialiserEffect" id="{302b19d3-a25a-47ba-9492-245688818d4d}" />
+	<object class="AutomationPoint" id="{4eebe0d7-8beb-4d58-97dc-47ad04e8c8c2}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>0</value>
+		</property>
+		<property name="curveShape">
+			<value>-0.2547189</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{150d6614-5247-4e46-9c87-24a31927c675}">
+		<property name="position">
+			<value>0.012</value>
+		</property>
+		<property name="value">
+			<value>1</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{c7093fb2-c893-4b91-9827-c6d001fee76c}" />
 	<object class="ThreeEQEffect" id="{1ab79dae-ae80-4459-8f5e-e69b2b8b7fa0}">
 		<property name="lowGain">
-			<value>7</value>
+			<value>10</value>
 		</property>
 		<property name="midGain">
-			<value>-11</value>
+			<value>-1.5</value>
 		</property>
 		<property name="highGain">
-			<value>-9</value>
+			<value>-1.5</value>
 		</property>
 	</object>
 	<object class="SFXReverbEffect" id="{64e2e02b-2686-4ca0-9d17-e96797bb1a7a}">

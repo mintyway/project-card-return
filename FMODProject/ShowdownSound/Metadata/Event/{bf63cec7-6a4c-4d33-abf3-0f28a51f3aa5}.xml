@@ -173,8 +173,11 @@
 	</object>
 	<object class="MixerBusFader" id="{b44b9ff1-1b1e-41dc-98ed-97fbf954503a}" />
 	<object class="ThreeEQEffect" id="{5363ee67-8014-4af1-930a-9d83143de010}">
+		<property name="lowGain">
+			<value>-3.5</value>
+		</property>
 		<property name="highGain">
-			<value>2.5</value>
+			<value>6.5</value>
 		</property>
 	</object>
 </objects>
