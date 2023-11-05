@@ -17,9 +17,17 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	: CurrentState(EState::Idle)
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	// TODO: 파라미터화 필요
+	DefaultSpeed = 1000.f;
 	IdleData = {};
-	IdleData.IdleChaseSpeed = 3.f;
-	
+	IdleData.ChaseExponentialSpeed = 2.f;
+	ScissorsAttackData = {};
+	ScissorsAttackData.ChaseDistance = 500.f;
+	ScissorsAttackData.ChaseExponentialSpeed = 1.f;
+	ScissorsAttackData.ChaseRotationExponentialSpeed = 10.f;
+	ScissorsAttackData.MaxAttackCount = 3;
+
 	if (GetCapsuleComponent())
 	{
 		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
@@ -63,6 +71,8 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 
 	CachedSerinDollHandAnimInstance = Cast<UPCRSerinDollHandAnimInstance>(GetMesh()->GetAnimInstance());
 	check(CachedSerinDollHandAnimInstance);
+
+	CachedSerinDollHandAnimInstance->OnScissorsAttackEnded.BindUObject(this, &APCRSerinDollHandCharacter::ScissorsAttackEnded);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()
@@ -99,6 +109,11 @@ void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 		}
 		case EState::ScissorsAttack:
 		{
+			if (ScissorsAttackData.bIsChasing)
+			{
+				UpdateScissorsAttackChase(DeltaSeconds);
+			}
+
 			break;
 		}
 	}
@@ -124,10 +139,53 @@ void APCRSerinDollHandCharacter::Idle(AActor* NewTarget)
 	CurrentState = EState::Idle;
 }
 
-void APCRSerinDollHandCharacter::UpdateIdle(float DeltaTime)
+void APCRSerinDollHandCharacter::ScissorsAttack(AActor* NewTarget)
+{
+	ScissorsAttackData.Target = NewTarget;
+	ScissorsAttackData.bIsChasing = true;
+	ScissorsAttackData.CurrentAttackCount = 0;
+	CurrentState = EState::ScissorsAttack;
+}
+
+void APCRSerinDollHandCharacter::UpdateIdle(float DeltaSeconds)
 {
 	const FVector TargetOffset = IdleData.Target->GetActorLocation() + IdleOffsetFromTarget;
-	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetOffset, DeltaTime, IdleData.IdleChaseSpeed);
-	const FRotator NewRotation = CachedSerinDollHead->GetActorRotation();
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetOffset, DeltaSeconds, IdleData.ChaseExponentialSpeed);
+	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), CachedSerinDollHead->GetActorRotation(), DeltaSeconds, IdleData.ChaseExponentialSpeed);
 	SetActorLocationAndRotation(NewLocation, NewRotation);
+}
+
+void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
+{
+	// 높이 맞추기
+	if ((GetActorLocation().Z - ScissorsAttackData.Target->GetActorLocation().Z) >= 5.f)
+	{
+		const float NewHeight = FMath::FInterpConstantTo(GetActorLocation().Z, ScissorsAttackData.Target->GetActorLocation().Z, DeltaSeconds, DefaultSpeed);
+		FVector NewLocation = GetActorLocation();
+		NewLocation.Z = NewHeight;
+		const FVector Direction = (ScissorsAttackData.Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		const FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+		const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaSeconds, ScissorsAttackData.ChaseRotationExponentialSpeed);
+		SetActorLocationAndRotation(NewLocation, NewRotation);
+		
+		return;
+	}
+
+	const FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ScissorsAttackData.Target->GetActorLocation(), DeltaSeconds, ScissorsAttackData.ChaseExponentialSpeed);
+	const FVector Direction = (ScissorsAttackData.Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	const FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaSeconds, ScissorsAttackData.ChaseRotationExponentialSpeed);
+	SetActorLocationAndRotation(NewLocation, NewRotation);
+
+	const float DistanceSquared = FVector::DistSquared2D(GetActorLocation(), ScissorsAttackData.Target->GetActorLocation());
+	if (DistanceSquared <= FMath::Square(ScissorsAttackData.ChaseDistance))
+	{
+		CachedSerinDollHandAnimInstance->PlayScissorsAttack(this);
+		ScissorsAttackData.bIsChasing = false;
+	}
+}
+
+void APCRSerinDollHandCharacter::ScissorsAttackEnded()
+{
+	CurrentState = EState::Idle;
 }

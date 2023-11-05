@@ -32,7 +32,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> PaperAttackAnimMontage;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> ScissorsAttackAnimMontage;
 

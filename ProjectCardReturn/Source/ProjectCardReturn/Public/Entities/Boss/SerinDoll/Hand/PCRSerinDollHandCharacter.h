@@ -34,6 +34,11 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	void Idle(AActor* NewTarget);
+	void ScissorsAttack(AActor* NewTarget);
+
+public: // Getter, Setter
+	FORCEINLINE int32 GetMaxScissorsAttackCount() { return ScissorsAttackData.MaxAttackCount; }
+	FORCEINLINE int32 GetCurrentScissorsAttackCount() { return ScissorsAttackData.CurrentAttackCount; }
 
 private: // 타입
 	enum class EState
@@ -49,14 +54,29 @@ private: // 타입
 	struct FIdleData
 	{
 		const AActor* Target;
-		float IdleChaseSpeed;
+		float ChaseExponentialSpeed;
+	};
+
+	struct FScissorsAttackData
+	{
+		const AActor* Target;
+		float ChaseExponentialSpeed;
+		float ChaseRotationExponentialSpeed;
+		float ChaseDistance;
+		int32 MaxAttackCount;
+		int32 CurrentAttackCount;
+		uint32 bIsChasing:1;
 	};
 
 private: // 업데이트 함수
-	void UpdateIdle(float DeltaTime);
+	void UpdateIdle(float DeltaSeconds);
+	void UpdateScissorsAttackChase(float DeltaSeconds);
 
 private: // 내부 함수
-	
+
+public: // 외부 콜백
+	void ScissorsAttackEnded();
+
 private: // 내부 델리게이트
 	FMoveCallbackSignature OnMoveEndedCallback;
 	FChaseCallbackSignature OnChaseEndedCallback;
@@ -70,6 +90,9 @@ private: // 레퍼런스
 
 private: // 데이터
 	EState CurrentState;
-	FVector IdleOffsetFromTarget;
 	FIdleData IdleData;
+	FScissorsAttackData ScissorsAttackData;
+
+	FVector IdleOffsetFromTarget;
+	float DefaultSpeed;
 };

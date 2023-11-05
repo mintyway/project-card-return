@@ -89,14 +89,15 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	check(CachedErica);
 
 	LeftHand->Idle(CachedErica);
+	// LeftHand->ScissorsAttack(CachedErica);
+
 	// TODO: 테스트용 코드
-	// FTimerHandle TestTimerHandle1;
-	// TimerHandles.Add(TestTimerHandle1);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	LeftHand->GetMesh()->GetAnimInstance()->Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
-	// 	// LeftHand->ScissorsAttack();
-	// }), 5.f, true, 1.f);
+	FTimerHandle TestTimerHandle1;
+	TimerHandles.Add(TestTimerHandle1);
+	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
+	{
+		LeftHand->ScissorsAttack(CachedErica);
+	}), 10.f, true, 0.f);
 
 	// FTimerHandle TestTimerHandle2;
 	// TimerHandles.Add(TestTimerHandle2);
