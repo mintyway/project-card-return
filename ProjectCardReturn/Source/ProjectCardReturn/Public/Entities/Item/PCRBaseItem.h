@@ -24,8 +24,6 @@ protected:
 public:
 	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
 
-	FORCEINLINE void SetItemType(const EItemType& InItemType) { ItemType = InItemType; }
-
 private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 
