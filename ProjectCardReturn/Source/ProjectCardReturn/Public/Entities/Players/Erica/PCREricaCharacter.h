@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "PCREricaCharacter.generated.h"
 
+class APCRListenerActor;
 class UPCRSoundPrimaryDataAsset;
 class UPCREricaAnimInstance;
 class UPCRParameterDataAsset;
@@ -134,7 +135,7 @@ private: // 컴포넌트
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
-	
+
 private: // 캐시
 	UPROPERTY()
 	TObjectPtr<APCREricaPlayerController> CachedEricaPlayerController;
@@ -142,16 +143,18 @@ private: // 캐시
 	UPROPERTY()
 	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
+	UPROPERTY()
+	TObjectPtr<APCRListenerActor> CachedListenerActor;
 
 private: // 스탯
 	float MaxHP;
 	float CurrentHP;
-	
+
 	float NarrowShotFiringRate;
 	float WideShotFiringRate;
-	
+
 	float RecallCooldownTime;
-	
+
 	float NarrowShotForwardDamage;
 	float NarrowShotBackwardDamage;
 	float WideShotForwardDamage;
@@ -161,14 +164,14 @@ private: // 스탯
 	float WideShotRange;
 
 private: // 상태
-	uint32 bIsAlive : 1;
+	uint32 bIsAlive:1;
 
-	uint32 bCanDash : 1;
-	uint32 bIsDashing : 1;
-	
-	uint32 bCanNarrowShot : 1;
-	uint32 bCanWideShot : 1;
-	uint32 bCanReturnCard : 1;
+	uint32 bCanDash:1;
+	uint32 bIsDashing:1;
+
+	uint32 bCanNarrowShot:1;
+	uint32 bCanWideShot:1;
+	uint32 bCanReturnCard:1;
 
 	uint32 bCanAttack:1;
 
@@ -180,13 +183,13 @@ private: // 대시
 
 	FVector CachedDashStartLocation;
 	FVector CachedDashDirection;
-	
+
 	float DashCooldownTime;
 	float MaxDashTime;
-	
+
 	float ElapsedDashTime;
 	float DashDistance;
-	
+
 private: // 카드
 	UPROPERTY()
 	TObjectPtr<APCREricaCardProjectilePool> CardProjectilePool;
@@ -200,7 +203,7 @@ private: // 카드
 	int32 NarrowShotCount;
 	int32 NarrowShotElapsedCount;
 	float NarrowShotInterval;
-	
+
 	int32 WideShotCount;
 	float WideShotAngle;
 

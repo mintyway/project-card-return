@@ -20,6 +20,7 @@
 #include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
+#include "Entities/Players/Erica/PCRListenerActor.h"
 #include "GameFramework/GameModeBase.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
@@ -164,6 +165,11 @@ void APCREricaCharacter::PostInitializeComponents()
 	SetFolderPath(TEXT("Erica"));
 # endif
 
+	// 리스너를 생성하는 코드입니다.
+	CachedListenerActor = GetWorld()->SpawnActor<APCRListenerActor>(FVector::ZeroVector, FRotator::ZeroRotator);
+	check(CachedListenerActor);
+	CachedListenerActor->Init(this);
+
 	check(DashNiagaraComponent);
 	DashNiagaraComponent->Deactivate();
 
@@ -204,7 +210,7 @@ void APCREricaCharacter::PossessedBy(AController* NewController)
 	CachedEricaPlayerController = Cast<APCREricaPlayerController>(NewController);
 	check(CachedEricaPlayerController);
 
-	CachedEricaPlayerController->SetAudioListenerOverride(GetCapsuleComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
+	CachedEricaPlayerController->SetAudioListenerOverride(CachedListenerActor->GetSceneComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
 }
 
 void APCREricaCharacter::BeginPlay()
