@@ -26,7 +26,7 @@ DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
 APCREricaCharacter::APCREricaCharacter()
 	: bIsAlive(true), bCanDash(true), bIsDashing(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true), bCanAttack(true),
-	  CurrentShotMode(ShootMode::NarrowShot),
+	  CurrentShotMode(EShootMode::NarrowShot),
 	  MovementKeys{EKeys::W, EKeys::S, EKeys::D, EKeys::A},
 	  ElapsedDashTime(0.f),
 	  NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3),
@@ -378,12 +378,12 @@ void APCREricaCharacter::HandleShootMode()
 {
 	switch (CurrentShotMode)
 	{
-		case ShootMode::NarrowShot:
+		case EShootMode::NarrowShot:
 		{
 			NarrowShot();
 			break;
 		}
-		case ShootMode::WideShot:
+		case EShootMode::WideShot:
 		{
 			WideShot();
 			break;
@@ -575,21 +575,26 @@ void APCREricaCharacter::Change()
 
 	switch (CurrentShotMode)
 	{
-		case ShootMode::NarrowShot:
+		case EShootMode::NarrowShot:
 		{
-			CurrentShotMode = ShootMode::WideShot;
+			CurrentShotMode = EShootMode::WideShot;
 			break;
 		}
-		case ShootMode::WideShot:
+		case EShootMode::WideShot:
 		{
-			CurrentShotMode = ShootMode::NarrowShot;
+			CurrentShotMode = EShootMode::NarrowShot;
 			break;
 		}
 		default:
 		{
-			CurrentShotMode = ShootMode::NarrowShot;
+			CurrentShotMode = EShootMode::NarrowShot;
 			break;
 		}
+	}
+
+	if (OnChangeShootMode.IsBound())
+	{
+		OnChangeShootMode.Execute(CurrentShotMode);
 	}
 }
 

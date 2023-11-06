@@ -31,11 +31,13 @@ DECLARE_MULTICAST_DELEGATE(FDeadSignature);
  * 캐릭터의 공격 모드를 설정합니다.
  */
 UENUM()
-enum class ShootMode : uint8
+enum class EShootMode : uint8
 {
 	NarrowShot,
 	WideShot
 };
+
+DECLARE_DELEGATE_OneParam(FShootModeSignature, EShootMode);
 
 UCLASS()
 class PROJECTCARDRETURN_API APCREricaCharacter : public ACharacter
@@ -66,6 +68,7 @@ public: // 델리게이트
 	FDeadSignature OnDead;
 
 	FChangeCardCountSignature OnChangeCardCount;
+	FShootModeSignature OnChangeShootMode;
 
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
@@ -169,7 +172,7 @@ private: // 상태
 
 	uint32 bCanAttack:1;
 
-	ShootMode CurrentShotMode;
+	EShootMode CurrentShotMode;
 
 private: // 대시
 	TArray<FKey> MovementKeys;

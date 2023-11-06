@@ -81,6 +81,8 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 
 	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateHP);
 	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateCardCount);
+	CachedEricaCharacter->OnChangeShootMode.BindUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateChangeShootMode);
+	
 
 	// UI 상태를 초기화 해줍니다.
 	MainUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());

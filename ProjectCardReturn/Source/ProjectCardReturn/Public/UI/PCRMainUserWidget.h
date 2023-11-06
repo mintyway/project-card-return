@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "PCRMainUserWidget.generated.h"
 
+class UImage;
+enum class EShootMode : uint8;
 class UTextBlock;
 class UProgressBar;
 /**
@@ -22,10 +24,20 @@ protected:
 public:
 	void HandleUpdateHP(float MaxHP, float CurrentHP);
 	void HandleUpdateCardCount(int32 MaxCardCount, int32 CurrentCardCount);
+	void HandleUpdateChangeShootMode(EShootMode InShootMode);
 
 	UPROPERTY()
 	TObjectPtr<UProgressBar> HPBar;
+	
+	UPROPERTY()
+	TObjectPtr<UTextBlock> MaxCardCountTextBlock;
+	
+	UPROPERTY()
+	TObjectPtr<UTextBlock> CurrentCardCountTextBlock;
 
 	UPROPERTY()
-	TObjectPtr<UTextBlock> CardCountTextBlock; 
+	TObjectPtr<UImage> NarrowShotImage;
+
+	UPROPERTY()
+	TObjectPtr<UImage> WideShotImage;
 };
