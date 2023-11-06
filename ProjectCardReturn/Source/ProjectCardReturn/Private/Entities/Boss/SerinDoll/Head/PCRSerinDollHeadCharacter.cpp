@@ -120,8 +120,8 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 10.f, true, 5.f);
 	};
 
-	// RockAttack();
-	// PaperAttack();
+	RockAttack();
+	PaperAttack();
 	ScissorsAttack();
 
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

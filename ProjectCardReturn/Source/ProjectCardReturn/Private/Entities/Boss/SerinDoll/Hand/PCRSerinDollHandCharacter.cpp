@@ -96,6 +96,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	if (ScissorsAttackNiagaraComponent)
 	{
 		ScissorsAttackNiagaraComponent->SetupAttachment(GetCapsuleComponent());
+		// TODO: 추후 이펙터에게 사이즈 조정 요청 후 스케일 제거
 		ScissorsAttackNiagaraComponent->SetRelativeScale3D(FVector(1.5));
 		ScissorsAttackNiagaraComponent->SetAsset(SerinDollDataAsset->ScissorsAttackEffect);
 	}
@@ -121,7 +122,7 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	
 	CachedSerinDollHandAnimInstance->OnToIdle.BindUObject(this, &APCRSerinDollHandCharacter::HandleToIdle);
 	CachedSerinDollHandAnimInstance->OnRockAttackEnded.AddUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackChaseEnded);
-
+	
 	CachedSerinDollHandAnimInstance->OnRockAttackHit.AddUObject(this, &APCRSerinDollHandCharacter::PlayRockAttackEffect);
 	CachedSerinDollHandAnimInstance->OnPaperAttackSweepStart.AddUObject(this, &APCRSerinDollHandCharacter::PlayPaperAttackEffect);
 	CachedSerinDollHandAnimInstance->OnPaperAttackSweepEnd.AddUObject(this, &APCRSerinDollHandCharacter::StopPaperAttackEffect);
