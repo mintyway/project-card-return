@@ -102,7 +102,11 @@ private: // 업데이트 함수
 	void UpdateScissorsAttackChase(float DeltaSeconds);
 
 private: // 내부 함수
-
+	void PlayRockAttackEffect();
+	void PlayPaperAttackEffect();
+	void StopPaperAttackEffect();
+	void PlayScissorsAttackEffect();
+	
 public: // 외부 콜백
 	void HandleToIdle();
 	void HandleRockAttackChaseEnded();
@@ -120,10 +124,13 @@ private: // 레퍼런스
 
 private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
-	TObjectPtr<UNiagaraComponent> RockAttackHitNiagaraComponent;
+	TObjectPtr<UNiagaraComponent> RockAttackNiagaraComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> PaperAttackNiagaraComponent;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> ScissorsAttackNiagaraComponent;
 
 private: // 데이터
 	EState CurrentState;

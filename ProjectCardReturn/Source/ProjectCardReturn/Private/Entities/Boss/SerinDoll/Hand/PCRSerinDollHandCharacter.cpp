@@ -78,13 +78,27 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 		GetCharacterMovement()->bCheatFlying = true;
 	}
 
-	RockAttackHitNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("RockHitNiagaraComponent"));
-	if (RockAttackHitNiagaraComponent)
+	RockAttackNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("RockAttackNiagaraComponent"));
+	if (RockAttackNiagaraComponent)
 	{
-		RockAttackHitNiagaraComponent->SetAsset(SerinDollDataAsset->RockAttackHitEffect);
+		RockAttackNiagaraComponent->SetupAttachment(GetCapsuleComponent());
+		RockAttackNiagaraComponent->SetAsset(SerinDollDataAsset->RockAttackEffect);
 	}
 
-	
+	PaperAttackNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PaperAttackNiagaraComponent"));
+	if (PaperAttackNiagaraComponent)
+	{
+		PaperAttackNiagaraComponent->SetupAttachment(GetCapsuleComponent());
+		PaperAttackNiagaraComponent->SetAsset(SerinDollDataAsset->PaperAttackEffect);
+	}
+
+	ScissorsAttackNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ScissorsAttackNiagaraComponent"));
+	if (ScissorsAttackNiagaraComponent)
+	{
+		ScissorsAttackNiagaraComponent->SetupAttachment(GetCapsuleComponent());
+		ScissorsAttackNiagaraComponent->SetRelativeScale3D(FVector(1.5));
+		ScissorsAttackNiagaraComponent->SetAsset(SerinDollDataAsset->ScissorsAttackEffect);
+	}
 }
 
 void APCRSerinDollHandCharacter::PostInitializeComponents()
@@ -101,8 +115,17 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	CachedSerinDollHandAnimInstance = Cast<UPCRSerinDollHandAnimInstance>(GetMesh()->GetAnimInstance());
 	check(CachedSerinDollHandAnimInstance);
 
+	RockAttackNiagaraComponent->Deactivate();
+	PaperAttackNiagaraComponent->Deactivate();
+	ScissorsAttackNiagaraComponent->Deactivate();
+	
 	CachedSerinDollHandAnimInstance->OnToIdle.BindUObject(this, &APCRSerinDollHandCharacter::HandleToIdle);
 	CachedSerinDollHandAnimInstance->OnRockAttackEnded.AddUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackChaseEnded);
+
+	CachedSerinDollHandAnimInstance->OnRockAttackHit.AddUObject(this, &APCRSerinDollHandCharacter::PlayRockAttackEffect);
+	CachedSerinDollHandAnimInstance->OnPaperAttackSweepStart.AddUObject(this, &APCRSerinDollHandCharacter::PlayPaperAttackEffect);
+	CachedSerinDollHandAnimInstance->OnPaperAttackSweepEnd.AddUObject(this, &APCRSerinDollHandCharacter::StopPaperAttackEffect);
+	CachedSerinDollHandAnimInstance->OnScissorsAttackStart.AddUObject(this, &APCRSerinDollHandCharacter::PlayScissorsAttackEffect);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()
@@ -173,6 +196,9 @@ void APCRSerinDollHandCharacter::Init(APCRSerinDollHeadCharacter* NewSerinDollHe
 	CachedSerinDollHead = NewSerinDollHead;
 	SideVector = InSideVector;
 	IdleOffsetFromTarget = (SideVector * IdleSideOffset) + (GetActorUpVector() * IdleUpOffset);
+	
+	const FRotator RelativeInsideRotation = FRotationMatrix::MakeFromX(SideVector).Rotator();
+	PaperAttackNiagaraComponent->SetRelativeRotation(RelativeInsideRotation);
 }
 
 void APCRSerinDollHandCharacter::Idle(AActor* NewTarget)
@@ -266,6 +292,26 @@ void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
 		CachedSerinDollHandAnimInstance->PlayScissorsAttack();
 		ScissorsAttackData.bIsChasing = false;
 	}
+}
+
+void APCRSerinDollHandCharacter::PlayRockAttackEffect()
+{
+	RockAttackNiagaraComponent->Activate(true);
+}
+
+void APCRSerinDollHandCharacter::PlayPaperAttackEffect()
+{
+	PaperAttackNiagaraComponent->Activate(true);
+}
+
+void APCRSerinDollHandCharacter::StopPaperAttackEffect()
+{
+	PaperAttackNiagaraComponent->Deactivate();
+}
+
+void APCRSerinDollHandCharacter::PlayScissorsAttackEffect()
+{
+	ScissorsAttackNiagaraComponent->Activate(true);
 }
 
 void APCRSerinDollHandCharacter::HandleToIdle()

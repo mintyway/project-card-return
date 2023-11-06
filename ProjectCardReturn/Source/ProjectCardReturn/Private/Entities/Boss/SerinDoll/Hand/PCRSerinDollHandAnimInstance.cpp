@@ -81,6 +81,21 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackHit()
 	OnRockAttackHit.Broadcast();
 }
 
+void UPCRSerinDollHandAnimInstance::AnimNotify_PaperAttackSweepStart()
+{
+	OnPaperAttackSweepStart.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_PaperAttackSweepEnd()
+{
+	OnPaperAttackSweepEnd.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackHit()
+{
+	OnScissorsAttackHit.Broadcast();
+}
+
 void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()
 {
 	++CurrentScissorsAttackCount;
@@ -89,6 +104,11 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()
 		const UAnimMontage* Montage = SerinDollDataAsset->ScissorsAttackAnimMontage;
 		Montage_SetNextSection(TEXT("Attack"), TEXT("End"), Montage);
 	}
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackStart()
+{
+	OnScissorsAttackStart.Broadcast();
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ToIdle()

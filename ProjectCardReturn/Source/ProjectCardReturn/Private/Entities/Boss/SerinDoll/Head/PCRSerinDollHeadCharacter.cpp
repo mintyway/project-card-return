@@ -87,6 +87,17 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	RightHand->Idle(CachedErica);
 
 	// TODO: 테스트용 코드
+	auto RockAttack = [this]()
+	{
+		FTimerHandle TestTimerHandle1;
+		TimerHandles.Add(TestTimerHandle1);
+		GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftRockAttack), 10.f, true, 0.f);
+
+		FTimerHandle TestTimerHandle2;
+		TimerHandles.Add(TestTimerHandle2);
+		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightRockAttack), 10.f, true, 5.f);
+	};
+	
 	auto PaperAttack = [this]()
 	{
 		FTimerHandle TestTimerHandle1;
@@ -98,9 +109,20 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightPaperAttack, true), 3.f, true, 0.5f);
 	};
 
-	LeftRockAttack();
-	RightScissorsAttack();
-	
+	auto ScissorsAttack = [this]()
+	{
+		FTimerHandle TestTimerHandle1;
+		TimerHandles.Add(TestTimerHandle1);
+		GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftScissorsAttack), 10.f, true, 0.f);
+
+		FTimerHandle TestTimerHandle2;
+		TimerHandles.Add(TestTimerHandle2);
+		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 10.f, true, 5.f);
+	};
+
+	// RockAttack();
+	// PaperAttack();
+	ScissorsAttack();
 
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(EricaPlayerController);
