@@ -49,13 +49,18 @@ private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 	void EnableCollisionDetection();
 	void DisableCollisionDetection();
-	
+
+private: // 컴포넌트
+	UPROPERTY(VisibleAnywhere, Category = "RootComponent")
+	TObjectPtr<USceneComponent> SceneComponent;
+
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
+private: // 데이터
 	UPROPERTY()
 	TObjectPtr<const UPCRInteractablePanelDataAsset> MonsterDataAsset;
-
+	
 	TMap<APCREricaCardProjectile*, FDelegateHandle> OnReturnCardBeginDelegateMap;
 	EState CurrentState;
 	FRotator StartRotation;
