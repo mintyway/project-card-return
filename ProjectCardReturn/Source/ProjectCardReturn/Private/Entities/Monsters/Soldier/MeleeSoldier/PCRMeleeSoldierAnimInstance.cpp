@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
 
+#include "Algo/RandomShuffle.h"
 #include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
@@ -66,6 +67,15 @@ void UPCRMeleeSoldierAnimInstance::AnimNotify_Hit()
 void UPCRMeleeSoldierAnimInstance::ShieldAttack()
 {
 	Montage_Play(MonsterDataAsset->MeleeSoldierShieldAttackAnimationMontage);
+
+	if (FMath::RandBool())
+	{
+		Montage_JumpToSection(TEXT("Part1"));
+	}
+	else
+	{
+		Montage_JumpToSection(TEXT("Part2"));
+	}
 }
 
 void UPCRMeleeSoldierAnimInstance::SpearAttack()
