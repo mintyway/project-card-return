@@ -9,16 +9,6 @@
 
 class UBoxComponent;
 
-UENUM()
-enum class EItemType : uint8
-{
-	SpeedUp,
-	MoreCard,
-	Heal,
-	FastShoot,
-	LongerRange
-};
-
 UCLASS()
 class PROJECTCARDRETURN_API APCRBaseItem : public AActor, public IPCREricaCardInteractable
 {
@@ -41,6 +31,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
-	
-	EItemType ItemType;
 };
