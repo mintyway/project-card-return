@@ -4,14 +4,14 @@
 
 #include "ProjectCardReturn.h"
 #include "Blueprint/UserWidget.h"
-#include "PCRBossUserWidget.generated.h"
+#include "PCRSerinUserWidget.generated.h"
 
 class UProgressBar;
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UPCRBossUserWidget : public UUserWidget
+class PROJECTCARDRETURN_API UPCRSerinUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

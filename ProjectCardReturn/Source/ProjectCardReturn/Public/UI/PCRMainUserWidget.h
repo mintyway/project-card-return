@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PCRMainUserWidget.generated.h"
 
+class UPCRSerinUserWidget;
 class UImage;
 enum class EShootMode : uint8;
 class UTextBlock;
@@ -26,6 +27,9 @@ public:
 	void HandleUpdateCardCount(int32 MaxCardCount, int32 CurrentCardCount);
 	void HandleUpdateChangeShootMode(EShootMode InShootMode);
 
+	UPROPERTY()
+	TObjectPtr<UPCRSerinUserWidget> BossUserWidget;
+	
 	UPROPERTY()
 	TObjectPtr<UProgressBar> HPBar;
 	

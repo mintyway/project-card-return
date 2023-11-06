@@ -7,11 +7,16 @@
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "UI/PCRSerinUserWidget.h"
 
 void UPCRMainUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	const FName WB_SerinUIKey = TEXT("WB_SerinUI");
+	BossUserWidget = Cast<UPCRSerinUserWidget>(GetWidgetFromName(WB_SerinUIKey));
+	check(BossUserWidget);
+	
 	const FName HPProgressBarKey = TEXT("HPProgressBar");
 	HPBar = Cast<UProgressBar>(GetWidgetFromName(HPProgressBarKey));
 	check(HPBar);

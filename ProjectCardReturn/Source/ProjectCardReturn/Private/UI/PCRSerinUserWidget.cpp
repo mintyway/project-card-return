@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/PCRBossUserWidget.h"
+#include "UI/PCRSerinUserWidget.h"
 
 #include "Components/ProgressBar.h"
 
-void UPCRBossUserWidget::NativeConstruct()
+void UPCRSerinUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -14,7 +14,7 @@ void UPCRBossUserWidget::NativeConstruct()
 	check(HPProgressBar);
 }
 
-void UPCRBossUserWidget::HandleUpdateHP(float MaxHP, float CurrentHP)
+void UPCRSerinUserWidget::HandleUpdateHP(float MaxHP, float CurrentHP)
 {
 	const float HPRatio = CurrentHP / MaxHP;
 	HPProgressBar->SetPercent(HPRatio);

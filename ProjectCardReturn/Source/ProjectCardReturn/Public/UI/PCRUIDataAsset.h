@@ -6,7 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRUIDataAsset.generated.h"
 
-class UPCRBossUserWidget;
+class UPCRSerinUserWidget;
 class UPCRMainUserWidget;
 class UPCRPauseUserWidget;
 /**
@@ -26,7 +26,4 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSoftClassPtr<UPCRPauseUserWidget> Pause;
-
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSoftClassPtr<UPCRBossUserWidget> Boss;
 };

@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "PCREricaPlayerController.generated.h"
 
-class UPCRBossUserWidget;
+class UPCRSerinUserWidget;
 class UPCRMainUserWidget;
 class UPCRPauseUserWidget;
 class UPCRUIDataAsset;
@@ -62,10 +62,10 @@ private: // UI 섹션
 	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
 
 	UPROPERTY()
-	TSubclassOf<UPCRBossUserWidget> BossUserWidgetClass;
+	TSubclassOf<UPCRSerinUserWidget> BossUserWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UPCRBossUserWidget> BossUserWidget;
+	TObjectPtr<UPCRSerinUserWidget> BossUserWidget;
 
 private: // 상태 섹션
 	uint32 bUseCharacterRotationByCursorDirection : 1;
