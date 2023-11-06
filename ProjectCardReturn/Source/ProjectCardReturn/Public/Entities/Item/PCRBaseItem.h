@@ -5,7 +5,7 @@
 #include "ProjectCardReturn.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/PCREricaCardInteractable.h"
-#include "PCRItem.generated.h"
+#include "PCRBaseItem.generated.h"
 
 class UBoxComponent;
 
@@ -20,12 +20,12 @@ enum class EItemType : uint8
 };
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRItem : public AActor, public IPCREricaCardInteractable
+class PROJECTCARDRETURN_API APCRBaseItem : public AActor, public IPCREricaCardInteractable
 {
 	GENERATED_BODY()
 	
 public:
-	APCRItem();
+	APCRBaseItem();
 
 protected:
 	virtual void BeginPlay() override;

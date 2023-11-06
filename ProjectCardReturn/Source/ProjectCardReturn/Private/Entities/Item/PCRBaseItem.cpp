@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Entities/Item/PCRItem.h"
+#include "Entities/Item/PCRBaseItem.h"
 
 #include "Components/BoxComponent.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
-APCRItem::APCRItem()
+APCRBaseItem::APCRBaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -19,25 +19,25 @@ APCRItem::APCRItem()
 	}
 }
 
-void APCRItem::BeginPlay()
+void APCRBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void APCRItem::Tick(float DeltaTime)
+void APCRBaseItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void APCRItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
+void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
 	check(AttachedCard);
-	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRItem::HandleReturnCard);
+	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
 }
 
-void APCRItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
+void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
 	AttachToActor(AttachedCard, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
