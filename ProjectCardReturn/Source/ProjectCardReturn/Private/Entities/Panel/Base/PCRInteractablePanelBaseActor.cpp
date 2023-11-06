@@ -32,6 +32,7 @@ APCRInteractablePanelBaseActor::APCRInteractablePanelBaseActor()
 	if (StaticMeshComponent && MonsterDataAsset)
 	{
 		RootComponent = StaticMeshComponent;
+		StaticMeshComponent->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->PanelMesh);
 		StaticMeshComponent->SetCollisionProfileName("BlockPlayerProjectile");
 	}
