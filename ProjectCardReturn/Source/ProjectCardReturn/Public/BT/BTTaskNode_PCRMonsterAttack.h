@@ -7,7 +7,7 @@
 #include "BTTaskNode_PCRMonsterAttack.generated.h"
 
 UENUM()
-enum class EMonsterTask
+enum class EMonsterTask : uint8
 {
 	Attack
 };

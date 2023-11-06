@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "GameFramework/Actor.h"
-#include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRSpearActor.generated.h"
 
 class UPCRParameterDataAsset;
