@@ -26,11 +26,11 @@ void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedMonsterBaseCharacter = Cast<APCRMonsterBaseCharacter>(TryGetPawnOwner());
-	check(CachedMonsterBaseCharacter);
-
-	CachedCharacterMovement = CachedMonsterBaseCharacter ? Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement()) : nullptr;
-
-	CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
+	if (CachedMonsterBaseCharacter)
+	{
+		CachedCharacterMovement = Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement());
+		CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
+	}
 }
 
 void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
