@@ -51,9 +51,18 @@ void UPCRSerinDollHandAnimInstance::PlayRockAttack()
 	Montage_Play(SerinDollDataAsset->RockAttackAnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::PlayPaperAttack()
+void UPCRSerinDollHandAnimInstance::PlayPaperAttack(bool bIsFar)
 {
-	Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+	if (bIsFar)
+	{
+		Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+		Montage_JumpToSection(TEXT("Back"), SerinDollDataAsset->PaperAttackAnimMontage);
+	}
+	else
+	{
+		Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+		Montage_JumpToSection(TEXT("Front"), SerinDollDataAsset->PaperAttackAnimMontage);
+	}
 }
 
 void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()

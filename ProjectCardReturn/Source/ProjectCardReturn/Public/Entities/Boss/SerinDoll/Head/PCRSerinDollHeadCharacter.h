@@ -40,8 +40,8 @@ public: // 동작
 	void LeftRockAttack();
 	void RightRockAttack();
 
-	void LeftPaperAttack();
-	void RightPaperAttack();
+	void LeftPaperAttack(bool bIsFar);
+	void RightPaperAttack(bool bIsFar);
 	
 	void LeftScissorsAttack();
 	void RightScissorsAttack();

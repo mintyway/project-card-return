@@ -89,46 +89,11 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	// TODO: 테스트용 코드
 	FTimerHandle TestTimerHandle1;
 	TimerHandles.Add(TestTimerHandle1);
-	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		LeftPaperAttack();
-
-	}), 10.f, true, 0.f);
+	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftPaperAttack, false), 3.f, true, 0.f);
 
 	FTimerHandle TestTimerHandle2;
 	TimerHandles.Add(TestTimerHandle2);
-	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateLambda([this]() -> void
-	{
-		RightPaperAttack();
-	}), 10.f, true, 5.f);
-
-	// FTimerHandle TestTimerHandle3;
-	// TimerHandles.Add(TestTimerHandle3);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	LeftHand->PaperAttack();
-	// }), 30.f, true, 10.f);
-	//
-	// FTimerHandle TestTimerHandle4;
-	// TimerHandles.Add(TestTimerHandle4);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle4, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	RightHand->RockAttack();
-	// }), 30.f, true, 15.f);
-	//
-	// FTimerHandle TestTimerHandle5;
-	// TimerHandles.Add(TestTimerHandle5);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle5, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	LeftHand->ScissorsAttack();
-	// }), 30.f, true, 20.f);
-	//
-	// FTimerHandle TestTimerHandle6;
-	// TimerHandles.Add(TestTimerHandle6);
-	// GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateLambda([this]() -> void
-	// {
-	// 	RightHand->PaperAttack();
-	// }), 30.f, true, 25.f);
+	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightPaperAttack, true), 3.f, true, 0.5f);
 
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(EricaPlayerController);
@@ -168,24 +133,24 @@ void APCRSerinDollHeadCharacter::RightRockAttack()
 	RightHand->RockAttack(CachedErica);
 }
 
-void APCRSerinDollHeadCharacter::LeftPaperAttack()
+void APCRSerinDollHeadCharacter::LeftPaperAttack(bool bIsFar)
 {
 	if (CheckIsAttacking(LeftHand))
 	{
 		return;
 	}
 	
-	LeftHand->PaperAttack();
+	LeftHand->PaperAttack(bIsFar);
 }
 
-void APCRSerinDollHeadCharacter::RightPaperAttack()
+void APCRSerinDollHeadCharacter::RightPaperAttack(bool bIsFar)
 {
 	if (CheckIsAttacking(RightHand))
 	{
 		return;
 	}
 	
-	RightHand->PaperAttack();
+	RightHand->PaperAttack(bIsFar);
 }
 
 void APCRSerinDollHeadCharacter::LeftScissorsAttack()

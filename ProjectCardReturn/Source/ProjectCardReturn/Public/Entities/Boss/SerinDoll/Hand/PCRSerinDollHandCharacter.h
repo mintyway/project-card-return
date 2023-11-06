@@ -36,7 +36,7 @@ public: // 동작
 	void Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InSideVector);
 	void Idle(AActor* NewTarget);
 	void RockAttack(AActor* NewTarget);
-	void PaperAttack();
+	void PaperAttack(bool bIsFar);
 	void ScissorsAttack(AActor* NewTarget);
 
 public: // Getter, Setter
@@ -78,6 +78,7 @@ private: // 타입
 		FVector MoveLocation;
 		float MoveLocationSpeed;
 		float MoveRotationExponentialSpeed;
+		uint32 bIsFar:1;
 		uint32 bIsMoving:1;
 	};
 

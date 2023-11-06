@@ -30,7 +30,7 @@ protected:
 
 public:
 	void PlayRockAttack();
-	void PlayPaperAttack();
+	void PlayPaperAttack(bool bIsFar = false);
 	void PlayScissorsAttack();
 
 public:
