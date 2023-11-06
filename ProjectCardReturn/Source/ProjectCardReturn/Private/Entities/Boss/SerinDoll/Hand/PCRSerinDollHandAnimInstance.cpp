@@ -4,7 +4,7 @@
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
 
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
-#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
+#include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
 
@@ -46,20 +46,54 @@ void UPCRSerinDollHandAnimInstance::NativeBeginPlay()
 	Super::NativeBeginPlay();
 }
 
-void UPCRSerinDollHandAnimInstance::PlayRock()
+void UPCRSerinDollHandAnimInstance::PlayRockAttack()
 {
 	Montage_Play(SerinDollDataAsset->RockAttackAnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::PlayPaper()
+void UPCRSerinDollHandAnimInstance::PlayPaperAttack(bool bIsFar)
 {
-	Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+	if (bIsFar)
+	{
+		Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+		Montage_JumpToSection(TEXT("Back"), SerinDollDataAsset->PaperAttackAnimMontage);
+	}
+	else
+	{
+		Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+		Montage_JumpToSection(TEXT("Front"), SerinDollDataAsset->PaperAttackAnimMontage);
+	}
 }
 
-void UPCRSerinDollHandAnimInstance::PlayScissorsAttack(APCRSerinDollHandCharacter* InSerinDollHand)
+void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()
 {
 	CurrentScissorsAttackCount = 0;
 	Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackChaseEnd()
+{
+	OnRockAttackEnded.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackHit()
+{
+	OnRockAttackHit.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_PaperAttackSweepStart()
+{
+	OnPaperAttackSweepStart.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_PaperAttackSweepEnd()
+{
+	OnPaperAttackSweepEnd.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackHit()
+{
+	OnScissorsAttackHit.Broadcast();
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()
@@ -70,6 +104,11 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()
 		const UAnimMontage* Montage = SerinDollDataAsset->ScissorsAttackAnimMontage;
 		Montage_SetNextSection(TEXT("Attack"), TEXT("End"), Montage);
 	}
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackStart()
+{
+	OnScissorsAttackStart.Broadcast();
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ToIdle()

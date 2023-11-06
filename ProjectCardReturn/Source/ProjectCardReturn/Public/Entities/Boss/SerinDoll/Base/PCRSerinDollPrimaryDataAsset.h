@@ -6,9 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "PCRSerinDollPrimaryDataAsset.generated.h"
 
+class UNiagaraSystem;
 class UPCRSerinDollHandAnimInstance;
-
-class UPCRSerinDollLeftHandAnimInstance;
 /**
  * 
  */
@@ -36,14 +35,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> ScissorsAttackAnimMontage;
 
-	
-	// TODO: 지울 예정	
-	UPROPERTY(EditAnywhere, Category = "Mesh")
-	TObjectPtr<USkeletalMesh> SerinDollLeftHandMesh;
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> RockAttackEffect;
 
-	UPROPERTY(EditAnywhere, Category = "Mesh")
-	TObjectPtr<USkeletalMesh> SerinDollRightHandMesh;
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> RockAttackHitEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> PaperAttackEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> PaperAttackHitEffect;
 	
-	UPROPERTY(EditAnywhere, Category = "Animation")
-	TSoftClassPtr<UPCRSerinDollLeftHandAnimInstance> SerinDollLeftAnimInstance;
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> ScissorsAttackEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> ScissorsAttackHitEffect;
 };

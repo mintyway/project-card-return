@@ -12,7 +12,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
-#include "Entities/Boss/SerinDoll/PCRSerinDollHeadCharacter.h"
+#include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/PCRBossUserWidget.h"
 

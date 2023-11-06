@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "Entities/Monsters/Base/PCRMonsterBaseAnimInstance.h"
 #include "PCRRangedSoldierAnimInstance.generated.h"
 

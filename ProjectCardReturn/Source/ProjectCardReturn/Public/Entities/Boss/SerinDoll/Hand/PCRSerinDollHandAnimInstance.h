@@ -7,6 +7,9 @@
 #include "PCRSerinDollHandAnimInstance.generated.h"
 
 DECLARE_DELEGATE(FIdleSignature);
+DECLARE_MULTICAST_DELEGATE(FRockAttackSignature);
+DECLARE_MULTICAST_DELEGATE(FPaperAttackSignature);
+DECLARE_MULTICAST_DELEGATE(FScissorsAttackSignature);
 
 class APCRSerinDollHandCharacter;
 class UPCRSerinDollPrimaryDataAsset;
@@ -28,21 +31,48 @@ protected:
 	virtual void NativeBeginPlay() override;
 
 public:
-	void PlayRock();
-	void PlayPaper();
-	void PlayScissorsAttack(APCRSerinDollHandCharacter* InSerinDollHand);
+	void PlayRockAttack();
+	void PlayPaperAttack(bool bIsFar = false);
+	void PlayScissorsAttack();
 
-public:
+public: // 델리게이트
 	FIdleSignature OnToIdle;
+	
+	FRockAttackSignature OnRockAttackEnded;
+	FRockAttackSignature OnRockAttackHit;
+
+	FPaperAttackSignature OnPaperAttackSweepStart;
+	FPaperAttackSignature OnPaperAttackSweepEnd;
+
+	FScissorsAttackSignature OnScissorsAttackHit;
+	FScissorsAttackSignature OnScissorsAttackStart;
 
 private: // 애님 노티파이
+	UFUNCTION()
+	void AnimNotify_RockAttackChaseEnd();
+
+	UFUNCTION()
+	void AnimNotify_RockAttackHit();
+
+	UFUNCTION()
+	void AnimNotify_PaperAttackSweepStart();
+
+	UFUNCTION()
+	void AnimNotify_PaperAttackSweepEnd();
+
+	UFUNCTION()
+	void AnimNotify_ScissorsAttackHit();
+	
 	UFUNCTION()
 	void AnimNotify_ScissorsAttackCountCheck();
 
 	UFUNCTION()
+	void AnimNotify_ScissorsAttackStart();
+
+	UFUNCTION()
 	void AnimNotify_ToIdle();
 
-private:  // 레퍼런스
+private: // 레퍼런스
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollPrimaryDataAsset> SerinDollDataAsset;
 
