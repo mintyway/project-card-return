@@ -3,6 +3,7 @@
 
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 
+#include "NiagaraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
@@ -35,7 +36,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	PaperAttackData.Offset = FVector(1250.0, 1000.0, 0.0);
 	PaperAttackData.bIsMoving = false;
 	PaperAttackData.bIsFar = false;
-	PaperAttackData.MoveLocationSpeed = 1000.f;
+	PaperAttackData.MoveLocationSpeed = 1500.f;
 	PaperAttackData.MoveRotationExponentialSpeed = 2.f;
 
 	ScissorsAttackData = {};
@@ -76,6 +77,14 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 		GetCharacterMovement()->DefaultLandMovementMode = MOVE_Flying;
 		GetCharacterMovement()->bCheatFlying = true;
 	}
+
+	RockAttackHitNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("RockHitNiagaraComponent"));
+	if (RockAttackHitNiagaraComponent)
+	{
+		RockAttackHitNiagaraComponent->SetAsset(SerinDollDataAsset->RockAttackHitEffect);
+	}
+
+	
 }
 
 void APCRSerinDollHandCharacter::PostInitializeComponents()
@@ -93,7 +102,7 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	check(CachedSerinDollHandAnimInstance);
 
 	CachedSerinDollHandAnimInstance->OnToIdle.BindUObject(this, &APCRSerinDollHandCharacter::HandleToIdle);
-	CachedSerinDollHandAnimInstance->OnRockAttackEnded.BindUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackChaseEnded);
+	CachedSerinDollHandAnimInstance->OnRockAttackEnded.AddUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackChaseEnded);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()

@@ -7,7 +7,7 @@
 #include "PCRSerinDollHandAnimInstance.generated.h"
 
 DECLARE_DELEGATE(FIdleSignature);
-DECLARE_DELEGATE(FRockAttackSignature);
+DECLARE_MULTICAST_DELEGATE(FRockAttackSignature);
 
 class APCRSerinDollHandCharacter;
 class UPCRSerinDollPrimaryDataAsset;
@@ -36,10 +36,14 @@ public:
 public:
 	FIdleSignature OnToIdle;
 	FRockAttackSignature OnRockAttackEnded;
+	FRockAttackSignature OnRockAttackHit;
 
 private: // 애님 노티파이
 	UFUNCTION()
-	void AnimNotify_RockChaseEnd();
+	void AnimNotify_RockAttackChaseEnd();
+
+	UFUNCTION()
+	void AnimNotify_RockAttackHit();
 	
 	UFUNCTION()
 	void AnimNotify_ScissorsAttackCountCheck();

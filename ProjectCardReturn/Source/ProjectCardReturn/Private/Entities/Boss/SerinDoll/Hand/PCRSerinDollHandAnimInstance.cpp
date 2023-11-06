@@ -71,12 +71,14 @@ void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()
 	Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::AnimNotify_RockChaseEnd()
+void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackChaseEnd()
 {
-	if (OnRockAttackEnded.IsBound())
-	{
-		OnRockAttackEnded.Execute();
-	}
+	OnRockAttackEnded.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackHit()
+{
+	OnRockAttackHit.Broadcast();
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()

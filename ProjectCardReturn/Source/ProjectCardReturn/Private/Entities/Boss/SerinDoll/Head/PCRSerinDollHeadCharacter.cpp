@@ -87,13 +87,20 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	RightHand->Idle(CachedErica);
 
 	// TODO: 테스트용 코드
-	FTimerHandle TestTimerHandle1;
-	TimerHandles.Add(TestTimerHandle1);
-	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftPaperAttack, false), 3.f, true, 0.f);
+	auto PaperAttack = [this]()
+	{
+		FTimerHandle TestTimerHandle1;
+		TimerHandles.Add(TestTimerHandle1);
+		GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftPaperAttack, false), 3.f, true, 0.f);
 
-	FTimerHandle TestTimerHandle2;
-	TimerHandles.Add(TestTimerHandle2);
-	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightPaperAttack, true), 3.f, true, 0.5f);
+		FTimerHandle TestTimerHandle2;
+		TimerHandles.Add(TestTimerHandle2);
+		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightPaperAttack, true), 3.f, true, 0.5f);
+	};
+
+	LeftRockAttack();
+	RightScissorsAttack();
+	
 
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(EricaPlayerController);

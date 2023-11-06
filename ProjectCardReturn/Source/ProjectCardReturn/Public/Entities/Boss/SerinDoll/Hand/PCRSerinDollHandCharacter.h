@@ -6,13 +6,15 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 #include "PCRSerinDollHandCharacter.generated.h"
 
+class UNiagaraComponent;
 class UPCRSerinDollHandAnimInstance;
+class APCRSerinDollHeadCharacter;
+
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinHandCharacter, Log, All);
 
 DECLARE_DELEGATE(FMoveCallbackSignature);
 DECLARE_DELEGATE(FChaseCallbackSignature);
 
-class APCRSerinDollHeadCharacter;
 /**
  * 
  */
@@ -115,6 +117,13 @@ private: // 레퍼런스
 
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollHandAnimInstance> CachedSerinDollHandAnimInstance;
+
+private: // 컴포넌트
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> RockAttackHitNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> PaperAttackNiagaraComponent;
 
 private: // 데이터
 	EState CurrentState;
