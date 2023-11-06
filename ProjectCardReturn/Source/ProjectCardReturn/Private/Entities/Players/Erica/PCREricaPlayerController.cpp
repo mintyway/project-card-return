@@ -14,7 +14,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/PCRBossUserWidget.h"
+#include "UI/PCRSerinUserWidget.h"
 
 APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByCursorDirection(true)
 {
@@ -41,10 +41,6 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->Pause.LoadSynchronous())
 		{
 			PauseUserWidgetClass = PCRPauseUserWidgetClass;
-		}
-		if (const TSubclassOf<UPCRBossUserWidget> PCRBossUserWidgetClass = UIDataAsset->Boss.LoadSynchronous())
-		{
-			BossUserWidgetClass = PCRBossUserWidgetClass;
 		}
 	}
 }
@@ -81,6 +77,8 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 
 	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateHP);
 	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateCardCount);
+	CachedEricaCharacter->OnChangeShootMode.BindUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateChangeShootMode);
+	
 
 	// UI 상태를 초기화 해줍니다.
 	MainUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
@@ -122,12 +120,8 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 
 void APCREricaPlayerController::BindSerinUI(APCRSerinDollHeadCharacter* Serin)
 {
-	BossUserWidget = CreateWidget<UPCRBossUserWidget>(this, BossUserWidgetClass);
-	check(BossUserWidget);
-	BossUserWidget->AddToViewport(-1);
-	
-	Serin->OnChangeHP.AddUObject(BossUserWidget, &UPCRBossUserWidget::HandleUpdateHP);
-	BossUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
+	Serin->OnChangeHP.AddUObject(MainUserWidget->BossUserWidget, &UPCRSerinUserWidget::HandleUpdateHP);
+	MainUserWidget->BossUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
 }
 
 void APCREricaPlayerController::GamePause()

@@ -20,13 +20,14 @@
 #include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
+#include "Entities/Players/Erica/PCRListenerActor.h"
 #include "GameFramework/GameModeBase.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
 APCREricaCharacter::APCREricaCharacter()
 	: bIsAlive(true), bCanDash(true), bIsDashing(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true), bCanAttack(true),
-	  CurrentShotMode(ShootMode::NarrowShot),
+	  CurrentShotMode(EShootMode::NarrowShot),
 	  MovementKeys{EKeys::W, EKeys::S, EKeys::D, EKeys::A},
 	  ElapsedDashTime(0.f),
 	  NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3),
@@ -164,6 +165,11 @@ void APCREricaCharacter::PostInitializeComponents()
 	SetFolderPath(TEXT("Erica"));
 # endif
 
+	// 리스너를 생성하는 코드입니다.
+	CachedListenerActor = GetWorld()->SpawnActor<APCRListenerActor>(FVector::ZeroVector, FRotator::ZeroRotator);
+	check(CachedListenerActor);
+	CachedListenerActor->Init(this);
+
 	check(DashNiagaraComponent);
 	DashNiagaraComponent->Deactivate();
 
@@ -204,7 +210,7 @@ void APCREricaCharacter::PossessedBy(AController* NewController)
 	CachedEricaPlayerController = Cast<APCREricaPlayerController>(NewController);
 	check(CachedEricaPlayerController);
 
-	CachedEricaPlayerController->SetAudioListenerOverride(GetCapsuleComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
+	CachedEricaPlayerController->SetAudioListenerOverride(CachedListenerActor->GetSceneComponent(), FVector::ZeroVector, FRotator::ZeroRotator);
 }
 
 void APCREricaCharacter::BeginPlay()
@@ -378,12 +384,12 @@ void APCREricaCharacter::HandleShootMode()
 {
 	switch (CurrentShotMode)
 	{
-		case ShootMode::NarrowShot:
+		case EShootMode::NarrowShot:
 		{
 			NarrowShot();
 			break;
 		}
-		case ShootMode::WideShot:
+		case EShootMode::WideShot:
 		{
 			WideShot();
 			break;
@@ -575,21 +581,26 @@ void APCREricaCharacter::Change()
 
 	switch (CurrentShotMode)
 	{
-		case ShootMode::NarrowShot:
+		case EShootMode::NarrowShot:
 		{
-			CurrentShotMode = ShootMode::WideShot;
+			CurrentShotMode = EShootMode::WideShot;
 			break;
 		}
-		case ShootMode::WideShot:
+		case EShootMode::WideShot:
 		{
-			CurrentShotMode = ShootMode::NarrowShot;
+			CurrentShotMode = EShootMode::NarrowShot;
 			break;
 		}
 		default:
 		{
-			CurrentShotMode = ShootMode::NarrowShot;
+			CurrentShotMode = EShootMode::NarrowShot;
 			break;
 		}
+	}
+
+	if (OnChangeShootMode.IsBound())
+	{
+		OnChangeShootMode.Execute(CurrentShotMode);
 	}
 }
 

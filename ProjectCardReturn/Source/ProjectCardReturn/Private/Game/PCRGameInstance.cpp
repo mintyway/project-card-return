@@ -28,7 +28,6 @@ void UPCRGameInstance::InitSoundSystem()
 
 bool UPCRGameInstance::SoundUpdate(float DeltaTime)
 {
-	SIMPLE_LOG;
 	float CurrentVolume;
 	MasterBus->getVolume(&CurrentVolume);
 	if (CurrentVolume != MasterVolume)

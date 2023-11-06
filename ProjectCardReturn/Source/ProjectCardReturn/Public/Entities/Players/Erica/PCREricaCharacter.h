@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "PCREricaCharacter.generated.h"
 
+class APCRListenerActor;
 class UPCRSoundPrimaryDataAsset;
 class UPCREricaAnimInstance;
 class UPCRParameterDataAsset;
@@ -31,11 +32,13 @@ DECLARE_MULTICAST_DELEGATE(FDeadSignature);
  * 캐릭터의 공격 모드를 설정합니다.
  */
 UENUM()
-enum class ShootMode : uint8
+enum class EShootMode : uint8
 {
 	NarrowShot,
 	WideShot
 };
+
+DECLARE_DELEGATE_OneParam(FShootModeSignature, EShootMode);
 
 UCLASS()
 class PROJECTCARDRETURN_API APCREricaCharacter : public ACharacter
@@ -66,6 +69,7 @@ public: // 델리게이트
 	FDeadSignature OnDead;
 
 	FChangeCardCountSignature OnChangeCardCount;
+	FShootModeSignature OnChangeShootMode;
 
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
@@ -131,7 +135,7 @@ private: // 컴포넌트
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
-	
+
 private: // 캐시
 	UPROPERTY()
 	TObjectPtr<APCREricaPlayerController> CachedEricaPlayerController;
@@ -139,16 +143,18 @@ private: // 캐시
 	UPROPERTY()
 	TObjectPtr<UPCREricaAnimInstance> CachedEricaAnimInstance;
 
+	UPROPERTY()
+	TObjectPtr<APCRListenerActor> CachedListenerActor;
 
 private: // 스탯
 	float MaxHP;
 	float CurrentHP;
-	
+
 	float NarrowShotFiringRate;
 	float WideShotFiringRate;
-	
+
 	float RecallCooldownTime;
-	
+
 	float NarrowShotForwardDamage;
 	float NarrowShotBackwardDamage;
 	float WideShotForwardDamage;
@@ -158,18 +164,18 @@ private: // 스탯
 	float WideShotRange;
 
 private: // 상태
-	uint32 bIsAlive : 1;
+	uint32 bIsAlive:1;
 
-	uint32 bCanDash : 1;
-	uint32 bIsDashing : 1;
-	
-	uint32 bCanNarrowShot : 1;
-	uint32 bCanWideShot : 1;
-	uint32 bCanReturnCard : 1;
+	uint32 bCanDash:1;
+	uint32 bIsDashing:1;
+
+	uint32 bCanNarrowShot:1;
+	uint32 bCanWideShot:1;
+	uint32 bCanReturnCard:1;
 
 	uint32 bCanAttack:1;
 
-	ShootMode CurrentShotMode;
+	EShootMode CurrentShotMode;
 
 private: // 대시
 	TArray<FKey> MovementKeys;
@@ -177,13 +183,13 @@ private: // 대시
 
 	FVector CachedDashStartLocation;
 	FVector CachedDashDirection;
-	
+
 	float DashCooldownTime;
 	float MaxDashTime;
-	
+
 	float ElapsedDashTime;
 	float DashDistance;
-	
+
 private: // 카드
 	UPROPERTY()
 	TObjectPtr<APCREricaCardProjectilePool> CardProjectilePool;
@@ -197,7 +203,7 @@ private: // 카드
 	int32 NarrowShotCount;
 	int32 NarrowShotElapsedCount;
 	float NarrowShotInterval;
-	
+
 	int32 WideShotCount;
 	float WideShotAngle;
 
