@@ -6,6 +6,10 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
+namespace FMOD::Studio {
+	class EventInstance;
+}
+
 class UFMODAudioComponent;
 class APCRLiftActor;
 class UPCRStagePrimaryDataAsset;
@@ -78,15 +82,10 @@ private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 
-private: // 컴포넌트
-	UPROPERTY()
-	TObjectPtr<UFMODAudioComponent> AmbientAudioComponent;
-
-	UPROPERTY()
-	TObjectPtr<UFMODAudioComponent> Stage1AudioComponent;
-
-	UPROPERTY()
-	TObjectPtr<UFMODAudioComponent> BossStageAudioComponent;
+private: // 오디오 인스턴스
+	FMOD::Studio::EventInstance* AmbientAudioInst;
+	FMOD::Studio::EventInstance* Stage1AudioInst;
+	FMOD::Studio::EventInstance* BossStageAudioInst;
 
 private: // 서브 액터 섹션
 	UPROPERTY()

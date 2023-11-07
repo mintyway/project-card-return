@@ -3,8 +3,7 @@
 
 #include "Game/PCRGameModeBase.h"
 
-#include "FMODAudioComponent.h"
-#include "FMODStudioModule.h"
+#include "FMODBlueprintStatics.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -21,7 +20,9 @@
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
-APCRGameModeBase::APCRGameModeBase(): Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
+APCRGameModeBase::APCRGameModeBase()
+	: AmbientAudioInst(nullptr), Stage1AudioInst(nullptr), BossStageAudioInst(nullptr),
+	  Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -59,24 +60,6 @@ APCRGameModeBase::APCRGameModeBase(): Stage1TotalMonsterKillCount(0), Stage1Targ
 			LiftActorClass = LiftBP;
 		}
 	}
-
-	AmbientAudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("AmbientAudioComponent"));
-	if (AmbientAudioComponent)
-	{
-		AmbientAudioComponent->SetEvent(SoundDataAsset->AmbientBGM);
-	}
-
-	Stage1AudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("Stage1AudioComponent"));
-	if (Stage1AudioComponent)
-	{
-		Stage1AudioComponent->SetEvent(SoundDataAsset->Stage1BGM);
-	}
-
-	BossStageAudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("BossStageAudioComponent"));
-	if (BossStageAudioComponent)
-	{
-		BossStageAudioComponent->SetEvent(SoundDataAsset->BossStageBGM);
-	}
 }
 
 void APCRGameModeBase::PostInitializeComponents()
@@ -93,11 +76,27 @@ void APCRGameModeBase::PostInitializeComponents()
 
 	check(StageDataAsset && ParameterDataAsset && SoundDataAsset);
 
-	AmbientAudioComponent->SetVolume(0.75f);
-	Stage1AudioComponent->SetVolume(0.2f);
-	BossStageAudioComponent->SetVolume(0.2f);
-	Stage1AudioComponent->Deactivate();
-	BossStageAudioComponent->Deactivate();
+	const FFMODEventInstance AmbientAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->AmbientBGM, false);
+	AmbientAudioInst = AmbientAudio.Instance;
+	if (AmbientAudioInst)
+	{
+		AmbientAudioInst->start();
+		AmbientAudioInst->setVolume(0.75f);
+	}
+
+	const FFMODEventInstance Stage1Audio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->Stage1BGM, false);
+	Stage1AudioInst = Stage1Audio.Instance;
+	if (Stage1AudioInst)
+	{
+		Stage1AudioInst->setVolume(0.2f);
+	}
+
+	const FFMODEventInstance BossStageAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->BossStageBGM, false);
+	BossStageAudioInst = BossStageAudio.Instance;
+	if (BossStageAudioInst)
+	{
+		BossStageAudioInst->setVolume(0.2f);
+	}
 
 	// 태그로 Lift를 찾는 코드입니다.
 	TArray<AActor*> ActorsWithTag;
@@ -193,7 +192,7 @@ void APCRGameModeBase::HandleKillCount()
 	++Stage1TotalMonsterKillCount;
 	const int32 CurrentKillCount = Stage1TargetKillCount - Stage1TotalMonsterKillCount;
 	OnChangeStage1MonsterCount.Execute(Stage1TargetKillCount, CurrentKillCount);
-	
+
 	if (Stage1TotalMonsterKillCount >= Stage1TargetKillCount)
 	{
 		StopAllMonsterGeneratorsAndKillSpawnedMonsters();
@@ -203,19 +202,19 @@ void APCRGameModeBase::HandleKillCount()
 
 void APCRGameModeBase::PlayStage1BGM()
 {
-	Stage1AudioComponent->Activate(true);
-	BossStageAudioComponent->Deactivate();
+	Stage1AudioInst->start();
+	BossStageAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 }
 
 void APCRGameModeBase::PlayBossStageBGM()
 {
-	Stage1AudioComponent->Deactivate();
-	BossStageAudioComponent->Activate(true);
+	Stage1AudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+	BossStageAudioInst->start();
 }
 
 void APCRGameModeBase::LiftFloor()
 {
-	Stage1AudioComponent->Deactivate();
+	Stage1AudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 	LiftActor->LiftUp();
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	check(PlayerCharacter);
