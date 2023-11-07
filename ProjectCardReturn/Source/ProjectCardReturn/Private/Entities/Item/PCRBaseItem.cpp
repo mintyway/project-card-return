@@ -4,6 +4,7 @@
 #include "Entities/Item/PCRBaseItem.h"
 
 #include "Components/BoxComponent.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
 APCRBaseItem::APCRBaseItem()
@@ -22,7 +23,8 @@ APCRBaseItem::APCRBaseItem()
 void APCRBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	BoxComponent->OnComponentHit.AddDynamic(this, &APCRBaseItem::HandleItemHit);
 }
 
 void APCRBaseItem::Tick(float DeltaTime)
@@ -40,5 +42,13 @@ void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
 	AttachToActor(AttachedCard, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+}
+
+void APCRBaseItem::HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
+	{
+		
+	}
 }
 
