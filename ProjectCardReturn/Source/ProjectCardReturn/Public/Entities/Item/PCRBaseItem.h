@@ -36,6 +36,7 @@ private:
 
 protected:
 	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+	virtual void PlayerHitEvent(APCREricaCharacter* Player);
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;

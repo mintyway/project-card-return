@@ -81,8 +81,7 @@ void APCRBaseItem::HandleItemHit(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 	{
-		//
-		
+		PlayerHitEvent(Player);
 		Destroy();
 	}
 }
@@ -92,5 +91,10 @@ void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 	check(AttachedCard);
 	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
 	bInteractCard = true;
+}
+
+void APCRBaseItem::PlayerHitEvent(APCREricaCharacter* Player)
+{
+	
 }
 
