@@ -15,7 +15,7 @@ APCRBaseItem::APCRBaseItem()
 	{
 		RootComponent = BoxComponent;
 		BoxComponent->SetBoxExtent(FVector(10.0, 10.0, 10.0));
-		BoxComponent->SetCollisionProfileName("BlockPlayerProjectile");
+		BoxComponent->SetCollisionProfileName("Item");
 	}
 }
 
