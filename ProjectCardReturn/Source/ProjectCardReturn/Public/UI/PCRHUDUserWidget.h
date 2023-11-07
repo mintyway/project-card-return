@@ -19,11 +19,14 @@ class PROJECTCARDRETURN_API UPCRHUDUserWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-public:
+public: // 동작
+	void SetVisibilityEricaUI(bool bIsEnable);
+	void SetVisibilitySerinUI(bool bIsEnable);
 
+public:
 	UPROPERTY()
-	TObjectPtr<UPCREricaUserWidget> SerinUserWidget;
+	TObjectPtr<UPCREricaUserWidget> EricaUserWidget;
 	
 	UPROPERTY()
-	TObjectPtr<UPCRSerinUserWidget> BossUserWidget;
+	TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
 };
