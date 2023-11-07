@@ -10,7 +10,7 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Game/PCRParameterDataAsset.h"
 
-APCRBaseItem::APCRBaseItem()
+APCRBaseItem::APCRBaseItem() : bInteractCard(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -19,19 +19,26 @@ APCRBaseItem::APCRBaseItem()
 	{
 		ItemDataAsset = DA_Item.Object;
 	}
-	
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	if (BoxComponent)
+
+	static ConstructorHelpers::FObjectFinder<UPCRParameterDataAsset> DA_Parameter(TEXT("/Script/ProjectCardReturn.PCRParameterDataAsset'/Game/DataAssets/DA_Parameter.DA_Parameter'"));
+	if (DA_Parameter.Succeeded())
 	{
-		RootComponent = BoxComponent;
-		BoxComponent->SetBoxExtent(FVector(10.0, 10.0, 10.0));
-		BoxComponent->SetCollisionProfileName("Item");
+		ParameterDataAsset = DA_Parameter.Object;
 	}
 
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
-	if (NiagaraComponent)
 	{
 		RootComponent = NiagaraComponent;
+	}
+
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	if (BoxComponent)
+	{
+		BoxComponent->SetupAttachment(NiagaraComponent);
+		BoxComponent->SetBoxExtent(FVector(50.0, 50.0, 50.0));
+		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel10);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 	}
 }
 
@@ -39,8 +46,8 @@ void APCRBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BoxComponent->OnComponentHit.AddDynamic(this, &APCRBaseItem::HandleItemHit);
-
+	OnActorBeginOverlap.AddDynamic(this, &APCRBaseItem::HandleItemHit);
+	
 	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
 	DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
@@ -58,7 +65,13 @@ void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 	AttachToActor(AttachedCard, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
 
-void APCRBaseItem::HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void APCRBaseItem::DestroyTimerCallback()
+{
+	if (!bInteractCard)
+		Destroy();
+}
+
+void APCRBaseItem::HandleItemHit(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 	{
@@ -68,14 +81,10 @@ void APCRBaseItem::HandleItemHit(UPrimitiveComponent* HitComponent, AActor* Othe
 	}
 }
 
-void APCRBaseItem::DestroyTimerCallback()
-{
-	Destroy();
-}
-
 void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 {
 	check(AttachedCard);
 	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
+	bInteractCard = true;
 }
 

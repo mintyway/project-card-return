@@ -26,8 +26,10 @@ protected:
 
 private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
-	void HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	void DestroyTimerCallback();
+	
+	UFUNCTION()
+	void HandleItemHit(AActor* OverlappedActor, AActor* OtherActor);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
@@ -43,4 +45,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	uint32 bInteractCard;
 };
