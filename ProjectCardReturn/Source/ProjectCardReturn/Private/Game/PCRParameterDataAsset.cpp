@@ -22,4 +22,4 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  RabbitMaxHealthPoint(3.f), RabbitAttackPower(5.f), RabbitMoveSpeed(EricaMoveSpeed * 0.7f), RabbitAttackRange(300.f), RabbitAttackRate(1.f), RabbitGimmickMoveRange(1000.f), RabbitJumpProbability(0.2f), RabbitWaitAndJumpProbability(0.25f), RabbitMoveRightDiagonalProbability(0.33f), RabbitMoveLeftDiagonalProbability(0.5f), RabbitMoveDiagonalDistance(300.f),
 
-	  ItemSpawnRate(0.25f), ItemDestroyTime(5.0f) {}
+	  ItemSpawnRate(0.25f), ItemDestroyTime(10.0f) {}
