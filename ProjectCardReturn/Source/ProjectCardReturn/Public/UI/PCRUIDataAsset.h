@@ -22,8 +22,8 @@ public:
 	TSoftClassPtr<UUserWidget> HPBar;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSoftClassPtr<UPCRHUDUserWidget> Main;
+	TSoftClassPtr<UPCRHUDUserWidget> HUDUserWidgetClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSoftClassPtr<UPCRPauseUserWidget> Pause;
+	TSoftClassPtr<UPCRPauseUserWidget> PauseUserWidgetClass;
 };

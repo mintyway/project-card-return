@@ -35,11 +35,11 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 
 	if (UIDataAsset)
 	{
-		if (const TSubclassOf<UPCRHUDUserWidget> PCRMainUserWidgetClass = UIDataAsset->Main.LoadSynchronous())
+		if (const TSubclassOf<UPCRHUDUserWidget> PCRHUDUserWidgetClass = UIDataAsset->HUDUserWidgetClass.LoadSynchronous())
 		{
-			MainUserWidgetClass = PCRMainUserWidgetClass;
+			HUDUserWidgetClass = PCRHUDUserWidgetClass;
 		}
-		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->Pause.LoadSynchronous())
+		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->PauseUserWidgetClass.LoadSynchronous())
 		{
 			PauseUserWidgetClass = PCRPauseUserWidgetClass;
 		}
@@ -72,9 +72,9 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 	CachedEricaCharacter = Cast<APCREricaCharacter>(InPawn);
 	check(CachedEricaCharacter);
 
-	MainUserWidget = CreateWidget<UPCRHUDUserWidget>(this, MainUserWidgetClass);
-	check(MainUserWidget);
-	MainUserWidget->AddToViewport(-1);
+	HUDUserWidget = CreateWidget<UPCRHUDUserWidget>(this, HUDUserWidgetClass);
+	check(HUDUserWidget);
+	HUDUserWidget->AddToViewport(-1);
 	
 	BindEricaUI();
 }
@@ -114,8 +114,8 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 
 void APCREricaPlayerController::BindSerinUI(APCRSerinDollHeadCharacter* Serin)
 {
-	Serin->OnChangeHP.AddUObject(MainUserWidget->BossUserWidget, &UPCRSerinUserWidget::HandleUpdateHP);
-	MainUserWidget->BossUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
+	Serin->OnChangeHP.AddUObject(HUDUserWidget->BossUserWidget, &UPCRSerinUserWidget::HandleUpdateHP);
+	HUDUserWidget->BossUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
 }
 
 void APCREricaPlayerController::GamePause()
@@ -130,10 +130,10 @@ void APCREricaPlayerController::GamePause()
 
 void APCREricaPlayerController::BindEricaUI()
 {
-	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateHP);
-	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateCardCount);
-	CachedEricaCharacter->OnChangeShootMode.BindUObject(MainUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateChangeShootMode);
+	CachedEricaCharacter->OnChangeHP.AddUObject(HUDUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateHP);
+	CachedEricaCharacter->OnChangeCardCount.AddUObject(HUDUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateCardCount);
+	CachedEricaCharacter->OnChangeShootMode.BindUObject(HUDUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateChangeShootMode);
 	
-	MainUserWidget->SerinUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
-	MainUserWidget->SerinUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
+	HUDUserWidget->SerinUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
+	HUDUserWidget->SerinUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
 }

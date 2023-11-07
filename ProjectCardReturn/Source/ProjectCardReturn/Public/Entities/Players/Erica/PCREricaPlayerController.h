@@ -51,10 +51,10 @@ private: // 캐시 섹션
 
 private: // UI 섹션
 	UPROPERTY()
-	TSubclassOf<UPCRHUDUserWidget> MainUserWidgetClass;
+	TSubclassOf<UPCRHUDUserWidget> HUDUserWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UPCRHUDUserWidget> MainUserWidget;
+	TObjectPtr<UPCRHUDUserWidget> HUDUserWidget;
 
 	UPROPERTY()
 	TSubclassOf<UPCRPauseUserWidget> PauseUserWidgetClass;
@@ -63,10 +63,10 @@ private: // UI 섹션
 	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
 
 	UPROPERTY()
-	TSubclassOf<UPCRSerinUserWidget> BossUserWidgetClass;
+	TSubclassOf<UPCRSerinUserWidget> SerinUserWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UPCRSerinUserWidget> BossUserWidget;
+	TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
 
 private: // 상태 섹션
 	uint32 bUseCharacterRotationByCursorDirection : 1;
