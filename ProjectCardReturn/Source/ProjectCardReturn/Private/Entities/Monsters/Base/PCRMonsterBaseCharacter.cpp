@@ -231,10 +231,10 @@ void APCRMonsterBaseCharacter::HandleDead()
 	
 	OnDead.Broadcast(this);
 
-	SpawItem();
+	//SpawnItem();
 }
 
-void APCRMonsterBaseCharacter::SpawItem()
+void APCRMonsterBaseCharacter::SpawnItem()
 {
 	float ItemSpawnRate = 0.25f;
 	if (FMath::RandRange(1, 100) <= ItemSpawnRate * 100)
