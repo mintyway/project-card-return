@@ -7,6 +7,7 @@
 #include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRBaseItem.generated.h"
 
+class UNiagaraComponent;
 class UBoxComponent;
 
 UENUM()
@@ -38,6 +39,9 @@ private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 	void HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> NiagaraComponent;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
 };
