@@ -15,6 +15,7 @@ class UPCRMonsterDataAsset;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE(FOnHPChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnStunDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeadDelegate, APCRMonsterBaseCharacter*);
 
 UCLASS()
@@ -51,6 +52,7 @@ public: // Getter, Setter
 
 public: // 델리게이트
 	FOnHPChangeDelegate OnHPChange;
+	FOnStunDelegate OnStun;
 	FOnDeadDelegate OnDead;
 
 protected:
