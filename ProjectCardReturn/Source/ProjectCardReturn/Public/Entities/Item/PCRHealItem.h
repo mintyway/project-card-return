@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRHealItem : public APCRBaseItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRHealItem();
 };

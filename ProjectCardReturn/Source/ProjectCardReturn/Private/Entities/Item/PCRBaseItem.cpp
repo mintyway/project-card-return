@@ -3,6 +3,7 @@
 
 #include "Entities/Item/PCRBaseItem.h"
 
+#include "NiagaraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
@@ -25,6 +26,12 @@ APCRBaseItem::APCRBaseItem()
 		BoxComponent->SetBoxExtent(FVector(10.0, 10.0, 10.0));
 		BoxComponent->SetCollisionProfileName("Item");
 	}
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	if (NiagaraComponent)
+	{
+		RootComponent = NiagaraComponent;
+	}
 }
 
 void APCRBaseItem::BeginPlay()
@@ -38,12 +45,6 @@ void APCRBaseItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
-{
-	check(AttachedCard);
-	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
 }
 
 void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
@@ -69,5 +70,11 @@ void APCRBaseItem::HandleItemHit(UPrimitiveComponent* HitComponent, AActor* Othe
 void APCRBaseItem::DestroyTimerCallback()
 {
 	Destroy();
+}
+
+void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
+{
+	check(AttachedCard);
+	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
 }
 

@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRMoreHpItem : public APCRBaseItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRMoreHpItem();
 };

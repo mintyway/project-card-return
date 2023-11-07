@@ -3,3 +3,13 @@
 
 #include "Entities/Item/PCRSpeedUpItem.h"
 
+#include "NiagaraComponent.h"
+#include "Entities/Item/PCRItemDataAsset.h"
+
+APCRSpeedUpItem::APCRSpeedUpItem()
+{
+	if (NiagaraComponent && ItemDataAsset)
+	{
+		NiagaraComponent->SetAsset(ItemDataAsset->SpeedUpItemEffect);
+	}
+}

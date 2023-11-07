@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRManyCardItem : public APCRBaseItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRManyCardItem();
 };

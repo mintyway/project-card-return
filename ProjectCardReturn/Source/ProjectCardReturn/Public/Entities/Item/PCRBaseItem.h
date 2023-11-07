@@ -23,19 +23,19 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-public:
-	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
-
 private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 	void HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	void DestroyTimerCallback();
-
-	UPROPERTY(VisibleAnywhere, Category = "Effect")
-	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
+
+protected:
+	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRItemDataAsset> ItemDataAsset;
