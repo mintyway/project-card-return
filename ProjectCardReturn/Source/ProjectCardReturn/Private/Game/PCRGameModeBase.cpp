@@ -21,7 +21,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
-APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
+APCRGameModeBase::APCRGameModeBase(): Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -188,17 +188,13 @@ void APCRGameModeBase::StopAllMonsterGeneratorsAndKillSpawnedMonsters()
 	}
 }
 
-void APCRGameModeBase::DisplayLogMonsterKillCount()
-{
-	UE_LOG(PCRLogGameModeBase, Warning, TEXT("처치한 몬스터 수: %d / %d"), TotalMonsterKillCount, Stage1TargetKillCount);
-}
-
 void APCRGameModeBase::HandleKillCount()
 {
-	++TotalMonsterKillCount;
-	DisplayLogMonsterKillCount();
-
-	if (TotalMonsterKillCount >= Stage1TargetKillCount)
+	++Stage1TotalMonsterKillCount;
+	const int32 CurrentKillCount = Stage1TargetKillCount - Stage1TotalMonsterKillCount;
+	OnChangeStage1MonsterCount.Execute(Stage1TargetKillCount, CurrentKillCount);
+	
+	if (Stage1TotalMonsterKillCount >= Stage1TargetKillCount)
 	{
 		StopAllMonsterGeneratorsAndKillSpawnedMonsters();
 		OnStage1End.Broadcast();

@@ -15,6 +15,8 @@ class UPCRSoundPrimaryDataAsset;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStage1EndSignature);
 
+DECLARE_DELEGATE_TwoParams(FStage1MonsterCountSignature, int32, int32);
+
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameModeBase, Log, All);
 
 UENUM()
@@ -42,12 +44,15 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+public:
+	FORCEINLINE int32 GetStage1MaxMonsterCount() { return Stage1TargetKillCount; }
+	FORCEINLINE int32 GetStage1CurrentMonsterCount() { return Stage1TargetKillCount - Stage1TotalMonsterKillCount; }
+
 private: // 내부 함수 섹션
 	void SpawnMonsterGenerators();
 	void StartAllMonsterGenerators();
 	void StopAllMonsterGeneratorsAndKillSpawnedMonsters();
-	
-	void DisplayLogMonsterKillCount();
+
 	void HandleKillCount();
 
 	void PlayStage1BGM();
@@ -61,11 +66,12 @@ private: // 내부 함수 섹션
 
 public:
 	FStage1EndSignature OnStage1End;
-	
+	FStage1MonsterCountSignature OnChangeStage1MonsterCount;
+
 private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCRStagePrimaryDataAsset> StageDataAsset;
-	
+
 	UPROPERTY()
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 
@@ -81,11 +87,11 @@ private: // 컴포넌트
 
 	UPROPERTY()
 	TObjectPtr<UFMODAudioComponent> BossStageAudioComponent;
-	
+
 private: // 서브 액터 섹션
 	UPROPERTY()
 	TSubclassOf<APCRLiftActor> LiftActorClass;
-	
+
 	UPROPERTY(BlueprintReadOnly, Category = "Actor", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCRLiftActor> LiftActor;
 
@@ -94,7 +100,7 @@ private: // 데이터 섹션
 	TArray<TObjectPtr<APCRMonsterGenerator>> MonsterGenerators;
 
 	float GenerateInterval;
-	int32 TotalMonsterKillCount;
+	int32 Stage1TotalMonsterKillCount;
 	int32 Stage1TargetKillCount;
 
 	EStageNumber CurrentStageNumber;
