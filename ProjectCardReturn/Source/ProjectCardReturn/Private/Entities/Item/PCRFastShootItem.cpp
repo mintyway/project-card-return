@@ -3,3 +3,7 @@
 
 #include "Entities/Item/PCRFastShootItem.h"
 
+APCRFastShootItem::APCRFastShootItem()
+{
+	
+}
