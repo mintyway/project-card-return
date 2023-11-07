@@ -6,7 +6,7 @@
 #include "Entities/Players/Erica/PCREricaDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "UI/PCRUIDataAsset.h"
-#include "UI/PCRMainUserWidget.h"
+#include "UI/PCRHUDUserWidget.h"
 #include "UI/PCRPauseUserWidget.h"
 
 #include "EnhancedInputComponent.h"
@@ -14,6 +14,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/PCREricaUserWidget.h"
 #include "UI/PCRSerinUserWidget.h"
 
 APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByCursorDirection(true)
@@ -34,7 +35,7 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 
 	if (UIDataAsset)
 	{
-		if (const TSubclassOf<UPCRMainUserWidget> PCRMainUserWidgetClass = UIDataAsset->Main.LoadSynchronous())
+		if (const TSubclassOf<UPCRHUDUserWidget> PCRMainUserWidgetClass = UIDataAsset->Main.LoadSynchronous())
 		{
 			MainUserWidgetClass = PCRMainUserWidgetClass;
 		}
@@ -70,19 +71,12 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 
 	CachedEricaCharacter = Cast<APCREricaCharacter>(InPawn);
 	check(CachedEricaCharacter);
-	
-	MainUserWidget = CreateWidget<UPCRMainUserWidget>(this, MainUserWidgetClass);
+
+	MainUserWidget = CreateWidget<UPCRHUDUserWidget>(this, MainUserWidgetClass);
 	check(MainUserWidget);
 	MainUserWidget->AddToViewport(-1);
-
-	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateHP);
-	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateCardCount);
-	CachedEricaCharacter->OnChangeShootMode.BindUObject(MainUserWidget, &UPCRMainUserWidget::HandleUpdateChangeShootMode);
 	
-
-	// UI 상태를 초기화 해줍니다.
-	MainUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
-	MainUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
+	BindEricaUI();
 }
 
 void APCREricaPlayerController::BeginPlay()
@@ -132,4 +126,14 @@ void APCREricaPlayerController::GamePause()
 	PauseUserWidget->AddToViewport(3);
 
 	SetPause(true);
+}
+
+void APCREricaPlayerController::BindEricaUI()
+{
+	CachedEricaCharacter->OnChangeHP.AddUObject(MainUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateHP);
+	CachedEricaCharacter->OnChangeCardCount.AddUObject(MainUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateCardCount);
+	CachedEricaCharacter->OnChangeShootMode.BindUObject(MainUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateChangeShootMode);
+	
+	MainUserWidget->SerinUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
+	MainUserWidget->SerinUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
 }

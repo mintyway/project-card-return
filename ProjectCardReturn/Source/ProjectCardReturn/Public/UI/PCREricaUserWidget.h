@@ -4,18 +4,18 @@
 
 #include "ProjectCardReturn.h"
 #include "Blueprint/UserWidget.h"
-#include "PCRMainUserWidget.generated.h"
+#include "PCREricaUserWidget.generated.h"
 
-class UPCRSerinUserWidget;
-class UImage;
 enum class EShootMode : uint8;
+class UImage;
 class UTextBlock;
 class UProgressBar;
+
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UPCRMainUserWidget : public UUserWidget
+class PROJECTCARDRETURN_API UPCREricaUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -27,9 +27,6 @@ public:
 	void HandleUpdateCardCount(int32 MaxCardCount, int32 CurrentCardCount);
 	void HandleUpdateChangeShootMode(EShootMode InShootMode);
 
-	UPROPERTY()
-	TObjectPtr<UPCRSerinUserWidget> BossUserWidget;
-	
 	UPROPERTY()
 	TObjectPtr<UProgressBar> HPBar;
 	

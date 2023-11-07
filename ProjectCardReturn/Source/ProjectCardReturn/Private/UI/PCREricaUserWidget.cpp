@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/PCRMainUserWidget.h"
+#include "UI/PCREricaUserWidget.h"
 
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Components/Image.h"
@@ -9,14 +9,10 @@
 #include "Components/TextBlock.h"
 #include "UI/PCRSerinUserWidget.h"
 
-void UPCRMainUserWidget::NativeConstruct()
+void UPCREricaUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const FName WB_SerinUIKey = TEXT("WB_SerinUI");
-	BossUserWidget = Cast<UPCRSerinUserWidget>(GetWidgetFromName(WB_SerinUIKey));
-	check(BossUserWidget);
-	
 	const FName HPProgressBarKey = TEXT("HPProgressBar");
 	HPBar = Cast<UProgressBar>(GetWidgetFromName(HPProgressBarKey));
 	check(HPBar);
@@ -41,13 +37,13 @@ void UPCRMainUserWidget::NativeConstruct()
 	WideShotImage->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UPCRMainUserWidget::HandleUpdateHP(float MaxHP, float CurrentHP)
+void UPCREricaUserWidget::HandleUpdateHP(float MaxHP, float CurrentHP)
 {
 	const float HPRatio = CurrentHP / MaxHP;
 	HPBar->SetPercent(HPRatio);
 }
 
-void UPCRMainUserWidget::HandleUpdateCardCount(int32 MaxCardCount, int32 CurrentCardCount)
+void UPCREricaUserWidget::HandleUpdateCardCount(int32 MaxCardCount, int32 CurrentCardCount)
 {
 	const FString MaxCardCountString = FString::Printf(TEXT("%d"), MaxCardCount);
 	const FString CurrentCardCountString = FString::Printf(TEXT("%d"), CurrentCardCount);
@@ -57,7 +53,7 @@ void UPCRMainUserWidget::HandleUpdateCardCount(int32 MaxCardCount, int32 Current
 	CurrentCardCountTextBlock->SetText(CurrentCardCardCountText);
 }
 
-void UPCRMainUserWidget::HandleUpdateChangeShootMode(EShootMode InShootMode)
+void UPCREricaUserWidget::HandleUpdateChangeShootMode(EShootMode InShootMode)
 {
 	switch (InShootMode)
 	{
