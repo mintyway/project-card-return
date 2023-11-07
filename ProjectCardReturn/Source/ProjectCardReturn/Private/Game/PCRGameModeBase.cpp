@@ -21,7 +21,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
-APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
+APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKillCount(1), CurrentStageNumber(EStageNumber::Stage1)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -233,6 +233,8 @@ void APCRGameModeBase::LiftFloor()
 void APCRGameModeBase::SpawnSerinDoll()
 {
 	PlayBossStageBGM();
-	const float SpawnLocationZ = LiftActor->GetActorLocation().Z;
-	GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(FVector(150.0, 0.0, SpawnLocationZ), FRotator(0.0, 180.0, 0.0));
+	FVector SpawnLocation = LiftActor->GetActorLocation();
+	SpawnLocation.X += 1200.0;
+	SpawnLocation.Z -= 250.0;
+	GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(SpawnLocation, FRotator(0.0, 180.0, 0.0));
 }
