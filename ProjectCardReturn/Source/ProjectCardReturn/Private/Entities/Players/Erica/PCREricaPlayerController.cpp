@@ -13,9 +13,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
+#include "Game/PCRGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/PCREricaUserWidget.h"
 #include "UI/PCRSerinUserWidget.h"
+#include "UI/PCRStage1UserWidget.h"
 
 APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByCursorDirection(true)
 {
@@ -117,6 +119,7 @@ void APCREricaPlayerController::BindSerinUI(APCRSerinDollHeadCharacter* Serin)
 {
 	Serin->OnChangeHP.AddUObject(HUDUserWidget->SerinUserWidget, &UPCRSerinUserWidget::HandleUpdateHP);
 	HUDUserWidget->SerinUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
+	HUDUserWidget->SetVisibilityStage1UI(false);
 	HUDUserWidget->SetVisibilitySerinUI(true);
 }
 
@@ -138,4 +141,16 @@ void APCREricaPlayerController::BindEricaUI()
 	
 	HUDUserWidget->EricaUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
 	HUDUserWidget->EricaUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
+
+	BindStage1UI();
+}
+
+void APCREricaPlayerController::BindStage1UI()
+{
+	APCRGameModeBase* PCRGameMode = Cast<APCRGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	PCRGameMode->OnChangeStage1MonsterCount.BindUObject(HUDUserWidget->Stage1UserWidget, &UPCRStage1UserWidget::HandleUpdateMonsterCount);
+
+	HUDUserWidget->Stage1UserWidget->HandleUpdateMonsterCount(PCRGameMode->GetStage1MaxMonsterCount(), PCRGameMode->GetStage1CurrentMonsterCount());
+
+	HUDUserWidget->SetVisibilityStage1UI(true);
 }

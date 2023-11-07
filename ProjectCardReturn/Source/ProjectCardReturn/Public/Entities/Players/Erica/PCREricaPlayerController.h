@@ -36,6 +36,7 @@ public: // 동작 섹션
 
 private: // 내부 함수 섹션
 	void BindEricaUI();
+	void BindStage1UI();
 	void GamePause();
 
 private: // 데이터 에셋 섹션

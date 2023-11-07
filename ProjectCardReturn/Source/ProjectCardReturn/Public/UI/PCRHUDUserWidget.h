@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PCRHUDUserWidget.generated.h"
 
+class UPCRStage1UserWidget;
 class UPCREricaUserWidget;
 class UPCRSerinUserWidget;
 /**
@@ -21,11 +22,15 @@ protected:
 
 public: // 동작
 	void SetVisibilityEricaUI(bool bIsEnable);
+	void SetVisibilityStage1UI(bool bIsEnable);
 	void SetVisibilitySerinUI(bool bIsEnable);
 
 public:
 	UPROPERTY()
 	TObjectPtr<UPCREricaUserWidget> EricaUserWidget;
+
+	UPROPERTY()
+	TObjectPtr<UPCRStage1UserWidget> Stage1UserWidget;
 	
 	UPROPERTY()
 	TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
