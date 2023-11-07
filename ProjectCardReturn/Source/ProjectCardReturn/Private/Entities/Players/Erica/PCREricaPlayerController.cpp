@@ -75,6 +75,7 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 	HUDUserWidget = CreateWidget<UPCRHUDUserWidget>(this, HUDUserWidgetClass);
 	check(HUDUserWidget);
 	HUDUserWidget->AddToViewport(-1);
+	HUDUserWidget->SetVisibilityEricaUI(true);
 	
 	BindEricaUI();
 }
@@ -114,8 +115,9 @@ FVector APCREricaPlayerController::GetMouseDirection() const
 
 void APCREricaPlayerController::BindSerinUI(APCRSerinDollHeadCharacter* Serin)
 {
-	Serin->OnChangeHP.AddUObject(HUDUserWidget->BossUserWidget, &UPCRSerinUserWidget::HandleUpdateHP);
-	HUDUserWidget->BossUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
+	Serin->OnChangeHP.AddUObject(HUDUserWidget->SerinUserWidget, &UPCRSerinUserWidget::HandleUpdateHP);
+	HUDUserWidget->SerinUserWidget->HandleUpdateHP(Serin->GetMaxHP(), Serin->GetCurrentHP());
+	HUDUserWidget->SetVisibilitySerinUI(true);
 }
 
 void APCREricaPlayerController::GamePause()
@@ -130,10 +132,10 @@ void APCREricaPlayerController::GamePause()
 
 void APCREricaPlayerController::BindEricaUI()
 {
-	CachedEricaCharacter->OnChangeHP.AddUObject(HUDUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateHP);
-	CachedEricaCharacter->OnChangeCardCount.AddUObject(HUDUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateCardCount);
-	CachedEricaCharacter->OnChangeShootMode.BindUObject(HUDUserWidget->SerinUserWidget, &UPCREricaUserWidget::HandleUpdateChangeShootMode);
+	CachedEricaCharacter->OnChangeHP.AddUObject(HUDUserWidget->EricaUserWidget, &UPCREricaUserWidget::HandleUpdateHP);
+	CachedEricaCharacter->OnChangeCardCount.AddUObject(HUDUserWidget->EricaUserWidget, &UPCREricaUserWidget::HandleUpdateCardCount);
+	CachedEricaCharacter->OnChangeShootMode.BindUObject(HUDUserWidget->EricaUserWidget, &UPCREricaUserWidget::HandleUpdateChangeShootMode);
 	
-	HUDUserWidget->SerinUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
-	HUDUserWidget->SerinUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
+	HUDUserWidget->EricaUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
+	HUDUserWidget->EricaUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
 }

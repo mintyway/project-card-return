@@ -11,10 +11,37 @@ void UPCRHUDUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	const FName WB_EricaUIKey = TEXT("WB_EricaUI");
-	SerinUserWidget = Cast<UPCREricaUserWidget>(GetWidgetFromName(WB_EricaUIKey));
-	check(SerinUserWidget);
+	EricaUserWidget = Cast<UPCREricaUserWidget>(GetWidgetFromName(WB_EricaUIKey));
+	check(EricaUserWidget);
 		
 	const FName WB_SerinUIKey = TEXT("WB_SerinUI");
-	BossUserWidget = Cast<UPCRSerinUserWidget>(GetWidgetFromName(WB_SerinUIKey));
-	check(BossUserWidget);
+	SerinUserWidget = Cast<UPCRSerinUserWidget>(GetWidgetFromName(WB_SerinUIKey));
+	check(SerinUserWidget);
+
+	EricaUserWidget->SetVisibility(ESlateVisibility::Hidden);
+	SerinUserWidget->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UPCRHUDUserWidget::SetVisibilityEricaUI(bool bIsEnable)
+{
+	if (bIsEnable)
+	{
+		EricaUserWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		EricaUserWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UPCRHUDUserWidget::SetVisibilitySerinUI(bool bIsEnable)
+{
+	if (bIsEnable)
+	{
+		SerinUserWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		SerinUserWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
