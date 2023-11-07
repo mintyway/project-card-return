@@ -263,7 +263,7 @@ void APCRMonsterBaseCharacter::SpawnItem()
 		default:
 			break;
 		}
-		
+
 		GetWorld()->SpawnActor<APCRBaseItem>(ItemClass, GetActorLocation(), FRotator::ZeroRotator);
 	}
 }

@@ -35,7 +35,7 @@ APCRBaseItem::APCRBaseItem() : bInteractCard(false)
 	if (BoxComponent)
 	{
 		BoxComponent->SetupAttachment(NiagaraComponent);
-		BoxComponent->SetBoxExtent(FVector(50.0, 50.0, 50.0));
+		BoxComponent->SetBoxExtent(FVector(70.0, 70.0, 70.0));
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel10);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
@@ -63,6 +63,12 @@ void APCRBaseItem::Tick(float DeltaTime)
 void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
 	AttachToActor(AttachedCard, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	bInteractCard = false;
+	
+	FTimerHandle DestroyTimerHandle;
+	FTimerDelegate DestroyTimerDelegate;
+	DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ItemDestroyTime, false);
 }
 
 void APCRBaseItem::DestroyTimerCallback()
