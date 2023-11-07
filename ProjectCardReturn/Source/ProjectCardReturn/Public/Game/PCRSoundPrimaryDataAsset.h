@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "Engine/DataAsset.h"
 #include "PCRSoundPrimaryDataAsset.generated.h"
 
@@ -16,6 +16,15 @@ class PROJECTCARDRETURN_API UPCRSoundPrimaryDataAsset : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, Category = "BGM")
+	TObjectPtr<UFMODEvent> AmbientBGM;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "BGM")
+	TObjectPtr<UFMODEvent> Stage1BGM;
+
+	UPROPERTY(EditDefaultsOnly, Category = "BGM")
+	TObjectPtr<UFMODEvent> BossStageBGM;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	TObjectPtr<UFMODEvent> Shot;
 	
