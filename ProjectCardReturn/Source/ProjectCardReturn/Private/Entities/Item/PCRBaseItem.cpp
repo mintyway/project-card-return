@@ -48,7 +48,19 @@ void APCRBaseItem::HandleItemHit(UPrimitiveComponent* HitComponent, AActor* Othe
 {
 	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 	{
+		//
 		
+		float ItemDestroyTime = 5.0f;
+		
+		FTimerHandle DestroyTimerHandle;
+		FTimerDelegate DestroyTimerDelegate;
+		DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
+		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ItemDestroyTime, false);
 	}
+}
+
+void APCRBaseItem::DestroyTimerCallback()
+{
+	Destroy();
 }
 

@@ -28,6 +28,7 @@ public:
 private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 	void HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void DestroyTimerCallback();
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
