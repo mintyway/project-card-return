@@ -12,6 +12,13 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "BrainComponent.h"
+#include "Entities/Item/PCRFastShootItem.h"
+#include "Entities/Item/PCRHealItem.h"
+#include "Entities/Item/PCRLongerRangeItem.h"
+
+#include "Entities/Item/PCRManyCardItem.h"
+#include "Entities/Item/PCRMoreHpItem.h"
+#include "Entities/Item/PCRSpeedUpItem.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 
@@ -223,6 +230,43 @@ void APCRMonsterBaseCharacter::HandleDead()
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
 	
 	OnDead.Broadcast(this);
+
+	SpawItem();
+}
+
+void APCRMonsterBaseCharacter::SpawItem()
+{
+	float ItemSpawnRate = 0.25f;
+	if (FMath::RandRange(1, 100) <= ItemSpawnRate * 100)
+	{
+		UClass* ItemClass = nullptr;
+
+		switch (FMath::RandRange(1, 6))
+		{
+		case 1:
+			ItemClass = APCRMoreHpItem::StaticClass();
+			break;
+		case 2:
+			ItemClass = APCRManyCardItem::StaticClass();
+			break;
+		case 3:
+			ItemClass = APCRHealItem::StaticClass();
+			break;
+		case 4:
+			ItemClass = APCRLongerRangeItem::StaticClass();
+			break;
+		case 5:
+			ItemClass = APCRSpeedUpItem::StaticClass();
+			break;
+		case 6:
+			ItemClass = APCRFastShootItem::StaticClass();
+			break;
+		default:
+			break;
+		}
+		
+		GetWorld()->SpawnActor<APCRBaseItem>(ItemClass, GetActorLocation(), FRotator::ZeroRotator);
+	}
 }
 
 void APCRMonsterBaseCharacter::DestroyTimeCallback()

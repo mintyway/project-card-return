@@ -63,6 +63,8 @@ protected:
 	virtual void HandleStunRelease();
 	virtual void HandleDead();
 
+	void SpawItem();
+
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
 
