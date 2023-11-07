@@ -40,7 +40,7 @@ public: // Getter, Setter 섹션
 private: // 내부 함수 섹션
 	void SpawnMonster(UClass* MonsterClass);
 
-	void RemoveDeadMonster(APCRMonsterBaseCharacter* ApcrMonsterBaseCharacter);
+	void RemoveDeadMonster(APCRMonsterBaseCharacter* MonsterBaseCharacter);
 
 private: // 데이터 에셋
 	UPROPERTY()

@@ -92,19 +92,18 @@ void APCRMonsterGenerator::SpawnMonster(UClass* MonsterClass)
 
 	UE_LOG(PCRLogMonsterGenerator, Log, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
 
-	APCRMonsterBaseCharacter* NewMonster = GetWorld()->SpawnActor<APCRMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator);
-	if (NewMonster)
+	if (APCRMonsterBaseCharacter* NewMonster = GetWorld()->SpawnActor<APCRMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator))
 	{
 		SpawnMonsters.Add(NewMonster);
 		NewMonster->OnDead.AddUObject(this, &APCRMonsterGenerator::RemoveDeadMonster);
 	}
 }
 
-void APCRMonsterGenerator::RemoveDeadMonster(APCRMonsterBaseCharacter* ApcrMonsterBaseCharacter)
+void APCRMonsterGenerator::RemoveDeadMonster(APCRMonsterBaseCharacter* MonsterBaseCharacter)
 {
-	if (ApcrMonsterBaseCharacter)
+	if (MonsterBaseCharacter)
 	{
-		SpawnMonsters.Remove(ApcrMonsterBaseCharacter);
+		SpawnMonsters.Remove(MonsterBaseCharacter);
 		++MonsterKillCount;
 	}
 
