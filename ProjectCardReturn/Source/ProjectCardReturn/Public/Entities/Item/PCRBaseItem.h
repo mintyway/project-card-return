@@ -7,6 +7,7 @@
 #include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRBaseItem.generated.h"
 
+class UPCRParameterDataAsset;
 class UPCRItemDataAsset;
 class UNiagaraComponent;
 class UBoxComponent;
@@ -39,4 +40,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRItemDataAsset> ItemDataAsset;
+
+	UPROPERTY(VisibleAnywhere, Category = "Data")
+	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 };

@@ -231,13 +231,12 @@ void APCRMonsterBaseCharacter::HandleDead()
 	
 	OnDead.Broadcast(this);
 
-	//SpawnItem();
+	SpawnItem();
 }
 
 void APCRMonsterBaseCharacter::SpawnItem()
 {
-	float ItemSpawnRate = 0.25f;
-	if (FMath::RandRange(1, 100) <= ItemSpawnRate * 100)
+	if (FMath::RandRange(1, 100) <= ParameterDataAsset->ItemSpawnRate * 100)
 	{
 		UClass* ItemClass = nullptr;
 

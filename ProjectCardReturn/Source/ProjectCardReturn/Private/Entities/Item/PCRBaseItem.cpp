@@ -8,6 +8,7 @@
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
+#include "Game/PCRParameterDataAsset.h"
 
 APCRBaseItem::APCRBaseItem()
 {
@@ -39,6 +40,11 @@ void APCRBaseItem::BeginPlay()
 	Super::BeginPlay();
 
 	BoxComponent->OnComponentHit.AddDynamic(this, &APCRBaseItem::HandleItemHit);
+
+	FTimerHandle DestroyTimerHandle;
+	FTimerDelegate DestroyTimerDelegate;
+	DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
+	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ItemDestroyTime, false);
 }
 
 void APCRBaseItem::Tick(float DeltaTime)
@@ -58,12 +64,7 @@ void APCRBaseItem::HandleItemHit(UPrimitiveComponent* HitComponent, AActor* Othe
 	{
 		//
 		
-		float ItemDestroyTime = 5.0f;
-		
-		FTimerHandle DestroyTimerHandle;
-		FTimerDelegate DestroyTimerDelegate;
-		DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
-		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ItemDestroyTime, false);
+		Destroy();
 	}
 }
 
