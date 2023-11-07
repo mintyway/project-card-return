@@ -41,7 +41,7 @@ void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
 	{
 		CachedCharacterMovement = Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement());
 		CachedMonsterBaseCharacter->OnStun.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStun);
-		CachedMonsterBaseCharacter->OnStunRelease.AddUObject(this, )
+		CachedMonsterBaseCharacter->OnStunRelease.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStunRelease);
 		CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
 	}
 }
