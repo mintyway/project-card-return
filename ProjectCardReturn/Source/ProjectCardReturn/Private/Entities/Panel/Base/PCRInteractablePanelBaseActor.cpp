@@ -28,10 +28,16 @@ APCRInteractablePanelBaseActor::APCRInteractablePanelBaseActor()
 		MonsterDataAsset = DA_InteractablePanelDataAsset.Object;
 	}
 
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	if (SceneComponent)
+	{
+		RootComponent = SceneComponent;
+	}
+	
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	if (StaticMeshComponent && MonsterDataAsset)
 	{
-		RootComponent = StaticMeshComponent;
+		StaticMeshComponent->SetupAttachment(SceneComponent);
 		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->PanelMesh);
 		StaticMeshComponent->SetCollisionProfileName("BlockPlayerProjectile");
 	}
