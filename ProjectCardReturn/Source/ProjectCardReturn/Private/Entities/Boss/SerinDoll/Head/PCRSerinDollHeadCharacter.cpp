@@ -41,6 +41,7 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	if (GetMesh() && SerinDollDataAsset)
 	{
 		GetMesh()->SetupAttachment(GetCapsuleComponent());
+		GetMesh()->SetRelativeScale3D(FVector(6.0));
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->HeadMesh);
 	}

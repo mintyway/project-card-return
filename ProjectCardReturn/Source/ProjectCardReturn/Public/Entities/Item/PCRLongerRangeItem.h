@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRLongerRangeItem : public APCRBaseItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRLongerRangeItem();
 };

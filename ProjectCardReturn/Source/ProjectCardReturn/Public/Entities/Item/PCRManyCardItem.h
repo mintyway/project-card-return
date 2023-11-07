@@ -4,16 +4,16 @@
 
 #include "ProjectCardReturn.h"
 #include "Entities/Item/PCRBaseItem.h"
-#include "PCRFastShootItem.generated.h"
+#include "PCRManyCardItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRFastShootItem : public APCRBaseItem
+class PROJECTCARDRETURN_API APCRManyCardItem : public APCRBaseItem
 {
 	GENERATED_BODY()
 
 public:
-	APCRFastShootItem();
+	APCRManyCardItem();
 };

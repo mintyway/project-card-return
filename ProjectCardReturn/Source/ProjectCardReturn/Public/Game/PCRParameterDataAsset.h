@@ -199,4 +199,10 @@ public: // 토끼
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveDiagonalDistance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float ItemSpawnRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float ItemDestroyTime;
 };

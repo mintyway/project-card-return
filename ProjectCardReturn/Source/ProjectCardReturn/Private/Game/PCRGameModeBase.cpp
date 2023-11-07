@@ -3,7 +3,9 @@
 
 #include "Game/PCRGameModeBase.h"
 
+#include "FMODAudioComponent.h"
 #include "FMODStudioModule.h"
+#include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
@@ -19,7 +21,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
-APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
+APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKillCount(1), CurrentStageNumber(EStageNumber::Stage1)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -38,6 +40,12 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 		ParameterDataAsset = DA_Parameter.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
+	}
+
 	if (ParameterDataAsset)
 	{
 		GenerateInterval = ParameterDataAsset->SpawnerGenerateInterval;
@@ -50,6 +58,24 @@ APCRGameModeBase::APCRGameModeBase(): TotalMonsterKillCount(0), Stage1TargetKill
 		{
 			LiftActorClass = LiftBP;
 		}
+	}
+
+	AmbientAudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("AmbientAudioComponent"));
+	if (AmbientAudioComponent)
+	{
+		AmbientAudioComponent->SetEvent(SoundDataAsset->AmbientBGM);
+	}
+
+	Stage1AudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("Stage1AudioComponent"));
+	if (Stage1AudioComponent)
+	{
+		Stage1AudioComponent->SetEvent(SoundDataAsset->Stage1BGM);
+	}
+
+	BossStageAudioComponent = CreateDefaultSubobject<UFMODAudioComponent>(TEXT("BossStageAudioComponent"));
+	if (BossStageAudioComponent)
+	{
+		BossStageAudioComponent->SetEvent(SoundDataAsset->BossStageBGM);
 	}
 }
 
@@ -64,8 +90,14 @@ void APCRGameModeBase::PostInitializeComponents()
 		return;
 	}
 #endif
-	
-	check(ParameterDataAsset);
+
+	check(StageDataAsset && ParameterDataAsset && SoundDataAsset);
+
+	AmbientAudioComponent->SetVolume(0.75f);
+	Stage1AudioComponent->SetVolume(0.2f);
+	BossStageAudioComponent->SetVolume(0.2f);
+	Stage1AudioComponent->Deactivate();
+	BossStageAudioComponent->Deactivate();
 
 	// 태그로 Lift를 찾는 코드입니다.
 	TArray<AActor*> ActorsWithTag;
@@ -92,9 +124,11 @@ void APCRGameModeBase::BeginPlay()
 	UPCRGameInstance* PCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
 	check(PCRGameInstance);
 	PCRGameInstance->InitSoundSystem();
-	
+
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
+
+	PlayStage1BGM();
 }
 
 void APCRGameModeBase::Tick(float DeltaSeconds)
@@ -171,8 +205,21 @@ void APCRGameModeBase::HandleKillCount()
 	}
 }
 
+void APCRGameModeBase::PlayStage1BGM()
+{
+	Stage1AudioComponent->Activate(true);
+	BossStageAudioComponent->Deactivate();
+}
+
+void APCRGameModeBase::PlayBossStageBGM()
+{
+	Stage1AudioComponent->Deactivate();
+	BossStageAudioComponent->Activate(true);
+}
+
 void APCRGameModeBase::LiftFloor()
 {
+	Stage1AudioComponent->Deactivate();
 	LiftActor->LiftUp();
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	check(PlayerCharacter);
@@ -185,5 +232,9 @@ void APCRGameModeBase::LiftFloor()
 
 void APCRGameModeBase::SpawnSerinDoll()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *this->GetName());
+	PlayBossStageBGM();
+	FVector SpawnLocation = LiftActor->GetActorLocation();
+	SpawnLocation.X += 1200.0;
+	SpawnLocation.Z -= 250.0;
+	GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(SpawnLocation, FRotator(0.0, 180.0, 0.0));
 }
