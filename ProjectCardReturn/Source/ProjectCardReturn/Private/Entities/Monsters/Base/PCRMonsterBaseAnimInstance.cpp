@@ -7,7 +7,7 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true)
+UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true), bDead(false)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_MonsterDataAsset(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_MonsterDataAsset.Succeeded())
@@ -19,6 +19,7 @@ UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), 
 void UPCRMonsterBaseAnimInstance::HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster)
 {
 	StopAllMontages(0.1f);
+	bDead = true;
 }
 
 void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()

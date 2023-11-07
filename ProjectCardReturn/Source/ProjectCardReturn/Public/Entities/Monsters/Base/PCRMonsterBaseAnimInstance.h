@@ -42,6 +42,9 @@ protected:
 	uint32 bCanAttack:1;
 
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	uint32 bDead:1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	FVector Velocity;
 	
 	UPROPERTY()
