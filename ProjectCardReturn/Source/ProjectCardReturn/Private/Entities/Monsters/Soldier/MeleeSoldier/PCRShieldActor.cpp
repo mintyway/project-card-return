@@ -120,16 +120,14 @@ void APCRShieldActor::DelayedDestroy()
  */
 void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
-	const FDelegateHandle* ExistingHandle = OnReturnCardBeginDelegateMap.Find(AttachedCard);
-	if (ExistingHandle)
+	if (const FDelegateHandle* ExistingHandle = OnReturnCardBeginDelegateMap.Find(AttachedCard))
 	{
 		AttachedCard->OnReturnCardBegin.Remove(*ExistingHandle);
-		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
 	DetachAndDelayedDestroy();
 	const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-	const float ImpulseSize = 1000.f;
+	constexpr float ImpulseSize = 1000.f;
 	BoxComponent->AddImpulse(Direction * ImpulseSize);
 	UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
 }

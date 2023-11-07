@@ -63,9 +63,7 @@ void APCRMeleeSoldierCharacter::SpawnAndAttachShield()
 	Shield = GetWorld()->SpawnActor<APCRShieldActor>();
 	check(Shield);
 	const FName SocketName = TEXT("Bip001-L-Finger0NubSocket");
-	// RETURN_IF_INVALID(Shield->AttachToActor(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
 	check(Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName));
-	// Shield->SetActorRelativeLocation(FVector(75.0, 0.0, 0.0));
 	Shield->OnDetachedShield.AddUObject(this, &APCRMeleeSoldierCharacter::HandleDetachedShield);
 }
 
@@ -129,3 +127,4 @@ void APCRMeleeSoldierCharacter::HandleDead()
 	{
 		Shield->DetachAndDelayedDestroy();
 	}
+}

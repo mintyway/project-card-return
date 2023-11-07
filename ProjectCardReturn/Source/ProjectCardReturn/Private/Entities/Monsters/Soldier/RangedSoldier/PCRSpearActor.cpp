@@ -94,12 +94,11 @@ void APCRSpearActor::Throw(AActor* NewOwner, const FVector& StartLocation, const
 
 void APCRSpearActor::DelayedDestroy()
 {
-	FTimerHandle DestroyTimerHandle;
-	FTimerDelegate DestroyTimerDelegate;
-	DestroyTimerDelegate.BindUObject(this, &APCRSpearActor::DestroyTimerCallback);
-
 	if (ParameterDataAsset)
 	{
+		FTimerHandle DestroyTimerHandle;
+		FTimerDelegate DestroyTimerDelegate;
+		DestroyTimerDelegate.BindUObject(this, &APCRSpearActor::DestroyTimerCallback);
 		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->SpearDestroyTimeAfterDrop, false);
 	}
 }
