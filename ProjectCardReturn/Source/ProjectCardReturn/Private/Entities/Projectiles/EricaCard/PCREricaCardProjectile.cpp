@@ -220,8 +220,7 @@ void APCREricaCardProjectile::HandleBeginOverlap(AActor* OverlappedActor, AActor
 		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s 카드가 %s와 정면으로 충돌했습니다."), *OverlappedActor->GetName(), *OtherActor->GetName());
 
 		// 만약 대상이 몬스터인 경우 넉백을 발생시키는 코드입니다.
-		APCRMonsterBaseCharacter* MonsterCharacter = Cast<APCRMonsterBaseCharacter>(OtherCharacter);
-		if (MonsterCharacter)
+		if (APCRMonsterBaseCharacter* MonsterCharacter = Cast<APCRMonsterBaseCharacter>(OtherCharacter))
 		{
 			MonsterCharacter->LaunchCharacter(OverlappedActor->GetActorForwardVector() * KnockBackPower, true, false);
 		}
@@ -284,8 +283,7 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 	bool bShouldRelease = false;
 	
 	TArray<FHitResult> HitResults;
-	const bool bSucceedRayCast = GetWorld()->LineTraceMultiByObjectType(HitResults, LastTickLocation, CurrentTickLocation, CollisionObjectQueryParams);
-	if (bSucceedRayCast)
+	if (GetWorld()->LineTraceMultiByObjectType(HitResults, LastTickLocation, CurrentTickLocation, CollisionObjectQueryParams))
 	{
 		for (const auto& TestResult : HitResults)
 		{
@@ -300,8 +298,7 @@ void APCREricaCardProjectile::HandleCardReturn(float DeltaSeconds)
 			else if (Cast<APCRInteractablePanelBaseActor>(TestResult.GetActor()))
 			{
 				HandleBeginOverlap(this, TestResult.GetActor());
-				APCRInteractablePanelBaseActor* Panel = Cast<APCRInteractablePanelBaseActor>(TestResult.GetActor());
-				if (Panel)
+				if (APCRInteractablePanelBaseActor* Panel = Cast<APCRInteractablePanelBaseActor>(TestResult.GetActor()))
 				{
 					Panel->HandleBeginOverlap(Panel, this);
 				}
