@@ -100,8 +100,7 @@ void APCRInteractablePanelBaseActor::BindOnCardReturnBegin(APCREricaCardProjecti
 void APCRInteractablePanelBaseActor::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	// 만약 카드가 오버랩된 경우라면 박히지는 않았지만 카드가 복귀하던 중에 패널에 부딫힌 상태로 이 경우도 패널이 넘어지도록 하기 위한 코드입니다.
-	APCREricaCardProjectile* OtherCard = Cast<APCREricaCardProjectile>(OtherActor);
-	if (OtherCard)
+	if (APCREricaCardProjectile* OtherCard = Cast<APCREricaCardProjectile>(OtherActor))
 	{
 		HandleReturnCard(OtherCard);
 
@@ -175,12 +174,10 @@ void APCRInteractablePanelBaseActor::HandleReturnCard(APCREricaCardProjectile* A
 	{
 		return;
 	}
-	
-	const FDelegateHandle* ExistingHandle = OnReturnCardBeginDelegateMap.Find(AttachedCard);
-	if (ExistingHandle)
+
+	if (const FDelegateHandle* ExistingHandle = OnReturnCardBeginDelegateMap.Find(AttachedCard))
 	{
 		AttachedCard->OnReturnCardBegin.Remove(*ExistingHandle);
-		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
 	UE_LOG(PCRLogInteractablePanelBaseActor, Log, TEXT("%s가 %s를 넘어뜨립니다."), *AttachedCard->GetName(), *this->GetName());
