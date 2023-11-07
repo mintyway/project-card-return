@@ -4,13 +4,13 @@
 
 #include "ProjectCardReturn.h"
 #include "Entities/Item/PCRBaseItem.h"
-#include "PCRSpeedUpItem.generated.h"
+#include "PCRMoreCardItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRSpeedUpItem : public APCRBaseItem
+class PROJECTCARDRETURN_API APCRMoreCardItem : public APCRBaseItem
 {
 	GENERATED_BODY()
 	

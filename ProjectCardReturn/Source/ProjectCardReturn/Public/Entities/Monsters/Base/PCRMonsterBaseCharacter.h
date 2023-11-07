@@ -15,6 +15,8 @@ class UPCRMonsterDataAsset;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogMonsterBaseCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE(FOnHPChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnStunDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnStunReleaseDelegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeadDelegate, APCRMonsterBaseCharacter*);
 
 UCLASS()
@@ -51,10 +53,14 @@ public: // Getter, Setter
 
 public: // 델리게이트
 	FOnHPChangeDelegate OnHPChange;
+	FOnStunDelegate OnStun;
+	FOnStunReleaseDelegate OnStunRelease;
 	FOnDeadDelegate OnDead;
 
 protected:
 	virtual void HandleChangeHP();
+	virtual void HandleStun();
+	virtual void HandleStunRelease();
 	virtual void HandleDead();
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")

@@ -25,7 +25,10 @@ public:
 	FORCEINLINE bool GetCanAttack() const { return bCanAttack; }
 
 protected:
+	void HandleOwnerStun();
+	void HandleOwnerStunRelease();
 	void HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster);
+	
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
@@ -40,6 +43,12 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	uint32 bCanAttack:1;
+
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	uint32 bStun:1;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	uint32 bDead:1;
 
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	FVector Velocity;

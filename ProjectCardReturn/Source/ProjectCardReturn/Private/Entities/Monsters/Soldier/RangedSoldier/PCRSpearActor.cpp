@@ -36,7 +36,7 @@ APCRSpearActor::APCRSpearActor()
 	if (BoxComponent)
 	{
 		RootComponent = BoxComponent;
-		BoxComponent->SetBoxExtent(FVector(1.5, 36.5, 52.0));
+		BoxComponent->SetBoxExtent(FVector(10, 100, 10));
 		BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel8);
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -48,7 +48,7 @@ APCRSpearActor::APCRSpearActor()
 	{
 		StaticMeshComponent->SetupAttachment(BoxComponent);
 		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->SpearMesh);
-		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(-1.52, -0.47, -52.35), FRotator(0.0, 90.0, 0.0));
+		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0.0, 0.0, 0.0));
 		StaticMeshComponent->SetCollisionProfileName("NoCollision");
 	}
 
@@ -94,12 +94,11 @@ void APCRSpearActor::Throw(AActor* NewOwner, const FVector& StartLocation, const
 
 void APCRSpearActor::DelayedDestroy()
 {
-	FTimerHandle DestroyTimerHandle;
-	FTimerDelegate DestroyTimerDelegate;
-	DestroyTimerDelegate.BindUObject(this, &APCRSpearActor::DestroyTimerCallback);
-
 	if (ParameterDataAsset)
 	{
+		FTimerHandle DestroyTimerHandle;
+		FTimerDelegate DestroyTimerDelegate;
+		DestroyTimerDelegate.BindUObject(this, &APCRSpearActor::DestroyTimerCallback);
 		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->SpearDestroyTimeAfterDrop, false);
 	}
 }

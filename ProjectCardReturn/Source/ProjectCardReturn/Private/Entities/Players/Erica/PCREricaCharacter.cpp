@@ -488,8 +488,7 @@ void APCREricaCharacter::WideShot()
 
 void APCREricaCharacter::HandleShootCard(const FVector& StartLocation, const FVector& Direction, float ForwardDamage, float BackwardDamage, float Range)
 {
-	APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardProjectilePool->Acquire());
-	if (CardProjectile)
+	if (APCREricaCardProjectile* CardProjectile = Cast<APCREricaCardProjectile>(CardProjectilePool->Acquire()))
 	{
 		const FTransform SoundPlayTransform = FTransform(GetActorRotation(), GetActorLocation());
 		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Shot, SoundPlayTransform, true);

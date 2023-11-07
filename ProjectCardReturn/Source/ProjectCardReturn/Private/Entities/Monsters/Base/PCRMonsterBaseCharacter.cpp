@@ -132,6 +132,7 @@ void APCRMonsterBaseCharacter::Stun()
 	check(MonsterBaseAIController);
 	MonsterBaseAIController->ApplyStun(StunTime);
 	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s가 %f.1초간 스턴에 빠집니다."), *this->GetName(), StunTime);
+	HandleStun();
 }
 
 /**
@@ -182,6 +183,21 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
 	HPProgressBar->SetPercent(HPRatio);
 
 	OnHPChange.Broadcast();
+}
+
+void APCRMonsterBaseCharacter::HandleStun()
+{
+	OnStun.Broadcast();
+	
+	FTimerHandle StunTimeHandle;
+	FTimerDelegate StunTimeDelegate;
+	StunTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::HandleStunRelease);
+	GetWorldTimerManager().SetTimer(StunTimeHandle, StunTimeDelegate, StunTime, false);
+}
+
+void APCRMonsterBaseCharacter::HandleStunRelease()
+{
+	OnStunRelease.Broadcast();
 }
 
 /**

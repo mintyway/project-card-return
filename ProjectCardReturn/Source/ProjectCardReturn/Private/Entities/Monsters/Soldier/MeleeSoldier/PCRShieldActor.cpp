@@ -31,7 +31,7 @@ APCRShieldActor::APCRShieldActor()
 	if (BoxComponent)
 	{
 		RootComponent = BoxComponent;
-		BoxComponent->SetBoxExtent(FVector(1.5, 36.5, 52.0));
+		BoxComponent->SetBoxExtent(FVector(40, 10, 55));
 		BoxComponent->SetCollisionProfileName("BlockPlayerProjectile");
 	}
 
@@ -40,7 +40,7 @@ APCRShieldActor::APCRShieldActor()
 	{
 		StaticMeshComponent->SetupAttachment(BoxComponent);
 		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->ShieldMesh);
-		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(-1.52, -0.47, -52.35), FRotator(0.0, 90.0, 0.0));
+		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(0, 10, 0), FRotator(0.0, -30.0, 30.0));
 		StaticMeshComponent->SetCollisionProfileName("NoCollision");
 	}
 }
@@ -120,16 +120,14 @@ void APCRShieldActor::DelayedDestroy()
  */
 void APCRShieldActor::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
 {
-	const FDelegateHandle* ExistingHandle = OnReturnCardBeginDelegateMap.Find(AttachedCard);
-	if (ExistingHandle)
+	if (const FDelegateHandle* ExistingHandle = OnReturnCardBeginDelegateMap.Find(AttachedCard))
 	{
 		AttachedCard->OnReturnCardBegin.Remove(*ExistingHandle);
-		// OnReturnCardBeginDelegateMap.Remove(AttachedCard);
 	}
 
 	DetachAndDelayedDestroy();
 	const FVector Direction = (AttachedCard->GetOwner()->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-	const float ImpulseSize = 1000.f;
+	constexpr float ImpulseSize = 1000.f;
 	BoxComponent->AddImpulse(Direction * ImpulseSize);
 	UE_LOG(PCRLogShieldActor, Log, TEXT("%s가 당겨집니다."), *GetName());
 }

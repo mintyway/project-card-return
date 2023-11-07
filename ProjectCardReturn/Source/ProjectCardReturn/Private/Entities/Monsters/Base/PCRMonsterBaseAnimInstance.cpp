@@ -7,7 +7,7 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true)
+UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true), bStun(false), bDead(false)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_MonsterDataAsset(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_MonsterDataAsset.Succeeded())
@@ -16,9 +16,20 @@ UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), 
 	}
 }
 
+void UPCRMonsterBaseAnimInstance::HandleOwnerStun()
+{
+	bStun = true;
+}
+
+void UPCRMonsterBaseAnimInstance::HandleOwnerStunRelease()
+{
+	bStun = false;
+}
+
 void UPCRMonsterBaseAnimInstance::HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster)
 {
 	StopAllMontages(0.1f);
+	bDead = true;
 }
 
 void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
@@ -26,11 +37,13 @@ void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedMonsterBaseCharacter = Cast<APCRMonsterBaseCharacter>(TryGetPawnOwner());
-	check(CachedMonsterBaseCharacter);
-
-	CachedCharacterMovement = CachedMonsterBaseCharacter ? Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement()) : nullptr;
-
-	CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
+	if (CachedMonsterBaseCharacter)
+	{
+		CachedCharacterMovement = Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement());
+		CachedMonsterBaseCharacter->OnStun.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStun);
+		CachedMonsterBaseCharacter->OnStunRelease.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStunRelease);
+		CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
+	}
 }
 
 void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
