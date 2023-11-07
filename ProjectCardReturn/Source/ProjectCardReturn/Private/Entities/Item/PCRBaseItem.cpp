@@ -4,6 +4,7 @@
 #include "Entities/Item/PCRBaseItem.h"
 
 #include "Components/BoxComponent.h"
+#include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 
@@ -11,6 +12,12 @@ APCRBaseItem::APCRBaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	static ConstructorHelpers::FObjectFinder<UPCRItemDataAsset> DA_Item(TEXT("/Script/ProjectCardReturn.PCRItemDataAsset'/Game/DataAssets/DA_Item.DA_Item'"));
+	if (DA_Item.Succeeded())
+	{
+		ItemDataAsset = DA_Item.Object;
+	}
+	
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	if (BoxComponent)
 	{

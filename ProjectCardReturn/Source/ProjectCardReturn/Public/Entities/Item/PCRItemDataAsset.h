@@ -6,7 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRItemDataAsset.generated.h"
 
-class UNiagaraComponent;
+class UNiagaraSystem;
 /**
  * 
  */
@@ -17,20 +17,20 @@ class PROJECTCARDRETURN_API UPCRItemDataAsset : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraComponent> SpeedUpItemEffect;
+	TObjectPtr<UNiagaraSystem> SpeedUpItemEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraComponent> MoreHpItemEffect;
+	TObjectPtr<UNiagaraSystem> MoreHpItemEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraComponent> ManyCardItemEffect;
+	TObjectPtr<UNiagaraSystem> ManyCardItemEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraComponent> HealItemEffect;
+	TObjectPtr<UNiagaraSystem> HealItemEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraComponent> FastShootItemEffect;
+	TObjectPtr<UNiagaraSystem> FastShootItemEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraComponent> LongRangeItemEffect;
+	TObjectPtr<UNiagaraSystem> LongRangeItemEffect;
 };
