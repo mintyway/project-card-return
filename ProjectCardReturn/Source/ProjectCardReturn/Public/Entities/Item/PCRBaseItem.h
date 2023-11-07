@@ -7,18 +7,10 @@
 #include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRBaseItem.generated.h"
 
+class UPCRParameterDataAsset;
+class UPCRItemDataAsset;
 class UNiagaraComponent;
 class UBoxComponent;
-
-UENUM()
-enum class EItemType : uint8
-{
-	SpeedUp,
-	MoreCard,
-	Heal,
-	FastShoot,
-	LongerRange
-};
 
 UCLASS()
 class PROJECTCARDRETURN_API APCRBaseItem : public AActor, public IPCREricaCardInteractable
@@ -32,16 +24,27 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-public:
-	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
-
 private:
 	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
-	void HandleItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	UPROPERTY(VisibleAnywhere, Category = "Effect")
-	TObjectPtr<UNiagaraComponent> NiagaraComponent;
+	void DestroyTimerCallback();
+	
+	UFUNCTION()
+	void HandleItemHit(AActor* OverlappedActor, AActor* OtherActor);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
+
+protected:
+	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> NiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Data")
+	TObjectPtr<const UPCRItemDataAsset> ItemDataAsset;
+
+	UPROPERTY(VisibleAnywhere, Category = "Data")
+	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	uint32 bInteractCard;
 };

@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRSpeedUpItem : public APCRBaseItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRSpeedUpItem();
 };

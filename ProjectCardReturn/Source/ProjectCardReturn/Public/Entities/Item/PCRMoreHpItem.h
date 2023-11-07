@@ -2,16 +2,18 @@
 
 #pragma once
 
-#include "ProjectCardReturn.h"
+#include "CoreMinimal.h"
 #include "Entities/Item/PCRBaseItem.h"
-#include "PCRMoreCardItem.generated.h"
+#include "PCRMoreHpItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRMoreCardItem : public APCRBaseItem
+class PROJECTCARDRETURN_API APCRMoreHpItem : public APCRBaseItem
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCRMoreHpItem();
 };
