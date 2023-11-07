@@ -7,7 +7,7 @@
 #include "PCREricaPlayerController.generated.h"
 
 class UPCRSerinUserWidget;
-class UPCRMainUserWidget;
+class UPCRHUDUserWidget;
 class UPCRPauseUserWidget;
 class UPCRUIDataAsset;
 class APCREricaCharacter;
@@ -35,6 +35,7 @@ public: // 동작 섹션
 	void BindSerinUI(APCRSerinDollHeadCharacter* Serin);
 
 private: // 내부 함수 섹션
+	void BindEricaUI();
 	void GamePause();
 
 private: // 데이터 에셋 섹션
@@ -50,10 +51,10 @@ private: // 캐시 섹션
 
 private: // UI 섹션
 	UPROPERTY()
-	TSubclassOf<UPCRMainUserWidget> MainUserWidgetClass;
+	TSubclassOf<UPCRHUDUserWidget> HUDUserWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UPCRMainUserWidget> MainUserWidget;
+	TObjectPtr<UPCRHUDUserWidget> HUDUserWidget;
 
 	UPROPERTY()
 	TSubclassOf<UPCRPauseUserWidget> PauseUserWidgetClass;
@@ -62,10 +63,10 @@ private: // UI 섹션
 	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
 
 	UPROPERTY()
-	TSubclassOf<UPCRSerinUserWidget> BossUserWidgetClass;
+	TSubclassOf<UPCRSerinUserWidget> SerinUserWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UPCRSerinUserWidget> BossUserWidget;
+	TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
 
 private: // 상태 섹션
 	uint32 bUseCharacterRotationByCursorDirection : 1;
