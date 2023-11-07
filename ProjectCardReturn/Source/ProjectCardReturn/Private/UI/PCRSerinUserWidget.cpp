@@ -9,8 +9,8 @@ void UPCRSerinUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const FName HPProgressBarKey = TEXT("HPProgressBar");
-	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(HPProgressBarKey));
+	const FName PB_HPKey = TEXT("PB_HP");
+	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(PB_HPKey));
 	check(HPProgressBar);
 }
 
