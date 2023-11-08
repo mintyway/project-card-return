@@ -60,21 +60,9 @@ void APCRBaseItem::Tick(float DeltaTime)
 
 }
 
-void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
-{
-	AttachToActor(AttachedCard, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	bInteractCard = false;
-	
-	FTimerHandle DestroyTimerHandle;
-	FTimerDelegate DestroyTimerDelegate;
-	DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
-	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ItemDestroyTime, false);
-}
-
 void APCRBaseItem::DestroyTimerCallback()
 {
-	if (!bInteractCard)
-		Destroy();
+	Destroy();
 }
 
 void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -84,17 +72,22 @@ void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 		PlayerOverlapEvent(Player);
 		Destroy();
 	}
-}
-
-void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
-{
-	check(AttachedCard);
-	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
-	bInteractCard = true;
-}
-
-void APCRBaseItem::PlayerOverlapEvent(APCREricaCharacter* Player)
-{
 	
+	if (!bInteractCard == false)
+	{
+		if (APCREricaCardProjectile* Card = Cast<APCREricaCardProjectile>(OtherActor))
+		{
+			AttachToActor(Card, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		
+			FTimerHandle DestroyTimerHandle;
+			FTimerDelegate DestroyTimerDelegate;
+			DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
+			GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ItemDestroyTime, false);
+
+			bInteractCard = true;
+		}
+	}
 }
+
+void APCRBaseItem::PlayerOverlapEvent(APCREricaCharacter* Player) {}
 
