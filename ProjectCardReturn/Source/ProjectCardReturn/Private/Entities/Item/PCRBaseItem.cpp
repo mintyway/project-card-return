@@ -46,7 +46,7 @@ void APCRBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnActorBeginOverlap.AddDynamic(this, &APCRBaseItem::HandleItemHit);
+	OnActorBeginOverlap.AddDynamic(this, &APCRBaseItem::HandleOverlap);
 	
 	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
@@ -77,11 +77,11 @@ void APCRBaseItem::DestroyTimerCallback()
 		Destroy();
 }
 
-void APCRBaseItem::HandleItemHit(AActor* OverlappedActor, AActor* OtherActor)
+void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 	{
-		PlayerHitEvent(Player);
+		PlayerOverlapEvent(Player);
 		Destroy();
 	}
 }
@@ -93,7 +93,7 @@ void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
 	bInteractCard = true;
 }
 
-void APCRBaseItem::PlayerHitEvent(APCREricaCharacter* Player)
+void APCRBaseItem::PlayerOverlapEvent(APCREricaCharacter* Player)
 {
 	
 }

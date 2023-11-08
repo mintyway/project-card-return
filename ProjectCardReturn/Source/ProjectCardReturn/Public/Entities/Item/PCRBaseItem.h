@@ -7,6 +7,7 @@
 #include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRBaseItem.generated.h"
 
+class APCREricaCharacter;
 class UPCRParameterDataAsset;
 class UPCRItemDataAsset;
 class UNiagaraComponent;
@@ -29,14 +30,14 @@ private:
 	void DestroyTimerCallback();
 	
 	UFUNCTION()
-	void HandleItemHit(AActor* OverlappedActor, AActor* OtherActor);
+	void HandleOverlap(AActor* OverlappedActor, AActor* OtherActor);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
 
 protected:
 	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
-	virtual void PlayerHitEvent(APCREricaCharacter* Player);
+	virtual void PlayerOverlapEvent(APCREricaCharacter* Player);
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
