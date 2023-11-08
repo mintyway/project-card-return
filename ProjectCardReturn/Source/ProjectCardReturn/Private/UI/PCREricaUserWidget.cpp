@@ -13,24 +13,24 @@ void UPCREricaUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	const FName HPProgressBarKey = TEXT("HPProgressBar");
-	HPBar = Cast<UProgressBar>(GetWidgetFromName(HPProgressBarKey));
+	const FName PB_HPKey = TEXT("PB_HP");
+	HPBar = Cast<UProgressBar>(GetWidgetFromName(PB_HPKey));
 	check(HPBar);
 
-	const FName CurrentCardCountTextBlockKey = TEXT("CurrentCardCountTextBlock");
-	CurrentCardCountTextBlock = Cast<UTextBlock>(GetWidgetFromName(CurrentCardCountTextBlockKey));
+	const FName TB_CurrentCardCountKey = TEXT("TB_CurrentCardCount");
+	CurrentCardCountTextBlock = Cast<UTextBlock>(GetWidgetFromName(TB_CurrentCardCountKey));
 	check(CurrentCardCountTextBlock);
 
-	const FName MaxCardCountTextBlockKey = TEXT("MaxCardCountTextBlock");
-	MaxCardCountTextBlock = Cast<UTextBlock>(GetWidgetFromName(MaxCardCountTextBlockKey));
+	const FName TB_MaxCardCountKey = TEXT("TB_MaxCardCount");
+	MaxCardCountTextBlock = Cast<UTextBlock>(GetWidgetFromName(TB_MaxCardCountKey));
 	check(MaxCardCountTextBlock);
 
-	const FName NarrowShotImageKey = TEXT("NarrowShotImage");
-	NarrowShotImage = Cast<UImage>(GetWidgetFromName(NarrowShotImageKey));
+	const FName IMG_NarrowShotKey = TEXT("IMG_NarrowShot");
+	NarrowShotImage = Cast<UImage>(GetWidgetFromName(IMG_NarrowShotKey));
 	check(NarrowShotImage);
 
-	const FName WideShotImageKey = TEXT("WideShotImage");
-	WideShotImage = Cast<UImage>(GetWidgetFromName(WideShotImageKey));
+	const FName IMG_WideShotKey = TEXT("IMG_WideShot");
+	WideShotImage = Cast<UImage>(GetWidgetFromName(IMG_WideShotKey));
 	check(WideShotImage);
 
 	NarrowShotImage->SetVisibility(ESlateVisibility::Visible);
