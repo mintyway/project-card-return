@@ -10,7 +10,7 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Game/PCRParameterDataAsset.h"
 
-APCRBaseItem::APCRBaseItem() : bInteractCard(false)
+APCRBaseItem::APCRBaseItem() : bInteractPlayer(false), bInteractCard(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -35,8 +35,9 @@ APCRBaseItem::APCRBaseItem() : bInteractCard(false)
 	if (BoxComponent)
 	{
 		BoxComponent->SetupAttachment(NiagaraComponent);
-		BoxComponent->SetBoxExtent(FVector(70.0, 70.0, 70.0));
+		BoxComponent->SetBoxExtent(FVector(100.0, 100.0, 100.0));
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel10);
+		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 	}
@@ -67,25 +68,29 @@ void APCRBaseItem::DestroyTimerCallback()
 
 void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
+	if (!bInteractPlayer)
 	{
-		PlayerOverlapEvent(Player);
-		Destroy();
-	}
-	
-	if (!bInteractCard)
-	{
-		if (APCREricaCardProjectile* Card = Cast<APCREricaCardProjectile>(OtherActor))
+		if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 		{
-			SetActorLocation(Card->GetActorLocation());
-			AttachToActor(Card, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			PlayerOverlapEvent(Player);
 		
 			FTimerHandle DestroyTimerHandle;
 			FTimerDelegate DestroyTimerDelegate;
 			DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
-			GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ItemDestroyTime, false);
+			GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, 0.1f, false);
 
-			bInteractCard = true;
+			bInteractPlayer = true;
+		}
+		else if (!bInteractCard)
+		{
+			if (APCREricaCardProjectile* Card = Cast<APCREricaCardProjectile>(OtherActor))
+			{
+				BoxComponent->SetBoxExtent(FVector(200.0, 200.0, 200.0));
+				SetActorLocation(Card->GetActorLocation());
+				AttachToActor(Card, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+				bInteractCard = true;
+			}
 		}
 	}
 }

@@ -45,5 +45,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
 
-	uint32 bInteractCard;
+	uint32 bInteractPlayer : 1;
+	uint32 bInteractCard : 1;
 };
