@@ -38,7 +38,7 @@ APCRBaseItem::APCRBaseItem() : bInteractCard(false)
 		BoxComponent->SetBoxExtent(FVector(70.0, 70.0, 70.0));
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel10);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
-		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 	}
 }
 
@@ -73,10 +73,11 @@ void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 		Destroy();
 	}
 	
-	if (!bInteractCard == false)
+	if (!bInteractCard)
 	{
 		if (APCREricaCardProjectile* Card = Cast<APCREricaCardProjectile>(OtherActor))
 		{
+			SetActorLocation(Card->GetActorLocation());
 			AttachToActor(Card, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		
 			FTimerHandle DestroyTimerHandle;
