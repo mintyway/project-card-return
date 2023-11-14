@@ -12,13 +12,14 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "BrainComponent.h"
-#include "Entities/Item/PCRFastShootItem.h"
-#include "Entities/Item/PCRHealItem.h"
-#include "Entities/Item/PCRLongerRangeItem.h"
 
-#include "Entities/Item/PCRManyCardItem.h"
-#include "Entities/Item/PCRMoreHpItem.h"
 #include "Entities/Item/PCRSpeedUpItem.h"
+#include "Entities/Item/PCRMoreHpItem.h"
+#include "Entities/Item/PCRManyCardItem.h"
+#include "Entities/Item/PCRHealItem.h"
+#include "Entities/Item/PCRFastShootItem.h"
+#include "Entities/Item/PCRStrongAttackItem.h"
+#include "Entities/Item/PCRLongerRangeItem.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 
@@ -241,34 +242,68 @@ void APCRMonsterBaseCharacter::SpawnItem()
 {
 	if (FMath::RandRange(1, 100) <= ParameterDataAsset->ItemSpawnRate * 100)
 	{
-		UClass* ItemClass = nullptr;
-
-		switch (FMath::RandRange(1, 6))
-		{
-		case 1:
-			ItemClass = APCRMoreHpItem::StaticClass();
-			break;
-		case 2:
-			ItemClass = APCRManyCardItem::StaticClass();
-			break;
-		case 3:
-			ItemClass = APCRHealItem::StaticClass();
-			break;
-		case 4:
-			ItemClass = APCRLongerRangeItem::StaticClass();
-			break;
-		case 5:
-			ItemClass = APCRSpeedUpItem::StaticClass();
-			break;
-		case 6:
-			ItemClass = APCRFastShootItem::StaticClass();
-			break;
-		default:
-			break;
-		}
-
-		GetWorld()->SpawnActor<APCRBaseItem>(ItemClass, GetActorLocation(), FRotator::ZeroRotator);
+		GetWorld()->SpawnActor<APCRBaseItem>(GetItemClass(), GetActorLocation(), FRotator::ZeroRotator);
 	}
+}
+
+UClass* APCRMonsterBaseCharacter::GetItemClass()
+{
+	float SpeedUpItemRate = 0.0f;
+	float MoreHpItemRate = 0.3f;
+	float ManyCardItemRate = 0.2f;
+	float HealItemRate = 0.1f;
+	float FastShootItemRate = 0.0f;
+	float StrongAttackItemRate = 0.25f;
+	float LongerRangeItemRate = 0.15f;
+
+	const float RangeMax
+		= SpeedUpItemRate
+		+ MoreHpItemRate
+		+ ManyCardItemRate
+		+ HealItemRate
+		+ FastShootItemRate
+		+ StrongAttackItemRate
+		+ LongerRangeItemRate;
+
+	const int32 RandRange = FMath::RandRange(1, static_cast<int32>(RangeMax * 100));
+
+	int32 Rate = SpeedUpItemRate * 100;
+	if (RandRange <= Rate)
+	{
+		return APCRSpeedUpItem::StaticClass();
+	}
+	Rate += MoreHpItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRMoreHpItem::StaticClass();
+	}
+	Rate += ManyCardItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRManyCardItem::StaticClass();
+	}
+	Rate += HealItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRHealItem::StaticClass();
+	}
+	Rate += FastShootItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRFastShootItem::StaticClass();
+	}
+	Rate += StrongAttackItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRStrongAttackItem::StaticClass();
+	}
+	
+	return APCRLongerRangeItem::StaticClass();
 }
 
 void APCRMonsterBaseCharacter::DestroyTimeCallback()

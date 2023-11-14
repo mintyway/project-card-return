@@ -64,6 +64,7 @@ protected:
 	virtual void HandleDead();
 
 	void SpawnItem();
+	UClass* GetItemClass();
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UWidgetComponent> HPBarWidgetComponent;
