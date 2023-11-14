@@ -27,6 +27,7 @@ APCRBaseItem::APCRBaseItem()
 	}
 
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	if (NiagaraComponent)
 	{
 		RootComponent = NiagaraComponent;
 	}
