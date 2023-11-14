@@ -60,7 +60,7 @@ public: // 동작
 
 	void ShootCard();
 	void RecallCard();
-	void ChangeHP(float Amount);
+	void Heal(float Amount);
 
 public: // 델리게이트
 	FAttackSignature OnCardShoot;
@@ -73,6 +73,8 @@ public: // 델리게이트
 	FShootModeSignature OnChangeShootMode;
 
 public: // Getter, Setter
+	FORCEINLINE void SetMaxHP(const float InMaxHP) { MaxHP = InMaxHP; }
+	
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
@@ -107,6 +109,7 @@ private: // 내부 함수
 	void DashCooldownTimerCallback();
 	void TotalDashTimeCallback();
 
+	void ChangeHP(float Amount);
 	void HandleChangeHP();
 	void HandleDead();
 
