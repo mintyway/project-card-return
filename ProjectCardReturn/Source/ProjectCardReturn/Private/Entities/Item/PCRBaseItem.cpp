@@ -10,7 +10,7 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Game/PCRParameterDataAsset.h"
 
-APCRBaseItem::APCRBaseItem() : bInteractPlayer(false), bInteractCard(false)
+APCRBaseItem::APCRBaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -35,7 +35,7 @@ APCRBaseItem::APCRBaseItem() : bInteractPlayer(false), bInteractCard(false)
 	if (BoxComponent)
 	{
 		BoxComponent->SetupAttachment(NiagaraComponent);
-		BoxComponent->SetBoxExtent(FVector(100.0, 100.0, 100.0));
+		BoxComponent->SetBoxExtent(FVector(70.0, 70.0, 70.0));
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel10);
 		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
@@ -68,30 +68,14 @@ void APCRBaseItem::DestroyTimerCallback()
 
 void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (!bInteractPlayer)
+	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
 	{
-		if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
-		{
-			PlayerOverlapEvent(Player);
-		
-			FTimerHandle DestroyTimerHandle;
-			FTimerDelegate DestroyTimerDelegate;
-			DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
-			GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, 0.1f, false);
-
-			bInteractPlayer = true;
-		}
-		else if (!bInteractCard)
-		{
-			if (APCREricaCardProjectile* Card = Cast<APCREricaCardProjectile>(OtherActor))
-			{
-				BoxComponent->SetBoxExtent(FVector(200.0, 200.0, 200.0));
-				SetActorLocation(Card->GetActorLocation());
-				AttachToActor(Card, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
-				bInteractCard = true;
-			}
-		}
+		PlayerOverlapEvent(Player);
+		Destroy();
+	}
+	else if (Cast<APCREricaCardProjectile>(OtherActor))
+	{
+		Destroy();
 	}
 }
 
