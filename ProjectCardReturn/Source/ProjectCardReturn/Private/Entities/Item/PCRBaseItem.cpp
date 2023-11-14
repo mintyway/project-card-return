@@ -49,6 +49,7 @@ void APCRBaseItem::BeginPlay()
 	Super::BeginPlay();
 
 	OnActorBeginOverlap.AddDynamic(this, &APCRBaseItem::HandleOverlap);
+	Player = Cast<APCREricaCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
@@ -69,16 +70,12 @@ void APCRBaseItem::DestroyTimerCallback()
 
 void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
+	if (Cast<APCREricaCharacter>(OtherActor) || Cast<APCREricaCardProjectile>(OtherActor))
 	{
-		PlayerOverlapEvent(Player);
-		Destroy();
-	}
-	else if (Cast<APCREricaCardProjectile>(OtherActor))
-	{
+		PlayerOverlapEvent();
 		Destroy();
 	}
 }
 
-void APCRBaseItem::PlayerOverlapEvent(APCREricaCharacter* Player) {}
+void APCRBaseItem::PlayerOverlapEvent() {}
 

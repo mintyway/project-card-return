@@ -34,7 +34,10 @@ private:
 	TObjectPtr<UBoxComponent> BoxComponent;
 
 protected:
-	virtual void PlayerOverlapEvent(APCREricaCharacter* Player);
+	virtual void PlayerOverlapEvent();
+
+	UPROPERTY(VisibleAnywhere, Category = "Player")
+	TObjectPtr<APCREricaCharacter> Player;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;

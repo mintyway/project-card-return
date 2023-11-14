@@ -18,5 +18,5 @@ public:
 	APCRHealItem();
 
 protected:
-	virtual void PlayerOverlapEvent(APCREricaCharacter* Player) override;
+	virtual void PlayerOverlapEvent() override;
 };
