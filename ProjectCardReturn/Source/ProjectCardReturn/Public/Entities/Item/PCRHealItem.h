@@ -16,4 +16,7 @@ class PROJECTCARDRETURN_API APCRHealItem : public APCRBaseItem
 
 public:
 	APCRHealItem();
+
+protected:
+	virtual void PlayerOverlapEvent(APCREricaCharacter* Player) override;
 };

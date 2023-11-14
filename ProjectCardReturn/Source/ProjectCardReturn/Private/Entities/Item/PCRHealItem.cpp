@@ -5,6 +5,7 @@
 
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
 
 APCRHealItem::APCRHealItem()
 {
@@ -12,4 +13,11 @@ APCRHealItem::APCRHealItem()
 	{
 		NiagaraComponent->SetAsset(ItemDataAsset->HealItemEffect);
 	}
+}
+
+void APCRHealItem::PlayerOverlapEvent(APCREricaCharacter* Player)
+{
+	Super::PlayerOverlapEvent(Player);
+
+	//Player->ChangeHP(Player->GetMaxHP() * 0.1f);
 }
