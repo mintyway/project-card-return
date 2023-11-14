@@ -223,15 +223,18 @@ void APCRMonsterBaseCharacter::HandleDead()
 	check(MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
 
+	OnDead.Broadcast(this);
+	
 	check(ParameterDataAsset);
 	FTimerHandle DestroyTimeHandle;
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
-	
-	OnDead.Broadcast(this);
 
-	SpawnItem();
+	FTimerHandle SpawnItemTimeHandle;
+	FTimerDelegate SpawnItemTimeDelegate;
+	SpawnItemTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::SpawnItem);
+	GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
 }
 
 void APCRMonsterBaseCharacter::SpawnItem()
