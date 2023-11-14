@@ -235,7 +235,7 @@ void APCRMonsterBaseCharacter::HandleDead()
 	FTimerHandle SpawnItemTimeHandle;
 	FTimerDelegate SpawnItemTimeDelegate;
 	SpawnItemTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::SpawnItem);
-	GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
+	GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime * 0.9f, false);
 }
 
 void APCRMonsterBaseCharacter::SpawnItem()
@@ -248,13 +248,21 @@ void APCRMonsterBaseCharacter::SpawnItem()
 
 UClass* APCRMonsterBaseCharacter::GetItemClass()
 {
-	float SpeedUpItemRate = 0.0f;
+	/*float SpeedUpItemRate = 0.0f;
 	float MoreHpItemRate = 0.3f;
 	float ManyCardItemRate = 0.2f;
 	float HealItemRate = 0.1f;
 	float FastShootItemRate = 0.0f;
 	float StrongAttackItemRate = 0.25f;
-	float LongerRangeItemRate = 0.15f;
+	float LongerRangeItemRate = 0.15f;*/
+
+	float SpeedUpItemRate = 0.0f;
+	float MoreHpItemRate = 0.5f;
+	float ManyCardItemRate = 0.0f;
+	float HealItemRate = 0.5f;
+	float FastShootItemRate = 0.0f;
+	float StrongAttackItemRate = 0.0f;
+	float LongerRangeItemRate = 0.0f;
 
 	const float RangeMax
 		= SpeedUpItemRate
