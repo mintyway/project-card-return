@@ -288,6 +288,12 @@ void APCREricaCharacter::RecallCard()
 	}
 }
 
+void APCREricaCharacter::ChangeHP(float Amount)
+{
+	CurrentHP += Amount;
+	HandleChangeHP();
+}
+
 float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -625,12 +631,6 @@ void APCREricaCharacter::TotalDashTimeCallback()
 	bIsDashing = false;
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-}
-
-void APCREricaCharacter::ChangeHP(float Amount)
-{
-	CurrentHP += Amount;
-	HandleChangeHP();
 }
 
 void APCREricaCharacter::HandleChangeHP()

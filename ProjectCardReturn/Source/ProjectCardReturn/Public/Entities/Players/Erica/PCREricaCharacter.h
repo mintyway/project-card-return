@@ -60,6 +60,7 @@ public: // 동작
 
 	void ShootCard();
 	void RecallCard();
+	void ChangeHP(float Amount);
 
 public: // 델리게이트
 	FAttackSignature OnCardShoot;
@@ -106,7 +107,6 @@ private: // 내부 함수
 	void DashCooldownTimerCallback();
 	void TotalDashTimeCallback();
 
-	void ChangeHP(float Amount);
 	void HandleChangeHP();
 	void HandleDead();
 

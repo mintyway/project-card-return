@@ -19,5 +19,5 @@ void APCRHealItem::PlayerOverlapEvent(APCREricaCharacter* Player)
 {
 	Super::PlayerOverlapEvent(Player);
 
-	//Player->ChangeHP(Player->GetMaxHP() * 0.1f);
+	Player->ChangeHP(Player->GetMaxHP() * 0.1f);
 }
