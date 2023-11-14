@@ -16,4 +16,7 @@ class PROJECTCARDRETURN_API APCRMoreHpItem : public APCRBaseItem
 
 public:
 	APCRMoreHpItem();
+
+protected:
+	virtual void PlayerOverlapEvent() override;
 };
