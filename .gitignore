@@ -37,5 +37,10 @@ ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor.modules
 ProjectCardReturn/Plugins/FMODStudio/Intermediate
 
+# Kawaii Physics Module
+ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/*
+!ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/UnrealEditor.modules
+ProjectCardReturn/Plugins/KawaiiPhysics/Intermediate
+
 # Misc
 .DS_Store/
