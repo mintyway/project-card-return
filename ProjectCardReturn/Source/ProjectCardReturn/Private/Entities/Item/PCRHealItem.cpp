@@ -7,6 +7,8 @@
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 
+DEFINE_LOG_CATEGORY(PCRHealItem);
+
 APCRHealItem::APCRHealItem()
 {
 	if (NiagaraComponent && ItemDataAsset)
@@ -19,5 +21,7 @@ void APCRHealItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	Player->Heal(Player->GetMaxHP() * 0.1f);
+	const float amount = Player->GetMaxHP() * 0.1f;
+	Player->Heal(amount);
+	UE_LOG(PCRHealItem, Warning, TEXT("회복량 : %.2f"), amount);
 }

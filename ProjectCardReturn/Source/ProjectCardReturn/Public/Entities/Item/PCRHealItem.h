@@ -6,6 +6,8 @@
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRHealItem.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRHealItem, Log, All);
+
 /**
  * 
  */
