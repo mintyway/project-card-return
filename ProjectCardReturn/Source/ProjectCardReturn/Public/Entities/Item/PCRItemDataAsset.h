@@ -17,9 +17,6 @@ class PROJECTCARDRETURN_API UPCRItemDataAsset : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraSystem> SpeedUpItemEffect;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	TObjectPtr<UNiagaraSystem> MoreHpItemEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
@@ -27,9 +24,6 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	TObjectPtr<UNiagaraSystem> HealItemEffect;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UNiagaraSystem> FastShootItemEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	TObjectPtr<UNiagaraSystem> StrongAttackItemEffect;
