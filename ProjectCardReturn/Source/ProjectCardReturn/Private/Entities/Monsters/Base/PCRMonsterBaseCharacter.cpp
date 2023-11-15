@@ -12,13 +12,12 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "BrainComponent.h"
-#include "Entities/Item/PCRFastShootItem.h"
-#include "Entities/Item/PCRHealItem.h"
-#include "Entities/Item/PCRLongerRangeItem.h"
 
-#include "Entities/Item/PCRManyCardItem.h"
 #include "Entities/Item/PCRMoreHpItem.h"
-#include "Entities/Item/PCRSpeedUpItem.h"
+#include "Entities/Item/PCRManyCardItem.h"
+#include "Entities/Item/PCRHealItem.h"
+#include "Entities/Item/PCRStrongAttackItem.h"
+#include "Entities/Item/PCRLongerRangeItem.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 
@@ -223,49 +222,70 @@ void APCRMonsterBaseCharacter::HandleDead()
 	check(MonsterBaseAIController->GetBrainComponent());
 	MonsterBaseAIController->GetBrainComponent()->StopLogic("Monster is Dead");
 
+	OnDead.Broadcast(this);
+	
 	check(ParameterDataAsset);
 	FTimerHandle DestroyTimeHandle;
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
-	
-	OnDead.Broadcast(this);
 
-	SpawnItem();
+	FTimerHandle SpawnItemTimeHandle;
+	FTimerDelegate SpawnItemTimeDelegate;
+	SpawnItemTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::SpawnItem);
+	GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime * 0.9f, false);
 }
 
 void APCRMonsterBaseCharacter::SpawnItem()
 {
 	if (FMath::RandRange(1, 100) <= ParameterDataAsset->ItemSpawnRate * 100)
 	{
-		UClass* ItemClass = nullptr;
-
-		switch (FMath::RandRange(1, 6))
-		{
-		case 1:
-			ItemClass = APCRMoreHpItem::StaticClass();
-			break;
-		case 2:
-			ItemClass = APCRManyCardItem::StaticClass();
-			break;
-		case 3:
-			ItemClass = APCRHealItem::StaticClass();
-			break;
-		case 4:
-			ItemClass = APCRLongerRangeItem::StaticClass();
-			break;
-		case 5:
-			ItemClass = APCRSpeedUpItem::StaticClass();
-			break;
-		case 6:
-			ItemClass = APCRFastShootItem::StaticClass();
-			break;
-		default:
-			break;
-		}
-
-		GetWorld()->SpawnActor<APCRBaseItem>(ItemClass, GetActorLocation(), FRotator::ZeroRotator);
+		GetWorld()->SpawnActor<APCRBaseItem>(GetItemClass(), GetActorLocation(), FRotator::ZeroRotator);
 	}
+}
+
+UClass* APCRMonsterBaseCharacter::GetItemClass()
+{
+	const float MoreHpItemRate = ParameterDataAsset->MoreHpItemRate;
+	const float ManyCardItemRate = ParameterDataAsset->ManyCardItemRate;
+	const float HealItemRate = ParameterDataAsset->HealItemRate;
+	const float StrongAttackItemRate = ParameterDataAsset->StrongAttackItemRate;
+	const float LongerRangeItemRate = ParameterDataAsset->LongerRangeItemRate;
+
+	const float RangeMax
+		= MoreHpItemRate
+		+ ManyCardItemRate
+		+ HealItemRate
+		+ StrongAttackItemRate
+		+ LongerRangeItemRate;
+
+	const int32 RandRange = FMath::RandRange(1, static_cast<int32>(RangeMax * 100));
+
+	int32 Rate = MoreHpItemRate * 100;
+	if (RandRange <= Rate)
+	{
+		return APCRMoreHpItem::StaticClass();
+	}
+	Rate += ManyCardItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRManyCardItem::StaticClass();
+	}
+	Rate += HealItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRHealItem::StaticClass();
+	}
+	Rate += StrongAttackItemRate * 100;
+
+	if (RandRange <= Rate)
+	{
+		return APCRStrongAttackItem::StaticClass();
+	}
+	
+	return APCRLongerRangeItem::StaticClass();
 }
 
 void APCRMonsterBaseCharacter::DestroyTimeCallback()

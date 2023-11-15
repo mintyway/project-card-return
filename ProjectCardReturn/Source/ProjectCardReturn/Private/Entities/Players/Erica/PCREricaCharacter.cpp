@@ -288,6 +288,56 @@ void APCREricaCharacter::RecallCard()
 	}
 }
 
+void APCREricaCharacter::Heal(float Amount)
+{
+	ChangeHP(Amount);
+}
+
+void APCREricaCharacter::IncreaseMaxHP(float Amount)
+{
+	MaxHP += Amount;
+}
+
+void APCREricaCharacter::IncreaseMaxCardCount(int32 Amount)
+{
+	MaxCardCount += Amount;
+}
+
+void APCREricaCharacter::IncreaseDamage(float Amount)
+{
+	NarrowShotForwardDamage += Amount;
+	NarrowShotBackwardDamage += Amount;
+	WideShotForwardDamage += Amount;
+	WideShotBackwardDamage += Amount;
+}
+
+void APCREricaCharacter::IncreaseShootRange(float Amount)
+{
+	NarrowShotRange += Amount;
+	WideShotRange += Amount;
+}
+
+float APCREricaCharacter::CardAverageDamage()
+{
+	const float SumDamage
+		= NarrowShotForwardDamage
+		+ NarrowShotBackwardDamage
+		+ WideShotForwardDamage
+		+ WideShotBackwardDamage;
+
+	const float AverageDamage = SumDamage / 4.0f;
+
+	return AverageDamage;
+}
+
+float APCREricaCharacter::CardAverageRange()
+{
+	const float SumRange = NarrowShotRange + WideShotRange;
+	const float AverageRange = SumRange * 0.5f;
+
+	return AverageRange;
+}
+
 float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);

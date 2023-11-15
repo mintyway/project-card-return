@@ -6,6 +6,8 @@
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRLongerRangeItem.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLongerRangeItem, Log, All);
+
 /**
  * 
  */
@@ -16,4 +18,7 @@ class PROJECTCARDRETURN_API APCRLongerRangeItem : public APCRBaseItem
 
 public:
 	APCRLongerRangeItem();
+
+protected:
+	virtual void PlayerOverlapEvent() override;
 };

@@ -2,22 +2,22 @@
 
 #pragma once
 
-#include "ProjectCardReturn.h"
+#include "CoreMinimal.h"
 #include "Entities/Item/PCRBaseItem.h"
-#include "PCRManyCardItem.generated.h"
+#include "PCRStrongAttackItem.generated.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(PCRManyCardItem, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(PCRStrongAttackItem, Log, All);
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRManyCardItem : public APCRBaseItem
+class PROJECTCARDRETURN_API APCRStrongAttackItem : public APCRBaseItem
 {
 	GENERATED_BODY()
 
 public:
-	APCRManyCardItem();
+	APCRStrongAttackItem();
 
 protected:
 	virtual void PlayerOverlapEvent() override;

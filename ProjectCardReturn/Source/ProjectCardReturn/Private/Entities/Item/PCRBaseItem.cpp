@@ -10,7 +10,7 @@
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Game/PCRParameterDataAsset.h"
 
-APCRBaseItem::APCRBaseItem() : bInteractCard(false)
+APCRBaseItem::APCRBaseItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -27,6 +27,7 @@ APCRBaseItem::APCRBaseItem() : bInteractCard(false)
 	}
 
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	if (NiagaraComponent)
 	{
 		RootComponent = NiagaraComponent;
 	}
@@ -37,8 +38,9 @@ APCRBaseItem::APCRBaseItem() : bInteractCard(false)
 		BoxComponent->SetupAttachment(NiagaraComponent);
 		BoxComponent->SetBoxExtent(FVector(70.0, 70.0, 70.0));
 		BoxComponent->SetCollisionObjectType(ECC_GameTraceChannel10);
+		BoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
-		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+		BoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
 	}
 }
 
@@ -46,7 +48,8 @@ void APCRBaseItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnActorBeginOverlap.AddDynamic(this, &APCRBaseItem::HandleItemHit);
+	OnActorBeginOverlap.AddDynamic(this, &APCRBaseItem::HandleOverlap);
+	Player = Cast<APCREricaCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	FTimerHandle DestroyTimerHandle;
 	FTimerDelegate DestroyTimerDelegate;
@@ -60,37 +63,19 @@ void APCRBaseItem::Tick(float DeltaTime)
 
 }
 
-void APCRBaseItem::HandleReturnCard(APCREricaCardProjectile* AttachedCard)
-{
-	AttachToActor(AttachedCard, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	bInteractCard = false;
-	
-	FTimerHandle DestroyTimerHandle;
-	FTimerDelegate DestroyTimerDelegate;
-	DestroyTimerDelegate.BindUObject(this, &APCRBaseItem::DestroyTimerCallback);
-	GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyTimerDelegate, ParameterDataAsset->ItemDestroyTime, false);
-}
-
 void APCRBaseItem::DestroyTimerCallback()
 {
-	if (!bInteractCard)
-		Destroy();
+	Destroy();
 }
 
-void APCRBaseItem::HandleItemHit(AActor* OverlappedActor, AActor* OtherActor)
+void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (APCREricaCharacter* Player = Cast<APCREricaCharacter>(OtherActor))
+	if (Cast<APCREricaCharacter>(OtherActor) || Cast<APCREricaCardProjectile>(OtherActor))
 	{
-		//
-		
+		PlayerOverlapEvent();
 		Destroy();
 	}
 }
 
-void APCRBaseItem::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
-{
-	check(AttachedCard);
-	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRBaseItem::HandleReturnCard);
-	bInteractCard = true;
-}
+void APCRBaseItem::PlayerOverlapEvent() {}
 

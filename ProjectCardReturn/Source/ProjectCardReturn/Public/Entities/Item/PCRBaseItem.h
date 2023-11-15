@@ -4,16 +4,16 @@
 
 #include "ProjectCardReturn.h"
 #include "GameFramework/Actor.h"
-#include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRBaseItem.generated.h"
 
+class APCREricaCharacter;
 class UPCRParameterDataAsset;
 class UPCRItemDataAsset;
 class UNiagaraComponent;
 class UBoxComponent;
 
 UCLASS()
-class PROJECTCARDRETURN_API APCRBaseItem : public AActor, public IPCREricaCardInteractable
+class PROJECTCARDRETURN_API APCRBaseItem : public AActor
 {
 	GENERATED_BODY()
 	
@@ -25,17 +25,19 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void HandleReturnCard(APCREricaCardProjectile* AttachedCard);
 	void DestroyTimerCallback();
 	
 	UFUNCTION()
-	void HandleItemHit(AActor* OverlappedActor, AActor* OtherActor);
+	void HandleOverlap(AActor* OverlappedActor, AActor* OtherActor);
 	
 	UPROPERTY(VisibleAnywhere, Category = "Box")
 	TObjectPtr<UBoxComponent> BoxComponent;
 
 protected:
-	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+	virtual void PlayerOverlapEvent();
+
+	UPROPERTY(VisibleAnywhere, Category = "Player")
+	TObjectPtr<APCREricaCharacter> Player;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
@@ -45,6 +47,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
-
-	uint32 bInteractCard;
 };

@@ -32,5 +32,8 @@ public:
 	TObjectPtr<UNiagaraSystem> FastShootItemEffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TObjectPtr<UNiagaraSystem> StrongAttackItemEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	TObjectPtr<UNiagaraSystem> LongRangeItemEffect;
 };

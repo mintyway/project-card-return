@@ -6,6 +6,8 @@
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRMoreHpItem.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRMoreHpItem, Log, All);
+
 /**
  * 
  */
@@ -16,4 +18,7 @@ class PROJECTCARDRETURN_API APCRMoreHpItem : public APCRBaseItem
 
 public:
 	APCRMoreHpItem();
+
+protected:
+	virtual void PlayerOverlapEvent() override;
 };
