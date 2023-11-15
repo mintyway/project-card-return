@@ -6,6 +6,8 @@
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRManyCardItem.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRManyCardItem, Log, All);
+
 /**
  * 
  */
@@ -16,4 +18,7 @@ class PROJECTCARDRETURN_API APCRManyCardItem : public APCRBaseItem
 
 public:
 	APCRManyCardItem();
+
+protected:
+	virtual void PlayerOverlapEvent() override;
 };

@@ -21,7 +21,6 @@ void APCRHealItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	const float amount = Player->GetMaxHP() * 0.1f;
-	Player->Heal(amount);
-	UE_LOG(PCRHealItem, Warning, TEXT("회복량 : %.2f"), amount);
+	Player->Heal(Player->GetMaxHP() * 0.1f);
+	UE_LOG(PCRHealItem, Warning, TEXT("체력 : %.2f"), Player->GetCurrentHP());
 }
