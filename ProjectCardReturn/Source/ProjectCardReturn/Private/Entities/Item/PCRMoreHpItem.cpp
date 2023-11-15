@@ -24,5 +24,5 @@ void APCRMoreHpItem::PlayerOverlapEvent()
 
 	Player->IncreaseMaxHP(Player->GetMaxHP() * ParameterDataAsset->MaxHPIncreaseRate);
 	Player->Heal(Player->GetCurrentHP() * ParameterDataAsset->HealRateByIncreaseMaxHP);
-	UE_LOG(PCRMoreHpItem, Warning, TEXT("체력 최대치 : %.2f"), Player->GetMaxHP());
+	UE_LOG(PCRMoreHpItem, Log, TEXT("체력 최대치 : %.2f"), Player->GetMaxHP());
 }

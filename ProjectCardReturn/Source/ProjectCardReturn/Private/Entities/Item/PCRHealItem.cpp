@@ -23,5 +23,5 @@ void APCRHealItem::PlayerOverlapEvent()
 	Super::PlayerOverlapEvent();
 
 	Player->Heal(Player->GetMaxHP() * ParameterDataAsset->HealRate);
-	UE_LOG(PCRHealItem, Warning, TEXT("체력 : %.2f"), Player->GetCurrentHP());
+	UE_LOG(PCRHealItem, Log, TEXT("체력 : %.2f"), Player->GetCurrentHP());
 }

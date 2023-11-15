@@ -23,5 +23,5 @@ void APCRManyCardItem::PlayerOverlapEvent()
 	Super::PlayerOverlapEvent();
 
 	Player->IncreaseMaxCardCount(ParameterDataAsset->MaxCardIncreaseCount);
-	UE_LOG(PCRManyCardItem, Warning, TEXT("카드 최대 수 : %d"), Player->GetMaxCardCount());
+	UE_LOG(PCRManyCardItem, Log, TEXT("카드 최대 수 : %d"), Player->GetMaxCardCount());
 }

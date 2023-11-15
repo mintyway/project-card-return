@@ -23,5 +23,5 @@ void APCRStrongAttackItem::PlayerOverlapEvent()
 	Super::PlayerOverlapEvent();
 
 	Player->IncreaseDamage(ParameterDataAsset->DamageIncreaseValue);
-	UE_LOG(PCRStrongAttackItem, Warning, TEXT("카드 평균 데미지 : %.2f"), Player->CardAverageDamage());
+	UE_LOG(PCRStrongAttackItem, Log, TEXT("카드 평균 데미지 : %.2f"), Player->CardAverageDamage());
 }

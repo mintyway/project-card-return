@@ -23,5 +23,5 @@ void APCRLongerRangeItem::PlayerOverlapEvent()
 	Super::PlayerOverlapEvent();
 
 	Player->IncreaseShootRange(ParameterDataAsset->ShootRangeIncreaseDistance);
-	UE_LOG(PCRLongerRangeItem, Warning, TEXT("카드 평균 사거리 : %.2f"), Player->CardAverageRange());
+	UE_LOG(PCRLongerRangeItem, Log, TEXT("카드 평균 사거리 : %.2f"), Player->CardAverageRange());
 }
