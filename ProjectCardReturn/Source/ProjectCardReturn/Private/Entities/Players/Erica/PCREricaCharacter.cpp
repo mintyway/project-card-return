@@ -293,6 +293,16 @@ void APCREricaCharacter::Heal(float Amount)
 	ChangeHP(Amount);
 }
 
+void APCREricaCharacter::IncreaseMaxHP(float Amount)
+{
+	MaxHP += Amount;
+}
+
+void APCREricaCharacter::IncreaseMaxCardCount(int32 Amount)
+{
+	MaxCardCount += Amount;
+}
+
 float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);

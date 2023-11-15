@@ -61,6 +61,8 @@ public: // 동작
 	void ShootCard();
 	void RecallCard();
 	void Heal(float Amount);
+	void IncreaseMaxHP(float Amount);
+	void IncreaseMaxCardCount(int32 Amount);
 
 public: // 델리게이트
 	FAttackSignature OnCardShoot;
@@ -73,8 +75,6 @@ public: // 델리게이트
 	FShootModeSignature OnChangeShootMode;
 
 public: // Getter, Setter
-	FORCEINLINE void SetMaxHP(const float InMaxHP) { MaxHP = InMaxHP; }
-	
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
