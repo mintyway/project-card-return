@@ -62,8 +62,12 @@ protected:
 	virtual void HandleStun();
 	virtual void HandleStunRelease();
 	virtual void HandleDead();
+	
+	UFUNCTION()
+	virtual void PlayDeadEffect(AActor* DestroyedActor);
 
-	void SpawnItem();
+	UFUNCTION()
+	void SpawnItem(AActor* DestroyedActor);
 	UClass* GetItemClass();
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")

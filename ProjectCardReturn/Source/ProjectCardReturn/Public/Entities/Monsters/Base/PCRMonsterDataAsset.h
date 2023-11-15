@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRMonsterDataAsset.generated.h"
 
+class UNiagaraSystem;
 class UBehaviorTree;
 class UBlackboardData;
 /**
@@ -17,6 +18,9 @@ class PROJECTCARDRETURN_API UPCRMonsterDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	TObjectPtr<UNiagaraSystem> DeadEffect;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Soldier")
 	TObjectPtr<UBehaviorTree> SoldierBehaviorTree;
 

@@ -69,10 +69,13 @@ private: // 내부 함수
 	void InitCollisionObjectQueryParams();
 
 private: // 컴포넌트
-	UPROPERTY(VisibleAnywhere, Category = "FX")
-	TObjectPtr<UNiagaraComponent> CardRibbonFXComponent;
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> CardShotRibbonFXComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "FX")
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> CardRecallRibbonFXComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> CardFloatingFXComponent;
 
 private: // 데이터

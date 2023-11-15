@@ -47,11 +47,18 @@ APCREricaCardProjectile::APCREricaCardProjectile() : ForwardDamage(0.f), Backwar
 		ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
 	}
 
-	CardRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardRibbonFXComponent"));
-	if (CardRibbonFXComponent && ProjectileDataAsset)
+	CardShotRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardShotRibbonFXComponent"));
+	if (CardShotRibbonFXComponent && ProjectileDataAsset)
 	{
-		CardRibbonFXComponent->SetupAttachment(BoxComponent);
-		CardRibbonFXComponent->SetAsset(ProjectileDataAsset->CardRibbon);
+		CardShotRibbonFXComponent->SetupAttachment(BoxComponent);
+		CardShotRibbonFXComponent->SetAsset(ProjectileDataAsset->ShotCardRibbon);
+	}
+
+	CardRecallRibbonFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardRecallRibbonFXComponent"));
+	if (CardRecallRibbonFXComponent)
+	{
+		CardRecallRibbonFXComponent->SetupAttachment(BoxComponent);
+		CardRecallRibbonFXComponent->SetAsset(ProjectileDataAsset->RecallCardRibbon);
 	}
 
 	CardFloatingFXComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CardFloatingFXComponent"));
@@ -73,8 +80,9 @@ void APCREricaCardProjectile::PostInitializeComponents()
 	OnActorBeginOverlap.AddDynamic(this, &APCREricaCardProjectile::HandleBeginOverlap);
 	OnActorHit.AddDynamic(this, &APCREricaCardProjectile::HandleBlocking);
 
-	check(CardRibbonFXComponent && CardFloatingFXComponent);
-	CardRibbonFXComponent->Deactivate();
+	check(CardShotRibbonFXComponent && CardFloatingFXComponent);
+	CardShotRibbonFXComponent->Deactivate();
+	CardRecallRibbonFXComponent->Deactivate();
 	CardFloatingFXComponent->Deactivate();
 }
 
@@ -111,7 +119,7 @@ void APCREricaCardProjectile::Tick(float DeltaSeconds)
 void APCREricaCardProjectile::LaunchProjectile(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
 {
 	Super::LaunchProjectile(NewOwner, StartLocation, Direction);
-	CardRibbonFXComponent->Activate(true);
+	CardShotRibbonFXComponent->Activate(true);
 
 	CurrentCardState = ECardState::Flying;
 }
@@ -121,7 +129,8 @@ void APCREricaCardProjectile::ReleaseToProjectilePool()
 	Super::ReleaseToProjectilePool();
 
 	AttackedActors.Reset();
-	CardRibbonFXComponent->Deactivate();
+	CardShotRibbonFXComponent->Deactivate();
+	CardRecallRibbonFXComponent->Deactivate();
 	CardFloatingFXComponent->Deactivate();
 	OnReturnCardBegin.Clear();
 }
@@ -142,7 +151,7 @@ void APCREricaCardProjectile::ReturnCard()
 	EnableProjectile();
 	AttackedActors.Reset();
 
-	CardRibbonFXComponent->Activate();
+	CardRecallRibbonFXComponent->Activate(true);
 	CardFloatingFXComponent->Deactivate();
 	StaticMeshComponent->SetVisibility(true);
 
@@ -328,7 +337,7 @@ void APCREricaCardProjectile::CheckCardRangeAndStop(float DeltaSeconds)
 	if (Distance >= (CardRange * CardRange))
 	{
 		PauseCard();
-		CardRibbonFXComponent->Deactivate();
+		CardShotRibbonFXComponent->Deactivate();
 		HandleCardMaxRange();
 	}
 }

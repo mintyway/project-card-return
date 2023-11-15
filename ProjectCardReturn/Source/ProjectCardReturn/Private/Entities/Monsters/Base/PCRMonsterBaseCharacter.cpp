@@ -12,6 +12,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "BrainComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "Entities/Item/PCRMoreHpItem.h"
 #include "Entities/Item/PCRManyCardItem.h"
@@ -82,6 +83,9 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 void APCRMonsterBaseCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	OnDestroyed.AddDynamic(this, &APCRMonsterBaseCharacter::PlayDeadEffect);
+	OnDestroyed.AddDynamic(this, &APCRMonsterBaseCharacter::SpawnItem);
 }
 
 void APCRMonsterBaseCharacter::BeginPlay()
@@ -230,17 +234,25 @@ void APCRMonsterBaseCharacter::HandleDead()
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
 
-	FTimerHandle SpawnItemTimeHandle;
-	FTimerDelegate SpawnItemTimeDelegate;
-	SpawnItemTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::SpawnItem);
-	GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime * 0.9f, false);
+	// TODO: 제거 예정 코드
+	// FTimerHandle SpawnItemTimeHandle;
+	// FTimerDelegate SpawnItemTimeDelegate;
+	// SpawnItemTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::SpawnItem);
+	// GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime * 0.9f, false);
 }
 
-void APCRMonsterBaseCharacter::SpawnItem()
+void APCRMonsterBaseCharacter::PlayDeadEffect(AActor* DestroyedActor)
+{
+	FVector NewLocation = GetActorLocation();
+	NewLocation.Z = 40;
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), MonsterDataAsset->DeadEffect, NewLocation, GetActorRotation());
+}
+
+void APCRMonsterBaseCharacter::SpawnItem(AActor* DestroyedActor)
 {
 	if (FMath::RandRange(1, 100) <= ParameterDataAsset->ItemSpawnRate * 100)
 	{
-		GetWorld()->SpawnActor<APCRBaseItem>(GetItemClass(), GetActorLocation(), FRotator::ZeroRotator);
+		GetWorld()->SpawnActor<APCRBaseItem>(GetItemClass(), GetActorLocation(), FRotator(0.0, 90.0, 0.0));
 	}
 }
 

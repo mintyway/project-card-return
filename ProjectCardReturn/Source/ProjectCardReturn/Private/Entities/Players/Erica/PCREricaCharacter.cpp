@@ -98,6 +98,7 @@ APCREricaCharacter::APCREricaCharacter()
 		{
 			GetMesh()->SetAnimInstanceClass(EricaAnimationBlueprint);
 		}
+		GetMesh()->SetRenderCustomDepth(true);
 	}
 
 	if (GetCharacterMovement() && ParameterDataAsset)
@@ -705,6 +706,7 @@ void APCREricaCharacter::HandleDead()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Ragdoll"));
 	bIsAlive = false;
 	DisableInput(CachedEricaPlayerController);
+	
 
 	OnDead.Broadcast();
 }

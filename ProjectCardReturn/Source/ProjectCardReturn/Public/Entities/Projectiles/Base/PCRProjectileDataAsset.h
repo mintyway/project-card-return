@@ -20,7 +20,10 @@ public:
 	TObjectPtr<UStaticMesh> EricaCardMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "FX")
-	TObjectPtr<UNiagaraSystem> CardRibbon;
+	TObjectPtr<UNiagaraSystem> ShotCardRibbon;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	TObjectPtr<UNiagaraSystem> RecallCardRibbon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "FX")
 	TObjectPtr<UNiagaraSystem> CardFloating;
