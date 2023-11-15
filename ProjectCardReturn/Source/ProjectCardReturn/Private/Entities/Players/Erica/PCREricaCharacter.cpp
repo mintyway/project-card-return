@@ -311,6 +311,12 @@ void APCREricaCharacter::IncreaseDamage(float Amount)
 	WideShotBackwardDamage += Amount;
 }
 
+void APCREricaCharacter::IncreaseShootRange(float Amount)
+{
+	NarrowShotRange += Amount;
+	WideShotRange += Amount;
+}
+
 float APCREricaCharacter::CardAverageDamage()
 {
 	const float SumDamage
@@ -322,6 +328,14 @@ float APCREricaCharacter::CardAverageDamage()
 	const float AverageDamage = SumDamage / 4.0f;
 
 	return AverageDamage;
+}
+
+float APCREricaCharacter::CardAverageRange()
+{
+	const float SumRange = NarrowShotRange + WideShotRange;
+	const float AverageRange = SumRange * 0.5f;
+
+	return AverageRange;
 }
 
 float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

@@ -64,8 +64,10 @@ public: // 동작
 	void IncreaseMaxHP(float Amount);
 	void IncreaseMaxCardCount(int32 Amount);
 	void IncreaseDamage(float Amount);
+	void IncreaseShootRange(float Amount);
 
 	float CardAverageDamage();
+	float CardAverageRange();
 
 public: // 델리게이트
 	FAttackSignature OnCardShoot;

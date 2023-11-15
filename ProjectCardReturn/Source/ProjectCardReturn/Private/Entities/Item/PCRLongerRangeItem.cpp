@@ -5,6 +5,9 @@
 
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
+
+DEFINE_LOG_CATEGORY(PCRLongerRangeItem);
 
 APCRLongerRangeItem::APCRLongerRangeItem()
 {
@@ -12,4 +15,12 @@ APCRLongerRangeItem::APCRLongerRangeItem()
 	{
 		NiagaraComponent->SetAsset(ItemDataAsset->LongRangeItemEffect);
 	}
+}
+
+void APCRLongerRangeItem::PlayerOverlapEvent()
+{
+	Super::PlayerOverlapEvent();
+
+	Player->IncreaseShootRange(100);
+	UE_LOG(PCRLongerRangeItem, Warning, TEXT("카드 평균 사거리 : %.2f"), Player->CardAverageRange());
 }
