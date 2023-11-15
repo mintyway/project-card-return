@@ -205,4 +205,35 @@ public: // 토끼
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float ItemDestroyTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float MoreHpItemRate;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float ManyCardItemRate;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float HealItemRate;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float StrongAttackItemRate;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float LongerRangeItemRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MoreHpItem")
+	float MaxHP_IncreaseRate = 0.05f;
+	float HealRateByIncreaseMaxHP = 0.05f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ManyCardItem")
+	int32 MaxCardIncreaseCount = 3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HealItem")
+	float HealRate = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "StrongAttackItem")
+	float DamageIncreaseRate = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "LongerRangeItem")
+	float ShootRangeIncreaseDistance = 100;
 };

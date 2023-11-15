@@ -13,11 +13,9 @@
 #include "Components/WidgetComponent.h"
 #include "BrainComponent.h"
 
-#include "Entities/Item/PCRSpeedUpItem.h"
 #include "Entities/Item/PCRMoreHpItem.h"
 #include "Entities/Item/PCRManyCardItem.h"
 #include "Entities/Item/PCRHealItem.h"
-#include "Entities/Item/PCRFastShootItem.h"
 #include "Entities/Item/PCRStrongAttackItem.h"
 #include "Entities/Item/PCRLongerRangeItem.h"
 
@@ -248,11 +246,11 @@ void APCRMonsterBaseCharacter::SpawnItem()
 
 UClass* APCRMonsterBaseCharacter::GetItemClass()
 {
-	float MoreHpItemRate = 0.3f;
-	float ManyCardItemRate = 0.2f;
-	float HealItemRate = 0.1f;
-	float StrongAttackItemRate = 0.25f;
-	float LongerRangeItemRate = 0.15f;
+	const float MoreHpItemRate = ParameterDataAsset->MoreHpItemRate;
+	const float ManyCardItemRate = ParameterDataAsset->ManyCardItemRate;
+	const float HealItemRate = ParameterDataAsset->HealItemRate;
+	const float StrongAttackItemRate = ParameterDataAsset->StrongAttackItemRate;
+	const float LongerRangeItemRate = ParameterDataAsset->LongerRangeItemRate;
 
 	const float RangeMax
 		= MoreHpItemRate
