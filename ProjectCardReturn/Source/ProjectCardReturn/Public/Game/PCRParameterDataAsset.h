@@ -221,8 +221,10 @@ public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float LongerRangeItemRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "Item", DisplayName = "Max HP Increase Rate")
 	float MaxHPIncreaseRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float HealRateByIncreaseMaxHP;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
