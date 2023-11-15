@@ -7,6 +7,8 @@
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 
+DEFINE_LOG_CATEGORY(PCRMoreHpItem);
+
 APCRMoreHpItem::APCRMoreHpItem()
 {
 	if (NiagaraComponent && ItemDataAsset)
@@ -22,4 +24,5 @@ void APCRMoreHpItem::PlayerOverlapEvent()
 	const float MaxHP = Player->GetMaxHP() + Player->GetMaxHP() * 0.05f;
 	Player->SetMaxHP(MaxHP);
 	Player->Heal(Player->GetCurrentHP() * 0.05f);
+	UE_LOG(PCRMoreHpItem, Warning, TEXT("체력 최대치 : %.2f"), Player->GetMaxHP());
 }

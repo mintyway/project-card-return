@@ -6,6 +6,8 @@
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRMoreHpItem.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRMoreHpItem, Log, All);
+
 /**
  * 
  */
