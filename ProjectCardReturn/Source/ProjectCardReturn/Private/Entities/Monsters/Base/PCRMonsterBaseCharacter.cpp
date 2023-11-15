@@ -248,32 +248,22 @@ void APCRMonsterBaseCharacter::SpawnItem()
 
 UClass* APCRMonsterBaseCharacter::GetItemClass()
 {
-	float SpeedUpItemRate = 0.0f;
 	float MoreHpItemRate = 0.3f;
 	float ManyCardItemRate = 0.2f;
 	float HealItemRate = 0.1f;
-	float FastShootItemRate = 0.0f;
 	float StrongAttackItemRate = 0.25f;
 	float LongerRangeItemRate = 0.15f;
 
 	const float RangeMax
-		= SpeedUpItemRate
-		+ MoreHpItemRate
+		= MoreHpItemRate
 		+ ManyCardItemRate
 		+ HealItemRate
-		+ FastShootItemRate
 		+ StrongAttackItemRate
 		+ LongerRangeItemRate;
 
 	const int32 RandRange = FMath::RandRange(1, static_cast<int32>(RangeMax * 100));
 
-	int32 Rate = SpeedUpItemRate * 100;
-	if (RandRange <= Rate)
-	{
-		return APCRSpeedUpItem::StaticClass();
-	}
-	Rate += MoreHpItemRate * 100;
-
+	int32 Rate = MoreHpItemRate * 100;
 	if (RandRange <= Rate)
 	{
 		return APCRMoreHpItem::StaticClass();
@@ -289,12 +279,6 @@ UClass* APCRMonsterBaseCharacter::GetItemClass()
 	if (RandRange <= Rate)
 	{
 		return APCRHealItem::StaticClass();
-	}
-	Rate += FastShootItemRate * 100;
-
-	if (RandRange <= Rate)
-	{
-		return APCRFastShootItem::StaticClass();
 	}
 	Rate += StrongAttackItemRate * 100;
 
