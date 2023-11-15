@@ -6,6 +6,8 @@
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRStrongAttackItem.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRStrongAttackItem, Log, All);
+
 /**
  * 
  */
@@ -16,4 +18,7 @@ class PROJECTCARDRETURN_API APCRStrongAttackItem : public APCRBaseItem
 
 public:
 	APCRStrongAttackItem();
+
+protected:
+	virtual void PlayerOverlapEvent() override;
 };

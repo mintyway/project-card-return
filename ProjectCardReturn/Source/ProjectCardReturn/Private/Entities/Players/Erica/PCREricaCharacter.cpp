@@ -303,6 +303,27 @@ void APCREricaCharacter::IncreaseMaxCardCount(int32 Amount)
 	MaxCardCount += Amount;
 }
 
+void APCREricaCharacter::IncreaseDamage(float Amount)
+{
+	NarrowShotForwardDamage += Amount;
+	NarrowShotBackwardDamage += Amount;
+	WideShotForwardDamage += Amount;
+	WideShotBackwardDamage += Amount;
+}
+
+float APCREricaCharacter::CardAverageDamage()
+{
+	const float SumDamage
+		= NarrowShotForwardDamage
+		+ NarrowShotBackwardDamage
+		+ WideShotForwardDamage
+		+ WideShotBackwardDamage;
+
+	const float AverageDamage = SumDamage / 4.0f;
+
+	return AverageDamage;
+}
+
 float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);

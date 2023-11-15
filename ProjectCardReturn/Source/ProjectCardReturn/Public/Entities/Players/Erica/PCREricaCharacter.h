@@ -63,6 +63,9 @@ public: // 동작
 	void Heal(float Amount);
 	void IncreaseMaxHP(float Amount);
 	void IncreaseMaxCardCount(int32 Amount);
+	void IncreaseDamage(float Amount);
+
+	float CardAverageDamage();
 
 public: // 델리게이트
 	FAttackSignature OnCardShoot;
