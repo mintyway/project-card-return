@@ -128,6 +128,11 @@ void APCRGameModeBase::BeginPlay()
 	StartAllMonsterGenerators();
 
 	PlayStage1BGM();
+	
+	if (Stage1TargetKillCount == 0)
+	{
+		HandleKillCount();
+	}
 }
 
 void APCRGameModeBase::Tick(float DeltaSeconds)
@@ -219,8 +224,9 @@ void APCRGameModeBase::LiftFloor()
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	check(PlayerCharacter);
 
-	const FVector ResetLocation = FVector(-1400.0, 0.0, PlayerCharacter->GetActorLocation().Z);
-	PlayerCharacter->SetActorLocation(ResetLocation);
+	FVector NewLocation = LiftActor->GetActorLocation();
+	NewLocation.Z = PlayerCharacter->GetActorLocation().Z;
+	PlayerCharacter->SetActorLocation(NewLocation);
 
 	CurrentStageNumber = EStageNumber::Stage2;
 }

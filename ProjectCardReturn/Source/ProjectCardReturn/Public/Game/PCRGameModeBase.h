@@ -99,7 +99,11 @@ private: // 데이터 섹션
 	TArray<TObjectPtr<APCRMonsterGenerator>> MonsterGenerators;
 
 	float GenerateInterval;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
 	int32 Stage1TotalMonsterKillCount;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
 	int32 Stage1TargetKillCount;
 
 	EStageNumber CurrentStageNumber;

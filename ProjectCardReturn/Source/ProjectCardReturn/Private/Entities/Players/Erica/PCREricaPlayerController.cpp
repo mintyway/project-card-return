@@ -148,6 +148,7 @@ void APCREricaPlayerController::BindEricaUI()
 void APCREricaPlayerController::BindStage1UI()
 {
 	APCRGameModeBase* PCRGameMode = Cast<APCRGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
 	PCRGameMode->OnChangeStage1MonsterCount.BindUObject(HUDUserWidget->Stage1UserWidget, &UPCRStage1UserWidget::HandleUpdateMonsterCount);
 
 	HUDUserWidget->Stage1UserWidget->HandleUpdateMonsterCount(PCRGameMode->GetStage1MaxMonsterCount(), PCRGameMode->GetStage1CurrentMonsterCount());
