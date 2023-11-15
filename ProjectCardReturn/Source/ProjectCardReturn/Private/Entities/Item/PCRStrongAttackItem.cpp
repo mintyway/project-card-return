@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRStrongAttackItem);
 
@@ -21,6 +22,6 @@ void APCRStrongAttackItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	Player->IncreaseDamage(0.5f);
+	Player->IncreaseDamage(ParameterDataAsset->DamageIncreaseValue);
 	UE_LOG(PCRStrongAttackItem, Warning, TEXT("카드 평균 데미지 : %.2f"), Player->CardAverageDamage());
 }

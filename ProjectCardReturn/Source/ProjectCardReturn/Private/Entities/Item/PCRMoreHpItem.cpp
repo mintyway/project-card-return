@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRMoreHpItem);
 
@@ -21,7 +22,7 @@ void APCRMoreHpItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	Player->IncreaseMaxHP(Player->GetMaxHP() * 0.05f);
-	Player->Heal(Player->GetCurrentHP() * 0.05f);
+	Player->IncreaseMaxHP(Player->GetMaxHP() * ParameterDataAsset->MaxHPIncreaseRate);
+	Player->Heal(Player->GetCurrentHP() * ParameterDataAsset->HealRateByIncreaseMaxHP);
 	UE_LOG(PCRMoreHpItem, Warning, TEXT("체력 최대치 : %.2f"), Player->GetMaxHP());
 }

@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRLongerRangeItem);
 
@@ -21,6 +22,6 @@ void APCRLongerRangeItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	Player->IncreaseShootRange(100);
+	Player->IncreaseShootRange(ParameterDataAsset->ShootRangeIncreaseDistance);
 	UE_LOG(PCRLongerRangeItem, Warning, TEXT("카드 평균 사거리 : %.2f"), Player->CardAverageRange());
 }

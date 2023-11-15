@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRHealItem);
 
@@ -21,6 +22,6 @@ void APCRHealItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	Player->Heal(Player->GetMaxHP() * 0.1f);
+	Player->Heal(Player->GetMaxHP() * ParameterDataAsset->HealRate);
 	UE_LOG(PCRHealItem, Warning, TEXT("체력 : %.2f"), Player->GetCurrentHP());
 }

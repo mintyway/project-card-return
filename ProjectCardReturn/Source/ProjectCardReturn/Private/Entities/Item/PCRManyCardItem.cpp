@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Game/PCRParameterDataAsset.h"
 
 DEFINE_LOG_CATEGORY(PCRManyCardItem);
 
@@ -21,6 +22,6 @@ void APCRManyCardItem::PlayerOverlapEvent()
 {
 	Super::PlayerOverlapEvent();
 
-	Player->IncreaseMaxCardCount(3);
+	Player->IncreaseMaxCardCount(ParameterDataAsset->MaxCardIncreaseCount);
 	UE_LOG(PCRManyCardItem, Warning, TEXT("카드 최대 수 : %d"), Player->GetMaxCardCount());
 }
