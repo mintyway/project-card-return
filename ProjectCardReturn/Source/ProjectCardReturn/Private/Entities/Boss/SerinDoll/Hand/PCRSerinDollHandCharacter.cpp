@@ -4,7 +4,9 @@
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 
 #include "NiagaraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
@@ -30,6 +32,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	RockAttackData.ChaseLocationSpeed = 1500.f;
 	RockAttackData.ChaseRotationExponentialSpeed = 2.f;
 	RockAttackData.ChaseHeight = 500.f;
+	RockAttackData.Damage = 20.f;
 
 	PaperAttackData = {};
 	PaperAttackData.Lift = nullptr;
@@ -38,6 +41,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	PaperAttackData.bIsFar = false;
 	PaperAttackData.MoveLocationSpeed = 1500.f;
 	PaperAttackData.MoveRotationExponentialSpeed = 2.f;
+	PaperAttackData.Damage = 20.f;
 
 	ScissorsAttackData = {};
 	ScissorsAttackData.bIsChasing = false;
@@ -45,6 +49,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	ScissorsAttackData.ChaseLocationExponentialSpeed = 1.5f;
 	ScissorsAttackData.ChaseRotationExponentialSpeed = 10.f;
 	ScissorsAttackData.MaxAttackCount = 3;
+	ScissorsAttackData.Damage = 10.f;
 
 	IdleSideOffset = 750.f;
 	IdleUpOffset = 300.f;
@@ -76,6 +81,28 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	{
 		GetCharacterMovement()->DefaultLandMovementMode = MOVE_Flying;
 		GetCharacterMovement()->bCheatFlying = true;
+	}
+
+	PaperAttackSweepPlane = CreateDefaultSubobject<UBoxComponent>(TEXT("PaperAttackSweepPlane"));
+	if (PaperAttackSweepPlane)
+	{
+		PaperAttackSweepPlane->SetupAttachment(GetCapsuleComponent());
+		PaperAttackSweepPlane->InitBoxExtent(FVector(500.0, 50.0, 500.0));
+		PaperAttackSweepPlane->SetCollisionObjectType(ECC_GameTraceChannel9);
+		PaperAttackSweepPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
+		PaperAttackSweepPlane->SetGenerateOverlapEvents(true);
+		DisablePaperAttackCollision();
+	}
+
+	ScissorsAttackHitPlane = CreateDefaultSubobject<UBoxComponent>(TEXT("ScissorsAttackHitPlane"));
+	if (ScissorsAttackHitPlane)
+	{
+		ScissorsAttackHitPlane->SetupAttachment(GetCapsuleComponent());
+		ScissorsAttackHitPlane->SetRelativeLocation(FVector(300.0, 0.0, 0.0));
+		ScissorsAttackHitPlane->InitBoxExtent(FVector(300.0, 200.0, 200.0));
+		ScissorsAttackHitPlane->SetCollisionObjectType(ECC_GameTraceChannel9);
+		ScissorsAttackHitPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
+		ScissorsAttackHitPlane->SetGenerateOverlapEvents(true);
 	}
 
 	RockAttackNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("RockAttackNiagaraComponent"));
@@ -117,14 +144,21 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	RockAttackNiagaraComponent->Deactivate();
 	PaperAttackNiagaraComponent->Deactivate();
 	ScissorsAttackNiagaraComponent->Deactivate();
-	
+
 	CachedSerinDollHandAnimInstance->OnToIdle.BindUObject(this, &APCRSerinDollHandCharacter::HandleToIdle);
 	CachedSerinDollHandAnimInstance->OnRockAttackEnded.AddUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackChaseEnded);
-	
+
 	CachedSerinDollHandAnimInstance->OnRockAttackHit.AddUObject(this, &APCRSerinDollHandCharacter::PlayRockAttackEffect);
-	CachedSerinDollHandAnimInstance->OnPaperAttackSweepStart.AddUObject(this, &APCRSerinDollHandCharacter::PlayPaperAttackEffect);
-	CachedSerinDollHandAnimInstance->OnPaperAttackSweepEnd.AddUObject(this, &APCRSerinDollHandCharacter::StopPaperAttackEffect);
-	CachedSerinDollHandAnimInstance->OnScissorsAttackStart.AddUObject(this, &APCRSerinDollHandCharacter::PlayScissorsAttackEffect);
+	CachedSerinDollHandAnimInstance->OnRockAttackHit.AddUObject(this, &APCRSerinDollHandCharacter::HandleRockAttackHit);
+
+	PaperAttackSweepPlane->OnComponentBeginOverlap.AddDynamic(this, &APCRSerinDollHandCharacter::HandlePaperAttackHit);
+	CachedSerinDollHandAnimInstance->OnPaperAttackSweepStart.AddUObject(this, &APCRSerinDollHandCharacter::HandlePaperAttackSweepStart);
+	CachedSerinDollHandAnimInstance->OnPaperAttackSweepEnd.AddUObject(this, &APCRSerinDollHandCharacter::HandlePaperAttackSweepEnd);
+
+	ScissorsAttackHitPlane->OnComponentBeginOverlap.AddDynamic(this, &APCRSerinDollHandCharacter::HandleScissorsAttackOverlapped);
+	CachedSerinDollHandAnimInstance->OnScissorsAttackEffectStart.AddUObject(this, &APCRSerinDollHandCharacter::HandleScissorsAttackEffectStart);
+	CachedSerinDollHandAnimInstance->OnScissorsAttackHitStart.AddUObject(this, &APCRSerinDollHandCharacter::HandleScissorsAttackHitStart);
+	CachedSerinDollHandAnimInstance->OnScissorsAttackHitEnd.AddUObject(this, &APCRSerinDollHandCharacter::HandleScissorsAttackHitEnd);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()
@@ -195,7 +229,7 @@ void APCRSerinDollHandCharacter::Init(APCRSerinDollHeadCharacter* NewSerinDollHe
 	CachedSerinDollHead = NewSerinDollHead;
 	SideVector = InSideVector;
 	IdleOffsetFromTarget = (SideVector * IdleSideOffset) + (GetActorUpVector() * IdleUpOffset);
-	
+
 	const FRotator RelativeInsideRotation = FRotationMatrix::MakeFromX(SideVector).Rotator();
 	PaperAttackNiagaraComponent->SetRelativeRotation(RelativeInsideRotation);
 }
@@ -308,9 +342,106 @@ void APCRSerinDollHandCharacter::StopPaperAttackEffect()
 	PaperAttackNiagaraComponent->Deactivate();
 }
 
-void APCRSerinDollHandCharacter::PlayScissorsAttackEffect()
+void APCRSerinDollHandCharacter::HandleScissorsAttackEffectStart()
 {
 	ScissorsAttackNiagaraComponent->Activate(true);
+}
+
+void APCRSerinDollHandCharacter::HandleRockAttackHit()
+{
+	TArray<FOverlapResult> OverlappedPlayers;
+	const FVector CenterLocation = GetActorLocation();
+	const FQuat Rotation = FQuat::Identity;
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_GameTraceChannel1);
+	const float SphereRadius = 500.f;
+	const FCollisionShape CollisionShape = FCollisionShape::MakeSphere(SphereRadius);
+	const bool bSucceedOverlap = GetWorld()->OverlapMultiByObjectType(OverlappedPlayers, CenterLocation, Rotation, ObjectQueryParams, CollisionShape);
+
+	float ActualDamage = 0.f;
+	if (bSucceedOverlap)
+	{
+		for (const auto& OverlappedPlayer : OverlappedPlayers)
+		{
+			const auto Actor = OverlappedPlayer.GetActor();
+			check(Actor);
+			const FDamageEvent DamageEvent;
+			ActualDamage = Actor->TakeDamage(RockAttackData.Damage, DamageEvent, CachedSerinDollHead->GetController(), this);
+		}
+	}
+
+	const FColor Color = ActualDamage > 0.f ? FColor::Red : FColor::Green;
+	DrawDebugSphere(GetWorld(), CenterLocation, SphereRadius, 16, Color, false, 1.f);
+}
+
+void APCRSerinDollHandCharacter::EnablePaperAttackCollision()
+{
+	PaperAttackSweepPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+}
+
+void APCRSerinDollHandCharacter::DisablePaperAttackCollision()
+{
+	PaperAttackSweepPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+}
+
+void APCRSerinDollHandCharacter::HandlePaperAttackSweepStart()
+{
+	PlayPaperAttackEffect();
+	EnablePaperAttackCollision();
+}
+
+void APCRSerinDollHandCharacter::HandlePaperAttackSweepEnd()
+{
+	StopPaperAttackEffect();
+	DisablePaperAttackCollision();
+	PaperAttackData.AttackedActors.Reset();
+}
+
+void APCRSerinDollHandCharacter::HandlePaperAttackHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (PaperAttackData.AttackedActors.Find(OtherActor) == INDEX_NONE)
+	{
+		PaperAttackData.AttackedActors.AddUnique(OtherActor);
+		const FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(PaperAttackData.Damage, DamageEvent, CachedSerinDollHead->GetController(), this);
+
+		DrawDebugBox(GetWorld(), GetActorLocation(), PaperAttackSweepPlane->GetScaledBoxExtent(), FColor::Red, false, 1.f);
+	}
+}
+
+void APCRSerinDollHandCharacter::EnableScissorsAttackCollision()
+{
+	ScissorsAttackHitPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+}
+
+void APCRSerinDollHandCharacter::DisableScissorsAttackCollision()
+{
+	ScissorsAttackHitPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+}
+
+void APCRSerinDollHandCharacter::HandleScissorsAttackOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ScissorsAttackData.AttackedActors.Find(OtherActor) == INDEX_NONE)
+	{
+		ScissorsAttackData.AttackedActors.AddUnique(OtherActor);
+		const FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(ScissorsAttackData.Damage, DamageEvent, CachedSerinDollHead->GetController(), this);
+
+		const FVector Direction = GetActorRotation().Vector();
+
+		DrawDebugBox(GetWorld(), GetActorLocation() + Direction * 300.f, ScissorsAttackHitPlane->GetScaledBoxExtent(), GetActorRotation().Quaternion(), FColor::Red, false, 1.f);
+	}
+}
+
+void APCRSerinDollHandCharacter::HandleScissorsAttackHitStart()
+{
+	EnableScissorsAttackCollision();
+}
+
+void APCRSerinDollHandCharacter::HandleScissorsAttackHitEnd()
+{
+	DisableScissorsAttackCollision();
+	ScissorsAttackData.AttackedActors.Reset();
 }
 
 void APCRSerinDollHandCharacter::HandleToIdle()

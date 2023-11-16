@@ -113,6 +113,7 @@ private: // 내부 함수
 	void ShotCooldownTimerCallback();
 	void DashCooldownTimerCallback();
 	void TotalDashTimeCallback();
+	void DashInvincibleTimerCallback();
 
 	void ChangeHP(float Amount);
 	void HandleChangeHP();
@@ -176,6 +177,7 @@ private: // 상태
 
 	uint32 bCanDash:1;
 	uint32 bIsDashing:1;
+	uint32 bIsDashInvincible:1;
 
 	uint32 bCanNarrowShot:1;
 	uint32 bCanWideShot:1;
@@ -194,6 +196,7 @@ private: // 대시
 
 	float DashCooldownTime;
 	float MaxDashTime;
+	float DashInvincibleTime;
 
 	float ElapsedDashTime;
 	float DashDistance;

@@ -96,7 +96,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 
 		FTimerHandle TestTimerHandle2;
 		TimerHandles.Add(TestTimerHandle2);
-		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightRockAttack), 5.f, true, 5.f);
+		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightRockAttack), 5.f, true, 2.5f);
 	};
 	
 	auto PaperAttack = [this]()
@@ -118,7 +118,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 
 		FTimerHandle TestTimerHandle2;
 		TimerHandles.Add(TestTimerHandle2);
-		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 10.f, true, 10.f);
+		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 10.f, true, 5.f);
 	};
 
 	// RockAttack();

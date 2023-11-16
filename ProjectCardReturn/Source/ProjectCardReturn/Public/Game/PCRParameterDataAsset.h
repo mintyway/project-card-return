@@ -84,6 +84,9 @@ public: // 에리카 대시
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaMaxDashTime;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Erica")
+	float EricaDashInvincibleTime;
+
 public: // 에리카 카드
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	float EricaWideShotAngle;

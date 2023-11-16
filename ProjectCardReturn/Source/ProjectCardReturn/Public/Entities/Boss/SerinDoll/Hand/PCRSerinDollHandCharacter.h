@@ -6,6 +6,7 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 #include "PCRSerinDollHandCharacter.generated.h"
 
+class UBoxComponent;
 class UNiagaraComponent;
 class UPCRSerinDollHandAnimInstance;
 class APCRSerinDollHeadCharacter;
@@ -71,6 +72,7 @@ private: // 타입
 		float ChaseRotationExponentialSpeed;
 		float ChaseHeight;
 		uint32 bIsChasing:1;
+		float Damage;
 	};
 
 	struct FPaperAttackData
@@ -82,6 +84,8 @@ private: // 타입
 		float MoveRotationExponentialSpeed;
 		uint32 bIsFar:1;
 		uint32 bIsMoving:1;
+		float Damage;
+		TArray<AActor*> AttackedActors;
 	};
 
 	struct FScissorsAttackData
@@ -93,6 +97,8 @@ private: // 타입
 		int32 MaxAttackCount;
 		int32 CurrentAttackCount;
 		uint32 bIsChasing:1;
+		float Damage;
+		TArray<AActor*> AttackedActors;
 	};
 
 private: // 업데이트 함수
@@ -105,11 +111,31 @@ private: // 내부 함수
 	void PlayRockAttackEffect();
 	void PlayPaperAttackEffect();
 	void StopPaperAttackEffect();
-	void PlayScissorsAttackEffect();
+	void HandleScissorsAttackEffectStart();
+	
+	void HandleRockAttackHit();
+	
+	void EnablePaperAttackCollision();
+	void DisablePaperAttackCollision();
+	void HandlePaperAttackSweepStart();
+	void HandlePaperAttackSweepEnd();
+	
+	UFUNCTION()
+	void HandlePaperAttackHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	void EnableScissorsAttackCollision();
+	void DisableScissorsAttackCollision();
+
+	UFUNCTION()
+	void HandleScissorsAttackOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	void HandleScissorsAttackHitStart();
+	void HandleScissorsAttackHitEnd();
 	
 public: // 외부 콜백
 	void HandleToIdle();
 	void HandleRockAttackChaseEnded();
+
 
 private: // 내부 델리게이트
 	FMoveCallbackSignature OnMoveEndedCallback;
@@ -118,11 +144,17 @@ private: // 내부 델리게이트
 private: // 레퍼런스
 	UPROPERTY()
 	TObjectPtr<APCRSerinDollHeadCharacter> CachedSerinDollHead;
-
+	
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollHandAnimInstance> CachedSerinDollHandAnimInstance;
 
 private: // 컴포넌트
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	TObjectPtr<UBoxComponent> PaperAttackSweepPlane;
+
+	UPROPERTY(VisibleAnywhere, Category = "Collision")
+	TObjectPtr<UBoxComponent> ScissorsAttackHitPlane;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> RockAttackNiagaraComponent;
 

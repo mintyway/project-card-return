@@ -31,7 +31,7 @@ APCREricaCharacter::APCREricaCharacter()
 	  MovementKeys{EKeys::W, EKeys::S, EKeys::D, EKeys::A},
 	  ElapsedDashTime(0.f),
 	  NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3),
-	  CurrentCombo(0), MaxCombo(4), bIsAttackKeyPressed(false)
+	  CurrentCombo(0), MaxCombo(4), bIsAttackKeyPressed(false), bIsDashInvincible(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
@@ -80,6 +80,8 @@ APCREricaCharacter::APCREricaCharacter()
 
 		MaxCardCount = ParameterDataAsset->EricaCardCount;
 		CurrentCardCount = MaxCardCount;
+
+		DashInvincibleTime = ParameterDataAsset->EricaDashInvincibleTime;
 	}
 
 	if (GetCapsuleComponent())
@@ -341,8 +343,14 @@ float APCREricaCharacter::CardAverageRange()
 
 float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if (bIsDashInvincible)
+	{
+		return 0.f;
+	}
+
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	UE_LOG(PCRLogEricaCharacter, Log, TEXT("%s가 %s에게 %.2f의 피해를 입었습니다."), *this->GetName(), *DamageCauser->GetName(), ActualDamage);
 	const FTransform DamagedTransform = FTransform(GetActorRotation(), GetActorLocation());
 	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Damaged, DamagedTransform, true);
 
@@ -566,6 +574,7 @@ void APCREricaCharacter::Dash()
 	{
 		bCanDash = false;
 		bIsDashing = true;
+		bIsDashInvincible = true;
 
 		GetCapsuleComponent()->SetCollisionProfileName("PlayerDash");
 
@@ -579,6 +588,12 @@ void APCREricaCharacter::Dash()
 		FTimerDelegate MaxDashTimerDelegate;
 		MaxDashTimerDelegate.BindUObject(this, &APCREricaCharacter::TotalDashTimeCallback);
 		GetWorldTimerManager().SetTimer(MaxDashTimerHandle, MaxDashTimerDelegate, MaxDashTime, false);
+
+		FTimerHandle DashInvincibleTimerHandle;
+		GetWorldTimerManager().SetTimer(DashInvincibleTimerHandle,
+		                                FTimerDelegate::CreateUObject(this, &APCREricaCharacter::DashInvincibleTimerCallback),
+		                                DashInvincibleTime, false);
+		
 
 		CachedDashStartLocation = GetActorLocation();
 
@@ -678,6 +693,11 @@ void APCREricaCharacter::TotalDashTimeCallback()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 }
 
+void APCREricaCharacter::DashInvincibleTimerCallback()
+{
+	bIsDashInvincible = false;
+}
+
 void APCREricaCharacter::ChangeHP(float Amount)
 {
 	CurrentHP += Amount;
@@ -706,7 +726,6 @@ void APCREricaCharacter::HandleDead()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Ragdoll"));
 	bIsAlive = false;
 	DisableInput(CachedEricaPlayerController);
-	
 
 	OnDead.Broadcast();
 }

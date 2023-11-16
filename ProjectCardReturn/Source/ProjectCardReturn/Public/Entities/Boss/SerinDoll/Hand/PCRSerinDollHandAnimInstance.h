@@ -44,8 +44,9 @@ public: // 델리게이트
 	FPaperAttackSignature OnPaperAttackSweepStart;
 	FPaperAttackSignature OnPaperAttackSweepEnd;
 
-	FScissorsAttackSignature OnScissorsAttackHit;
-	FScissorsAttackSignature OnScissorsAttackStart;
+	FScissorsAttackSignature OnScissorsAttackEffectStart;
+	FScissorsAttackSignature OnScissorsAttackHitStart;
+	FScissorsAttackSignature OnScissorsAttackHitEnd;
 
 private: // 애님 노티파이
 	UFUNCTION()
@@ -61,13 +62,16 @@ private: // 애님 노티파이
 	void AnimNotify_PaperAttackSweepEnd();
 
 	UFUNCTION()
-	void AnimNotify_ScissorsAttackHit();
+	void AnimNotify_ScissorsAttackHitStart();
+	
+	UFUNCTION()
+	void AnimNotify_ScissorsAttackHitEnd();
 	
 	UFUNCTION()
 	void AnimNotify_ScissorsAttackCountCheck();
 
 	UFUNCTION()
-	void AnimNotify_ScissorsAttackStart();
+	void AnimNotify_ScissorsAttackEffectStart();
 
 	UFUNCTION()
 	void AnimNotify_ToIdle();

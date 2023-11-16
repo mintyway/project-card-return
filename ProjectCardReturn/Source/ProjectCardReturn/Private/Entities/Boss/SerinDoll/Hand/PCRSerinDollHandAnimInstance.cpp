@@ -91,9 +91,14 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_PaperAttackSweepEnd()
 	OnPaperAttackSweepEnd.Broadcast();
 }
 
-void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackHit()
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackHitStart()
 {
-	OnScissorsAttackHit.Broadcast();
+	OnScissorsAttackHitStart.Broadcast();
+}
+
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackHitEnd()
+{
+	OnScissorsAttackHitEnd.Broadcast();
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()
@@ -106,9 +111,9 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackCountCheck()
 	}
 }
 
-void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackStart()
+void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackEffectStart()
 {
-	OnScissorsAttackStart.Broadcast();
+	OnScissorsAttackEffectStart.Broadcast();
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_ToIdle()
