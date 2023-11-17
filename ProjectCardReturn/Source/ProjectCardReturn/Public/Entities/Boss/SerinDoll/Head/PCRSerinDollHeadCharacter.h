@@ -14,6 +14,7 @@ class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
+DECLARE_MULTICAST_DELEGATE(FHPStateSignature);
 
 UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBaseCharacter
@@ -46,12 +47,15 @@ public: // 동작
 	void LeftScissorsAttack();
 	void RightScissorsAttack();
 
+	void Pattern1();
+
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 
 	// 델리게이트
 	FChangeHPSignature OnChangeHP;
+	FHPStateSignature OnHP50PercentLess;
 
 private: // 내부 함수
 	void SpawnHands();
@@ -92,4 +96,5 @@ private: // 데이터
 private:
 	TArray<FTimerHandle> TimerHandles;
 	uint32 bIsAlive:1;
+	uint32 IsHP50PercentLess:1;
 };

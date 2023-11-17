@@ -19,7 +19,7 @@ const float APCRSerinDollHeadCharacter::FloatingHandHeight = 500.f;
 const float APCRSerinDollHeadCharacter::BasicChaseYDistance = 700.f;
 
 APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
-	: bIsAlive(true)
+	: bIsAlive(true), IsHP50PercentLess(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -234,6 +234,12 @@ void APCRSerinDollHeadCharacter::RightScissorsAttack()
 	RightHand->ScissorsAttack(CachedErica);
 }
 
+void APCRSerinDollHeadCharacter::Pattern1()
+{
+	LeftHand->Pattern1();
+	RightHand->Pattern1();
+}
+
 void APCRSerinDollHeadCharacter::SpawnHands()
 {
 	LeftHandSpawn();
@@ -285,11 +291,22 @@ void APCRSerinDollHeadCharacter::ChangeHP(float Amount)
 
 void APCRSerinDollHeadCharacter::HandleChangeHP()
 {
+	const float HPRatio = CurrentHP / MaxHP;
+	if (!IsHP50PercentLess && HPRatio <= 0.5f)
+	{
+		IsHP50PercentLess = true;
+
+		Pattern1();
+		OnHP50PercentLess.Broadcast();
+	}
+	
 	if (CurrentHP <= 0.f)
 	{
 		CurrentHP = 0.f;
 		HandleDead();
 	}
+
+
 
 	OnChangeHP.Broadcast(MaxHP, CurrentHP);
 }
@@ -311,8 +328,8 @@ void APCRSerinDollHeadCharacter::DelayedDestroy()
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 	}
 
-	RightHand->Destroy();
 	LeftHand->Destroy();
+	RightHand->Destroy();
 	Destroy();
 }
 

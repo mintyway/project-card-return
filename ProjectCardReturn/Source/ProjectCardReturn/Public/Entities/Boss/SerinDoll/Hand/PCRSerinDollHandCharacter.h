@@ -39,8 +39,9 @@ public: // 동작
 	void Init(APCRSerinDollHeadCharacter* NewSerinDollHead, const FVector& InSideVector);
 	void Idle(AActor* NewTarget);
 	void RockAttack(AActor* NewTarget);
-	void PaperAttack(bool bIsFar);
+	void PaperAttack(bool bIsFarAttack);
 	void ScissorsAttack(AActor* NewTarget);
+	void Pattern1();
 
 public: // Getter, Setter
 	FORCEINLINE bool IsIdle() { return CurrentState == EState::Idle; }
@@ -55,7 +56,8 @@ private: // 타입
 		Chase,
 		RockAttack,
 		PaperAttack,
-		ScissorsAttack
+		ScissorsAttack,
+		Pattern1
 	};
 
 	struct FIdleData
@@ -82,7 +84,7 @@ private: // 타입
 		FVector MoveLocation;
 		float MoveLocationSpeed;
 		float MoveRotationExponentialSpeed;
-		uint32 bIsFar:1;
+		uint32 bIsFarAttack:1;
 		uint32 bIsMoving:1;
 		float Damage;
 		TArray<AActor*> AttackedActors;
@@ -101,11 +103,21 @@ private: // 타입
 		TArray<AActor*> AttackedActors;
 	};
 
+	struct FPattern1Data
+	{
+		const AActor* Lift;
+		FVector Offset;
+		FVector MoveLocation;
+		uint32 bIsMoving:1;
+	};
+
 private: // 업데이트 함수
 	void UpdateIdle(float DeltaSeconds);
 	void UpdateRockAttackChase(float DeltaSeconds);
 	void UpdatePaperAttackMove(float DeltaSeconds);
 	void UpdateScissorsAttackChase(float DeltaSeconds);
+	void UpdatePattern1Move(float DeltaSeconds);
+
 
 private: // 내부 함수
 	void PlayRockAttackEffect();
@@ -170,6 +182,7 @@ private: // 데이터
 	FRockAttackData RockAttackData;
 	FPaperAttackData PaperAttackData;
 	FScissorsAttackData ScissorsAttackData;
+	FPattern1Data Pattern1Data;
 
 	FVector SideVector;
 	float IdleSideOffset;
