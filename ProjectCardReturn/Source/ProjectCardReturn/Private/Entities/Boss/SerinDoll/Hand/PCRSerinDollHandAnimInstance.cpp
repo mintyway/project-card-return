@@ -51,24 +51,25 @@ void UPCRSerinDollHandAnimInstance::PlayRockAttack()
 	Montage_Play(SerinDollDataAsset->RockAttackAnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::PlayPaperAttack(bool bIsFar)
+void UPCRSerinDollHandAnimInstance::PlayPaperAttack(bool bIsFarAttack)
 {
-	if (bIsFar)
-	{
-		Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
-		Montage_JumpToSection(TEXT("Back"), SerinDollDataAsset->PaperAttackAnimMontage);
-	}
-	else
-	{
-		Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
-		Montage_JumpToSection(TEXT("Front"), SerinDollDataAsset->PaperAttackAnimMontage);
-	}
+	Montage_Play(SerinDollDataAsset->PaperAttackAnimMontage);
+	const FName AttackLocationKey = bIsFarAttack ? TEXT("Back") : TEXT("Front");
+	Montage_JumpToSection(AttackLocationKey, SerinDollDataAsset->PaperAttackAnimMontage);
 }
 
 void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()
 {
 	CurrentScissorsAttackCount = 0;
 	Montage_Play(SerinDollDataAsset->ScissorsAttackAnimMontage);
+}
+
+void UPCRSerinDollHandAnimInstance::PlayPattern1(bool IsLeftHand)
+{
+	Montage_Play(SerinDollDataAsset->Pattern1AnimMontage);
+	const FName HandNameKey = IsLeftHand ? TEXT("Left") : TEXT("Right");
+	
+	Montage_JumpToSection(HandNameKey, SerinDollDataAsset->Pattern1AnimMontage);
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackChaseEnd()

@@ -236,6 +236,9 @@ void APCRSerinDollHeadCharacter::RightScissorsAttack()
 
 void APCRSerinDollHeadCharacter::Pattern1()
 {
+	LeftHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
+	RightHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
+	
 	LeftHand->Pattern1();
 	RightHand->Pattern1();
 }

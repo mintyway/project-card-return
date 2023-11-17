@@ -30,10 +30,11 @@ protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeBeginPlay() override;
 
-public:
+public: // 동작
 	void PlayRockAttack();
-	void PlayPaperAttack(bool bIsFar = false);
+	void PlayPaperAttack(bool bIsFarAttack = false);
 	void PlayScissorsAttack();
+	void PlayPattern1(bool IsLeftHand);
 
 public: // 델리게이트
 	FIdleSignature OnToIdle;

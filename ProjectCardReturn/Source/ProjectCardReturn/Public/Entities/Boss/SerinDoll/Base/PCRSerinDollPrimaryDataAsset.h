@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> ScissorsAttackAnimMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> Pattern1AnimMontage;
+
 	UPROPERTY(EditAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> RockAttackEffect;
 

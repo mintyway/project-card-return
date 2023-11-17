@@ -53,6 +53,8 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 
 	Pattern1Data = {};
 	Pattern1Data.Offset = FVector(1250.0, 1000.0, 0.0);
+	Pattern1Data.MoveLocationSpeed = 1500.f;
+	Pattern1Data.MoveRotationExponentialSpeed = 3.f;
 
 	IdleSideOffset = 750.f;
 	IdleUpOffset = 300.f;
@@ -221,7 +223,7 @@ void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 		{
 			if (Pattern1Data.bIsMoving)
 			{
-				UpdatePattern1Move(TODO);
+				UpdatePattern1Move(DeltaSeconds);
 			}
 			break;
 		}
@@ -351,15 +353,16 @@ void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
 
 void APCRSerinDollHandCharacter::UpdatePattern1Move(float DeltaSeconds)
 {
-	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), PaperAttackData.MoveLocation, DeltaSeconds, PaperAttackData.MoveLocationSpeed);
-	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), CachedSerinDollHead->GetActorRotation(), DeltaSeconds, PaperAttackData.MoveRotationExponentialSpeed);
+	const FVector NewLocation = FMath::VInterpConstantTo(GetActorLocation(), Pattern1Data.MoveLocation, DeltaSeconds, Pattern1Data.MoveLocationSpeed);
+	const FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), CachedSerinDollHead->GetActorRotation(), DeltaSeconds, Pattern1Data.MoveRotationExponentialSpeed);
 	SetActorLocationAndRotation(NewLocation, NewRotation);
 
-	const float Distance = FVector::DistSquared(GetActorLocation(), PaperAttackData.MoveLocation);
+	const float Distance = FVector::DistSquared(GetActorLocation(), Pattern1Data.MoveLocation);
 	if (Distance <= FMath::Square(10.f))
 	{
-		CachedSerinDollHandAnimInstance->PlayPaperAttack(PaperAttackData.bIsFarAttack);
-		PaperAttackData.bIsMoving = false;
+		const bool IsLeftHand = SideVector == CachedSerinDollHead->GetActorRightVector() ? false : true;
+		CachedSerinDollHandAnimInstance->PlayPattern1(IsLeftHand);
+		Pattern1Data.bIsMoving = false;
 	}
 }
 

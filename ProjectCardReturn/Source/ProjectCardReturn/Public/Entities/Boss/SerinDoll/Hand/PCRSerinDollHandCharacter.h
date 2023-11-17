@@ -108,6 +108,8 @@ private: // 타입
 		const AActor* Lift;
 		FVector Offset;
 		FVector MoveLocation;
+		float MoveLocationSpeed;
+		float MoveRotationExponentialSpeed;
 		uint32 bIsMoving:1;
 	};
 
