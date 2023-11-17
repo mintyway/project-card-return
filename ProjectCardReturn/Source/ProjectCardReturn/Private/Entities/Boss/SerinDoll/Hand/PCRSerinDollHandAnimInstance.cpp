@@ -67,7 +67,8 @@ void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()
 void UPCRSerinDollHandAnimInstance::PlayPattern1(bool IsLeftHand)
 {
 	Montage_Play(SerinDollDataAsset->Pattern1AnimMontage);
-	const FName HandNameKey = IsLeftHand ? TEXT("Left") : TEXT("Right");
+	const FName HandNameKey = IsLeftHand ? TEXT("LeftAttack") : TEXT("RightAttack");
+	Montage_SetNextSection(TEXT("Start"), HandNameKey, SerinDollDataAsset->Pattern1AnimMontage);
 	
 	Montage_JumpToSection(HandNameKey, SerinDollDataAsset->Pattern1AnimMontage);
 }
