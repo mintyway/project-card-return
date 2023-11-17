@@ -8,6 +8,7 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -24,7 +25,8 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 파라미터화 필요
-	MaxHP = 1000.f;
+	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
+	MaxHP = 100.f;
 	CurrentHP = MaxHP;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();
@@ -98,7 +100,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 		TimerHandles.Add(TestTimerHandle2);
 		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightRockAttack), 5.f, true, 2.5f);
 	};
-	
+
 	auto PaperAttack = [this]()
 	{
 		FTimerHandle TestTimerHandle1;
@@ -152,7 +154,7 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 		TimerHandles.Add(TestTimerHandle6);
 		GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 25.f, false, 19.f);
 	};
-	
+
 	FTimerHandle AllAttackTest;
 	GetWorldTimerManager().SetTimer(AllAttackTest, FTimerDelegate::CreateLambda(AttackTest), 25.f, true, 0.f);
 
@@ -164,6 +166,23 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	switch (State)
+	{
+		case EState::Basic:
+		{
+			break;
+		}
+		case EState::Pattern1:
+		{
+			
+			break;
+		}
+		case EState::Pattern2:
+		{
+			break;
+		}
+	}
 }
 
 float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -176,71 +195,75 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 
 void APCRSerinDollHeadCharacter::LeftRockAttack()
 {
-	if (CheckIsAttacking(LeftHand))
+	if (IsAttacking(LeftHand))
 	{
 		return;
 	}
-	
+
 	LeftHand->RockAttack(CachedErica);
 }
 
 void APCRSerinDollHeadCharacter::RightRockAttack()
 {
-	if (CheckIsAttacking(RightHand))
+	if (IsAttacking(RightHand))
 	{
 		return;
 	}
-	
+
 	RightHand->RockAttack(CachedErica);
 }
 
-void APCRSerinDollHeadCharacter::LeftPaperAttack(bool bIsFar)
+void APCRSerinDollHeadCharacter::LeftPaperAttack(bool bIsFarAttack)
 {
-	if (CheckIsAttacking(LeftHand))
+	if (IsAttacking(LeftHand))
 	{
 		return;
 	}
-	
-	LeftHand->PaperAttack(bIsFar);
+
+	LeftHand->PaperAttack(bIsFarAttack);
 }
 
-void APCRSerinDollHeadCharacter::RightPaperAttack(bool bIsFar)
+void APCRSerinDollHeadCharacter::RightPaperAttack(bool bIsFarAttack)
 {
-	if (CheckIsAttacking(RightHand))
+	if (IsAttacking(RightHand))
 	{
 		return;
 	}
-	
-	RightHand->PaperAttack(bIsFar);
+
+	RightHand->PaperAttack(bIsFarAttack);
 }
 
 void APCRSerinDollHeadCharacter::LeftScissorsAttack()
 {
-	if (CheckIsAttacking(LeftHand))
+	if (IsAttacking(LeftHand))
 	{
 		return;
 	}
-	
+
 	LeftHand->ScissorsAttack(CachedErica);
 }
 
 void APCRSerinDollHeadCharacter::RightScissorsAttack()
 {
-	if (CheckIsAttacking(RightHand))
+	if (IsAttacking(RightHand))
 	{
 		return;
 	}
-	
+
 	RightHand->ScissorsAttack(CachedErica);
 }
 
 void APCRSerinDollHeadCharacter::Pattern1()
 {
+	CachedLift->SerinPattern1Start();
+	
 	LeftHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
 	RightHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
-	
+
 	LeftHand->Pattern1();
 	RightHand->Pattern1();
+
+	OnPattern1Start.Broadcast();
 }
 
 void APCRSerinDollHeadCharacter::SpawnHands()
@@ -265,8 +288,9 @@ void APCRSerinDollHeadCharacter::LeftHandSpawn()
 	const FName LeftHandName = TEXT("LeftHand");
 	LeftHandSpawnParameters.Name = LeftHandName;
 	LeftHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
-	
+
 	LeftHand->Init(this, -GetActorRightVector());
+	LeftHand->GetCachedSerinDollHandAnimInstance()->OnPattern1Ended.AddUObject(this, &APCRSerinDollHeadCharacter::HandlePattern1Ended);
 }
 
 void APCRSerinDollHeadCharacter::RightHandSpawn()
@@ -278,9 +302,9 @@ void APCRSerinDollHeadCharacter::RightHandSpawn()
 	const FName RightHandName = TEXT("RightHand");
 	RightHandSpawnParameters.Name = RightHandName;
 	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
-	
-	RightHand->Init(this, GetActorRightVector());
 
+	RightHand->Init(this, GetActorRightVector());
+	
 	// 좌우 반전 코드
 	const FVector NewScale = RightHand->GetMesh()->GetRelativeScale3D() * FVector(-1.0, 1.0, 1.0);
 	RightHand->GetMesh()->SetRelativeScale3D(NewScale);
@@ -302,14 +326,12 @@ void APCRSerinDollHeadCharacter::HandleChangeHP()
 		Pattern1();
 		OnHP50PercentLess.Broadcast();
 	}
-	
+
 	if (CurrentHP <= 0.f)
 	{
 		CurrentHP = 0.f;
 		HandleDead();
 	}
-
-
 
 	OnChangeHP.Broadcast(MaxHP, CurrentHP);
 }
@@ -336,9 +358,25 @@ void APCRSerinDollHeadCharacter::DelayedDestroy()
 	Destroy();
 }
 
-bool APCRSerinDollHeadCharacter::CheckIsAttacking(APCRSerinDollHandCharacter* InSerinDollHand)
+bool APCRSerinDollHeadCharacter::IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand)
 {
 	return InSerinDollHand->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr);
+}
+
+void APCRSerinDollHeadCharacter::HandlePattern1Ended()
+{
+	CachedLift->SerinPattern1End();
+	OnPattern1Ended.Broadcast();
+}
+
+bool APCRSerinDollHeadCharacter::IsSucceedPattern1()
+{
+	if (true)
+	{
+		
+	}
+	
+	return false;
 }
 
 float APCRSerinDollHeadCharacter::GetLiftHeight()

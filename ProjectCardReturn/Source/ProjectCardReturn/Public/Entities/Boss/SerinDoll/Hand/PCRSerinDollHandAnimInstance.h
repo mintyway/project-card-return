@@ -6,10 +6,6 @@
 #include "Animation/AnimInstance.h"
 #include "PCRSerinDollHandAnimInstance.generated.h"
 
-DECLARE_DELEGATE(FIdleSignature);
-DECLARE_MULTICAST_DELEGATE(FRockAttackSignature);
-DECLARE_MULTICAST_DELEGATE(FPaperAttackSignature);
-DECLARE_MULTICAST_DELEGATE(FScissorsAttackSignature);
 
 class APCRSerinDollHandCharacter;
 class UPCRSerinDollPrimaryDataAsset;
@@ -22,6 +18,13 @@ UCLASS()
 class PROJECTCARDRETURN_API UPCRSerinDollHandAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
+	
+private: // 타입
+	DECLARE_DELEGATE(FIdleSignature);
+	DECLARE_MULTICAST_DELEGATE(FRockAttackSignature);
+	DECLARE_MULTICAST_DELEGATE(FPaperAttackSignature);
+	DECLARE_MULTICAST_DELEGATE(FScissorsAttackSignature);
+	DECLARE_MULTICAST_DELEGATE(FPattern1Signature);
 
 public:
 	UPCRSerinDollHandAnimInstance();
@@ -49,6 +52,9 @@ public: // 델리게이트
 	FScissorsAttackSignature OnScissorsAttackHitStart;
 	FScissorsAttackSignature OnScissorsAttackHitEnd;
 
+	FPattern1Signature OnPattern1Shoot;
+	FPattern1Signature OnPattern1Ended;
+
 private: // 애님 노티파이
 	UFUNCTION()
 	void AnimNotify_RockAttackChaseEnd();
@@ -75,7 +81,12 @@ private: // 애님 노티파이
 	void AnimNotify_ScissorsAttackEffectStart();
 
 	UFUNCTION()
+	void AnimNotify_Pattern1Shoot();
+
+	UFUNCTION()
 	void AnimNotify_ToIdle();
+
+	void HandlePattern1Ended(UAnimMontage* AnimMontage, bool bArg);
 
 private: // 레퍼런스
 	UPROPERTY()

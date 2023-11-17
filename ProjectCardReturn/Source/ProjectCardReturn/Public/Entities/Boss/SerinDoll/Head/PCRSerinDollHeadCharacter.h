@@ -20,6 +20,8 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
+	
+	DECLARE_MULTICAST_DELEGATE(FPattern1Signature);
 
 public:
 	APCRSerinDollHeadCharacter();
@@ -41,8 +43,8 @@ public: // 동작
 	void LeftRockAttack();
 	void RightRockAttack();
 
-	void LeftPaperAttack(bool bIsFar);
-	void RightPaperAttack(bool bIsFar);
+	void LeftPaperAttack(bool bIsFarAttack);
+	void RightPaperAttack(bool bIsFarAttack);
 	
 	void LeftScissorsAttack();
 	void RightScissorsAttack();
@@ -56,7 +58,18 @@ public: // Getter, Setter
 	// 델리게이트
 	FChangeHPSignature OnChangeHP;
 	FHPStateSignature OnHP50PercentLess;
+	FPattern1Signature OnPattern1Start;
+	FPattern1Signature OnPattern1Ended;
+	FPattern1Signature OnPattern1Succeed;
 
+private: // 타입
+	enum class EState
+	{
+		Basic,
+		Pattern1,
+		Pattern2
+	};
+	
 private: // 내부 함수
 	void SpawnHands();
 	void LeftHandSpawn();
@@ -65,7 +78,11 @@ private: // 내부 함수
 	void HandleChangeHP();
 	void HandleDead();
 	void DelayedDestroy();
-	bool CheckIsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
+	
+	bool IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
+
+	void HandlePattern1Ended();
+	bool IsSucceedPattern1();
 
 private: // 내부 Getter
 	float GetLiftHeight();
@@ -94,6 +111,7 @@ private: // 데이터
 	float CurrentHP;
 
 private:
+	EState State;
 	TArray<FTimerHandle> TimerHandles;
 	uint32 bIsAlive:1;
 	uint32 IsHP50PercentLess:1;

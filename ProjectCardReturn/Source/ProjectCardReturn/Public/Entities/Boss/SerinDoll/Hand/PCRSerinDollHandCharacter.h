@@ -47,6 +47,7 @@ public: // Getter, Setter
 	FORCEINLINE bool IsIdle() { return CurrentState == EState::Idle; }
 	FORCEINLINE int32 GetMaxScissorsAttackCount() { return ScissorsAttackData.MaxAttackCount; }
 	FORCEINLINE int32 GetCurrentScissorsAttackCount() { return ScissorsAttackData.CurrentAttackCount; }
+	FORCEINLINE UPCRSerinDollHandAnimInstance* GetCachedSerinDollHandAnimInstance() { return CachedSerinDollHandAnimInstance; }
 
 private: // 타입
 	enum class EState
@@ -120,36 +121,34 @@ private: // 업데이트 함수
 	void UpdateScissorsAttackChase(float DeltaSeconds);
 	void UpdatePattern1Move(float DeltaSeconds);
 
-
 private: // 내부 함수
 	void PlayRockAttackEffect();
 	void PlayPaperAttackEffect();
 	void StopPaperAttackEffect();
 	void HandleScissorsAttackEffectStart();
-	
+
 	void HandleRockAttackHit();
-	
+
 	void EnablePaperAttackCollision();
 	void DisablePaperAttackCollision();
 	void HandlePaperAttackSweepStart();
 	void HandlePaperAttackSweepEnd();
-	
+
 	UFUNCTION()
 	void HandlePaperAttackHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
+
 	void EnableScissorsAttackCollision();
 	void DisableScissorsAttackCollision();
 
 	UFUNCTION()
 	void HandleScissorsAttackOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
+
 	void HandleScissorsAttackHitStart();
 	void HandleScissorsAttackHitEnd();
-	
+
 public: // 외부 콜백
 	void HandleToIdle();
 	void HandleRockAttackChaseEnded();
-
 
 private: // 내부 델리게이트
 	FMoveCallbackSignature OnMoveEndedCallback;
@@ -158,7 +157,7 @@ private: // 내부 델리게이트
 private: // 레퍼런스
 	UPROPERTY()
 	TObjectPtr<APCRSerinDollHeadCharacter> CachedSerinDollHead;
-	
+
 	UPROPERTY()
 	TObjectPtr<UPCRSerinDollHandAnimInstance> CachedSerinDollHandAnimInstance;
 
@@ -168,13 +167,13 @@ private: // 컴포넌트
 
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	TObjectPtr<UBoxComponent> ScissorsAttackHitPlane;
-	
+
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> RockAttackNiagaraComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> PaperAttackNiagaraComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> ScissorsAttackNiagaraComponent;
 

@@ -8,14 +8,16 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLiftUpDelegate);
 
+class APCREricaCharacter;
+class UBoxComponent;
 class UPCRStagePrimaryDataAsset;
 
 UCLASS(Abstract)
 class PROJECTCARDRETURN_API APCRLiftActor : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	APCRLiftActor();
 
 protected:
@@ -26,8 +28,11 @@ public: // 동작 섹션
 	UFUNCTION()
 	void LiftUp();
 
-private: // 내부 함수 섹션
-	void HandleLeftUp(float DeltaTime);
+	void SerinPattern1Start();
+	void SerinPattern1End();
+
+public: // Getter
+	FORCEINLINE bool IsOverlappedPattern1();
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Event", DisplayName = "리프트 상승 시작 시")
@@ -35,22 +40,42 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Event", DisplayName = "리프트 상승 종료 시")
 	FLiftUpDelegate OnLiftUpEnd;
-	
+
+private:
+	enum class EState
+	{
+		LiftUp,
+		SerinPattern1
+	};
+
+private: // 내부 함수 섹션
+	void UpdateLiftUp(float DeltaTime);
+	void UpdatePattern1OverlapCheck();
+
 private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCRStagePrimaryDataAsset> StageDataAsset;
-	
+
 private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Scene")
-	TObjectPtr<USceneComponent> SceneComponent; 
+	TObjectPtr<USceneComponent> SceneComponent;
+
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> LiftMeshComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Event")
+	TObjectPtr<UBoxComponent> Pattern1SuccessBoxComponent;
+
+private: // 레퍼런스
+	UPROPERTY()
+	TObjectPtr<APCREricaCharacter> CachedErica;
+
 private: // 데이터 섹션
+	EState State;
 	FVector StartLiftLocation;
 	FVector EndLiftLocation;
 	float MaxLiftHeight;
 	float LiftingTime;
 	float ElapsedTime;
-
+	uint32 bIsOverlappedPattern1:1;
 };

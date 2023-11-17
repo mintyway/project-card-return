@@ -3,30 +3,42 @@
 
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 
+#include "Components/BoxComponent.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
-APCRLiftActor::APCRLiftActor() : MaxLiftHeight(350.f), LiftingTime(3.0), ElapsedTime(0.f)
+APCRLiftActor::APCRLiftActor()
+	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(3.0), ElapsedTime(0.f), bIsOverlappedPattern1(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	if (SceneComponent)
 	{
-		RootComponent = SceneComponent;
+		SetRootComponent(SceneComponent);
 	}
-	
+
 	LiftMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LiftMeshComponent"));
 	if (LiftMeshComponent)
 	{
-		LiftMeshComponent->SetupAttachment(SceneComponent);
+		LiftMeshComponent->SetupAttachment(GetRootComponent());
+	}
+
+	Pattern1SuccessBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Pattern1SuccessBoxComponent"));
+	if (Pattern1SuccessBoxComponent)
+	{
+		Pattern1SuccessBoxComponent->SetupAttachment(GetRootComponent());
+		Pattern1SuccessBoxComponent->SetRelativeLocation(FVector(750.0, 0.0, 0.0));
+		Pattern1SuccessBoxComponent->InitBoxExtent(FVector(300.0, 300.0, 500.0));
 	}
 }
 
 void APCRLiftActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	SetActorTickEnabled(false);
 }
 
@@ -34,7 +46,19 @@ void APCRLiftActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	HandleLeftUp(DeltaTime);
+	switch (State)
+	{
+		case EState::LiftUp:
+		{
+			UpdateLiftUp(DeltaTime);
+			break;
+		}
+		case EState::SerinPattern1:
+		{
+			UpdatePattern1OverlapCheck();
+			break;
+		}
+	}
 }
 
 void APCRLiftActor::LiftUp()
@@ -42,19 +66,59 @@ void APCRLiftActor::LiftUp()
 	SetActorTickEnabled(true);
 	StartLiftLocation = GetActorLocation();
 	EndLiftLocation = FVector(StartLiftLocation.X, StartLiftLocation.Y, MaxLiftHeight);
+	State = EState::LiftUp;
+
 	OnLiftUpStart.Broadcast();
 }
 
-void APCRLiftActor::HandleLeftUp(float DeltaTime)
+void APCRLiftActor::SerinPattern1Start()
+{
+	SIMPLE_LOG;
+	TArray<AActor*> EricaArray;
+	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(),
+												 APCREricaCharacter::StaticClass(),
+												 TEXT("Erica"), EricaArray);
+	CachedErica = Cast<APCREricaCharacter>(EricaArray[0]);
+	check(CachedErica);
+	
+	SetActorTickEnabled(true);
+	
+	State = EState::SerinPattern1;
+}
+
+void APCRLiftActor::SerinPattern1End()
+{
+	SIMPLE_LOG;
+	SetActorTickEnabled(false);
+}
+
+bool APCRLiftActor::IsOverlappedPattern1()
+{
+	return bIsOverlappedPattern1;
+}
+
+void APCRLiftActor::UpdateLiftUp(float DeltaTime)
 {
 	ElapsedTime += DeltaTime;
 	const float alpha = FMath::Clamp(ElapsedTime / LiftingTime, 0.f, 1.f);
 	const FVector NewLocation = FMath::Lerp(StartLiftLocation, EndLiftLocation, alpha);
 	SetActorLocation(NewLocation);
-	
+
 	if (alpha >= 1.f)
 	{
 		SetActorTickEnabled(false);
 		OnLiftUpEnd.Broadcast();
+	}
+}
+
+void APCRLiftActor::UpdatePattern1OverlapCheck()
+{
+	if (Pattern1SuccessBoxComponent->IsOverlappingActor(CachedErica))
+	{
+		bIsOverlappedPattern1 = true;
+	}
+	else
+	{
+		bIsOverlappedPattern1 = false;
 	}
 }

@@ -70,7 +70,9 @@ void UPCRSerinDollHandAnimInstance::PlayPattern1(bool IsLeftHand)
 	const FName HandNameKey = IsLeftHand ? TEXT("LeftAttack") : TEXT("RightAttack");
 	Montage_SetNextSection(TEXT("Start"), HandNameKey, SerinDollDataAsset->Pattern1AnimMontage);
 	
-	Montage_JumpToSection(HandNameKey, SerinDollDataAsset->Pattern1AnimMontage);
+	FOnMontageEnded Pattern1MontageEnded;
+	Pattern1MontageEnded.BindUObject(this, &UPCRSerinDollHandAnimInstance::HandlePattern1Ended);
+	Montage_SetEndDelegate(Pattern1MontageEnded, SerinDollDataAsset->Pattern1AnimMontage);
 }
 
 void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackChaseEnd()
@@ -118,10 +120,20 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_ScissorsAttackEffectStart()
 	OnScissorsAttackEffectStart.Broadcast();
 }
 
+void UPCRSerinDollHandAnimInstance::AnimNotify_Pattern1Shoot()
+{
+	OnPattern1Shoot.Broadcast();
+}
+
 void UPCRSerinDollHandAnimInstance::AnimNotify_ToIdle()
 {
 	if (OnToIdle.IsBound())
 	{
 		OnToIdle.Execute();
 	}
+}
+
+void UPCRSerinDollHandAnimInstance::HandlePattern1Ended(UAnimMontage* AnimMontage, bool bArg)
+{
+	OnPattern1Ended.Broadcast();
 }
