@@ -26,12 +26,12 @@
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
 APCREricaCharacter::APCREricaCharacter()
-	: bIsAlive(true), bCanDash(true), bIsDashing(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true), bCanAttack(true),
+	: bIsAlive(true), bCanDash(true), bIsDashing(false), bIsDashInvincible(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true),
+	  bCanAttack(true),
 	  CurrentShotMode(EShootMode::NarrowShot),
 	  MovementKeys{EKeys::W, EKeys::S, EKeys::D, EKeys::A},
-	  ElapsedDashTime(0.f),
-	  NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3),
-	  CurrentCombo(0), MaxCombo(4), bIsAttackKeyPressed(false), bIsDashInvincible(false)
+	  ElapsedDashTime(0.f), NarrowShotCount(3), NarrowShotElapsedCount(0), NarrowShotInterval(0.1f), WideShotCount(3),
+	  CurrentCombo(0), MaxCombo(4), bIsAttackKeyPressed(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
@@ -593,7 +593,6 @@ void APCREricaCharacter::Dash()
 		GetWorldTimerManager().SetTimer(DashInvincibleTimerHandle,
 		                                FTimerDelegate::CreateUObject(this, &APCREricaCharacter::DashInvincibleTimerCallback),
 		                                DashInvincibleTime, false);
-		
 
 		CachedDashStartLocation = GetActorLocation();
 
