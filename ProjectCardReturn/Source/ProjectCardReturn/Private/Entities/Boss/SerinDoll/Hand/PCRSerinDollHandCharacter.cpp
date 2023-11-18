@@ -488,6 +488,7 @@ void APCRSerinDollHandCharacter::Pattern1Shoot()
 {
 	APCRSerinDollPattern1Projectile* Pattern1Projectile = GetWorld()->SpawnActor<APCRSerinDollPattern1Projectile>(APCRSerinDollPattern1Projectile::StaticClass());
 	Pattern1Projectile->OnDetachedCard.BindUObject(CachedSerinDollHead, &APCRSerinDollHeadCharacter::Pattern1DetachCountCheck);
+	CachedSerinDollHandAnimInstance->OnPattern1LastShoot.AddUObject(Pattern1Projectile, &APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart);
 	
 	FVector StartLocation = GetActorLocation();
 	StartLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;

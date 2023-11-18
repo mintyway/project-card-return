@@ -101,9 +101,16 @@ void APCRSerinDollPattern1Projectile::Release()
 	Destroy();
 }
 
+void APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart()
+{
+	// TODO: 타이머 파라미터화 필요
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer), 10.f, false);
+}
+
 void APCRSerinDollPattern1Projectile::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
 {
-	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollPattern1Projectile::HandleDetachedCard);
+	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard);
 }
 
 void APCRSerinDollPattern1Projectile::EnableProjectile()
@@ -161,7 +168,7 @@ void APCRSerinDollPattern1Projectile::HandleStop()
 	State = ESerinDollProjectileState::Stop;
 }
 
-void APCRSerinDollPattern1Projectile::HandleDetachedCard(APCREricaCardProjectile* AttachedCard)
+void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardProjectile* AttachedCard)
 {
 	if (!bOnceDetached)
 	{
@@ -199,6 +206,11 @@ void APCRSerinDollPattern1Projectile::HandleDetachedCard(APCREricaCardProjectile
 
 		bOnceDetached = true;
 	}
+}
+
+void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
+{
+	Destroy();
 }
 
 void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

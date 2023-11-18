@@ -39,6 +39,7 @@ protected:
 public:
 	void Shoot(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
 	void Release();
+	void Pattern1ExplosionTimerStart();
 
 public:
 	void BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard) override;
@@ -58,7 +59,8 @@ private: // 내부 함수
 	bool IsAtMaxRange();
 	void HandleStop();
 
-	void HandleDetachedCard(APCREricaCardProjectile* AttachedCard);
+	void HandlePattern1DetachedCard(APCREricaCardProjectile* AttachedCard);
+	void HandlePattern1ExplosionTimer();
 
 	UFUNCTION()
 	void HandleBossOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

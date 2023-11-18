@@ -29,9 +29,11 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	Pattern1Data = {};
 	Pattern1Data.DetachCount = 0;
 	Pattern1Data.DetachAttackCount = 0;
+	Pattern1Data.Started = false;
+	
 	// 파라미터화 필요
 	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
-	MaxHP = 100.f;
+	MaxHP = 1000.f;
 	CurrentHP = MaxHP;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();
@@ -181,6 +183,11 @@ void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 		}
 		case EState::Pattern1:
 		{
+			if (!Pattern1Data.Started)
+			{
+				Pattern1();
+			}
+			
 			break;
 		}
 		case EState::Pattern2:
@@ -207,6 +214,8 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 			Pattern1Data.DetachAttackCount = 0;
 			bIsInvincible = false;
 			State = EState::Basic;
+			
+			OnPattern1Succeed.Broadcast();
 		}
 	}
 
@@ -223,7 +232,7 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 
 void APCRSerinDollHeadCharacter::LeftRockAttack()
 {
-	if (IsAttacking(LeftHand))
+	if ((State != EState::Basic) || IsAttacking(LeftHand))
 	{
 		return;
 	}
@@ -233,7 +242,7 @@ void APCRSerinDollHeadCharacter::LeftRockAttack()
 
 void APCRSerinDollHeadCharacter::RightRockAttack()
 {
-	if (IsAttacking(RightHand))
+	if ((State != EState::Basic) || IsAttacking(RightHand))
 	{
 		return;
 	}
@@ -243,7 +252,7 @@ void APCRSerinDollHeadCharacter::RightRockAttack()
 
 void APCRSerinDollHeadCharacter::LeftPaperAttack(bool bIsFarAttack)
 {
-	if (IsAttacking(LeftHand))
+	if ((State != EState::Basic) || IsAttacking(LeftHand))
 	{
 		return;
 	}
@@ -253,7 +262,7 @@ void APCRSerinDollHeadCharacter::LeftPaperAttack(bool bIsFarAttack)
 
 void APCRSerinDollHeadCharacter::RightPaperAttack(bool bIsFarAttack)
 {
-	if (IsAttacking(RightHand))
+	if ((State != EState::Basic) || IsAttacking(RightHand))
 	{
 		return;
 	}
@@ -263,7 +272,7 @@ void APCRSerinDollHeadCharacter::RightPaperAttack(bool bIsFarAttack)
 
 void APCRSerinDollHeadCharacter::LeftScissorsAttack()
 {
-	if (IsAttacking(LeftHand))
+	if ((State != EState::Basic) || IsAttacking(LeftHand))
 	{
 		return;
 	}
@@ -273,7 +282,7 @@ void APCRSerinDollHeadCharacter::LeftScissorsAttack()
 
 void APCRSerinDollHeadCharacter::RightScissorsAttack()
 {
-	if (IsAttacking(RightHand))
+	if ((State != EState::Basic) || IsAttacking(RightHand))
 	{
 		return;
 	}
@@ -283,6 +292,15 @@ void APCRSerinDollHeadCharacter::RightScissorsAttack()
 
 void APCRSerinDollHeadCharacter::Pattern1()
 {
+	if (IsAttacking(LeftHand) || IsAttacking(RightHand))
+	{
+		return;
+	}
+	
+	Pattern1Data.DetachCount = 0;
+	Pattern1Data.DetachAttackCount = 0;
+	Pattern1Data.Started = true;
+	
 	CachedLift->SerinPattern1Start();
 
 	LeftHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
@@ -290,9 +308,6 @@ void APCRSerinDollHeadCharacter::Pattern1()
 
 	LeftHand->Pattern1();
 	RightHand->Pattern1();
-
-	bIsInvincible = true;
-	State = EState::Pattern1;
 	
 	OnPattern1Start.Broadcast();
 }
@@ -335,6 +350,7 @@ void APCRSerinDollHeadCharacter::RightHandSpawn()
 	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
 
 	RightHand->Init(this, GetActorRightVector());
+	RightHand->GetCachedSerinDollHandAnimInstance()->OnPattern1LastShoot.AddUObject(this, &APCRSerinDollHeadCharacter::HandlePattern1LastShoot);
 
 	// 좌우 반전 코드
 	const FVector NewScale = RightHand->GetMesh()->GetRelativeScale3D() * FVector(-1.0, 1.0, 1.0);
@@ -354,7 +370,8 @@ void APCRSerinDollHeadCharacter::HandleChangeHP()
 	{
 		CurrentHP = MaxHP * 0.5;
 
-		Pattern1();
+		State = EState::Pattern1;
+		bIsInvincible = true;
 		bIsHP50PercentLess = true;
 		OnHP50PercentLess.Broadcast();
 	}
@@ -405,6 +422,23 @@ void APCRSerinDollHeadCharacter::HandlePattern1Ended()
 {
 	CachedLift->SerinPattern1End();
 	OnPattern1Ended.Broadcast();
+}
+
+void APCRSerinDollHeadCharacter::HandlePattern1LastShoot()
+{
+	// TODO: 타이머 파라미터화 필요
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::HandleRestartPattern1), 10.f, false);
+}
+
+void APCRSerinDollHeadCharacter::HandleRestartPattern1()
+{
+	if (State == EState::Pattern1)
+	{
+		Pattern1();
+		LeftHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("LeftAttack"), SerinDollDataAsset->Pattern1AnimMontage);
+		RightHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("RightAttack"), SerinDollDataAsset->Pattern1AnimMontage);
+	}
 }
 
 float APCRSerinDollHeadCharacter::GetLiftHeight()

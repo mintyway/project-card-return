@@ -22,7 +22,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
-	
+
 	DECLARE_MULTICAST_DELEGATE(FPattern1Signature);
 
 public:
@@ -47,7 +47,7 @@ public: // 동작
 
 	void LeftPaperAttack(bool bIsFarAttack);
 	void RightPaperAttack(bool bIsFarAttack);
-	
+
 	void LeftScissorsAttack();
 	void RightScissorsAttack();
 
@@ -58,6 +58,8 @@ public: // Getter, Setter
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE APCRLiftActor* GetCachedLift() const { return CachedLift; }
 	FORCEINLINE APCREricaCharacter* GetCachedErica() const { return CachedErica; }
+	FORCEINLINE APCRSerinDollHandCharacter* GetLeftHand() const { return LeftHand; }
+	FORCEINLINE APCRSerinDollHandCharacter* GetRightHand() const { return RightHand; }
 
 	// 델리게이트
 	FChangeHPSignature OnChangeHP;
@@ -78,8 +80,9 @@ private: // 타입
 	{
 		int32 DetachCount;
 		int32 DetachAttackCount;
+		uint32 Started:1;
 	};
-	
+
 private: // 내부 함수
 	void SpawnHands();
 	void LeftHandSpawn();
@@ -88,11 +91,13 @@ private: // 내부 함수
 	void HandleChangeHP();
 	void HandleDead();
 	void DelayedDestroy();
-	
+
 	bool IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
 
 	void Pattern1DetachCountCheck();
 	void HandlePattern1Ended();
+	void HandlePattern1LastShoot();
+	void HandleRestartPattern1();
 
 private: // 내부 Getter
 	float GetLiftHeight();
@@ -101,7 +106,7 @@ private: // 내부 Getter
 private: // 캐시
 	// UPROPERTY()
 	// TObjectPtr<void> 
-	
+
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedErica;
 
