@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "PCRSerinDollPrimaryDataAsset.generated.h"
 
+class UPCRSerinDollHeadAnimInstance;
 class UNiagaraSystem;
 class UPCRSerinDollHandAnimInstance;
 /**
@@ -27,7 +28,10 @@ public:
 	TObjectPtr<UStaticMesh> Pattern1ProjectileMesh; 
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
-	TSoftClassPtr<UPCRSerinDollHandAnimInstance> AnimInstanceClass;
+	TSoftClassPtr<UPCRSerinDollHeadAnimInstance> HeadAnimInstanceClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TSoftClassPtr<UPCRSerinDollHandAnimInstance> HandAnimInstanceClass;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> RockAttackAnimMontage;

@@ -6,6 +6,7 @@
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
 #include "PCRSerinDollHeadCharacter.generated.h"
 
+class UPCRSerinDollHeadAnimInstance;
 class APCRLiftActor;
 class APCREricaCharacter;
 class APCRSerinDollHandCharacter;
@@ -106,7 +107,7 @@ private: // 내부 Getter
 	float GetLiftHeight();
 	float GetHandWorldHeight();
 
-private: // 캐시
+private: // 레퍼런스
 	// UPROPERTY()
 	// TObjectPtr<void> 
 
@@ -115,6 +116,9 @@ private: // 캐시
 
 	UPROPERTY()
 	TObjectPtr<APCRLiftActor> CachedLift;
+
+	UPROPERTY()
+	TObjectPtr<UPCRSerinDollHeadAnimInstance> CachedSerinDollHeadAnimInstance;
 
 private: // 핸드
 	UPROPERTY()

@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
+#include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadAnimInstance.h"
 #include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -53,7 +54,13 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 		GetMesh()->SetupAttachment(GetCapsuleComponent());
 		GetMesh()->SetRelativeScale3D(FVector(6.0));
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
+		
 		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->HeadMesh);
+		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+		if (UClass* NewAnimInstanceClass = SerinDollDataAsset->HeadAnimInstanceClass.LoadSynchronous())
+		{
+			GetMesh()->SetAnimInstanceClass(NewAnimInstanceClass);
+		}
 	}
 
 	if (GetCharacterMovement())
@@ -76,6 +83,9 @@ void APCRSerinDollHeadCharacter::PostInitializeComponents()
 	SetFolderPath(TEXT("Serin"));
 #endif
 
+	CachedSerinDollHeadAnimInstance = Cast<UPCRSerinDollHeadAnimInstance>(GetMesh()->GetAnimInstance());
+	check(CachedSerinDollHeadAnimInstance);
+	
 	TArray<AActor*> Lifts;
 	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), APCRLiftActor::StaticClass(), TEXT("Lift"), Lifts);
 	CachedLift = Cast<APCRLiftActor>(Lifts[0]);

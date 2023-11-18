@@ -77,7 +77,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 
 		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->HandMesh);
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		if (UClass* NewAnimInstanceClass = SerinDollDataAsset->AnimInstanceClass.LoadSynchronous())
+		if (UClass* NewAnimInstanceClass = SerinDollDataAsset->HandAnimInstanceClass.LoadSynchronous())
 		{
 			GetMesh()->SetAnimInstanceClass(NewAnimInstanceClass);
 		}
