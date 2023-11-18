@@ -13,6 +13,8 @@ class APCRSerinDollHandBaseCharacter;
 class APCRSerinDollLeftHandCharacter;
 class APCRSerinDollRightHandCharacter;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinDollHeadCharacter, Log, All);
+
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
 DECLARE_MULTICAST_DELEGATE(FHPStateSignature);
 

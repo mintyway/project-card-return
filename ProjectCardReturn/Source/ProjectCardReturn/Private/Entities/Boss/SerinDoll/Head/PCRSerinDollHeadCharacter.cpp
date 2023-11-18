@@ -10,10 +10,13 @@
 #include "Components/CapsuleComponent.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
+#include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
+DEFINE_LOG_CATEGORY(PCRLogSerinDollHeadCharacter);
 
 const float APCRSerinDollHeadCharacter::ContactDistance = 10.f;
 const float APCRSerinDollHeadCharacter::FloatingHandHeight = 500.f;
@@ -190,16 +193,21 @@ void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	++Pattern1Data.DetachAttackCount;
-
-	if (Pattern1Data.DetachCount >= 4 && Pattern1Data.DetachAttackCount >= 4)
+	
+	if (State == EState::Pattern1 && Cast<APCRSerinDollPattern1Projectile>(DamageCauser))
 	{
-		LeftHand->GetCachedSerinDollHandAnimInstance()->EndPattern1();
-		RightHand->GetCachedSerinDollHandAnimInstance()->EndPattern1();
-		Pattern1Data.DetachCount = 0;
-		Pattern1Data.DetachAttackCount = 0;
-		bIsInvincible = false;
+		++Pattern1Data.DetachAttackCount;
+
+		if (Pattern1Data.DetachCount >= 4 && Pattern1Data.DetachAttackCount >= 4)
+		{
+			UE_LOG(PCRLogSerinDollHeadCharacter, Warning, TEXT("패턴 성공"));
+			LeftHand->GetCachedSerinDollHandAnimInstance()->EndPattern1();
+			RightHand->GetCachedSerinDollHandAnimInstance()->EndPattern1();
+			Pattern1Data.DetachCount = 0;
+			Pattern1Data.DetachAttackCount = 0;
+			bIsInvincible = false;
+			State = EState::Basic;
+		}
 	}
 
 	if (bIsInvincible)
@@ -284,6 +292,7 @@ void APCRSerinDollHeadCharacter::Pattern1()
 	RightHand->Pattern1();
 
 	bIsInvincible = true;
+	State = EState::Pattern1;
 	
 	OnPattern1Start.Broadcast();
 }

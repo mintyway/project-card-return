@@ -54,6 +54,7 @@ public: // 델리게이트
 	FScissorsAttackSignature OnScissorsAttackHitEnd;
 
 	FPattern1Signature OnPattern1Shoot;
+	FPattern1Signature OnPattern1LastShoot;
 	FPattern1Signature OnPattern1Ended;
 
 private: // 애님 노티파이
@@ -86,6 +87,9 @@ private: // 애님 노티파이
 
 	UFUNCTION()
 	void AnimNotify_ToIdle();
+
+	UFUNCTION()
+	void AnimNotify_Pattern1LastShoot();
 
 	void HandlePattern1Ended(UAnimMontage* AnimMontage, bool bArg);
 

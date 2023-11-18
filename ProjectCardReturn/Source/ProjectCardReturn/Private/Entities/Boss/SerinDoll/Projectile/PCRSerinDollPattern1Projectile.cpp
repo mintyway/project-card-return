@@ -171,7 +171,6 @@ void APCRSerinDollPattern1Projectile::HandleDetachedCard(APCREricaCardProjectile
 		const APCRLiftActor* CachedLift = CachedSerinDollHead->GetCachedLift();
 		check(CachedLift);
 
-
 		FVector TargetLocation;
 		FVector Direction;
 		const float Scala = 7000.f;
