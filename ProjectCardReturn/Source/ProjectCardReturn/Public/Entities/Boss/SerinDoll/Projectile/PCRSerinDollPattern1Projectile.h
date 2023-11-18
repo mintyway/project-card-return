@@ -25,9 +25,11 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollPattern1Projectile : public AActor, public IPCREricaCardInteractable
 {
 	GENERATED_BODY()
+
+private:
+	DECLARE_DELEGATE(FAttachedCardSignature);
 	
 public:	
-	// Sets default values for this actor's properties
 	APCRSerinDollPattern1Projectile();
 
 protected:
@@ -39,7 +41,10 @@ public:
 	void Release();
 
 public:
-	void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+	void BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard) override;
+
+public: // 델리게이트
+	FAttachedCardSignature OnDetachedCard;
 
 private: // 내부 함수
 	void EnableProjectile();
@@ -52,6 +57,8 @@ private: // 내부 함수
 	
 	bool IsAtMaxRange();
 	void HandleStop();
+
+	void HandleDetachedCard(APCREricaCardProjectile* AttachedCard);
 
 private: // 컴포넌트
 	UPROPERTY()
@@ -75,4 +82,5 @@ private: // 데이터
 	FVector LaunchLocation;
 	float ProjectileSpeed;
 	float Range;
+	uint32 bOnceDetached:1;
 };

@@ -11,6 +11,7 @@
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
+#include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -52,7 +53,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	ScissorsAttackData.Damage = 10.f;
 
 	Pattern1Data = {};
-	Pattern1Data.Offset = FVector(1250.0, 1000.0, 0.0);
+	Pattern1Data.Offset = FVector(1500.0, 1000.0, 0.0);
 	Pattern1Data.MoveLocationSpeed = 1500.f;
 	Pattern1Data.MoveRotationExponentialSpeed = 3.f;
 
@@ -165,7 +166,7 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	CachedSerinDollHandAnimInstance->OnScissorsAttackHitStart.AddUObject(this, &APCRSerinDollHandCharacter::HandleScissorsAttackHitStart);
 	CachedSerinDollHandAnimInstance->OnScissorsAttackHitEnd.AddUObject(this, &APCRSerinDollHandCharacter::HandleScissorsAttackHitEnd);
 
-	
+	CachedSerinDollHandAnimInstance->OnPattern1Shoot.AddUObject(this, &APCRSerinDollHandCharacter::Pattern1Shoot);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()
@@ -481,6 +482,16 @@ void APCRSerinDollHandCharacter::HandleScissorsAttackHitEnd()
 {
 	DisableScissorsAttackCollision();
 	ScissorsAttackData.AttackedActors.Reset();
+}
+
+void APCRSerinDollHandCharacter::Pattern1Shoot()
+{
+	APCRSerinDollPattern1Projectile* Pattern1Projectile = GetWorld()->SpawnActor<APCRSerinDollPattern1Projectile>(APCRSerinDollPattern1Projectile::StaticClass());
+
+	FVector StartLocation = GetActorLocation();
+	StartLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;
+	const FVector Direction = (CachedSerinDollHead->CachedErica->GetActorLocation() - StartLocation).GetSafeNormal();
+	Pattern1Projectile->Shoot(CachedSerinDollHead, StartLocation, Direction);
 }
 
 void APCRSerinDollHandCharacter::HandleToIdle()

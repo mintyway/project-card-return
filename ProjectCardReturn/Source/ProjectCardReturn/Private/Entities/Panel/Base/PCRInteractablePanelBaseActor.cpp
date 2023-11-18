@@ -91,7 +91,7 @@ void APCRInteractablePanelBaseActor::Tick(float DeltaTime)
  * 패널에 카드가 박히면 인터페이스를 통해 호출되며 이때 바인드하기 위한 함수입니다.
  * @param AttachedCard 패널에 박힌 카드
  */
-void APCRInteractablePanelBaseActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
+void APCRInteractablePanelBaseActor::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
 {
 	check(AttachedCard);
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRInteractablePanelBaseActor::HandleReturnCard);

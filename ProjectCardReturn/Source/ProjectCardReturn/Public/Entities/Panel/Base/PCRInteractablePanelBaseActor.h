@@ -35,7 +35,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+	virtual void BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard) override;
 
 	UFUNCTION()
 	void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);

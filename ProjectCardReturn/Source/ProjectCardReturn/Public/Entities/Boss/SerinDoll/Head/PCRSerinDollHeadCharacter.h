@@ -89,6 +89,9 @@ private: // 내부 Getter
 	float GetHandWorldHeight();
 
 private: // 캐시
+	// UPROPERTY()
+	// TObjectPtr<void> 
+	
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedErica;
 

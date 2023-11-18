@@ -4,10 +4,12 @@
 #include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 
 #include "Components/SphereComponent.h"
+#include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
+#include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
-	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(1500.f), Range(1000.f)
+	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(1500.f), Range(1000.f), bOnceDetached(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,7 +18,7 @@ APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
 	{
 		SerinDollDataAsset = DA_SerinDoll.Object;
 	}
-	
+
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	if (SphereComponent)
 	{
@@ -82,6 +84,7 @@ void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& Sta
 	SetActorLocationAndRotation(LaunchLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
 	SetActorHiddenInGame(false);
 	EnableProjectile();
+	SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
 	ProjectileMovementComponent->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
 
 	State = ESerinDollProjectileState::Shooting;
@@ -92,16 +95,21 @@ void APCRSerinDollPattern1Projectile::Release()
 	Destroy();
 }
 
-void APCRSerinDollPattern1Projectile::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) {}
+void APCRSerinDollPattern1Projectile::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
+{
+	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollPattern1Projectile::HandleDetachedCard);
+}
 
 void APCRSerinDollPattern1Projectile::EnableProjectile()
 {
+	ProjectileMovementComponent->Activate();
 	SetActorHiddenInGame(false);
 	EnableCollisionDetection();
 }
 
 void APCRSerinDollPattern1Projectile::DisableProjectile()
 {
+	ProjectileMovementComponent->Deactivate();
 	SetActorHiddenInGame(true);
 	DisableCollisionDetection();
 }
@@ -110,6 +118,7 @@ void APCRSerinDollPattern1Projectile::EnableCollisionDetection()
 {
 	SphereComponent->SetCollisionObjectType(ECC_GameTraceChannel6);
 	SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 	SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 }
 
@@ -122,6 +131,7 @@ void APCRSerinDollPattern1Projectile::HandleShooting()
 {
 	if (IsAtMaxRange())
 	{
+		EnableProjectile();
 		HandleStop();
 	}
 }
@@ -139,6 +149,20 @@ bool APCRSerinDollPattern1Projectile::IsAtMaxRange()
 
 void APCRSerinDollPattern1Projectile::HandleStop()
 {
+	ProjectileMovementComponent->Deactivate();
 	
 	State = ESerinDollProjectileState::Stop;
+}
+
+void APCRSerinDollPattern1Projectile::HandleDetachedCard(APCREricaCardProjectile* AttachedCard)
+{
+	if (bOnceDetached)
+	{
+		if (OnDetachedCard.IsBound())
+		{
+			OnDetachedCard.Execute();
+		}
+		
+		bOnceDetached = true;
+	}
 }

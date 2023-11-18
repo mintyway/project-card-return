@@ -146,6 +146,8 @@ private: // 내부 함수
 	void HandleScissorsAttackHitStart();
 	void HandleScissorsAttackHitEnd();
 
+	void Pattern1Shoot();
+
 public: // 외부 콜백
 	void HandleToIdle();
 	void HandleRockAttackChaseEnded();

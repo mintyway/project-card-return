@@ -267,7 +267,7 @@ void APCREricaCardProjectile::HandleBlocking(AActor* SelfActor, AActor* OtherAct
 	if (IPCREricaCardInteractable* EricaCardAttachableInterface = Cast<IPCREricaCardInteractable>(OtherActor))
 	{
 		UE_LOG(PCRLogEricaCardProjectile, Log, TEXT("%s와 충돌한 %s는 상호작용이 가능한 오브젝트입니다."), *SelfActor->GetName(), *OtherActor->GetName());
-		EricaCardAttachableInterface->BindOnCardReturnBegin(this);
+		EricaCardAttachableInterface->BindOnReturnCardBegin(this);
 	}
 }
 

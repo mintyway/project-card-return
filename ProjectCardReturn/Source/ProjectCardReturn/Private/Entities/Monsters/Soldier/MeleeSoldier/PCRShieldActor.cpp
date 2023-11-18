@@ -75,7 +75,7 @@ void APCRShieldActor::BeginDestroy()
  * 방패가 카드에 박힌경우 카드의 델리게이트에 바인드하기위해 인터페이스를 통해 호출됩니다. 
  * @param AttachedCard 방패에 박힌 카드
  */
-void APCRShieldActor::BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard)
+void APCRShieldActor::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
 {
 	check(AttachedCard);
 	const FDelegateHandle NewHandle = AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRShieldActor::HandleReturnCard);

@@ -31,7 +31,7 @@ protected:
 	virtual void BeginDestroy() override;
 
 public:
-	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) override;
+	virtual void BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard) override;
 	
 	void DetachAndDelayedDestroy();
 	

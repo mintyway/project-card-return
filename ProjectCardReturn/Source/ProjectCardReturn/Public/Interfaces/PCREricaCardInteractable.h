@@ -22,5 +22,5 @@ class PROJECTCARDRETURN_API IPCREricaCardInteractable
 	GENERATED_BODY()
 
 public:
-	virtual void BindOnCardReturnBegin(APCREricaCardProjectile* AttachedCard) = 0;
+	virtual void BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard) = 0;
 };
