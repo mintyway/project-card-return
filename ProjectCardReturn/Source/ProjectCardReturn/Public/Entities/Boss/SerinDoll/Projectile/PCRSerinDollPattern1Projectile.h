@@ -60,6 +60,9 @@ private: // 내부 함수
 
 	void HandleDetachedCard(APCREricaCardProjectile* AttachedCard);
 
+	UFUNCTION()
+	void HandleBossOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 private: // 컴포넌트
 	UPROPERTY()
 	TObjectPtr<const UPCRSerinDollPrimaryDataAsset> SerinDollDataAsset;

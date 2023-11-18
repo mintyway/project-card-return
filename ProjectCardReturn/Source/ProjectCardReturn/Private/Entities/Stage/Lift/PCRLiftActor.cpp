@@ -8,6 +8,8 @@
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
+DEFINE_LOG_CATEGORY(PCRLogRiftActor);
+
 // Sets default values
 APCRLiftActor::APCRLiftActor()
 	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(3.0), ElapsedTime(0.f), bIsOverlappedPattern1(false)
@@ -88,11 +90,11 @@ void APCRLiftActor::SerinPattern1Start()
 
 void APCRLiftActor::SerinPattern1End()
 {
-	SIMPLE_LOG;
+	UE_LOG(PCRLogRiftActor, Log, TEXT("SerinPattern1End"));
 	SetActorTickEnabled(false);
 }
 
-bool APCRLiftActor::IsOverlappedPattern1()
+bool APCRLiftActor::IsOverlappedPattern1() const
 {
 	return bIsOverlappedPattern1;
 }

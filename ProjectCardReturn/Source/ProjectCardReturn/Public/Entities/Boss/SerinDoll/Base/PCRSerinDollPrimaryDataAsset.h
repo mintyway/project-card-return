@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	TObjectPtr<USkeletalMesh> HandMesh;
 
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	TObjectPtr<UStaticMesh> Pattern1ProjectileMesh; 
+
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TSoftClassPtr<UPCRSerinDollHandAnimInstance> AnimInstanceClass;
 

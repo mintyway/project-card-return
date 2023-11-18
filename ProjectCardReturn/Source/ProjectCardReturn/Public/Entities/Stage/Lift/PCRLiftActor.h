@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "PCRLiftActor.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogRiftActor, Log, All);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLiftUpDelegate);
 
 class APCREricaCharacter;
@@ -32,7 +34,7 @@ public: // 동작 섹션
 	void SerinPattern1End();
 
 public: // Getter
-	FORCEINLINE bool IsOverlappedPattern1();
+	bool IsOverlappedPattern1() const;
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Event", DisplayName = "리프트 상승 시작 시")

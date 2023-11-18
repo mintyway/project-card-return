@@ -20,10 +20,12 @@ const float APCRSerinDollHeadCharacter::FloatingHandHeight = 500.f;
 const float APCRSerinDollHeadCharacter::BasicChaseYDistance = 700.f;
 
 APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
-	: bIsAlive(true), IsHP50PercentLess(false)
+	: bIsAlive(true), bIsHP50PercentLess(false), bIsInvincible(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	Pattern1Data = {};
+	Pattern1Data.DetachCount = 0;
+	Pattern1Data.DetachAttackCount = 0;
 	// 파라미터화 필요
 	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
 	MaxHP = 100.f;
@@ -38,6 +40,7 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 		GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel9);
 		GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel6, ECR_Overlap);
 	}
 
 	if (GetMesh() && SerinDollDataAsset)
@@ -175,7 +178,6 @@ void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 		}
 		case EState::Pattern1:
 		{
-			
 			break;
 		}
 		case EState::Pattern2:
@@ -189,8 +191,26 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 {
 	const float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	ChangeHP(-Damage);
-	return Damage;
+	++Pattern1Data.DetachAttackCount;
+
+	if (Pattern1Data.DetachCount >= 4 && Pattern1Data.DetachAttackCount >= 4)
+	{
+		LeftHand->GetCachedSerinDollHandAnimInstance()->EndPattern1();
+		RightHand->GetCachedSerinDollHandAnimInstance()->EndPattern1();
+		Pattern1Data.DetachCount = 0;
+		Pattern1Data.DetachAttackCount = 0;
+		bIsInvincible = false;
+	}
+
+	if (bIsInvincible)
+	{
+		return 0.f;
+	}
+	else
+	{
+		ChangeHP(-Damage);
+		return Damage;
+	}
 }
 
 void APCRSerinDollHeadCharacter::LeftRockAttack()
@@ -256,13 +276,15 @@ void APCRSerinDollHeadCharacter::RightScissorsAttack()
 void APCRSerinDollHeadCharacter::Pattern1()
 {
 	CachedLift->SerinPattern1Start();
-	
+
 	LeftHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
 	RightHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
 
 	LeftHand->Pattern1();
 	RightHand->Pattern1();
 
+	bIsInvincible = true;
+	
 	OnPattern1Start.Broadcast();
 }
 
@@ -304,7 +326,7 @@ void APCRSerinDollHeadCharacter::RightHandSpawn()
 	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
 
 	RightHand->Init(this, GetActorRightVector());
-	
+
 	// 좌우 반전 코드
 	const FVector NewScale = RightHand->GetMesh()->GetRelativeScale3D() * FVector(-1.0, 1.0, 1.0);
 	RightHand->GetMesh()->SetRelativeScale3D(NewScale);
@@ -319,11 +341,12 @@ void APCRSerinDollHeadCharacter::ChangeHP(float Amount)
 void APCRSerinDollHeadCharacter::HandleChangeHP()
 {
 	const float HPRatio = CurrentHP / MaxHP;
-	if (!IsHP50PercentLess && HPRatio <= 0.5f)
+	if (!bIsHP50PercentLess && HPRatio <= 0.5f)
 	{
-		IsHP50PercentLess = true;
+		CurrentHP = MaxHP * 0.5;
 
 		Pattern1();
+		bIsHP50PercentLess = true;
 		OnHP50PercentLess.Broadcast();
 	}
 
@@ -363,20 +386,16 @@ bool APCRSerinDollHeadCharacter::IsAttacking(APCRSerinDollHandCharacter* InSerin
 	return InSerinDollHand->GetMesh()->GetAnimInstance()->Montage_IsPlaying(nullptr);
 }
 
+void APCRSerinDollHeadCharacter::Pattern1DetachCountCheck()
+{
+	++Pattern1Data.DetachCount;
+	UE_LOG(PCRLogSerinHandCharacter, Warning, TEXT("Pattern1DetachCount: %d"), Pattern1Data.DetachCount);
+}
+
 void APCRSerinDollHeadCharacter::HandlePattern1Ended()
 {
 	CachedLift->SerinPattern1End();
 	OnPattern1Ended.Broadcast();
-}
-
-bool APCRSerinDollHeadCharacter::IsSucceedPattern1()
-{
-	if (true)
-	{
-		
-	}
-	
-	return false;
 }
 
 float APCRSerinDollHeadCharacter::GetLiftHeight()

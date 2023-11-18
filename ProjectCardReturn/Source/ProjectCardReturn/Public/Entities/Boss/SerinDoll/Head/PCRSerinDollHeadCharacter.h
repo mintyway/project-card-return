@@ -54,6 +54,8 @@ public: // 동작
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
+	FORCEINLINE APCRLiftActor* GetCachedLift() const { return CachedLift; }
+	FORCEINLINE APCREricaCharacter* GetCachedErica() const { return CachedErica; }
 
 	// 델리게이트
 	FChangeHPSignature OnChangeHP;
@@ -69,6 +71,12 @@ private: // 타입
 		Pattern1,
 		Pattern2
 	};
+
+	struct FPattern1Data
+	{
+		int32 DetachCount;
+		int32 DetachAttackCount;
+	};
 	
 private: // 내부 함수
 	void SpawnHands();
@@ -81,8 +89,8 @@ private: // 내부 함수
 	
 	bool IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
 
+	void Pattern1DetachCountCheck();
 	void HandlePattern1Ended();
-	bool IsSucceedPattern1();
 
 private: // 내부 Getter
 	float GetLiftHeight();
@@ -115,7 +123,9 @@ private: // 데이터
 
 private:
 	EState State;
+	FPattern1Data Pattern1Data;
 	TArray<FTimerHandle> TimerHandles;
 	uint32 bIsAlive:1;
-	uint32 IsHP50PercentLess:1;
+	uint32 bIsHP50PercentLess:1;
+	uint32 bIsInvincible;
 };

@@ -487,10 +487,14 @@ void APCRSerinDollHandCharacter::HandleScissorsAttackHitEnd()
 void APCRSerinDollHandCharacter::Pattern1Shoot()
 {
 	APCRSerinDollPattern1Projectile* Pattern1Projectile = GetWorld()->SpawnActor<APCRSerinDollPattern1Projectile>(APCRSerinDollPattern1Projectile::StaticClass());
-
+	Pattern1Projectile->OnDetachedCard.BindUObject(CachedSerinDollHead, &APCRSerinDollHeadCharacter::Pattern1DetachCountCheck);
+	
 	FVector StartLocation = GetActorLocation();
 	StartLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;
-	const FVector Direction = (CachedSerinDollHead->CachedErica->GetActorLocation() - StartLocation).GetSafeNormal();
+	FVector TargetLocation = CachedSerinDollHead->CachedErica->GetActorLocation();
+	const float RandY = FMath::RandRange(-300, 300);
+	TargetLocation.Y = RandY;
+	const FVector Direction = (TargetLocation - StartLocation).GetSafeNormal();
 	Pattern1Projectile->Shoot(CachedSerinDollHead, StartLocation, Direction);
 }
 
