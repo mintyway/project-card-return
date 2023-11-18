@@ -99,6 +99,9 @@ private: // 내부 함수
 	void HandlePattern1LastShoot();
 	void HandleRestartPattern1();
 
+	// 테스트용
+	void AttackTest();
+
 private: // 내부 Getter
 	float GetLiftHeight();
 	float GetHandWorldHeight();

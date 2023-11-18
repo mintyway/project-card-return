@@ -135,36 +135,8 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	// PaperAttack();
 	// ScissorsAttack();
 
-	// TODO: 시연용
-	auto AttackTest = [this]()
-	{
-		FTimerHandle TestTimerHandle1;
-		TimerHandles.Add(TestTimerHandle1);
-		GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftRockAttack), 25.f, false, 0.f);
-
-		FTimerHandle TestTimerHandle2;
-		TimerHandles.Add(TestTimerHandle2);
-		GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightRockAttack), 25.f, false, 5.f);
-
-		FTimerHandle TestTimerHandle3;
-		TimerHandles.Add(TestTimerHandle3);
-		GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftPaperAttack, false), 25.f, false, 9.f);
-
-		FTimerHandle TestTimerHandle4;
-		TimerHandles.Add(TestTimerHandle4);
-		GetWorldTimerManager().SetTimer(TestTimerHandle4, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightPaperAttack, true), 25.f, false, 9.5f);
-
-		FTimerHandle TestTimerHandle5;
-		TimerHandles.Add(TestTimerHandle5);
-		GetWorldTimerManager().SetTimer(TestTimerHandle5, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftScissorsAttack), 25.f, false, 14.5f);
-
-		FTimerHandle TestTimerHandle6;
-		TimerHandles.Add(TestTimerHandle6);
-		GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 25.f, false, 19.f);
-	};
-
 	FTimerHandle AllAttackTest;
-	GetWorldTimerManager().SetTimer(AllAttackTest, FTimerDelegate::CreateLambda(AttackTest), 25.f, true, 0.f);
+	GetWorldTimerManager().SetTimer(AllAttackTest, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::AttackTest), 25.f, true, 0.f);
 
 	APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	check(EricaPlayerController);
@@ -439,6 +411,33 @@ void APCRSerinDollHeadCharacter::HandleRestartPattern1()
 		LeftHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("LeftAttack"), SerinDollDataAsset->Pattern1AnimMontage);
 		RightHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("RightAttack"), SerinDollDataAsset->Pattern1AnimMontage);
 	}
+}
+
+void APCRSerinDollHeadCharacter::AttackTest()
+{
+	FTimerHandle TestTimerHandle1;
+	TimerHandles.Add(TestTimerHandle1);
+	GetWorldTimerManager().SetTimer(TestTimerHandle1, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftRockAttack), 25.f, false, 0.f);
+
+	FTimerHandle TestTimerHandle2;
+	TimerHandles.Add(TestTimerHandle2);
+	GetWorldTimerManager().SetTimer(TestTimerHandle2, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightRockAttack), 25.f, false, 5.f);
+
+	FTimerHandle TestTimerHandle3;
+	TimerHandles.Add(TestTimerHandle3);
+	GetWorldTimerManager().SetTimer(TestTimerHandle3, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftPaperAttack, false), 25.f, false, 9.f);
+
+	FTimerHandle TestTimerHandle4;
+	TimerHandles.Add(TestTimerHandle4);
+	GetWorldTimerManager().SetTimer(TestTimerHandle4, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightPaperAttack, true), 25.f, false, 9.5f);
+
+	FTimerHandle TestTimerHandle5;
+	TimerHandles.Add(TestTimerHandle5);
+	GetWorldTimerManager().SetTimer(TestTimerHandle5, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::LeftScissorsAttack), 25.f, false, 14.5f);
+
+	FTimerHandle TestTimerHandle6;
+	TimerHandles.Add(TestTimerHandle6);
+	GetWorldTimerManager().SetTimer(TestTimerHandle6, FTimerDelegate::CreateUObject(this, &APCRSerinDollHeadCharacter::RightScissorsAttack), 25.f, false, 19.f);
 }
 
 float APCRSerinDollHeadCharacter::GetLiftHeight()

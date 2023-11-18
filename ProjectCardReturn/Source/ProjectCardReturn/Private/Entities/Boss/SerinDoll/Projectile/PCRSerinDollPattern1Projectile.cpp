@@ -204,6 +204,8 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 			OnDetachedCard.Execute();
 		}
 
+		State = ESerinDollProjectileState::Returning;
+		
 		bOnceDetached = true;
 	}
 }
