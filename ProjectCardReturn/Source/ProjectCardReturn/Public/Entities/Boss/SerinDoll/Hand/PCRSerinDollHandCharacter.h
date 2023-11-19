@@ -23,6 +23,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollHandCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
+	DECLARE_DELEGATE_OneParam(FPattern1Signature, bool);
 
 public:
 	APCRSerinDollHandCharacter();
@@ -41,6 +42,7 @@ public: // 동작
 	void RockAttack(AActor* NewTarget);
 	void PaperAttack(bool bIsFarAttack);
 	void ScissorsAttack(AActor* NewTarget);
+	void ReadyMovePattern1();
 	void Pattern1();
 
 public: // Getter, Setter
@@ -48,6 +50,9 @@ public: // Getter, Setter
 	FORCEINLINE int32 GetMaxScissorsAttackCount() { return ScissorsAttackData.MaxAttackCount; }
 	FORCEINLINE int32 GetCurrentScissorsAttackCount() { return ScissorsAttackData.CurrentAttackCount; }
 	FORCEINLINE UPCRSerinDollHandAnimInstance* GetCachedSerinDollHandAnimInstance() { return CachedSerinDollHandAnimInstance; }
+
+public: // 델리게이트
+	FPattern1Signature OnReadyPattern1;
 
 private: // 타입
 	enum class EState

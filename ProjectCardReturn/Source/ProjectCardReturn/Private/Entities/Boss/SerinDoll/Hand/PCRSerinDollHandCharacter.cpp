@@ -282,13 +282,19 @@ void APCRSerinDollHandCharacter::ScissorsAttack(AActor* NewTarget)
 	CurrentState = EState::ScissorsAttack;
 }
 
-void APCRSerinDollHandCharacter::Pattern1()
+void APCRSerinDollHandCharacter::ReadyMovePattern1()
 {
 	Pattern1Data.Lift = Cast<AActor>(CachedSerinDollHead->CachedLift);
 	Pattern1Data.bIsMoving = true;
 	const FVector Offset = (Pattern1Data.Offset * -CachedSerinDollHead->GetActorForwardVector()) + (Pattern1Data.Offset * SideVector) + (Pattern1Data.Offset * CachedSerinDollHead->GetActorUpVector());
 	Pattern1Data.MoveLocation = Pattern1Data.Lift->GetActorLocation() + Offset;
 	CurrentState = EState::Pattern1;
+}
+
+void APCRSerinDollHandCharacter::Pattern1()
+{
+	const bool IsLeftHand = SideVector == CachedSerinDollHead->GetActorRightVector() ? false : true;
+	CachedSerinDollHandAnimInstance->PlayPattern1(IsLeftHand);
 }
 
 void APCRSerinDollHandCharacter::UpdateIdle(float DeltaSeconds)
@@ -361,8 +367,13 @@ void APCRSerinDollHandCharacter::UpdatePattern1Move(float DeltaSeconds)
 	const float Distance = FVector::DistSquared(GetActorLocation(), Pattern1Data.MoveLocation);
 	if (Distance <= FMath::Square(10.f))
 	{
-		const bool IsLeftHand = SideVector == CachedSerinDollHead->GetActorRightVector() ? false : true;
-		CachedSerinDollHandAnimInstance->PlayPattern1(IsLeftHand);
+		if (OnReadyPattern1.IsBound())
+		{
+			const bool bIsLeftHand = SideVector == CachedSerinDollHead->GetActorRightVector() ? false : true;
+
+			OnReadyPattern1.Execute(bIsLeftHand);
+		}
+		
 		Pattern1Data.bIsMoving = false;
 	}
 }

@@ -11,8 +11,6 @@ class APCRLiftActor;
 class APCREricaCharacter;
 class APCRSerinDollHandCharacter;
 class APCRSerinDollHandBaseCharacter;
-class APCRSerinDollLeftHandCharacter;
-class APCRSerinDollRightHandCharacter;
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinDollHeadCharacter, Log, All);
 
@@ -31,8 +29,6 @@ public:
 
 	friend class APCRSerinDollHandCharacter;
 	friend class APCRSerinDollHandBaseCharacter;
-	friend class APCRSerinDollLeftHandCharacter;
-	friend class APCRSerinDollRightHandCharacter;
 
 protected:
 	virtual void PostInitializeComponents() override;
@@ -81,7 +77,10 @@ private: // 타입
 	{
 		int32 DetachCount;
 		int32 DetachAttackCount;
-		uint32 Started:1;
+		uint32 bMoveStarted:1;
+		uint32 bIsStarted:1;
+		uint32 bIsLeftHandReady:1;
+		uint32 bIsRightHandReady:1;
 	};
 
 private: // 내부 함수
@@ -96,6 +95,8 @@ private: // 내부 함수
 	bool IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
 
 	void Pattern1DetachCountCheck();
+	void Pattern1MoveStart();
+	void HandleReadyPattern1(bool IsLeftHand);
 	void HandlePattern1Ended();
 	void HandlePattern1LastShoot();
 	void HandleRestartPattern1();
