@@ -94,13 +94,13 @@
 	<object class="MixerBusPanner" id="{3c4bce65-87d2-4473-a4ed-28a85150765c}" />
 	<object class="SingleSound" id="{424f620f-59d9-44a4-be56-9ec5cbd00fb6}">
 		<property name="length">
-			<value>0.12499999999999986</value>
+			<value>0.13494348788072175</value>
 		</property>
 		<property name="timelockedOffset">
-			<value>0.23500000000000001</value>
+			<value>0.24348528137423858</value>
 		</property>
 		<property name="pitch">
-			<value>-2</value>
+			<value>-6</value>
 		</property>
 		<relationship name="fadeInCurve">
 			<destination>{57d6eba7-8614-4983-814c-1f73eab5907d}</destination>
@@ -110,6 +110,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{b19b9c89-7c06-4397-86f5-21d35873004d}">
+		<property name="volume">
+			<value>10</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>
@@ -162,7 +165,7 @@
 	</object>
 	<object class="AutomationPoint" id="{150d6614-5247-4e46-9c87-24a31927c675}">
 		<property name="position">
-			<value>0.012</value>
+			<value>0.012000000000000012</value>
 		</property>
 		<property name="value">
 			<value>1</value>
@@ -174,15 +177,21 @@
 			<value>10</value>
 		</property>
 		<property name="midGain">
-			<value>-1.5</value>
+			<value>5</value>
 		</property>
 		<property name="highGain">
-			<value>-1.5</value>
+			<value>-9</value>
+		</property>
+		<property name="lowCrossover">
+			<value>1500</value>
+		</property>
+		<property name="highCrossover">
+			<value>3000</value>
 		</property>
 	</object>
 	<object class="SFXReverbEffect" id="{64e2e02b-2686-4ca0-9d17-e96797bb1a7a}">
 		<property name="decayTime">
-			<value>200</value>
+			<value>300</value>
 		</property>
 		<property name="wetLevel">
 			<value>-17</value>
