@@ -6,13 +6,15 @@
 #include "Engine/GameInstance.h"
 #include "PCRGameInstance.generated.h"
 
+class UPCRSoundPrimaryDataAsset;
+class APCREricaCardProjectilePool;
 namespace FMOD::Studio
 {
 	class Bus;
 	class System;
+	class EventInstance;
 }
 
-class APCREricaCardProjectilePool;
 /**
  * 
  */
@@ -22,18 +24,39 @@ class PROJECTCARDRETURN_API UPCRGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	UPCRGameInstance();
+
+protected:
 	virtual void Init() override;
 
-public:
+public: // 동작
 	void InitSoundSystem();
+	void InitInGameSoundSystem();
+	
+	void PlayStage1BGM();
+	void StopStage1BGM();
+	
+	void PlayAmbientBGM();
+	void StopAmbientBGM();
+	
+	void PlayBossStageBGM();
+	void StopBossStageBGM();
 	
 private:
 	bool SoundUpdate(float DeltaTime);
+
+private: // 데이터 에셋
+	UPROPERTY()
+	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 	
-private:
+private: // 오디오
 	FMOD::Studio::System* FMODStudioSystem;
 	FMOD::Studio::Bus* MasterBus;
+	
+	FMOD::Studio::EventInstance* AmbientAudioInst;
+	FMOD::Studio::EventInstance* Stage1AudioInst;
+	FMOD::Studio::EventInstance* BossStageAudioInst;
 
-private:
+private: // 데이터
 	float MasterVolume;
 };

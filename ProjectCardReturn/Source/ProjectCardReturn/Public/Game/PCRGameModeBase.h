@@ -6,10 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
-namespace FMOD::Studio {
-	class EventInstance;
-}
-
+class UPCRGameInstance;
 class UFMODAudioComponent;
 class APCRLiftActor;
 class UPCRStagePrimaryDataAsset;
@@ -82,17 +79,16 @@ private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 
-private: // 오디오 인스턴스
-	FMOD::Studio::EventInstance* AmbientAudioInst;
-	FMOD::Studio::EventInstance* Stage1AudioInst;
-	FMOD::Studio::EventInstance* BossStageAudioInst;
-
 private: // 서브 액터 섹션
 	UPROPERTY()
 	TSubclassOf<APCRLiftActor> LiftActorClass;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Actor", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCRLiftActor> LiftActor;
+
+private: // 레퍼런스
+	UPROPERTY()
+	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance; 
 
 private: // 데이터 섹션
 	UPROPERTY()

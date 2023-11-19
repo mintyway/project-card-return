@@ -21,8 +21,7 @@
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
 APCRGameModeBase::APCRGameModeBase()
-	: AmbientAudioInst(nullptr), Stage1AudioInst(nullptr), BossStageAudioInst(nullptr),
-	  Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
+	: Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -76,28 +75,9 @@ void APCRGameModeBase::PostInitializeComponents()
 
 	check(StageDataAsset && ParameterDataAsset && SoundDataAsset);
 
-	const FFMODEventInstance AmbientAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->AmbientBGM, false);
-	AmbientAudioInst = AmbientAudio.Instance;
-	if (AmbientAudioInst)
-	{
-		AmbientAudioInst->start();
-		AmbientAudioInst->setVolume(0.75f);
-	}
-
-	const FFMODEventInstance Stage1Audio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->Stage1BGM, false);
-	Stage1AudioInst = Stage1Audio.Instance;
-	if (Stage1AudioInst)
-	{
-		Stage1AudioInst->setVolume(0.2f);
-	}
-
-	const FFMODEventInstance BossStageAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->BossStageBGM, false);
-	BossStageAudioInst = BossStageAudio.Instance;
-	if (BossStageAudioInst)
-	{
-		BossStageAudioInst->setVolume(0.2f);
-	}
-
+	CachedPCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
+	check(CachedPCRGameInstance);
+	
 	// 태그로 Lift를 찾는 코드입니다.
 	TArray<AActor*> ActorsWithTag;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Lift")), ActorsWithTag);
@@ -120,9 +100,8 @@ void APCRGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UPCRGameInstance* PCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
-	check(PCRGameInstance);
-	PCRGameInstance->InitSoundSystem();
+	CachedPCRGameInstance->InitSoundSystem();
+	CachedPCRGameInstance->InitInGameSoundSystem();
 
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
@@ -207,19 +186,19 @@ void APCRGameModeBase::HandleKillCount()
 
 void APCRGameModeBase::PlayStage1BGM()
 {
-	Stage1AudioInst->start();
-	BossStageAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+	CachedPCRGameInstance->PlayStage1BGM();
+	CachedPCRGameInstance->StopBossStageBGM();
 }
 
 void APCRGameModeBase::PlayBossStageBGM()
 {
-	Stage1AudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-	BossStageAudioInst->start();
+	CachedPCRGameInstance->PlayBossStageBGM();
+	CachedPCRGameInstance->StopStage1BGM();
 }
 
 void APCRGameModeBase::LiftFloor()
 {
-	Stage1AudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+	CachedPCRGameInstance->StopStage1BGM();
 	LiftActor->LiftUp();
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	check(PlayerCharacter);
