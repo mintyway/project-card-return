@@ -8,7 +8,9 @@
 *.uproject.DotSettings.user
 
 # Unreal Engine
-ProjectCardReturn/Binaries
+ProjectCardReturn/Binaries/*
+!ProjectCardReturn/Binaries/Win64
+ProjectCardReturn/Binaries/Win64/*
 ProjectCardReturn/Build
 ProjectCardReturn/DerivedDataCache
 ProjectCardReturn/Intermediate
@@ -23,7 +25,8 @@ FMODProject/ShowdownSound/*
 
 # FMOD Module
 ProjectCardReturn/Plugins/FMODStudio/Docs
-ProjectCardReturn/Plugins/FMODStudio/Binaries/Android
+ProjectCardReturn/Plugins/FMODStudio/Binaries/*
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64
 ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmod.dll
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmod_vc.lib
@@ -34,13 +37,27 @@ ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/*
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodstudioL.dll
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/fmodstudioL_vc.lib
 !ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/resonanceaudio.dll
-!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor.modules
 ProjectCardReturn/Plugins/FMODStudio/Intermediate
 
-# Kawaii Physics Module
+# KawaiiPhysics Module
+ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/*
+!ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64
 ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/*
-!ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/UnrealEditor.modules
 ProjectCardReturn/Plugins/KawaiiPhysics/Intermediate
 
 # Misc
 .DS_Store/
+
+# Build Data
+## Build Data - Unreal Engine
+!ProjectCardReturn/Binaries/Win64/ProjectCardReturnEditor.target
+!ProjectCardReturn/Binaries/Win64/UnrealEditor.modules
+!ProjectCardReturn/Binaries/Win64/UnrealEditor-ProjectCardReturn.dll
+## Build Data - FMODStudio
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor.modules
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor-FMODStudio.dll
+!ProjectCardReturn/Plugins/FMODStudio/Binaries/Win64/UnrealEditor-FMODStudioEditor.dll
+## Build Data - KawaiiPhysics
+!ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/UnrealEditor.modules
+!ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/UnrealEditor-KawaiiPhysics.dll
+!ProjectCardReturn/Plugins/KawaiiPhysics/Binaries/Win64/UnrealEditor-KawaiiPhysicsEd.dll
