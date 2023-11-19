@@ -86,6 +86,7 @@ private: // 데이터
 	ESerinDollProjectileState State;
 	FVector LaunchLocation;
 	float ProjectileSpeed;
+	float ProjectileReturnSpeed;
 	float Range;
 	uint32 bOnceDetached:1;
 };

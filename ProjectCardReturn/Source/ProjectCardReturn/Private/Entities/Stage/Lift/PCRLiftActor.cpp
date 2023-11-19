@@ -16,6 +16,8 @@ APCRLiftActor::APCRLiftActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Tags.AddUnique(TEXT("Lift"));
+	
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	if (SceneComponent)
 	{
@@ -28,12 +30,62 @@ APCRLiftActor::APCRLiftActor()
 		LiftMeshComponent->SetupAttachment(GetRootComponent());
 	}
 
+	for (int32 i = 0; i < 4; ++i)
+	{
+		const FString ComponentKeyString = FString::Printf(TEXT("ColliderComponent%d"), i);
+		const FName ComponentKey = *ComponentKeyString;
+		ColliderComponents.Emplace(CreateDefaultSubobject<UBoxComponent>(ComponentKey));
+		ColliderComponents[i]->SetupAttachment(GetRootComponent());
+		ColliderComponents[i]->SetCollisionProfileName("NoCollision");
+	}
+
+	if (ColliderComponents[0])
+	{
+		const FVector NewLocation = FVector(0.0, -1400.0, 0.0);
+		const FRotator NewRotation = FRotator(0.0, 90.0, 0.0);
+		ColliderComponents[0]->SetRelativeLocationAndRotation(NewLocation, NewRotation);
+		ColliderComponents[0]->InitBoxExtent(FVector(1.0, 1000.0, 1000.0));
+	}
+
+	if (ColliderComponents[1])
+	{
+		const FVector NewLocation = FVector(0.0, 1400.0, 0.0);
+		const FRotator NewRotation = FRotator(0.0, -90.0, 0.0);
+		ColliderComponents[1]->SetRelativeLocationAndRotation(NewLocation, NewRotation);
+		ColliderComponents[1]->InitBoxExtent(FVector(1.0, 1000.0, 1000.0));
+	}
+
+	if (ColliderComponents[2])
+	{
+		const FVector NewLocation = FVector(1000.0, 0.0, 0.0);
+		const FRotator NewRotation = FRotator(0.0, 180.0, 0.0);
+		ColliderComponents[2]->SetRelativeLocationAndRotation(NewLocation, NewRotation);
+		ColliderComponents[2]->InitBoxExtent(FVector(1.0, 1400.0, 1000.0));
+	}
+
+	if (ColliderComponents[3])
+	{
+		const FVector NewLocation = FVector(-1000.0, 0.0, 0.0);
+		const FRotator NewRotation = FRotator(0.0, 0.0, 0.0);
+		ColliderComponents[3]->SetRelativeLocationAndRotation(NewLocation, NewRotation);
+		ColliderComponents[3]->InitBoxExtent(FVector(1.0, 1400.0, 1000.0));
+	}
+
 	Pattern1SuccessBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Pattern1SuccessBoxComponent"));
 	if (Pattern1SuccessBoxComponent)
 	{
 		Pattern1SuccessBoxComponent->SetupAttachment(GetRootComponent());
 		Pattern1SuccessBoxComponent->SetRelativeLocation(FVector(750.0, 0.0, 0.0));
 		Pattern1SuccessBoxComponent->InitBoxExtent(FVector(300.0, 300.0, 500.0));
+	}
+
+	for (int32 i = 0; i < 6; ++i)
+	{
+		const FString ComponentKeyString = FString::Printf(TEXT("Patter1TargetComponent%d"), i);
+		const FName ComponentKey = *ComponentKeyString;
+		Pattern1TargetComponents.Emplace(CreateDefaultSubobject<USceneComponent>(ComponentKey));
+		Pattern1TargetComponents[i]->SetupAttachment(GetRootComponent());
+		Pattern1TargetComponents[i]->SetRelativeLocation(FVector(-1000.0, -1125.0 + (450 * i), 0.0));
 	}
 }
 
@@ -70,6 +122,11 @@ void APCRLiftActor::LiftUp()
 	EndLiftLocation = FVector(StartLiftLocation.X, StartLiftLocation.Y, MaxLiftHeight);
 	State = EState::LiftUp;
 
+	for (const auto& ColliderComponent : ColliderComponents)
+	{
+		ColliderComponent->SetCollisionProfileName("BlockAllDynamic");
+	}
+	
 	OnLiftUpStart.Broadcast();
 }
 
@@ -78,13 +135,13 @@ void APCRLiftActor::SerinPattern1Start()
 	SIMPLE_LOG;
 	TArray<AActor*> EricaArray;
 	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(),
-												 APCREricaCharacter::StaticClass(),
-												 TEXT("Erica"), EricaArray);
+	                                             APCREricaCharacter::StaticClass(),
+	                                             TEXT("Erica"), EricaArray);
 	CachedErica = Cast<APCREricaCharacter>(EricaArray[0]);
 	check(CachedErica);
-	
+
 	SetActorTickEnabled(true);
-	
+
 	State = EState::SerinPattern1;
 }
 
@@ -123,4 +180,24 @@ void APCRLiftActor::UpdatePattern1OverlapCheck()
 	{
 		bIsOverlappedPattern1 = false;
 	}
+}
+
+TArray<FVector> APCRLiftActor::GetShuffleLocationPattern1Target() const
+{
+	TArray<int32> Indices;
+	for (int32 i = 0; i < 6; ++i)
+	{
+		Indices.Add(i);
+	}
+
+	TArray<FVector> ShuffledPattern1TargetLocations;
+	while (Indices.Num() > 0)
+	{
+		const int32 RandIndex = FMath::RandRange(0, Indices.Num() - 1);
+		ShuffledPattern1TargetLocations.Add(Pattern1TargetComponents[Indices[RandIndex]]->GetComponentLocation());
+		Indices.RemoveAt(RandIndex);
+	}
+
+	FVector Test = GetActorLocation();
+	return ShuffledPattern1TargetLocations;
 }

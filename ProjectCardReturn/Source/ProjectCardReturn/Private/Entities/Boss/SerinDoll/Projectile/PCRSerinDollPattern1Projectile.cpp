@@ -13,7 +13,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 
 APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
-	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(3000.f), Range(3000.f), bOnceDetached(false)
+	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(5000.f), ProjectileReturnSpeed(10000.f), Range(3000.f), bOnceDetached(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -27,13 +27,15 @@ APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
 	if (SphereComponent)
 	{
 		SetRootComponent(SphereComponent);
-		SphereComponent->InitSphereRadius(30.f);
+		SphereComponent->InitSphereRadius(50.f);
+		SphereComponent->SetCollisionProfileName("NoCollision");
 	}
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	if (StaticMeshComponent)
 	{
 		StaticMeshComponent->SetupAttachment(SphereComponent);
+		StaticMeshComponent->SetRelativeScale3D(FVector(2.f));
 		StaticMeshComponent->SetCollisionProfileName("NoCollision");
 		StaticMeshComponent->SetStaticMesh(SerinDollDataAsset->Pattern1ProjectileMesh);
 	}
@@ -53,7 +55,7 @@ void APCRSerinDollPattern1Projectile::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	DisableProjectile();
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &APCRSerinDollPattern1Projectile::HandleBossOverlap);
+	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &APCRSerinDollPattern1Projectile::HandleBossOverlap);
 }
 
 void APCRSerinDollPattern1Projectile::Tick(float DeltaTime)
@@ -129,16 +131,16 @@ void APCRSerinDollPattern1Projectile::DisableProjectile()
 
 void APCRSerinDollPattern1Projectile::EnableCollisionDetection()
 {
-	SphereComponent->SetCollisionObjectType(ECC_GameTraceChannel6);
-	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
-	SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+	StaticMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel6);
+	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 }
 
 void APCRSerinDollPattern1Projectile::DisableCollisionDetection()
 {
-	SphereComponent->SetCollisionProfileName(TEXT("NoCollision"));
+	StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
 void APCRSerinDollPattern1Projectile::HandleShooting()
@@ -180,7 +182,6 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 
 		FVector TargetLocation;
 		FVector Direction;
-		const float Scala = 7000.f;
 		if (CachedLift->IsOverlappedPattern1())
 		{
 			TargetLocation = CachedSerinDollHead->GetActorLocation();
@@ -194,10 +195,10 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 			Direction = (TargetLocation - GetActorLocation()).GetSafeNormal();
 		}
 
-		SphereComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel9, ECR_Overlap);
+		StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel9, ECR_Overlap);
 		ProjectileMovementComponent->Activate();
-		ProjectileMovementComponent->Velocity = Direction * Scala;
+		ProjectileMovementComponent->Velocity = Direction * ProjectileReturnSpeed;
 
 		if (OnDetachedCard.IsBound())
 		{
@@ -219,8 +220,8 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 {
 	float DamageAmount;
 	const FDamageEvent DamageEvent;
-
-	if (APCREricaCharacter* Erica = Cast<APCREricaCharacter>(OtherActor))
+	
+	if (Cast<APCREricaCharacter>(OtherActor))
 	{
 		DamageAmount = 20.f;
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);

@@ -110,6 +110,8 @@ private: // 타입
 		FVector Offset;
 		float MoveLocationSpeed;
 		float MoveRotationExponentialSpeed;
+		TArray<FVector> Pattern1TargetLocations;
+		int32 Pattern1TargetLocationIndex;
 	};
 
 private: // 업데이트 함수

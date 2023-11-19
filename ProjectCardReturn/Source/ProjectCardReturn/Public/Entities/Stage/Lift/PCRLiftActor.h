@@ -33,6 +33,8 @@ public: // 동작 섹션
 	void SerinPattern1Start();
 	void SerinPattern1End();
 
+	TArray<FVector> GetShuffleLocationPattern1Target() const;
+
 public: // Getter
 	bool IsOverlappedPattern1() const;
 
@@ -54,6 +56,7 @@ private: // 내부 함수 섹션
 	void UpdateLiftUp(float DeltaTime);
 	void UpdatePattern1OverlapCheck();
 
+
 private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCRStagePrimaryDataAsset> StageDataAsset;
@@ -65,8 +68,14 @@ private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> LiftMeshComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "ColliderComponents")
+	TArray<TObjectPtr<UBoxComponent>> ColliderComponents;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Event")
 	TObjectPtr<UBoxComponent> Pattern1SuccessBoxComponent;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Pattern1Targets")
+	TArray<TObjectPtr<USceneComponent>> Pattern1TargetComponents;
 
 private: // 레퍼런스
 	UPROPERTY()

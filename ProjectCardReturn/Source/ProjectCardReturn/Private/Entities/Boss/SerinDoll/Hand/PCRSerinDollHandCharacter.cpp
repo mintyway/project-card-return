@@ -13,6 +13,7 @@
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
 #include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogSerinHandCharacter);
@@ -56,6 +57,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	Pattern1Data.Offset = FVector(1500.0, 1000.0, 0.0);
 	Pattern1Data.MoveLocationSpeed = 1500.f;
 	Pattern1Data.MoveRotationExponentialSpeed = 3.f;
+	Pattern1Data.Pattern1TargetLocationIndex = 0;
 
 	IdleSideOffset = 750.f;
 	IdleUpOffset = 300.f;
@@ -286,15 +288,17 @@ void APCRSerinDollHandCharacter::ResetAllAttack()
 
 void APCRSerinDollHandCharacter::Pattern1()
 {
-	const AActor* Lift = Cast<AActor>(CachedSerinDollHead->CachedLift);
+	const APCRLiftActor* Lift = Cast<APCRLiftActor>(CachedSerinDollHead->CachedLift);
 	const FVector Offset = (Pattern1Data.Offset * -CachedSerinDollHead->GetActorForwardVector()) + (Pattern1Data.Offset * SideVector) + (Pattern1Data.Offset * CachedSerinDollHead->GetActorUpVector());
 	const FVector NewLocation = Lift->GetActorLocation() + Offset;
 	const FRotator NewRotation = CachedSerinDollHead->GetActorRotation();
 	SetActorLocationAndRotation(NewLocation, NewRotation);
+	Pattern1Data.Pattern1TargetLocations = Lift->GetShuffleLocationPattern1Target();
 
 	const bool IsLeftHand = SideVector == CachedSerinDollHead->GetActorRightVector() ? false : true;
 	CachedSerinDollHandAnimInstance->PlayPattern1(IsLeftHand);
-	
+	Pattern1Data.Pattern1TargetLocationIndex = IsLeftHand ? 3 : 0;
+
 	CurrentState = EState::Pattern1;
 }
 
@@ -481,12 +485,22 @@ void APCRSerinDollHandCharacter::Pattern1Shoot()
 	APCRSerinDollPattern1Projectile* Pattern1Projectile = GetWorld()->SpawnActor<APCRSerinDollPattern1Projectile>(APCRSerinDollPattern1Projectile::StaticClass());
 	Pattern1Projectile->OnDetachedCard.BindUObject(CachedSerinDollHead, &APCRSerinDollHeadCharacter::Pattern1DetachCountCheck);
 	CachedSerinDollHandAnimInstance->OnPattern1LastShoot.AddUObject(Pattern1Projectile, &APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart);
-	
+
 	FVector StartLocation = GetActorLocation();
 	StartLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;
-	FVector TargetLocation = CachedSerinDollHead->CachedErica->GetActorLocation();
-	const float RandY = FMath::RandRange(-300, 300);
-	TargetLocation.Y = RandY;
+	FVector TargetLocation;
+	if (Pattern1Data.Pattern1TargetLocations.IsValidIndex(Pattern1Data.Pattern1TargetLocationIndex))
+	{
+		TargetLocation = Pattern1Data.Pattern1TargetLocations[Pattern1Data.Pattern1TargetLocationIndex];
+		++Pattern1Data.Pattern1TargetLocationIndex;
+	}
+	else
+	{
+		TargetLocation = CachedSerinDollHead->CachedErica->GetActorLocation();
+	}
+	// const float RandY = FMath::RandRange(-300, 300);
+	// TargetLocation.Y = RandY;
+	TargetLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;
 	const FVector Direction = (TargetLocation - StartLocation).GetSafeNormal();
 	Pattern1Projectile->Shoot(CachedSerinDollHead, StartLocation, Direction);
 }
