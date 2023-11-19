@@ -97,6 +97,7 @@ private: // 내부 함수
 	void Pattern1DetachCountCheck();
 	void Pattern1MoveStart();
 	void HandleReadyPattern1(bool IsLeftHand);
+	void HandlePattern1Succeed();
 	void HandlePattern1Ended();
 	void HandlePattern1LastShoot();
 	void HandleRestartPattern1();

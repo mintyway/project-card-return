@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "Animation/AnimInstance.h"
 #include "PCRSerinDollHeadAnimInstance.generated.h"
 
@@ -18,6 +18,10 @@ class PROJECTCARDRETURN_API UPCRSerinDollHeadAnimInstance : public UAnimInstance
 
 public:
 	UPCRSerinDollHeadAnimInstance();
+
+public: // 동작
+	void PlayPattern1();
+	void EndPattern1();
 
 private:
 	UPROPERTY()

@@ -43,6 +43,9 @@ public:
 	TObjectPtr<UAnimMontage> ScissorsAttackAnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> HeadPattern1AnimMontage;
+	
+	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> Pattern1AnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Effect")

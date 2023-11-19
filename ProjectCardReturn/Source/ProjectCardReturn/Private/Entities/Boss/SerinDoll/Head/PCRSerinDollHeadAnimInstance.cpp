@@ -23,3 +23,16 @@ UPCRSerinDollHeadAnimInstance::UPCRSerinDollHeadAnimInstance()
 		ParameterDataAsset = DA_Parameter.Object;
 	}
 }
+
+void UPCRSerinDollHeadAnimInstance::PlayPattern1()
+{
+	Montage_Play(SerinDollDataAsset->HeadPattern1AnimMontage);
+}
+
+void UPCRSerinDollHeadAnimInstance::EndPattern1()
+{
+	if (Montage_IsPlaying(SerinDollDataAsset->HeadPattern1AnimMontage))
+	{
+		Montage_JumpToSection(TEXT("End"), SerinDollDataAsset->HeadPattern1AnimMontage);
+	}
+}
