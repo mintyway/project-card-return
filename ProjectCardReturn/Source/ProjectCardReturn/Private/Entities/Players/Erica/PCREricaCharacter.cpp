@@ -20,6 +20,7 @@
 #include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Entities/Players/Erica/PCRListenerActor.h"
 #include "GameFramework/GameModeBase.h"
 
@@ -134,17 +135,16 @@ APCREricaCharacter::APCREricaCharacter()
 		FollowCamera->SetFieldOfView(ParameterDataAsset->CameraFOV);
 	}
 
-	AimingPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AimingPlane"));
-	if (AimingPlane && EricaDataAsset)
+	AimingBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("AimingBoxComponent"));
+	if (AimingBoxComponent && EricaDataAsset)
 	{
-		AimingPlane->SetupAttachment(GetCapsuleComponent());
-		AimingPlane->SetStaticMesh(EricaDataAsset->AimingPlane);
-		AimingPlane->SetRelativeScale3D(FVector(75.0, 75.0, 1.0));
-		AimingPlane->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		AimingPlane->SetCollisionObjectType(ECC_GameTraceChannel4);
-		AimingPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
-		AimingPlane->SetCollisionResponseToChannel(ECC_GameTraceChannel5, ECR_Block);
-		AimingPlane->SetHiddenInGame(true);
+		AimingBoxComponent->SetupAttachment(GetCapsuleComponent());
+		AimingBoxComponent->InitBoxExtent(FVector(5000.0, 5000.0, 0.0));
+		AimingBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		AimingBoxComponent->SetCollisionObjectType(ECC_GameTraceChannel4);
+		AimingBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		AimingBoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel5, ECR_Block);
+		AimingBoxComponent->SetHiddenInGame(true);
 	}
 
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));

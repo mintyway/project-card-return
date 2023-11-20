@@ -140,7 +140,7 @@ private: // 컴포넌트
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Aim")
-	TObjectPtr<UStaticMeshComponent> AimingPlane;
+	TObjectPtr<UBoxComponent> AimingBoxComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
