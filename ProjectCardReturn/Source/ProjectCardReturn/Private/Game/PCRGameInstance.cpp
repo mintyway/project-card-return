@@ -30,6 +30,13 @@ void UPCRGameInstance::Init()
 	MasterVolume = 0.5f;
 }
 
+void UPCRGameInstance::Shutdown()
+{
+	Super::Shutdown();
+
+	ReleaseInGameSoundSystem();
+}
+
 void UPCRGameInstance::InitSoundSystem()
 {
 	FMODStudioSystem = IFMODStudioModule::Get().GetStudioSystem(EFMODSystemContext::Runtime);
@@ -45,20 +52,7 @@ void UPCRGameInstance::InitSoundSystem()
 
 void UPCRGameInstance::InitInGameSoundSystem()
 {
-	if (AmbientAudioInst)
-	{
-		AmbientAudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-	}
-
-	if (Stage1AudioInst)
-	{
-		Stage1AudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-	}
-
-	if (BossStageAudioInst)
-	{
-		BossStageAudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-	}
+	ReleaseInGameSoundSystem();
 	
 	const FFMODEventInstance AmbientAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->AmbientBGM, false);
 	AmbientAudioInst = AmbientAudio.Instance;
@@ -79,6 +73,27 @@ void UPCRGameInstance::InitInGameSoundSystem()
 	if (BossStageAudioInst)
 	{
 		BossStageAudioInst->setVolume(0.2f);
+	}
+}
+
+void UPCRGameInstance::ReleaseInGameSoundSystem()
+{
+	if (AmbientAudioInst)
+	{
+		AmbientAudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+		AmbientAudioInst->release();
+	}
+
+	if (Stage1AudioInst)
+	{
+		Stage1AudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+		Stage1AudioInst->release();
+	}
+
+	if (BossStageAudioInst)
+	{
+		BossStageAudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
+		BossStageAudioInst->release();
 	}
 }
 

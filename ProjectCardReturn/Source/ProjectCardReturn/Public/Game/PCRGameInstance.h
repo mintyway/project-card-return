@@ -8,6 +8,7 @@
 
 class UPCRSoundPrimaryDataAsset;
 class APCREricaCardProjectilePool;
+
 namespace FMOD::Studio
 {
 	class Bus;
@@ -28,31 +29,33 @@ public:
 
 protected:
 	virtual void Init() override;
+	virtual void Shutdown() override;
 
 public: // 동작
 	void InitSoundSystem();
 	void InitInGameSoundSystem();
-	
+	void ReleaseInGameSoundSystem();
+
 	void PlayStage1BGM();
 	void StopStage1BGM();
-	
+
 	void PlayAmbientBGM();
 	void StopAmbientBGM();
-	
+
 	void PlayBossStageBGM();
 	void StopBossStageBGM();
-	
+
 private:
 	bool SoundUpdate(float DeltaTime);
 
 private: // 데이터 에셋
 	UPROPERTY()
 	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
-	
+
 private: // 오디오
 	FMOD::Studio::System* FMODStudioSystem;
 	FMOD::Studio::Bus* MasterBus;
-	
+
 	FMOD::Studio::EventInstance* AmbientAudioInst;
 	FMOD::Studio::EventInstance* Stage1AudioInst;
 	FMOD::Studio::EventInstance* BossStageAudioInst;
