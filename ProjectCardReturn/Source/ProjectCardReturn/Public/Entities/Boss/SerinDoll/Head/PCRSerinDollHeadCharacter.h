@@ -23,6 +23,7 @@ class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBas
 	GENERATED_BODY()
 
 	DECLARE_MULTICAST_DELEGATE(FPattern1Signature);
+	DECLARE_MULTICAST_DELEGATE(FPattern2Signature);
 
 public:
 	APCRSerinDollHeadCharacter();
@@ -62,16 +63,20 @@ public: // Getter, Setter
 	// 델리게이트
 	FChangeHPSignature OnChangeHP;
 	FHPStateSignature OnHP50PercentLess;
+	
 	FPattern1Signature OnPattern1Start;
 	FPattern1Signature OnPattern1Ended;
 	FPattern1Signature OnPattern1Succeed;
+
+	FPattern2Signature OnPattern2Succeed;
 
 private: // 타입
 	enum class EState
 	{
 		Basic,
 		Pattern1,
-		Pattern2
+		Pattern2,
+		End
 	};
 
 	struct FPattern1Data
@@ -82,6 +87,11 @@ private: // 타입
 		uint32 bIsStarted:1;
 		uint32 bIsLeftHandReady:1;
 		uint32 bIsRightHandReady:1;
+	};
+
+	struct FPattern2Data
+	{
+		int32 SumPulledCount;
 	};
 
 private: // 내부 함수
@@ -102,6 +112,9 @@ private: // 내부 함수
 	void HandlePattern1Ended();
 	void HandlePattern1LastShoot();
 	void HandleRestartPattern1();
+
+	void HandlePattern2CardPull();
+	void HandlePattern2Succeed();
 
 	// 테스트용
 	void AttackTest();
@@ -141,10 +154,10 @@ private: // 데이터
 private:
 	EState State;
 	FPattern1Data Pattern1Data;
+	FPattern2Data Pattern2Data;
 	TArray<FTimerHandle> TimerHandles;
 	uint32 bIsAlive:1;
 	uint32 bIsInvincible;
 	uint32 bIsHP50PercentLess:1;
 	uint32 bIsHP0PercentLess:1;
-	
 };

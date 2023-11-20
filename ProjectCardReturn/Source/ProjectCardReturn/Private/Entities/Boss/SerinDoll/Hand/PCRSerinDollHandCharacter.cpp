@@ -13,6 +13,7 @@
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandAnimInstance.h"
 #include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -59,6 +60,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 
 	Pattern2Data = {};
 	Pattern2Data.Offset = FVector(1200.0, 750.0, -20.0);
+	Pattern2Data.AttachedCardCount = 0;
 
 	IdleSideOffset = 750.f;
 	IdleUpOffset = 300.f;
@@ -72,11 +74,7 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	{
 		GetMesh()->SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 		GetMesh()->SetRelativeScale3D(FVector(0.25, 0.25, 0.25));
-
-		GetMesh()->SetCollisionObjectType(ECC_GameTraceChannel9);
-		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
-		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
-		GetMesh()->SetGenerateOverlapEvents(true);
+		InitMeshCollision();
 
 		GetMesh()->SetSkeletalMesh(SerinDollDataAsset->HandMesh);
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -314,9 +312,28 @@ void APCRSerinDollHandCharacter::Pattern2()
 	const FRotator NewRotation = CachedSerinDollHead->GetActorRotation();
 	SetActorLocationAndRotation(NewLocation, NewRotation);
 
+	HandlePatter2Start();
 	CachedSerinDollHandAnimInstance->PlayPattern2();
-	
+
 	CurrentState = EState::Pattern2;
+}
+
+void APCRSerinDollHandCharacter::Pattern2ResetAttachedCardCount()
+{
+	Pattern2Data.AttachedCardCount = 0;
+}
+
+void APCRSerinDollHandCharacter::Pattern2End()
+{
+	CachedSerinDollHandAnimInstance->EndPattern2();
+	InitMeshCollision();
+}
+
+void APCRSerinDollHandCharacter::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
+{
+	++Pattern2Data.AttachedCardCount;
+	UE_LOG(PCRLogSerinHandCharacter, Warning, TEXT("박힌 카드 개수: %d"), Pattern2Data.AttachedCardCount);
+	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollHandCharacter::HandlePattern2CardPull);
 }
 
 void APCRSerinDollHandCharacter::UpdateIdle(float DeltaSeconds)
@@ -378,6 +395,14 @@ void APCRSerinDollHandCharacter::UpdateScissorsAttackChase(float DeltaSeconds)
 		CachedSerinDollHandAnimInstance->PlayScissorsAttack();
 		ScissorsAttackData.bIsChasing = false;
 	}
+}
+
+void APCRSerinDollHandCharacter::InitMeshCollision()
+{
+	GetMesh()->SetCollisionObjectType(ECC_GameTraceChannel9);
+	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
 void APCRSerinDollHandCharacter::PlayRockAttackEffect()
@@ -515,11 +540,22 @@ void APCRSerinDollHandCharacter::Pattern1Shoot()
 	{
 		TargetLocation = CachedSerinDollHead->CachedErica->GetActorLocation();
 	}
-	// const float RandY = FMath::RandRange(-300, 300);
-	// TargetLocation.Y = RandY;
+
 	TargetLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;
 	const FVector Direction = (TargetLocation - StartLocation).GetSafeNormal();
 	Pattern1Projectile->Shoot(CachedSerinDollHead, StartLocation, Direction);
+}
+
+void APCRSerinDollHandCharacter::HandlePatter2Start()
+{
+	GetMesh()->SetCollisionObjectType(ECC_GameTraceChannel6);
+	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+}
+
+void APCRSerinDollHandCharacter::HandlePattern2CardPull(APCREricaCardProjectile* AttachedCard)
+{
+	CachedSerinDollHead->HandlePattern2CardPull();
 }
 
 void APCRSerinDollHandCharacter::HandleToIdle()

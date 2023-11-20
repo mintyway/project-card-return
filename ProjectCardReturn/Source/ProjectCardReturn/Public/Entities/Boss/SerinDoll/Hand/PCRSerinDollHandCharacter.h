@@ -4,6 +4,7 @@
 
 #include "ProjectCardReturn.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollBaseCharacter.h"
+#include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRSerinDollHandCharacter.generated.h"
 
 class UBoxComponent;
@@ -20,7 +21,7 @@ DECLARE_DELEGATE(FChaseCallbackSignature);
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API APCRSerinDollHandCharacter : public APCRSerinDollBaseCharacter
+class PROJECTCARDRETURN_API APCRSerinDollHandCharacter : public APCRSerinDollBaseCharacter, public IPCREricaCardInteractable
 {
 	GENERATED_BODY()
 
@@ -43,13 +44,20 @@ public: // 동작
 	void ScissorsAttack(AActor* NewTarget);
 	void ResetAllAttack();
 	void Pattern1();
+	
 	void Pattern2();
-
+	void Pattern2ResetAttachedCardCount();
+	void Pattern2End();
+	
+public: // 인터페이스
+	virtual void BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard) override;
+	
 public: // Getter, Setter
 	FORCEINLINE bool IsIdle() { return CurrentState == EState::Idle; }
 	FORCEINLINE int32 GetMaxScissorsAttackCount() { return ScissorsAttackData.MaxAttackCount; }
 	FORCEINLINE int32 GetCurrentScissorsAttackCount() { return ScissorsAttackData.CurrentAttackCount; }
 	FORCEINLINE UPCRSerinDollHandAnimInstance* GetCachedSerinDollHandAnimInstance() { return CachedSerinDollHandAnimInstance; }
+	FORCEINLINE int32 GetPattern2AttachedCardCount() { return Pattern2Data.AttachedCardCount; }
 
 private: // 타입
 	enum class EState
@@ -117,6 +125,7 @@ private: // 타입
 	struct FPattern2Data
 	{
 		FVector Offset;
+		int32 AttachedCardCount;
 	};
 
 private: // 업데이트 함수
@@ -126,6 +135,7 @@ private: // 업데이트 함수
 	void UpdateScissorsAttackChase(float DeltaSeconds);
 
 private: // 내부 함수
+	void InitMeshCollision();
 	void PlayRockAttackEffect();
 	void PlayPaperAttackEffect();
 	void StopPaperAttackEffect();
@@ -151,6 +161,9 @@ private: // 내부 함수
 	void HandleScissorsAttackHitEnd();
 
 	void Pattern1Shoot();
+
+	void HandlePatter2Start();
+	void HandlePattern2CardPull(APCREricaCardProjectile* AttachedCard);
 
 public: // 외부 콜백
 	void HandleToIdle();

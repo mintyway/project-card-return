@@ -35,6 +35,9 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	Pattern1Data.bIsLeftHandReady = false;
 	Pattern1Data.bIsRightHandReady = false;
 
+	Pattern2Data = {};
+	Pattern2Data.SumPulledCount = 0;
+
 	// 파라미터화 필요
 	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
 	MaxHP = 100.f;
@@ -174,6 +177,10 @@ void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 		{
 			break;
 		}
+		case EState::End:
+		{
+			break;
+		}
 	}
 }
 
@@ -266,7 +273,7 @@ void APCRSerinDollHeadCharacter::Pattern1()
 {
 	LeftHand->ResetAllAttack();
 	RightHand->ResetAllAttack();
-	
+
 	Pattern1Data.DetachCount = 0;
 	Pattern1Data.DetachAttackCount = 0;
 	Pattern1Data.bIsStarted = true;
@@ -278,7 +285,7 @@ void APCRSerinDollHeadCharacter::Pattern1()
 	RightHand->Pattern1();
 
 	State = EState::Pattern1;
-	
+
 	OnPattern1Start.Broadcast();
 }
 
@@ -348,20 +355,20 @@ void APCRSerinDollHeadCharacter::ChangeHP(float Amount)
 void APCRSerinDollHeadCharacter::HandleChangeHP()
 {
 	const float HPRatio = CurrentHP / MaxHP;
-	// if (!bIsHP50PercentLess && HPRatio <= 0.5f)
-	// {
-	// 	CurrentHP = MaxHP * 0.5f;
-	//
-	// 	Pattern1();
-	// 	bIsInvincible = true;
-	// 	bIsHP50PercentLess = true;
-	// 	OnHP50PercentLess.Broadcast();
-	// }
+	if (!bIsHP50PercentLess && HPRatio <= 0.5f)
+	{
+		CurrentHP = MaxHP * 0.5f;
+	
+		Pattern1();
+		bIsInvincible = true;
+		bIsHP50PercentLess = true;
+		OnHP50PercentLess.Broadcast();
+	}
 
 	if (!bIsHP0PercentLess && HPRatio <= 0.f)
 	{
 		CurrentHP = 0.f;
-		
+
 		Pattern2();
 		bIsInvincible = true;
 		bIsHP0PercentLess = true;
@@ -415,13 +422,13 @@ void APCRSerinDollHeadCharacter::Pattern1MoveStart()
 	{
 		return;
 	}
-	
+
 	LeftHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
 	RightHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
 
 	LeftHand->Pattern1();
 	RightHand->Pattern1();
-	
+
 	Pattern1Data.bMoveStarted = true;
 }
 
@@ -473,6 +480,35 @@ void APCRSerinDollHeadCharacter::HandleRestartPattern1()
 		LeftHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("LeftAttack"), SerinDollDataAsset->HandPattern1AnimMontage);
 		RightHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("RightAttack"), SerinDollDataAsset->HandPattern1AnimMontage);
 	}
+}
+
+void APCRSerinDollHeadCharacter::HandlePattern2CardPull()
+{
+	if (State == EState::Pattern2)
+	{
+		const int32 AttachedCardCount = LeftHand->GetPattern2AttachedCardCount() + RightHand->GetPattern2AttachedCardCount();
+		if (AttachedCardCount >= 20)
+		{
+			HandlePattern2Succeed();
+		}
+		else if (AttachedCardCount > 0)
+		{
+			LeftHand->Pattern2ResetAttachedCardCount();
+			RightHand->Pattern2ResetAttachedCardCount();
+		}
+	}
+}
+
+void APCRSerinDollHeadCharacter::HandlePattern2Succeed()
+{
+	UE_LOG(PCRLogSerinDollHeadCharacter, Warning, TEXT("패턴 성공"));
+	CachedSerinDollHeadAnimInstance->EndPattern2();
+	LeftHand->Pattern2End();
+	RightHand->Pattern2End();
+
+	State = EState::End;
+
+	OnPattern2Succeed.Broadcast();
 }
 
 void APCRSerinDollHeadCharacter::AttackTest()
