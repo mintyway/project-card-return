@@ -284,7 +284,14 @@ void APCRSerinDollHeadCharacter::Pattern1()
 
 void APCRSerinDollHeadCharacter::Pattern2()
 {
-	
+	LeftHand->ResetAllAttack();
+	RightHand->ResetAllAttack();
+
+	CachedSerinDollHeadAnimInstance->PlayPattern2();
+	LeftHand->Pattern2();
+	RightHand->Pattern2();
+
+	State = EState::Pattern2;
 }
 
 void APCRSerinDollHeadCharacter::SpawnHands()
@@ -341,15 +348,15 @@ void APCRSerinDollHeadCharacter::ChangeHP(float Amount)
 void APCRSerinDollHeadCharacter::HandleChangeHP()
 {
 	const float HPRatio = CurrentHP / MaxHP;
-	if (!bIsHP50PercentLess && HPRatio <= 0.5f)
-	{
-		CurrentHP = MaxHP * 0.5f;
-
-		Pattern1();
-		bIsInvincible = true;
-		bIsHP50PercentLess = true;
-		OnHP50PercentLess.Broadcast();
-	}
+	// if (!bIsHP50PercentLess && HPRatio <= 0.5f)
+	// {
+	// 	CurrentHP = MaxHP * 0.5f;
+	//
+	// 	Pattern1();
+	// 	bIsInvincible = true;
+	// 	bIsHP50PercentLess = true;
+	// 	OnHP50PercentLess.Broadcast();
+	// }
 
 	if (!bIsHP0PercentLess && HPRatio <= 0.f)
 	{

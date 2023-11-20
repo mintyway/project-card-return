@@ -37,8 +37,12 @@ public: // 동작
 	void PlayRockAttack();
 	void PlayPaperAttack(bool bIsFarAttack = false);
 	void PlayScissorsAttack();
+	
 	void PlayPattern1(bool IsLeftHand);
 	void EndPattern1();
+
+	void PlayPattern2();
+	void EndPattern2();
 
 public: // 델리게이트
 	FIdleSignature OnToIdle;

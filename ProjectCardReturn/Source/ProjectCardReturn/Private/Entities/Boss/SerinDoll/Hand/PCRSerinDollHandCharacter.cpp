@@ -55,9 +55,10 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 
 	Pattern1Data = {};
 	Pattern1Data.Offset = FVector(1500.0, 1000.0, 0.0);
-	Pattern1Data.MoveLocationSpeed = 1500.f;
-	Pattern1Data.MoveRotationExponentialSpeed = 3.f;
 	Pattern1Data.Pattern1TargetLocationIndex = 0;
+
+	Pattern2Data = {};
+	Pattern2Data.Offset = FVector(1200.0, 750.0, -20.0);
 
 	IdleSideOffset = 750.f;
 	IdleUpOffset = 300.f;
@@ -99,7 +100,6 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 		PaperAttackSweepPlane->SetCollisionObjectType(ECC_GameTraceChannel9);
 		PaperAttackSweepPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
 		PaperAttackSweepPlane->SetGenerateOverlapEvents(true);
-		DisablePaperAttackCollision();
 	}
 
 	ScissorsAttackHitPlane = CreateDefaultSubobject<UBoxComponent>(TEXT("ScissorsAttackHitPlane"));
@@ -226,6 +226,10 @@ void APCRSerinDollHandCharacter::Tick(float DeltaSeconds)
 		{
 			break;
 		}
+		case EState::Pattern2:
+		{
+			break;
+		}
 	}
 }
 
@@ -300,6 +304,19 @@ void APCRSerinDollHandCharacter::Pattern1()
 	Pattern1Data.Pattern1TargetLocationIndex = IsLeftHand ? 3 : 0;
 
 	CurrentState = EState::Pattern1;
+}
+
+void APCRSerinDollHandCharacter::Pattern2()
+{
+	const APCRLiftActor* Lift = Cast<APCRLiftActor>(CachedSerinDollHead->CachedLift);
+	const FVector Offset = (Pattern2Data.Offset * -CachedSerinDollHead->GetActorForwardVector()) + (Pattern2Data.Offset * SideVector) + (Pattern2Data.Offset * CachedSerinDollHead->GetActorUpVector());
+	const FVector NewLocation = Lift->GetActorLocation() + Offset;
+	const FRotator NewRotation = CachedSerinDollHead->GetActorRotation();
+	SetActorLocationAndRotation(NewLocation, NewRotation);
+
+	CachedSerinDollHandAnimInstance->PlayPattern2();
+	
+	CurrentState = EState::Pattern2;
 }
 
 void APCRSerinDollHandCharacter::UpdateIdle(float DeltaSeconds)

@@ -22,6 +22,9 @@ public:
 public: // 동작
 	void PlayPattern1();
 	void EndPattern1();
+	
+	void PlayPattern2();
+	void EndPattern2();
 
 private:
 	UPROPERTY()

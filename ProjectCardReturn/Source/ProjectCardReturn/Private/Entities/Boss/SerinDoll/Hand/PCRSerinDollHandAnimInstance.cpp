@@ -84,6 +84,19 @@ void UPCRSerinDollHandAnimInstance::EndPattern1()
 	}
 }
 
+void UPCRSerinDollHandAnimInstance::PlayPattern2()
+{
+	Montage_Play(SerinDollDataAsset->HandPattern2AnimMontage);
+}
+
+void UPCRSerinDollHandAnimInstance::EndPattern2()
+{
+	if (Montage_IsPlaying(SerinDollDataAsset->HandPattern2AnimMontage))
+	{
+		Montage_JumpToSection(TEXT("End"), SerinDollDataAsset->HandPattern2AnimMontage);
+	}
+}
+
 void UPCRSerinDollHandAnimInstance::AnimNotify_RockAttackChaseEnd()
 {
 	OnRockAttackEnded.Broadcast();

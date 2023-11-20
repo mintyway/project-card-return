@@ -36,3 +36,16 @@ void UPCRSerinDollHeadAnimInstance::EndPattern1()
 		Montage_JumpToSection(TEXT("End"), SerinDollDataAsset->HeadPattern1AnimMontage);
 	}
 }
+
+void UPCRSerinDollHeadAnimInstance::PlayPattern2()
+{
+	Montage_Play(SerinDollDataAsset->HeadPattern2AnimMontage);
+}
+
+void UPCRSerinDollHeadAnimInstance::EndPattern2()
+{
+	if (Montage_IsPlaying(SerinDollDataAsset->HeadPattern1AnimMontage))
+	{
+		Montage_JumpToSection(TEXT("End"), SerinDollDataAsset->HeadPattern1AnimMontage);
+	}
+}

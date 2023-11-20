@@ -43,6 +43,7 @@ public: // 동작
 	void ScissorsAttack(AActor* NewTarget);
 	void ResetAllAttack();
 	void Pattern1();
+	void Pattern2();
 
 public: // Getter, Setter
 	FORCEINLINE bool IsIdle() { return CurrentState == EState::Idle; }
@@ -59,7 +60,8 @@ private: // 타입
 		RockAttack,
 		PaperAttack,
 		ScissorsAttack,
-		Pattern1
+		Pattern1,
+		Pattern2
 	};
 
 	struct FIdleData
@@ -108,10 +110,13 @@ private: // 타입
 	struct FPattern1Data
 	{
 		FVector Offset;
-		float MoveLocationSpeed;
-		float MoveRotationExponentialSpeed;
 		TArray<FVector> Pattern1TargetLocations;
 		int32 Pattern1TargetLocationIndex;
+	};
+
+	struct FPattern2Data
+	{
+		FVector Offset;
 	};
 
 private: // 업데이트 함수
@@ -185,6 +190,7 @@ private: // 데이터
 	FPaperAttackData PaperAttackData;
 	FScissorsAttackData ScissorsAttackData;
 	FPattern1Data Pattern1Data;
+	FPattern2Data Pattern2Data;
 
 	FVector SideVector;
 	float IdleSideOffset;
