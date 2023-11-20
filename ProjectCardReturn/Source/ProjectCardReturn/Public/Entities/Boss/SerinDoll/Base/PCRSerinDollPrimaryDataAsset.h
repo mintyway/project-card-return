@@ -46,7 +46,13 @@ public:
 	TObjectPtr<UAnimMontage> HeadPattern1AnimMontage;
 	
 	UPROPERTY(EditAnywhere, Category = "Animation")
-	TObjectPtr<UAnimMontage> Pattern1AnimMontage;
+	TObjectPtr<UAnimMontage> HandPattern1AnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> HeadPattern2AnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> HandPattern2AnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> RockAttackEffect;

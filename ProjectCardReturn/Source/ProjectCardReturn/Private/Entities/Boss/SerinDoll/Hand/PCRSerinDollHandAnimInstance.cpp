@@ -66,21 +66,21 @@ void UPCRSerinDollHandAnimInstance::PlayScissorsAttack()
 
 void UPCRSerinDollHandAnimInstance::PlayPattern1(bool IsLeftHand)
 {
-	Montage_Play(SerinDollDataAsset->Pattern1AnimMontage);
+	Montage_Play(SerinDollDataAsset->HandPattern1AnimMontage);
 	const FName HandNameKey = IsLeftHand ? TEXT("LeftAttack") : TEXT("RightAttack");
-	Montage_SetNextSection(TEXT("Start"), HandNameKey, SerinDollDataAsset->Pattern1AnimMontage);
+	Montage_SetNextSection(TEXT("Start"), HandNameKey, SerinDollDataAsset->HandPattern1AnimMontage);
 
 	FOnMontageEnded Pattern1MontageEnded;
 	Pattern1MontageEnded.BindUObject(this, &UPCRSerinDollHandAnimInstance::HandlePattern1Ended);
-	Montage_SetEndDelegate(Pattern1MontageEnded, SerinDollDataAsset->Pattern1AnimMontage);
+	Montage_SetEndDelegate(Pattern1MontageEnded, SerinDollDataAsset->HandPattern1AnimMontage);
 }
 
 void UPCRSerinDollHandAnimInstance::EndPattern1()
 {
-	if (Montage_IsPlaying(SerinDollDataAsset->Pattern1AnimMontage))
+	if (Montage_IsPlaying(SerinDollDataAsset->HandPattern1AnimMontage))
 	{
 		const FName EndKey = TEXT("End");
-		Montage_JumpToSection(EndKey, SerinDollDataAsset->Pattern1AnimMontage);
+		Montage_JumpToSection(EndKey, SerinDollDataAsset->HandPattern1AnimMontage);
 	}
 }
 

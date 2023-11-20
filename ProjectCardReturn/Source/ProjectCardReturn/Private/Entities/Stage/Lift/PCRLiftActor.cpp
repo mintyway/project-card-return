@@ -77,6 +77,8 @@ APCRLiftActor::APCRLiftActor()
 		Pattern1SuccessBoxComponent->SetupAttachment(GetRootComponent());
 		Pattern1SuccessBoxComponent->SetRelativeLocation(FVector(750.0, 0.0, 0.0));
 		Pattern1SuccessBoxComponent->InitBoxExtent(FVector(300.0, 300.0, 500.0));
+		Pattern1SuccessBoxComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+		Pattern1SuccessBoxComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 	}
 
 	for (int32 i = 0; i < 6; ++i)

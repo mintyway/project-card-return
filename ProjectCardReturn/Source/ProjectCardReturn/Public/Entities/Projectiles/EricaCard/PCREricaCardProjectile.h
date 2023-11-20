@@ -8,9 +8,9 @@
 
 class UNiagaraComponent;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FReturnCardBeginSignature, APCREricaCardProjectile*);
-
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCardProjectile, Log, All);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FReturnCardBeginSignature, APCREricaCardProjectile*);
 
 UENUM()
 enum class ECardState : uint8

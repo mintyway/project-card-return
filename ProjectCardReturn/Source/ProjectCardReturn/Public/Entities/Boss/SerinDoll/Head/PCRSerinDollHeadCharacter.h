@@ -49,6 +49,7 @@ public: // 동작
 	void RightScissorsAttack();
 
 	void Pattern1();
+	void Pattern2();
 
 public: // Getter, Setter
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
@@ -142,6 +143,8 @@ private:
 	FPattern1Data Pattern1Data;
 	TArray<FTimerHandle> TimerHandles;
 	uint32 bIsAlive:1;
-	uint32 bIsHP50PercentLess:1;
 	uint32 bIsInvincible;
+	uint32 bIsHP50PercentLess:1;
+	uint32 bIsHP0PercentLess:1;
+	
 };

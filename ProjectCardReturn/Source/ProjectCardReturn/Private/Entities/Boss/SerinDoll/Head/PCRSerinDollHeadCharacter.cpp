@@ -24,7 +24,7 @@ const float APCRSerinDollHeadCharacter::FloatingHandHeight = 500.f;
 const float APCRSerinDollHeadCharacter::BasicChaseYDistance = 700.f;
 
 APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
-	: bIsAlive(true), bIsHP50PercentLess(false), bIsInvincible(false)
+	: bIsAlive(true), bIsInvincible(false), bIsHP50PercentLess(false), bIsHP0PercentLess(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	Pattern1Data = {};
@@ -37,7 +37,7 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 
 	// 파라미터화 필요
 	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
-	MaxHP = 1000.f;
+	MaxHP = 100.f;
 	CurrentHP = MaxHP;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();
@@ -282,6 +282,11 @@ void APCRSerinDollHeadCharacter::Pattern1()
 	OnPattern1Start.Broadcast();
 }
 
+void APCRSerinDollHeadCharacter::Pattern2()
+{
+	
+}
+
 void APCRSerinDollHeadCharacter::SpawnHands()
 {
 	LeftHandSpawn();
@@ -338,7 +343,7 @@ void APCRSerinDollHeadCharacter::HandleChangeHP()
 	const float HPRatio = CurrentHP / MaxHP;
 	if (!bIsHP50PercentLess && HPRatio <= 0.5f)
 	{
-		CurrentHP = MaxHP * 0.5;
+		CurrentHP = MaxHP * 0.5f;
 
 		Pattern1();
 		bIsInvincible = true;
@@ -346,11 +351,20 @@ void APCRSerinDollHeadCharacter::HandleChangeHP()
 		OnHP50PercentLess.Broadcast();
 	}
 
-	if (CurrentHP <= 0.f)
+	if (!bIsHP0PercentLess && HPRatio <= 0.f)
 	{
 		CurrentHP = 0.f;
-		HandleDead();
+		
+		Pattern2();
+		bIsInvincible = true;
+		bIsHP0PercentLess = true;
 	}
+
+	// if (CurrentHP <= 0.f)
+	// {
+	// 	CurrentHP = 0.f;
+	// 	HandleDead();
+	// }
 
 	OnChangeHP.Broadcast(MaxHP, CurrentHP);
 }
@@ -449,8 +463,8 @@ void APCRSerinDollHeadCharacter::HandleRestartPattern1()
 	{
 		Pattern1();
 		CachedSerinDollHeadAnimInstance->Montage_JumpToSection(TEXT("Attack"), SerinDollDataAsset->HeadPattern1AnimMontage);
-		LeftHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("LeftAttack"), SerinDollDataAsset->Pattern1AnimMontage);
-		RightHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("RightAttack"), SerinDollDataAsset->Pattern1AnimMontage);
+		LeftHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("LeftAttack"), SerinDollDataAsset->HandPattern1AnimMontage);
+		RightHand->GetCachedSerinDollHandAnimInstance()->Montage_JumpToSection(TEXT("RightAttack"), SerinDollDataAsset->HandPattern1AnimMontage);
 	}
 }
 
