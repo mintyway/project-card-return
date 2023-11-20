@@ -90,7 +90,7 @@
 	<object class="MixerBusPanner" id="{4114fd6f-e964-4047-8c69-df8bf3ad9f75}" />
 	<object class="SingleSound" id="{3818033f-3a53-454b-b4ce-9eebd32b16d4}">
 		<property name="length">
-			<value>0.71999999999999997</value>
+			<value>0.20999999999999999</value>
 		</property>
 		<property name="timelockedOffset">
 			<value>0.28626892497621792</value>
@@ -98,6 +98,9 @@
 		<property name="pitch">
 			<value>1.80000007</value>
 		</property>
+		<relationship name="modulators">
+			<destination>{49349162-a3af-484e-9509-e2e6f51396d2}</destination>
+		</relationship>
 		<relationship name="fadeOutCurve">
 			<destination>{3029be9e-0fc7-4767-a2cd-6906b8011d73}</destination>
 		</relationship>
@@ -130,6 +133,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{d60d924f-4fb1-4034-91bf-6792b90dd38e}" />
 	<object class="MixerBusFader" id="{6e951bf8-7d97-4fba-ad45-2b02a3bfb2a0}" />
+	<object class="RandomizerModulator" id="{49349162-a3af-484e-9509-e2e6f51396d2}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>10.416666</value>
+		</property>
+	</object>
 	<object class="FadeCurve" id="{3029be9e-0fc7-4767-a2cd-6906b8011d73}">
 		<relationship name="startPoint">
 			<destination>{e5ef3a18-7f95-4d0d-a143-4c1013ba5950}</destination>
@@ -142,6 +153,7 @@
 		<relationship name="effects">
 			<destination>{0fb4e91b-6195-4258-a0e8-e32fb250365c}</destination>
 			<destination>{451a2006-8ed6-4bbb-8bab-e2ec8b5ee90a}</destination>
+			<destination>{19d1a123-7796-4fd2-a557-3f9ec92f53a4}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{2768868d-fbd4-4f89-a016-ed514ff31269}" />
@@ -149,7 +161,7 @@
 	<object class="SpatialiserEffect" id="{9da9e39f-5350-4520-be88-83e49bf59af8}" />
 	<object class="AutomationPoint" id="{e5ef3a18-7f95-4d0d-a143-4c1013ba5950}">
 		<property name="position">
-			<value>0.40000000000000002</value>
+			<value>0.13</value>
 		</property>
 		<property name="value">
 			<value>1</value>
@@ -160,7 +172,7 @@
 	</object>
 	<object class="AutomationPoint" id="{2fccd5f0-eb6e-44d3-8c8f-bee1b85a9128}">
 		<property name="position">
-			<value>0.71999999999999997</value>
+			<value>0.20999999999999999</value>
 		</property>
 		<property name="value">
 			<value>0</value>
@@ -169,10 +181,18 @@
 	<object class="MixerBusFader" id="{0fb4e91b-6195-4258-a0e8-e32fb250365c}" />
 	<object class="ThreeEQEffect" id="{451a2006-8ed6-4bbb-8bab-e2ec8b5ee90a}">
 		<property name="midGain">
-			<value>3</value>
+			<value>-6</value>
 		</property>
 		<property name="highGain">
-			<value>5.5</value>
+			<value>-6</value>
+		</property>
+	</object>
+	<object class="SFXReverbEffect" id="{19d1a123-7796-4fd2-a557-3f9ec92f53a4}">
+		<property name="decayTime">
+			<value>600</value>
+		</property>
+		<property name="wetLevel">
+			<value>-3</value>
 		</property>
 	</object>
 </objects>
