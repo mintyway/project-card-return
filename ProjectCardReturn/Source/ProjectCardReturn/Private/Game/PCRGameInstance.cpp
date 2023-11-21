@@ -12,7 +12,7 @@
 UPCRGameInstance::UPCRGameInstance()
 	: FMODStudioSystem(nullptr), MasterBus(nullptr),
 	  AmbientAudioInst(nullptr), Stage1AudioInst(nullptr), BossStageAudioInst(nullptr),
-	  MasterVolume(0.f)
+	  MasterVolume(0.f), LastMasterVolume(100.f)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
 	if (DA_Sound.Succeeded())
@@ -47,13 +47,13 @@ void UPCRGameInstance::InitSoundSystem()
 	MasterBus = MasterBusRawPtr;
 	check(MasterBus);
 
-	FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UPCRGameInstance::SoundUpdate));
+	// FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UPCRGameInstance::SoundUpdate));
 }
 
 void UPCRGameInstance::InitInGameSoundSystem()
 {
 	ReleaseInGameSoundSystem();
-	
+
 	const FFMODEventInstance AmbientAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->AmbientBGM, false);
 	AmbientAudioInst = AmbientAudio.Instance;
 	if (AmbientAudioInst)
@@ -95,6 +95,32 @@ void UPCRGameInstance::ReleaseInGameSoundSystem()
 		BossStageAudioInst->stop(FMOD_STUDIO_STOP_IMMEDIATE);
 		BossStageAudioInst->release();
 	}
+}
+
+float UPCRGameInstance::GetMasterVolume() const
+{
+	float CurrentVolume;
+	MasterBus->getVolume(&CurrentVolume);
+
+	return CurrentVolume;
+}
+
+void UPCRGameInstance::SetMasterVolume(float InVolume)
+{
+	const float NewVolume = FMath::Clamp(InVolume, 0.f, 1.f);
+	MasterBus->setVolume(NewVolume);
+	LastMasterVolume = GetMasterVolume();
+}
+
+void UPCRGameInstance::MasterVolumeOn()
+{
+	SetMasterVolume(LastMasterVolume);
+}
+
+void UPCRGameInstance::MasterVolumeOff()
+{
+	LastMasterVolume = GetMasterVolume();
+	MasterBus->setVolume(0.f);
 }
 
 void UPCRGameInstance::PlayStage1BGM()

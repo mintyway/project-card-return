@@ -6,12 +6,15 @@
 #include "Blueprint/UserWidget.h"
 #include "PCRPauseUserWidget.generated.h"
 
+class UPCRGameInstance;
+class UProgressBar;
+class USlider;
 class UButton;
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UPCRPauseUserWidget: public UUserWidget
+class PROJECTCARDRETURN_API UPCRPauseUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -21,19 +24,46 @@ protected:
 private:
 	UFUNCTION()
 	void HandleResumeClicked();
-	
+
 	UFUNCTION()
 	void HandleRestartClicked();
-	
+
 	UFUNCTION()
-	void HandleQuitButtonClicked();
-	
+	void HandleQuitClicked();
+
+	UFUNCTION()
+	void HandleChangeSoundBar(float Value);
+
+	UFUNCTION()
+	void HandleSoundOn();
+
+	UFUNCTION()
+	void HandleSoundOff();
+
+	void HandleSoundImageOnOff();
+
+private: // 데이터
 	UPROPERTY()
-	TObjectPtr<UButton> ResumeButton;
-	
-	UPROPERTY()
-	TObjectPtr<UButton> RestartButton;
+	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance;
 
 	UPROPERTY()
-	TObjectPtr<UButton> QuitButton;
+	TObjectPtr<UButton> BT_Resume;
+
+	UPROPERTY()
+	TObjectPtr<UButton> BT_Restart;
+
+	UPROPERTY()
+	TObjectPtr<UButton> BT_Quit;
+
+	UPROPERTY()
+	TObjectPtr<USlider> SLD_SoundBar;
+
+	UPROPERTY()
+	TObjectPtr<UProgressBar> PB_SoundBar;
+
+	UPROPERTY()
+	TObjectPtr<UButton> BT_SoundOn;
+
+	UPROPERTY()
+	TObjectPtr<UButton> BT_SoundOff;
 };

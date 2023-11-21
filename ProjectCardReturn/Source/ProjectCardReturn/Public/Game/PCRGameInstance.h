@@ -36,6 +36,11 @@ public: // 동작
 	void InitInGameSoundSystem();
 	void ReleaseInGameSoundSystem();
 
+	float GetMasterVolume() const;
+	void SetMasterVolume(float InVolume);
+	void MasterVolumeOn();
+	void MasterVolumeOff();
+	
 	void PlayStage1BGM();
 	void StopStage1BGM();
 
@@ -47,8 +52,9 @@ public: // 동작
 
 private:
 	bool SoundUpdate(float DeltaTime);
+	FORCEINLINE float GetLastMasterVolume() const { return LastMasterVolume; }
 
-private: // 데이터 에셋
+	// 데이터 에셋
 	UPROPERTY()
 	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
 
@@ -62,4 +68,5 @@ private: // 오디오
 
 private: // 데이터
 	float MasterVolume;
+	float LastMasterVolume;
 };
