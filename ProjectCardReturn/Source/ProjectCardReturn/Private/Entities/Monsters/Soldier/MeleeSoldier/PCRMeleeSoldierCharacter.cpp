@@ -48,8 +48,8 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	MeleeSoldierAnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
-	check(MeleeSoldierAnimInstance);
+	AnimInstance = Cast<UPCRMeleeSoldierAnimInstance>(GetMesh()->GetAnimInstance());
+	check(AnimInstance);
 
 	SpawnAndAttachShield();
 }
@@ -76,16 +76,6 @@ void APCRMeleeSoldierCharacter::HandleDetachedShield()
 	{
 		UE_LOG(PCRLogMeleeSoldierCharacter, Log, TEXT("%s가 %s로부터 분리되었습니다."), *Shield->GetName(), *GetName());
 		Shield = nullptr;
-	}
-}
-
-void APCRMeleeSoldierCharacter::Attack()
-{
-	Super::Attack();
-
-	if (MeleeSoldierAnimInstance)
-	{
-		MeleeSoldierAnimInstance->Attack();
 	}
 }
 

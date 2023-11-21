@@ -14,7 +14,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  SerinMoveSpeed(500.f), SerinBasicChaseSpeed(500.f), SerinChaseSpeed(1000.f), SerinRockSpeed(3000.f),
 
-	  DeadAfterDestroyTime(2.f), HitStopTime(0.1f),
+	  DeadAfterDestroyTime(2.f),
 
 	  MeleeSoldierMaxHP(6.f), MeleeSoldierAttackPower(10.f), MeleeSoldierMoveSpeed(300.f), MeleeSoldierAttackRange(300.f), MeleeSoldierAttackRate(1.f), ShieldDestroyTimeAfterDrop(1.f),
 

@@ -19,6 +19,7 @@
 #include "Entities/Item/PCRHealItem.h"
 #include "Entities/Item/PCRStrongAttackItem.h"
 #include "Entities/Item/PCRLongerRangeItem.h"
+#include "Entities/Monsters/Base/PCRMonsterBaseAnimInstance.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 
@@ -33,7 +34,6 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	bIsAlive = true;
 	MoveSpeed = 300.f;
 	AttackRange = 300.f;
-	StunTime = 1.f;
 
 	bUseControllerRotationYaw = false;
 
@@ -53,11 +53,6 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	if (DA_UI.Succeeded())
 	{
 		UIDataAsset = DA_UI.Object;
-	}
-
-	if (ParameterDataAsset)
-	{
-		HitStopTime = ParameterDataAsset->HitStopTime;
 	}
 
 	HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComponent"));
@@ -109,9 +104,14 @@ void APCRMonsterBaseCharacter::Tick(float DeltaTime)
 
 /**
  * 공격합니다.
- * TODO: 구현 필요
  */
-void APCRMonsterBaseCharacter::Attack() {}
+void APCRMonsterBaseCharacter::Attack()
+{
+	if (AnimInstance)
+	{
+		AnimInstance->Attack();
+	}
+}
 
 /**
  * 매개변수 값에 따라 HP에 더하거나 빼며 변경시킵니다.
@@ -121,28 +121,6 @@ void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 {
 	CurrentHP += Amount;
 	HandleChangeHP();
-}
-
-/**
- * 피격 시 경직됩니다.
- */
-void APCRMonsterBaseCharacter::HitStop()
-{
-	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	check(MonsterBaseAIController);
-	MonsterBaseAIController->ApplyStun(HitStopTime);
-}
-
-/**
- * 잠시동안 스턴에 빠집니다.
- */
-void APCRMonsterBaseCharacter::Stun()
-{
-	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
-	check(MonsterBaseAIController);
-	MonsterBaseAIController->ApplyStun(StunTime);
-	UE_LOG(PCRLogMonsterBaseAIController, Log, TEXT("%s가 %f.1초간 스턴에 빠집니다."), *this->GetName(), StunTime);
-	HandleStun();
 }
 
 /**
@@ -156,19 +134,6 @@ void APCRMonsterBaseCharacter::Stun()
 float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	// TODO: 현재는 데미지 0을 스턴으로 활용하고 있지만 추후 인터페이스를 통해 전달하도록 변경 필요
-	if (ActualDamage <= 0)
-	{
-		UE_LOG(PCRLogMonsterBaseCharacter, Log, TEXT("%s가 %s에게 상태이상 공격을 당했습니다."), *this->GetName(), *DamageCauser->GetName());
-
-		Stun();
-		return ActualDamage;
-	}
-
-	HitStop();
-	// TODO: 나중에 델리게이트 만들어서 애님 인스턴스 내부에서 처리하도록 변경해야함.
-	GetMesh()->GetAnimInstance()->StopAllMontages(0.1f);
 	
 	// UE_LOG(PCRLogMonsterBaseCharacter, Warning, TEXT("플레이어가 준 데미지: %f"), Damage);
 	ChangeHP(-ActualDamage);
@@ -195,21 +160,6 @@ void APCRMonsterBaseCharacter::HandleChangeHP()
 	OnHPChange.Broadcast();
 }
 
-void APCRMonsterBaseCharacter::HandleStun()
-{
-	OnStun.Broadcast();
-	
-	FTimerHandle StunTimeHandle;
-	FTimerDelegate StunTimeDelegate;
-	StunTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::HandleStunRelease);
-	GetWorldTimerManager().SetTimer(StunTimeHandle, StunTimeDelegate, StunTime, false);
-}
-
-void APCRMonsterBaseCharacter::HandleStunRelease()
-{
-	OnStunRelease.Broadcast();
-}
-
 /**
  * 몬스터가 죽을때 호출되며 몬스터를 지정된 시간 이후에 제거합니다.\n
  * 이벤트가 존재합니다.
@@ -233,12 +183,6 @@ void APCRMonsterBaseCharacter::HandleDead()
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
 	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
-
-	// TODO: 제거 예정 코드
-	// FTimerHandle SpawnItemTimeHandle;
-	// FTimerDelegate SpawnItemTimeDelegate;
-	// SpawnItemTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::SpawnItem);
-	// GetWorldTimerManager().SetTimer(SpawnItemTimeHandle, SpawnItemTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime * 0.9f, false);
 }
 
 void APCRMonsterBaseCharacter::PlayDeadEffect(AActor* DestroyedActor)

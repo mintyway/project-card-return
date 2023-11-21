@@ -49,22 +49,12 @@ void APCRRangedSoldierCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	RangedSoldierAnimInstance = Cast<UPCRRangedSoldierAnimInstance>(GetMesh()->GetAnimInstance());
-	check(RangedSoldierAnimInstance);
+	AnimInstance = Cast<UPCRRangedSoldierAnimInstance>(GetMesh()->GetAnimInstance());
+	check(AnimInstance);
 
 	if (const APlayerController* CurrentPlayerController = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		CachedPlayerCharacter = CurrentPlayerController->GetCharacter();
-	}
-}
-
-void APCRRangedSoldierCharacter::Attack()
-{
-	Super::Attack();
-	
-	if (RangedSoldierAnimInstance)
-	{
-		RangedSoldierAnimInstance->Throw();
 	}
 }
 

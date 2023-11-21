@@ -7,23 +7,13 @@
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true), bStun(false), bDead(false)
+UPCRMonsterBaseAnimInstance::UPCRMonsterBaseAnimInstance(): bShouldMove(false), bCanAttack(true), bDead(false)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRMonsterDataAsset> DA_MonsterDataAsset(TEXT("/Script/ProjectCardReturn.PCRMonsterDataAsset'/Game/DataAssets/DA_Monster.DA_Monster'"));
 	if (DA_MonsterDataAsset.Succeeded())
 	{
 		MonsterDataAsset = DA_MonsterDataAsset.Object;
 	}
-}
-
-void UPCRMonsterBaseAnimInstance::HandleOwnerStun()
-{
-	bStun = true;
-}
-
-void UPCRMonsterBaseAnimInstance::HandleOwnerStunRelease()
-{
-	bStun = false;
 }
 
 void UPCRMonsterBaseAnimInstance::HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster)
@@ -40,8 +30,6 @@ void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
 	if (CachedMonsterBaseCharacter)
 	{
 		CachedCharacterMovement = Cast<UCharacterMovementComponent>(CachedMonsterBaseCharacter->GetCharacterMovement());
-		CachedMonsterBaseCharacter->OnStun.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStun);
-		CachedMonsterBaseCharacter->OnStunRelease.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStunRelease);
 		CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
 	}
 
@@ -62,6 +50,8 @@ void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Velocity = CachedCharacterMovement->Velocity;
 	bShouldMove = Velocity.SizeSquared2D() >= FMath::Square(30);
 }
+
+void UPCRMonsterBaseAnimInstance::Attack() {}
 
 void UPCRMonsterBaseAnimInstance::AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {

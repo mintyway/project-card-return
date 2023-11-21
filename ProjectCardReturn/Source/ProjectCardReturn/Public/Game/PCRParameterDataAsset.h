@@ -122,8 +122,6 @@ public: // 세린
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;
-	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	float HitStopTime;
 
 public: // 근접 병사
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")

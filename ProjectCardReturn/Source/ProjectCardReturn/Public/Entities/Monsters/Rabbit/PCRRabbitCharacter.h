@@ -29,8 +29,6 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 public:
-	virtual void Attack() override;
-
 	FORCEINLINE float GetGimmickMoveRange() const { return GimmickMoveRange; }
 	FORCEINLINE float GetJumpProbability() const { return JumpProbability; }
 	FORCEINLINE float GetWaitAndJumpProbability() const { return WaitAndJumpProbability; }
@@ -43,9 +41,6 @@ public:
 	void Hit();
 	
 private:
-	UPROPERTY()
-	TObjectPtr<UPCRRabbitAnimInstance> RabbitAnimInstance;
-
 	float GimmickMoveRange;
 	float JumpProbability;
 	float WaitAndJumpProbability;

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "PCRMonsterBaseCharacter.generated.h"
 
+class UPCRMonsterBaseAnimInstance;
 class UPCRParameterDataAsset;
 class UProgressBar;
 class UPCRUIDataAsset;
@@ -36,11 +37,8 @@ public: // 동작
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	                         AController* EventInstigator, AActor* DamageCauser) override;
 
-	virtual void Attack();
-
+	void Attack();
 	void ChangeHP(float Amount);
-	void HitStop();
-	void Stun();
 
 public: // Getter, Setter
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
@@ -49,7 +47,6 @@ public: // Getter, Setter
 	FORCEINLINE bool IsAlive() const { return bIsAlive; }
 	FORCEINLINE float GetAttackPower() const { return AttackPower; }
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
-	FORCEINLINE float GetStunTime() const { return StunTime; }
 
 public: // 델리게이트
 	FOnHPChangeDelegate OnHPChange;
@@ -59,8 +56,6 @@ public: // 델리게이트
 
 protected:
 	virtual void HandleChangeHP();
-	virtual void HandleStun();
-	virtual void HandleStunRelease();
 	virtual void HandleDead();
 	
 	UFUNCTION()
@@ -68,6 +63,7 @@ protected:
 
 	UFUNCTION()
 	void SpawnItem(AActor* DestroyedActor);
+	
 	UClass* GetItemClass();
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
@@ -78,16 +74,17 @@ protected:
 
 	float CurrentHP;
 	float MaxHP;
-	uint32 bIsAlive : 1;
+	uint32 bIsAlive:1;
 
 	float AttackPower;
 	float MoveSpeed;
 	float AttackRange;
 	float AttackRate;
-	float HitStopTime;
-	float StunTime;
 
 	void DestroyTimeCallback();
+
+	UPROPERTY()
+	TObjectPtr<UPCRMonsterBaseAnimInstance> AnimInstance;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
@@ -98,5 +95,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
 
+	UPROPERTY()
 	float DeadAfterDestroyTime;
 };

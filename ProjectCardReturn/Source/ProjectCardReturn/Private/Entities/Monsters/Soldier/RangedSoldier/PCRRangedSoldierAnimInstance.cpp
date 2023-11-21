@@ -20,7 +20,7 @@ void UPCRRangedSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 }
 
-void UPCRRangedSoldierAnimInstance::Throw()
+void UPCRRangedSoldierAnimInstance::Attack()
 {
 	if (!bCanAttack)
 	{

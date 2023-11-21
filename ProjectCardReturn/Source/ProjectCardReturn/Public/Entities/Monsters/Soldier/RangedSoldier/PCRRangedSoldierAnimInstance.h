@@ -23,7 +23,7 @@ protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	void Throw();
+	virtual void Attack() override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Reference")
 	TObjectPtr<APCRRangedSoldierCharacter> CachedRangedSoldier;

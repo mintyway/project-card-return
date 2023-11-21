@@ -30,26 +30,11 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 	
 public:
-	void ApplyStun(float StunTime);
-	
-	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
-
 	static const FName TargetKey;
 	static const FName IsDetectedKey;
 
 protected:
 	void SetTarget();
-
-protected: // 데이터 에셋
+	
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
-
-private:
-	void StunTimerCallback();
-
-private: // 캐시
-	TObjectPtr<APCRMonsterBaseCharacter> CachedMonsterCharacter;
-
-private: // 데이터
-	FTimerHandle StunTimerHandle;
-	uint32 bIsStunned:1;
 };

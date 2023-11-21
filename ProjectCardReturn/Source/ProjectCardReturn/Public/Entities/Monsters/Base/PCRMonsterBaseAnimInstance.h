@@ -21,12 +21,11 @@ class PROJECTCARDRETURN_API UPCRMonsterBaseAnimInstance : public UAnimInstance
 public:
 	UPCRMonsterBaseAnimInstance();
 
-public:
 	FORCEINLINE bool GetCanAttack() const { return bCanAttack; }
 
+	virtual void Attack();
+
 protected:
-	void HandleOwnerStun();
-	void HandleOwnerStunRelease();
 	void HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster);
 	
 	virtual void NativeInitializeAnimation() override;
@@ -43,9 +42,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	uint32 bCanAttack:1;
-
-	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
-	uint32 bStun:1;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
 	uint32 bDead:1;

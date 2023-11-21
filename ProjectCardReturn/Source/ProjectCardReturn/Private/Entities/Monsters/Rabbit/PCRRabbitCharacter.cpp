@@ -56,18 +56,8 @@ void APCRRabbitCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	RabbitAnimInstance = Cast<UPCRRabbitAnimInstance>(GetMesh()->GetAnimInstance());
-	check(RabbitAnimInstance);
-}
-
-void APCRRabbitCharacter::Attack()
-{
-	Super::Attack();
-
-	if (RabbitAnimInstance)
-	{
-		RabbitAnimInstance->Hit();
-	}
+	AnimInstance = Cast<UPCRRabbitAnimInstance>(GetMesh()->GetAnimInstance());
+	check(AnimInstance);
 }
 
 FVector APCRRabbitCharacter::GetRightDiagonal() const

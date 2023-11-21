@@ -31,14 +31,9 @@ void UPCRRabbitAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	//bJump = CachedRabbit->IsJumpProvidingForce();
 	//bJump = CachedRabbit->bWasJumping;
-
-	if (CachedRabbit->bWasJumping)
-	{
-		bJump = CachedRabbit->bWasJumping;
-	}
 }
 
-void UPCRRabbitAnimInstance::Hit()
+void UPCRRabbitAnimInstance::Attack()
 {
 	if (!bCanAttack)
 	{
