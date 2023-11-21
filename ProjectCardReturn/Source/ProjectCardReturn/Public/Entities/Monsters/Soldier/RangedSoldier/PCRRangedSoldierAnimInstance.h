@@ -25,7 +25,6 @@ protected:
 public:
 	void Throw();
 
-protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Reference")
 	TObjectPtr<APCRRangedSoldierCharacter> CachedRangedSoldier;
 

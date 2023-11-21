@@ -63,6 +63,11 @@ void APCRRabbitCharacter::PostInitializeComponents()
 void APCRRabbitCharacter::Attack()
 {
 	Super::Attack();
+
+	if (RabbitAnimInstance)
+	{
+		RabbitAnimInstance->Hit();
+	}
 }
 
 FVector APCRRabbitCharacter::GetRightDiagonal() const
@@ -85,4 +90,9 @@ FVector APCRRabbitCharacter::GetLeftDiagonal() const
 	const FVector LeftDiagonalLocation = GetActorLocation() + LeftDiagonalVector * MoveDiagonalDistance;
 
 	return LeftDiagonalLocation;
+}
+
+void APCRRabbitCharacter::Hit()
+{
+	
 }
