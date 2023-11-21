@@ -6,11 +6,6 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTaskNode_PCRMonsterAttack.generated.h"
 
-UENUM()
-enum class EMonsterTask : uint8
-{
-	Attack
-};
 /**
  * 
  */
@@ -24,8 +19,4 @@ public:
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
-private:
-	UPROPERTY(EditAnywhere)
-	EMonsterTask MonsterTask;
 };

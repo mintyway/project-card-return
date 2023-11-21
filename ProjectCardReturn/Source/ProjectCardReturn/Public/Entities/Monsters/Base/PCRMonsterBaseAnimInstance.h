@@ -55,5 +55,4 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
-
 };

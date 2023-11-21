@@ -66,8 +66,6 @@ void UPCRMeleeSoldierAnimInstance::AnimNotify_Hit()
 
 void UPCRMeleeSoldierAnimInstance::ShieldAttack()
 {
-	Montage_Play(MonsterDataAsset->MeleeSoldierShieldAttackAnimationMontage);
-
 	if (FMath::RandBool())
 	{
 		Montage_JumpToSection(TEXT("Part1"));
@@ -76,6 +74,8 @@ void UPCRMeleeSoldierAnimInstance::ShieldAttack()
 	{
 		Montage_JumpToSection(TEXT("Part2"));
 	}
+	
+	Montage_Play(MonsterDataAsset->MeleeSoldierShieldAttackAnimationMontage);
 }
 
 void UPCRMeleeSoldierAnimInstance::SpearAttack()
