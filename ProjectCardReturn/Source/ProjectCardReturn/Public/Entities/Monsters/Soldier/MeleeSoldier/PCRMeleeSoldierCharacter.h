@@ -30,7 +30,7 @@ public:
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
 
-	void AttackHit();
+	void Hit();
 
 protected:
 	virtual void HandleDead() override;

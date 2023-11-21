@@ -55,4 +55,8 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
+
+private:
+	UFUNCTION()
+	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

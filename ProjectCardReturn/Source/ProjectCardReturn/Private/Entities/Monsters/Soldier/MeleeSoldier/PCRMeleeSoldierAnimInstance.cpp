@@ -17,8 +17,6 @@ void UPCRMeleeSoldierAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedMeleeSoldier = Cast<APCRMeleeSoldierCharacter>(CachedMonsterBaseCharacter);
-
-	OnMontageEnded.AddDynamic(this, &UPCRMeleeSoldierAnimInstance::AttackMontageEnded);
 }
 
 void UPCRMeleeSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -52,16 +50,11 @@ void UPCRMeleeSoldierAnimInstance::Attack()
 	bCanAttack = false;
 }
 
-void UPCRMeleeSoldierAnimInstance::AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bCanAttack = true;
-}
-
 void UPCRMeleeSoldierAnimInstance::AnimNotify_Hit()
 {
 	check(CachedMeleeSoldier);
 
-	CachedMeleeSoldier->AttackHit();
+	CachedMeleeSoldier->Hit();
 }
 
 void UPCRMeleeSoldierAnimInstance::ShieldAttack()

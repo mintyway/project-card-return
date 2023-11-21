@@ -31,8 +31,5 @@ protected:
 
 private:
 	UFUNCTION()
-	void ThrowMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
-	UFUNCTION()
 	void AnimNotify_Throw();
 };

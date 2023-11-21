@@ -13,8 +13,6 @@ void UPCRRangedSoldierAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedRangedSoldier = Cast<APCRRangedSoldierCharacter>(CachedMonsterBaseCharacter);
-
-	OnMontageEnded.AddDynamic(this, &UPCRRangedSoldierAnimInstance::ThrowMontageEnded);
 }
 
 void UPCRRangedSoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -34,11 +32,6 @@ void UPCRRangedSoldierAnimInstance::Throw()
 	Montage_Play(MonsterDataAsset->RangedSoldierThrowAnimationMontage);
 
 	bCanAttack = false;
-}
-
-void UPCRRangedSoldierAnimInstance::ThrowMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bCanAttack = true;
 }
 
 void UPCRRangedSoldierAnimInstance::AnimNotify_Throw()

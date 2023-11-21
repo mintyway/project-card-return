@@ -65,4 +65,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TSoftClassPtr<UAnimInstance> RabbitAnimationBlueprint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	TObjectPtr<UAnimMontage> RabbitAttackAnimationMontage;
 };

@@ -89,7 +89,7 @@ void APCRMeleeSoldierCharacter::Attack()
 	}
 }
 
-void APCRMeleeSoldierCharacter::AttackHit()
+void APCRMeleeSoldierCharacter::Hit()
 {
 	// TODO: 파라미터화 필요 리스트
 	float AttackRadius = 50.f;

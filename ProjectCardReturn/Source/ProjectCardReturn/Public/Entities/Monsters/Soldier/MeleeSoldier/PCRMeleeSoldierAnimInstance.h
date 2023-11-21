@@ -28,20 +28,16 @@ protected:
 public:
 	void Attack();
 
-protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Reference")
-	TObjectPtr<APCRMeleeSoldierCharacter> CachedMeleeSoldier;
-	
-	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
-	uint32 bHasShield:1;
-
 private:
-	UFUNCTION()
-	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
 	UFUNCTION()
 	void AnimNotify_Hit();
 
 	void ShieldAttack();
 	void SpearAttack();
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reference")
+	TObjectPtr<APCRMeleeSoldierCharacter> CachedMeleeSoldier;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
+	uint32 bHasShield:1;
 };

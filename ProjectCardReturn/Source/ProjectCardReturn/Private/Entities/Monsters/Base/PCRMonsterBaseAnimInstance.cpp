@@ -44,6 +44,8 @@ void UPCRMonsterBaseAnimInstance::NativeInitializeAnimation()
 		CachedMonsterBaseCharacter->OnStunRelease.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerStunRelease);
 		CachedMonsterBaseCharacter->OnDead.AddUObject(this, &UPCRMonsterBaseAnimInstance::HandleOwnerDead);
 	}
+
+	OnMontageEnded.AddDynamic(this, &UPCRMonsterBaseAnimInstance::AttackMontageEnded);
 }
 
 void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -59,4 +61,9 @@ void UPCRMonsterBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	check(CachedCharacterMovement);
 	Velocity = CachedCharacterMovement->Velocity;
 	bShouldMove = Velocity.SizeSquared2D() >= FMath::Square(30);
+}
+
+void UPCRMonsterBaseAnimInstance::AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	bCanAttack = true;
 }
