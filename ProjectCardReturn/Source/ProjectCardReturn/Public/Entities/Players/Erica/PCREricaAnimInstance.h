@@ -13,7 +13,7 @@ class APCREricaCharacter;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaAnimInstance, Log, All);
 
 DECLARE_DELEGATE(FAttackEventSignature);
-DECLARE_DYNAMIC_DELEGATE(FGameOverUISignature);
+DECLARE_DELEGATE(FGameOverUISignature);
 
 UENUM(BlueprintType)
 enum class EIdleRotation : uint8

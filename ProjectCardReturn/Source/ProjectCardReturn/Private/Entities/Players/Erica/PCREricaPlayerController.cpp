@@ -13,6 +13,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
+#include "Entities/Players/Erica/PCREricaAnimInstance.h"
 #include "Game/PCRGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/PCREricaUserWidget.h"
@@ -37,14 +38,14 @@ APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByC
 
 	if (UIDataAsset)
 	{
-		if (const TSubclassOf<UPCRHUDUserWidget> PCRHUDUserWidgetClass = UIDataAsset->HUDUserWidgetClass.LoadSynchronous())
-		{
-			HUDUserWidgetClass = PCRHUDUserWidgetClass;
-		}
-		if (const TSubclassOf<UPCRPauseUserWidget> PCRPauseUserWidgetClass = UIDataAsset->PauseUserWidgetClass.LoadSynchronous())
-		{
-			PauseUserWidgetClass = PCRPauseUserWidgetClass;
-		}
+		HUDUserWidgetClass = UIDataAsset->HUDUserWidgetClass.LoadSynchronous();
+		check(HUDUserWidgetClass);
+
+		PauseUserWidgetClass = UIDataAsset->PauseUserWidgetClass.LoadSynchronous();
+		check(PauseUserWidgetClass);
+
+		GameOverUserWidgetClass = UIDataAsset->GameOverWidgetClass.LoadSynchronous();
+		check(GameOverUserWidgetClass);
 	}
 }
 
@@ -78,7 +79,7 @@ void APCREricaPlayerController::OnPossess(APawn* InPawn)
 	check(HUDUserWidget);
 	HUDUserWidget->AddToViewport(-1);
 	HUDUserWidget->SetVisibilityEricaUI(true);
-	
+
 	BindEricaUI();
 }
 
@@ -133,14 +134,26 @@ void APCREricaPlayerController::GamePause()
 	SetPause(true);
 }
 
+void APCREricaPlayerController::GameOver()
+{
+	GameOverUserWidget = CreateWidget(this, GameOverUserWidgetClass);
+	check(GameOverUserWidget);
+
+	GameOverUserWidget->AddToViewport(3);
+}
+
 void APCREricaPlayerController::BindEricaUI()
 {
 	CachedEricaCharacter->OnChangeHP.AddUObject(HUDUserWidget->EricaUserWidget, &UPCREricaUserWidget::HandleUpdateHP);
 	CachedEricaCharacter->OnChangeCardCount.AddUObject(HUDUserWidget->EricaUserWidget, &UPCREricaUserWidget::HandleUpdateCardCount);
 	CachedEricaCharacter->OnChangeShootMode.BindUObject(HUDUserWidget->EricaUserWidget, &UPCREricaUserWidget::HandleUpdateChangeShootMode);
-	
+
 	HUDUserWidget->EricaUserWidget->HandleUpdateHP(CachedEricaCharacter->GetMaxHP(), CachedEricaCharacter->GetCurrentHP());
 	HUDUserWidget->EricaUserWidget->HandleUpdateCardCount(CachedEricaCharacter->GetMaxCardCount(), CachedEricaCharacter->GetCurrentCardCount());
+
+	UPCREricaAnimInstance* EricaAnimInstance = Cast<UPCREricaAnimInstance>(CachedEricaCharacter->GetMesh()->GetAnimInstance());
+	check(EricaAnimInstance);
+	EricaAnimInstance->OnGameOverUI.BindUObject(this, &APCREricaPlayerController::GameOver);
 
 	BindStage1UI();
 }

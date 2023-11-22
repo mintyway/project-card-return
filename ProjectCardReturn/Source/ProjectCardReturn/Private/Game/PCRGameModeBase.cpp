@@ -106,6 +106,7 @@ void APCRGameModeBase::BeginPlay()
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
 
+	CachedPCRGameInstance->PlayAmbientBGM();
 	PlayStage1BGM();
 	
 	if (Stage1TargetKillCount == 0)

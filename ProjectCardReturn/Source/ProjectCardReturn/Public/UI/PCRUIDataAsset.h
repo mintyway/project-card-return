@@ -26,4 +26,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSoftClassPtr<UPCRPauseUserWidget> PauseUserWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSoftClassPtr<UUserWidget> GameOverWidgetClass;
 };

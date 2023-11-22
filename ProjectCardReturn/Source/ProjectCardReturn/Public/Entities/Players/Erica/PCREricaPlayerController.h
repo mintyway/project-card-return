@@ -38,6 +38,7 @@ private: // 내부 함수 섹션
 	void BindEricaUI();
 	void BindStage1UI();
 	void GamePause();
+	void GameOver();
 
 private: // 데이터 에셋 섹션
 	UPROPERTY()
@@ -68,6 +69,13 @@ private: // UI 섹션
 
 	UPROPERTY()
 	TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
+
+	UPROPERTY()
+	TSubclassOf<UUserWidget> GameOverUserWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> GameOverUserWidget;
+
 
 private: // 상태 섹션
 	uint32 bUseCharacterRotationByCursorDirection : 1;

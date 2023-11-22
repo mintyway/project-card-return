@@ -40,14 +40,20 @@ public: // 동작
 	void SetMasterVolume(float InVolume);
 	void MasterVolumeOn();
 	void MasterVolumeOff();
-	
+
+	UFUNCTION(BlueprintCallable)
 	void PlayStage1BGM();
+	UFUNCTION(BlueprintCallable)
 	void StopStage1BGM();
 
+	UFUNCTION(BlueprintCallable)
 	void PlayAmbientBGM();
+	UFUNCTION(BlueprintCallable)
 	void StopAmbientBGM();
 
+	UFUNCTION(BlueprintCallable)
 	void PlayBossStageBGM();
+	UFUNCTION(BlueprintCallable)
 	void StopBossStageBGM();
 
 private:
