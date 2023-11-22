@@ -22,8 +22,8 @@ void UPCRPauseUserWidget::NativeConstruct()
 	BT_Restart = Cast<UButton>(GetWidgetFromName(TEXT("BT_Restart")));
 	check(BT_Restart);
 
-	BT_Quit = Cast<UButton>(GetWidgetFromName(TEXT("BT_Quit")));
-	check(BT_Quit);
+	BT_ToMain = Cast<UButton>(GetWidgetFromName(TEXT("BT_ToMain")));
+	check(BT_ToMain);
 
 	SLD_SoundBar = Cast<USlider>(GetWidgetFromName(TEXT("SLD_SoundBar")));
 	check(SLD_SoundBar);
@@ -47,7 +47,7 @@ void UPCRPauseUserWidget::NativeConstruct()
 
 	BT_Resume->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleResumeClicked);
 	BT_Restart->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleRestartClicked);
-	BT_Quit->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleQuitClicked);
+	BT_ToMain->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleToMainClicked);
 	SLD_SoundBar->OnValueChanged.AddDynamic(this, &UPCRPauseUserWidget::HandleChangeSoundBar);
 	BT_SoundOn->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleSoundOff);
 	BT_SoundOff->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleSoundOn);
@@ -74,12 +74,15 @@ void UPCRPauseUserWidget::HandleRestartClicked()
 
 	const UWorld* CurrentWorld = GetWorld();
 	const FString CurrentLevelName = CurrentWorld->GetName();
-	UGameplayStatics::OpenLevel(CurrentWorld, FName(CurrentLevelName));
+	UGameplayStatics::OpenLevel(CurrentWorld, FName(*CurrentLevelName));
 }
 
-void UPCRPauseUserWidget::HandleQuitClicked()
+void UPCRPauseUserWidget::HandleToMainClicked()
 {
-	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("L_Main"));
+	CachedPCRGameInstance->StopAmbientBGM();
+	CachedPCRGameInstance->StopStage1BGM();
+	CachedPCRGameInstance->StopBossStageBGM();
 }
 
 void UPCRPauseUserWidget::HandleChangeSoundBar(float Value)

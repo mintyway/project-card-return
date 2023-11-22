@@ -204,3 +204,11 @@ void UPCREricaAnimInstance::AnimNotify_ChainEnd()
 		OnChainEnd.Execute();
 	}
 }
+
+void UPCREricaAnimInstance::AnimNotify_OnGameOverUI()
+{
+	if (OnGameOverUI.IsBound())
+	{
+		OnGameOverUI.Execute();
+	}
+}

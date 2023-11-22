@@ -29,7 +29,7 @@ private:
 	void HandleRestartClicked();
 
 	UFUNCTION()
-	void HandleQuitClicked();
+	void HandleToMainClicked();
 
 	UFUNCTION()
 	void HandleChangeSoundBar(float Value);
@@ -53,7 +53,7 @@ private: // 데이터
 	TObjectPtr<UButton> BT_Restart;
 
 	UPROPERTY()
-	TObjectPtr<UButton> BT_Quit;
+	TObjectPtr<UButton> BT_ToMain;
 
 	UPROPERTY()
 	TObjectPtr<USlider> SLD_SoundBar;

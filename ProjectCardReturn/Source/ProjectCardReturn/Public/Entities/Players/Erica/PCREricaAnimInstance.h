@@ -10,7 +10,10 @@ class UPCREricaDataAsset;
 class UCharacterMovementComponent;
 class APCREricaCharacter;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaAnimInstance, Log, All);
+
 DECLARE_DELEGATE(FAttackEventSignature);
+DECLARE_DYNAMIC_DELEGATE(FGameOverUISignature);
 
 UENUM(BlueprintType)
 enum class EIdleRotation : uint8
@@ -35,7 +38,6 @@ enum class ELocalVelocityDirection : uint8
 	Invalid
 };
 
-DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaAnimInstance, Log, All);
 
 /**
  * 
@@ -65,6 +67,7 @@ public: // 동작
 public: // 델리게이트
 	FAttackEventSignature OnChainable;
 	FAttackEventSignature OnChainEnd;
+	FGameOverUISignature OnGameOverUI;
 
 protected:
 	UPROPERTY()
@@ -83,6 +86,9 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_ChainEnd();
+
+	UFUNCTION()
+	void AnimNotify_OnGameOverUI();
 
 private: // 캐시
 	UPROPERTY()
