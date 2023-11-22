@@ -21,20 +21,26 @@ class PROJECTCARDRETURN_API UPCRRabbitAnimInstance : public UPCRMonsterBaseAnimI
 public:
 	UPCRRabbitAnimInstance();
 
+	FORCEINLINE bool GetCanJump() const { return bCanJump; }
+
 protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
 public:
-	virtual void Attack() override;
+	void Hit();
+	void Jump();
 
 	UPROPERTY(BlueprintReadOnly, Category = "Reference")
 	TObjectPtr<APCRRabbitCharacter> CachedRabbit;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "AnimationState")
-	uint32 bJump:1;
+	uint32 bCanJump:1;
 
 private:
 	UFUNCTION()
 	void AnimNotify_Hit();
+
+	UFUNCTION()
+	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

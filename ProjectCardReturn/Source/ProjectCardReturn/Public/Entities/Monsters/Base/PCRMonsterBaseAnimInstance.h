@@ -23,8 +23,6 @@ public:
 
 	FORCEINLINE bool GetCanAttack() const { return bCanAttack; }
 
-	virtual void Attack();
-
 protected:
 	void HandleOwnerDead(APCRMonsterBaseCharacter* DeadMonster);
 	
@@ -51,8 +49,4 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;
-
-private:
-	UFUNCTION()
-	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

@@ -26,7 +26,7 @@ protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	virtual void Attack() override;
+	void Hit();
 
 	UPROPERTY(BlueprintReadOnly, Category = "Reference")
 	TObjectPtr<APCRMeleeSoldierCharacter> CachedMeleeSoldier;
@@ -37,6 +37,9 @@ public:
 private:
 	UFUNCTION()
 	void AnimNotify_Hit();
+	
+	UFUNCTION()
+	void AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void ShieldAttack();
 	void SpearAttack();

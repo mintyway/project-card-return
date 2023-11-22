@@ -54,6 +54,16 @@ void APCRMeleeSoldierCharacter::PostInitializeComponents()
 	SpawnAndAttachShield();
 }
 
+void APCRMeleeSoldierCharacter::Attack()
+{
+	Super::Attack();
+
+	if (AnimInstance)
+	{
+		AnimInstance->Hit();
+	}
+}
+
 /**
  * 실드를 스폰하고 몬스터에게 부착합니다.
  */

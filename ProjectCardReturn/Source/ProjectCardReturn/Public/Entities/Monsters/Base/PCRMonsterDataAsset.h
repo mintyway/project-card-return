@@ -68,4 +68,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<UAnimMontage> RabbitAttackAnimationMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	TObjectPtr<UAnimMontage> RabbitJumpAnimationMontage;
 };

@@ -34,10 +34,10 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public: // 동작
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
-	                         AController* EventInstigator, AActor* DamageCauser) override;
-
-	void Attack();
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
+	virtual void Attack();
+	
 	void ChangeHP(float Amount);
 
 public: // Getter, Setter
@@ -82,9 +82,6 @@ protected:
 	float AttackRate;
 
 	void DestroyTimeCallback();
-
-	UPROPERTY()
-	TObjectPtr<UPCRMonsterBaseAnimInstance> AnimInstance;
 
 	UPROPERTY()
 	TObjectPtr<const UPCRMonsterDataAsset> MonsterDataAsset;

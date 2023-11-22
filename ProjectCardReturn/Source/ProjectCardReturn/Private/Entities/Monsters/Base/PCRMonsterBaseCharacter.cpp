@@ -105,13 +105,7 @@ void APCRMonsterBaseCharacter::Tick(float DeltaTime)
 /**
  * 공격합니다.
  */
-void APCRMonsterBaseCharacter::Attack()
-{
-	if (AnimInstance)
-	{
-		AnimInstance->Attack();
-	}
-}
+void APCRMonsterBaseCharacter::Attack() {}
 
 /**
  * 매개변수 값에 따라 HP에 더하거나 빼며 변경시킵니다.

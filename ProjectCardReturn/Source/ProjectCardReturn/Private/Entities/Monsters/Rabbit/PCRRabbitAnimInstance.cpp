@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Rabbit/PCRRabbitAnimInstance.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
 
@@ -10,7 +11,7 @@ DEFINE_LOG_CATEGORY(PCRRabbitAnimInstance);
 
 UPCRRabbitAnimInstance::UPCRRabbitAnimInstance()
 {
-	bJump = false;
+	bCanJump = true;
 }
 
 void UPCRRabbitAnimInstance::NativeInitializeAnimation()
@@ -18,22 +19,16 @@ void UPCRRabbitAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	CachedRabbit = Cast<APCRRabbitCharacter>(CachedMonsterBaseCharacter);
+
+	OnMontageEnded.AddDynamic(this, &UPCRRabbitAnimInstance::AttackMontageEnded);
 }
 
 void UPCRRabbitAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-
-	if (!CachedRabbit)
-	{
-		return;
-	}
-
-	//bJump = CachedRabbit->IsJumpProvidingForce();
-	//bJump = CachedRabbit->bWasJumping;
 }
 
-void UPCRRabbitAnimInstance::Attack()
+void UPCRRabbitAnimInstance::Hit()
 {
 	if (!bCanAttack)
 	{
@@ -47,9 +42,31 @@ void UPCRRabbitAnimInstance::Attack()
 	bCanAttack = false;
 }
 
+void UPCRRabbitAnimInstance::Jump()
+{
+	Montage_Play(MonsterDataAsset->RabbitJumpAnimationMontage);
+
+	bCanJump = false;
+}
+
 void UPCRRabbitAnimInstance::AnimNotify_Hit()
 {
 	check(CachedRabbit);
 	
 	CachedRabbit->Hit();
+}
+
+void UPCRRabbitAnimInstance::AttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (Montage == MonsterDataAsset->RabbitAttackAnimationMontage)
+	{
+		bCanAttack = true;
+	}
+
+	if (Montage == MonsterDataAsset->RabbitJumpAnimationMontage)
+	{
+		CachedRabbit->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Overlap);
+		
+		bCanJump = true;
+	}
 }

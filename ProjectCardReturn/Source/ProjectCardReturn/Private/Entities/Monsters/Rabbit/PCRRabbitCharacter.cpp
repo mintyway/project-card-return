@@ -60,6 +60,16 @@ void APCRRabbitCharacter::PostInitializeComponents()
 	check(AnimInstance);
 }
 
+void APCRRabbitCharacter::Attack()
+{
+	Super::Attack();
+
+	if (AnimInstance)
+	{
+		AnimInstance->Hit();
+	}
+}
+
 FVector APCRRabbitCharacter::GetRightDiagonal() const
 {
 	const FVector ForwardVector = GetActorForwardVector();
@@ -85,4 +95,10 @@ FVector APCRRabbitCharacter::GetLeftDiagonal() const
 void APCRRabbitCharacter::Hit()
 {
 	
+}
+
+void APCRRabbitCharacter::RabbitJump()
+{
+	AnimInstance->Jump();
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
 }

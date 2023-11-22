@@ -27,6 +27,7 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
+	virtual void Attack() override;
 
 public:
 	FORCEINLINE float GetGimmickMoveRange() const { return GimmickMoveRange; }
@@ -37,8 +38,9 @@ public:
 
 	FVector GetRightDiagonal() const;
 	FVector GetLeftDiagonal() const;
-
+	
 	void Hit();
+	void RabbitJump();
 	
 private:
 	float GimmickMoveRange;
@@ -47,4 +49,7 @@ private:
 	float MoveRightDiagonalProbability;
 	float MoveLeftDiagonalProbability;
 	float MoveDiagonalDistance;
+
+	UPROPERTY()
+	TObjectPtr<UPCRRabbitAnimInstance> AnimInstance;
 };

@@ -21,6 +21,7 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
+	virtual void Attack() override;
 
 public:
 	void Throw();
@@ -28,4 +29,7 @@ public:
 private:
 	UPROPERTY()
 	TObjectPtr<ACharacter> CachedPlayerCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UPCRRangedSoldierAnimInstance> AnimInstance;
 };

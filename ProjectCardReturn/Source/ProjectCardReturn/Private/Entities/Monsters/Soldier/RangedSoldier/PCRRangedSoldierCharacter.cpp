@@ -58,6 +58,16 @@ void APCRRangedSoldierCharacter::PostInitializeComponents()
 	}
 }
 
+void APCRRangedSoldierCharacter::Attack()
+{
+	Super::Attack();
+
+	if (AnimInstance)
+	{
+		AnimInstance->Throw();
+	}
+}
+
 void APCRRangedSoldierCharacter::Throw()
 {
 	check(GetWorld());

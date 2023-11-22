@@ -21,6 +21,7 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
+	virtual void Attack() override;
 
 public:
 	FORCEINLINE bool GetHasShield() const { return Shield != nullptr; }
@@ -35,4 +36,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<APCRShieldActor> Shield;
+
+	UPROPERTY()
+	TObjectPtr<UPCRMeleeSoldierAnimInstance> AnimInstance;
 };
