@@ -65,24 +65,16 @@ void UPCRPauseUserWidget::HandleResumeClicked()
 
 void UPCRPauseUserWidget::HandleRestartClicked()
 {
-	if (APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(GetOwningPlayer()))
-	{
-		EricaPlayerController->SetPause(false);
+	APlayerController* PlayerController = GetOwningPlayer();
+	check(PlayerController);
+	PlayerController->SetPause(false);
 
-		RemoveFromParent();
-	}
-
-	const UWorld* CurrentWorld = GetWorld();
-	const FString CurrentLevelName = CurrentWorld->GetName();
-	UGameplayStatics::OpenLevel(CurrentWorld, FName(*CurrentLevelName));
+	CachedPCRGameInstance->RestartGame(this);
 }
 
 void UPCRPauseUserWidget::HandleToMainClicked()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("L_Main"));
-	CachedPCRGameInstance->StopAmbientBGM();
-	CachedPCRGameInstance->StopStage1BGM();
-	CachedPCRGameInstance->StopBossStageBGM();
+	CachedPCRGameInstance->ToMain();
 }
 
 void UPCRPauseUserWidget::HandleChangeSoundBar(float Value)

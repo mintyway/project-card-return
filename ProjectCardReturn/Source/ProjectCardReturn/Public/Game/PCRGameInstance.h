@@ -9,6 +9,8 @@
 class UPCRSoundPrimaryDataAsset;
 class APCREricaCardProjectilePool;
 
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameInstance, Log, All);
+
 namespace FMOD::Studio
 {
 	class Bus;
@@ -43,18 +45,30 @@ public: // 동작
 
 	UFUNCTION(BlueprintCallable)
 	void PlayStage1BGM();
+	
 	UFUNCTION(BlueprintCallable)
 	void StopStage1BGM();
 
 	UFUNCTION(BlueprintCallable)
 	void PlayAmbientBGM();
+	
 	UFUNCTION(BlueprintCallable)
 	void StopAmbientBGM();
 
 	UFUNCTION(BlueprintCallable)
 	void PlayBossStageBGM();
+	
 	UFUNCTION(BlueprintCallable)
 	void StopBossStageBGM();
+
+	UFUNCTION(BlueprintCallable)
+	void RestartGame(UWidget* Widget);
+
+	UFUNCTION(BlueprintCallable)
+	void ToMain();
+	
+	UFUNCTION(BlueprintCallable)
+	void QuitGame();
 
 private:
 	bool SoundUpdate(float DeltaTime);

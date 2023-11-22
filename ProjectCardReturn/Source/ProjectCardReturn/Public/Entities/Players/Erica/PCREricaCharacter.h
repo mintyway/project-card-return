@@ -58,6 +58,8 @@ protected:
 public: // 동작
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	void Revival();
+	
 	void ShootCard();
 	void RecallCard();
 	void Heal(float Amount);

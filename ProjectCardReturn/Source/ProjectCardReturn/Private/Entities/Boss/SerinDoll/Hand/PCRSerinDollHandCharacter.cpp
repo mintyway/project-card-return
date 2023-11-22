@@ -94,7 +94,8 @@ APCRSerinDollHandCharacter::APCRSerinDollHandCharacter()
 	if (PaperAttackSweepPlane)
 	{
 		PaperAttackSweepPlane->SetupAttachment(GetCapsuleComponent());
-		PaperAttackSweepPlane->InitBoxExtent(FVector(500.0, 50.0, 500.0));
+		PaperAttackSweepPlane->SetRelativeLocation(FVector(80.0, 0.0, 0.0));
+		PaperAttackSweepPlane->InitBoxExtent(FVector(500.0, 100.0, 500.0));
 		PaperAttackSweepPlane->SetCollisionObjectType(ECC_GameTraceChannel9);
 		PaperAttackSweepPlane->SetCollisionResponseToAllChannels(ECR_Ignore);
 		PaperAttackSweepPlane->SetGenerateOverlapEvents(true);

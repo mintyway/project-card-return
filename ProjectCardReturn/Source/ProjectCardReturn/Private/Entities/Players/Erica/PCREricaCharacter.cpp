@@ -358,6 +358,17 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	return ActualDamage;
 }
 
+void APCREricaCharacter::Revival()
+{
+	CameraBoom->TargetArmLength = ParameterDataAsset->CameraDistance;
+	CachedEricaAnimInstance->StopDeadMontage();
+
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	ChangeHP(MaxHP - CurrentHP);
+	bIsAlive = true;
+	EnableInput(CachedEricaPlayerController);
+}
+
 void APCREricaCharacter::Attack()
 {
 	LastMouseClickedLocation = CachedEricaPlayerController->GetMouseDirection();

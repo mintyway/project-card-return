@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
+class APCREricaCharacter;
+class APCRSerinDollHeadCharacter;
 class UPCRGameInstance;
 class UFMODAudioComponent;
 class APCRLiftActor;
@@ -21,11 +23,10 @@ DECLARE_DELEGATE_TwoParams(FStage1MonsterCountSignature, int32, int32);
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameModeBase, Log, All);
 
 UENUM()
-enum class EStageNumber : uint8
+enum class EStageState : uint8
 {
-	Stage1 = 1,
-	Stage2,
-	StageBoss
+	Stage = 1,
+	SerinStage
 };
 
 /**
@@ -36,18 +37,30 @@ class PROJECTCARDRETURN_API APCRGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	//pullrqtest
 public:
 	APCRGameModeBase();
 
 protected:
 	virtual void PostInitializeComponents() override;
+	virtual void StartPlay() override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-public:
+public: // 동작
+	UFUNCTION()
+	void SpawnSerinDoll();
+	
+public: // Getter
+	FORCEINLINE APCREricaCharacter* GetCachedEricaCharacter() const { return CachedEricaCharacter; }
+	FORCEINLINE APCRLiftActor* GetLiftActor() const { return LiftActor; }
 	FORCEINLINE int32 GetStage1MaxMonsterCount() { return Stage1TargetKillCount; }
 	FORCEINLINE int32 GetStage1CurrentMonsterCount() { return Stage1TargetKillCount - Stage1TotalMonsterKillCount; }
+	FORCEINLINE EStageState GetCurrentStageState() const { return CurrentStageState; }
+	FORCEINLINE APCRSerinDollHeadCharacter* GetSerinDollHead() const { return SerinDollHead; }
+
+	// 델리게이트
+	FStage1EndSignature OnStage1End;
+	FStage1MonsterCountSignature OnChangeStage1MonsterCount;
 
 private: // 내부 함수 섹션
 	void SpawnMonsterGenerators();
@@ -61,13 +74,6 @@ private: // 내부 함수 섹션
 
 	UFUNCTION()
 	void LiftFloor();
-
-	UFUNCTION()
-	void SpawnSerinDoll();
-
-public:
-	FStage1EndSignature OnStage1End;
-	FStage1MonsterCountSignature OnChangeStage1MonsterCount;
 
 private: // 데이터 에셋 섹션
 	UPROPERTY()
@@ -88,7 +94,13 @@ private: // 서브 액터 섹션
 
 private: // 레퍼런스
 	UPROPERTY()
-	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance; 
+	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance;
+
+	UPROPERTY()
+	TObjectPtr<APCREricaCharacter> CachedEricaCharacter; 
+	
+	UPROPERTY()
+	TObjectPtr<APCRSerinDollHeadCharacter> SerinDollHead;
 
 private: // 데이터 섹션
 	UPROPERTY()
@@ -102,5 +114,5 @@ private: // 데이터 섹션
 	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
 	int32 Stage1TargetKillCount;
 
-	EStageNumber CurrentStageNumber;
+	EStageState CurrentStageState;
 };

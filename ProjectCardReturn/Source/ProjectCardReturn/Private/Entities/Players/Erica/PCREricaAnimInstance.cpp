@@ -91,6 +91,11 @@ void UPCREricaAnimInstance::PlayDeadMontage()
 	Montage_Play(EricaDataAsset->DeadAnimationMontage);
 }
 
+void UPCREricaAnimInstance::StopDeadMontage()
+{
+	Montage_Stop(0.1f, EricaDataAsset->DeadAnimationMontage);
+}
+
 void UPCREricaAnimInstance::SetLocalVelocityMoveDirectionAngle()
 {
 	const float ABSLocalVelocityMoveDirectionAngle = FMath::Abs(LocalVelocityMoveDirectionAngle);

@@ -40,6 +40,8 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public: // 동작
+	void DestroySerinDoll();
+	
 	void LeftRockAttack();
 	void RightRockAttack();
 
@@ -101,7 +103,6 @@ private: // 내부 함수
 	void ChangeHP(float Amount);
 	void HandleChangeHP();
 	void HandleDead();
-	void DelayedDestroy();
 
 	bool IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
 

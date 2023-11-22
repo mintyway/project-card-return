@@ -63,6 +63,7 @@ public: // 동작
 	void PlayRecallMontage();
 
 	void PlayDeadMontage();
+	void StopDeadMontage();
 
 public: // 델리게이트
 	FAttackEventSignature OnChainable;

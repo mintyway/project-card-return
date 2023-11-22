@@ -21,7 +21,7 @@
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
 APCRGameModeBase::APCRGameModeBase()
-	: Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageNumber(EStageNumber::Stage1)
+	: Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageState(EStageState::Stage)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -77,7 +77,7 @@ void APCRGameModeBase::PostInitializeComponents()
 
 	CachedPCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
 	check(CachedPCRGameInstance);
-	
+
 	// 태그로 Lift를 찾는 코드입니다.
 	TArray<AActor*> ActorsWithTag;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Lift")), ActorsWithTag);
@@ -96,6 +96,19 @@ void APCRGameModeBase::PostInitializeComponents()
 	OnStage1End.AddDynamic(this, &APCRGameModeBase::LiftFloor);
 }
 
+void APCRGameModeBase::StartPlay()
+{
+	Super::StartPlay();
+
+	TArray<AActor*> EricaArray;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Erica")), EricaArray);
+	if (!EricaArray.IsEmpty())
+	{
+		CachedEricaCharacter = Cast<APCREricaCharacter>(EricaArray[0]);
+		check(CachedEricaCharacter);
+	}
+}
+
 void APCRGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -108,7 +121,7 @@ void APCRGameModeBase::BeginPlay()
 
 	CachedPCRGameInstance->PlayAmbientBGM();
 	PlayStage1BGM();
-	
+
 	if (Stage1TargetKillCount == 0)
 	{
 		HandleKillCount();
@@ -119,21 +132,28 @@ void APCRGameModeBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	switch (CurrentStageNumber)
+	switch (CurrentStageState)
 	{
-		case EStageNumber::Stage1:
+		case EStageState::Stage:
 		{
 			break;
 		}
-		case EStageNumber::Stage2:
-		{
-			break;
-		}
-		default:
+		case EStageState::SerinStage:
 		{
 			break;
 		}
 	}
+}
+
+void APCRGameModeBase::SpawnSerinDoll()
+{
+	PlayBossStageBGM();
+	FVector SpawnLocation = LiftActor->GetActorLocation();
+	SpawnLocation.X += 1200.0;
+	SpawnLocation.Z -= 250.0;
+	SerinDollHead = GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(SpawnLocation, FRotator(0.0, 180.0, 0.0));
+
+	CurrentStageState = EStageState::SerinStage;
 }
 
 void APCRGameModeBase::SpawnMonsterGenerators()
@@ -207,15 +227,4 @@ void APCRGameModeBase::LiftFloor()
 	FVector NewLocation = LiftActor->GetActorLocation();
 	NewLocation.Z = PlayerCharacter->GetActorLocation().Z;
 	PlayerCharacter->SetActorLocation(NewLocation);
-
-	CurrentStageNumber = EStageNumber::Stage2;
-}
-
-void APCRGameModeBase::SpawnSerinDoll()
-{
-	PlayBossStageBGM();
-	FVector SpawnLocation = LiftActor->GetActorLocation();
-	SpawnLocation.X += 1200.0;
-	SpawnLocation.Z -= 250.0;
-	GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(SpawnLocation, FRotator(0.0, 180.0, 0.0));
 }

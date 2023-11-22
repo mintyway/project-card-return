@@ -8,6 +8,16 @@
 #include "FMODBlueprintStatics.h"
 #include "FMODStudioModule.h"
 #include "fmod_studio.hpp"
+#include "Components/Widget.h"
+#include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
+#include "Entities/Players/Erica/PCREricaCharacter.h"
+#include "Entities/Stage/Lift/PCRLiftActor.h"
+#include "Game/PCRGameModeBase.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+
+DEFINE_LOG_CATEGORY(PCRLogGameInstance);
 
 UPCRGameInstance::UPCRGameInstance()
 	: FMODStudioSystem(nullptr), MasterBus(nullptr),
@@ -151,6 +161,55 @@ void UPCRGameInstance::PlayBossStageBGM()
 void UPCRGameInstance::StopBossStageBGM()
 {
 	BossStageAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+}
+
+void UPCRGameInstance::RestartGame(UWidget* Widget)
+{
+	const UWorld* CurrentWorld = GetWorld();
+	APCRGameModeBase* PCRGameMode = Cast<APCRGameModeBase>(CurrentWorld->GetAuthGameMode());
+	if (PCRGameMode)
+	{
+		if (PCRGameMode->GetCurrentStageState() == EStageState::SerinStage)
+		{
+			Widget->RemoveFromParent();
+			PCRGameMode->GetSerinDollHead()->DestroySerinDoll();
+			PCRGameMode->SpawnSerinDoll();
+
+			APCREricaCharacter* Erica = PCRGameMode->GetCachedEricaCharacter();
+			check(Erica);
+			Erica->Revival();
+			const APCRLiftActor* LiftActor = PCRGameMode->GetLiftActor();
+			const FVector LiftLocation = LiftActor->GetActorLocation();
+			FVector NewLocation = PCRGameMode->GetCachedEricaCharacter()->GetActorLocation();
+			NewLocation.X = LiftLocation.X;
+			NewLocation.Y = LiftLocation.Y;
+			PCRGameMode->GetCachedEricaCharacter()->SetActorLocation(NewLocation);
+
+			UE_LOG(PCRLogGameInstance, Log, TEXT("보스전투가 재시작되었습니다."));
+			
+			return;
+		}
+	}
+	
+	const FString CurrentLevelName = CurrentWorld->GetName();
+	UGameplayStatics::OpenLevel(CurrentWorld, *CurrentLevelName);
+
+	UE_LOG(PCRLogGameInstance, Log, TEXT("게임이 재시작되었습니다."));
+}
+
+void UPCRGameInstance::ToMain()
+{
+	StopAmbientBGM();
+	StopStage1BGM();
+	StopBossStageBGM();
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("L_Main"));
+
+	UE_LOG(PCRLogGameInstance, Log, TEXT("메인 화면으로 이동합니다."));
+}
+
+void UPCRGameInstance::QuitGame()
+{
+	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 }
 
 bool UPCRGameInstance::SoundUpdate(float DeltaTime)

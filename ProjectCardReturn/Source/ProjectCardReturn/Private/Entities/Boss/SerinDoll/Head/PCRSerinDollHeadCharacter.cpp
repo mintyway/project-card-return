@@ -209,6 +209,13 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 	}
 }
 
+void APCRSerinDollHeadCharacter::DestroySerinDoll()
+{
+	LeftHand->Destroy();
+	RightHand->Destroy();
+	Destroy();
+}
+
 void APCRSerinDollHeadCharacter::LeftRockAttack()
 {
 	if ((State != EState::Basic) || IsAttacking(LeftHand))
@@ -307,8 +314,8 @@ void APCRSerinDollHeadCharacter::SpawnHands()
 	RightHandSpawn();
 
 #if WITH_EDITOR
-	LeftHand->SetActorLabel(LeftHand->GetName());
-	RightHand->SetActorLabel(RightHand->GetName());
+	LeftHand->SetActorLabel(TEXT("LeftHand"));
+	RightHand->SetActorLabel(TEXT("RightHand"));
 	LeftHand->SetFolderPath(TEXT("Serin"));
 	RightHand->SetFolderPath(TEXT("Serin"));
 #endif
@@ -319,10 +326,7 @@ void APCRSerinDollHeadCharacter::LeftHandSpawn()
 	const FVector LeftHandSpawnLocation = GetActorLocation() + FVector(-1000.0, 1000.0, 500.0);
 	const FRotator LeftHandSpawnRotation = GetActorRotation();
 
-	FActorSpawnParameters LeftHandSpawnParameters;
-	const FName LeftHandName = TEXT("LeftHand");
-	LeftHandSpawnParameters.Name = LeftHandName;
-	LeftHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation, LeftHandSpawnParameters);
+	LeftHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), LeftHandSpawnLocation, LeftHandSpawnRotation);
 
 	LeftHand->Init(this, -GetActorRightVector());
 	LeftHand->GetCachedSerinDollHandAnimInstance()->OnPattern1Ended.AddUObject(this, &APCRSerinDollHeadCharacter::HandlePattern1Ended);
@@ -333,10 +337,7 @@ void APCRSerinDollHeadCharacter::RightHandSpawn()
 	const FVector RightHandSpawnLocation = GetActorLocation() + FVector(-1000.0, -1000.0, 500.0);
 	const FRotator RightHandSpawnRotation = GetActorRotation();
 
-	FActorSpawnParameters RightHandSpawnParameters;
-	const FName RightHandName = TEXT("RightHand");
-	RightHandSpawnParameters.Name = RightHandName;
-	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation, RightHandSpawnParameters);
+	RightHand = GetWorld()->SpawnActor<APCRSerinDollHandCharacter>(APCRSerinDollHandCharacter::StaticClass(), RightHandSpawnLocation, RightHandSpawnRotation);
 
 	RightHand->Init(this, GetActorRightVector());
 	RightHand->GetCachedSerinDollHandAnimInstance()->OnPattern1LastShoot.AddUObject(this, &APCRSerinDollHeadCharacter::HandlePattern1LastShoot);
@@ -389,20 +390,8 @@ void APCRSerinDollHeadCharacter::HandleDead()
 
 	FTimerHandle DelayedDestroyHandle;
 	FTimerDelegate DelayedDestroyDelegate;
-	DelayedDestroyDelegate.BindUObject(this, &APCRSerinDollHeadCharacter::DelayedDestroy);
+	DelayedDestroyDelegate.BindUObject(this, &APCRSerinDollHeadCharacter::DestroySerinDoll);
 	GetWorldTimerManager().SetTimer(DelayedDestroyHandle, DelayedDestroyDelegate, 1.f, false);
-}
-
-void APCRSerinDollHeadCharacter::DelayedDestroy()
-{
-	for (auto& TimerHandle : TimerHandles)
-	{
-		GetWorldTimerManager().ClearTimer(TimerHandle);
-	}
-
-	LeftHand->Destroy();
-	RightHand->Destroy();
-	Destroy();
 }
 
 bool APCRSerinDollHeadCharacter::IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand)
