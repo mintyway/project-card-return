@@ -72,10 +72,10 @@ void APCRBaseItem::HandleOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (Cast<APCREricaCharacter>(OtherActor) || Cast<APCREricaCardProjectile>(OtherActor))
 	{
-		PlayerOverlapEvent();
+		PlayerOrCardOverlapEvent();
 		Destroy();
 	}
 }
 
-void APCRBaseItem::PlayerOverlapEvent() {}
+void APCRBaseItem::PlayerOrCardOverlapEvent() {}
 

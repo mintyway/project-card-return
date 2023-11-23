@@ -4,6 +4,7 @@
 #include "Entities/Item/PCRLongerRangeItem.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -18,10 +19,12 @@ APCRLongerRangeItem::APCRLongerRangeItem()
 	}
 }
 
-void APCRLongerRangeItem::PlayerOverlapEvent()
+void APCRLongerRangeItem::PlayerOrCardOverlapEvent()
 {
-	Super::PlayerOverlapEvent();
+	Super::PlayerOrCardOverlapEvent();
 
 	Player->IncreaseShootRange(ParameterDataAsset->ShootRangeIncreaseDistance);
 	UE_LOG(PCRLongerRangeItem, Log, TEXT("카드 평균 사거리 : %.2f"), Player->CardAverageRange());
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ItemDataAsset->LongRangeItemPickEffect, Player->GetActorLocation(), GetActorRotation());
 }

@@ -4,6 +4,7 @@
 #include "Entities/Item/PCRStrongAttackItem.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -18,10 +19,12 @@ APCRStrongAttackItem::APCRStrongAttackItem()
 	}
 }
 
-void APCRStrongAttackItem::PlayerOverlapEvent()
+void APCRStrongAttackItem::PlayerOrCardOverlapEvent()
 {
-	Super::PlayerOverlapEvent();
+	Super::PlayerOrCardOverlapEvent();
 
 	Player->IncreaseDamage(ParameterDataAsset->DamageIncreaseValue);
 	UE_LOG(PCRStrongAttackItem, Log, TEXT("카드 평균 데미지 : %.2f"), Player->CardAverageDamage());
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ItemDataAsset->StrongAttackItemPickEffect, Player->GetActorLocation(), GetActorRotation());
 }

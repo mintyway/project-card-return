@@ -4,6 +4,7 @@
 #include "Entities/Item/PCRManyCardItem.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -18,10 +19,12 @@ APCRManyCardItem::APCRManyCardItem()
 	}
 }
 
-void APCRManyCardItem::PlayerOverlapEvent()
+void APCRManyCardItem::PlayerOrCardOverlapEvent()
 {
-	Super::PlayerOverlapEvent();
+	Super::PlayerOrCardOverlapEvent();
 
 	Player->IncreaseMaxCardCount(ParameterDataAsset->MaxCardIncreaseCount);
 	UE_LOG(PCRManyCardItem, Log, TEXT("카드 최대 수 : %d"), Player->GetMaxCardCount());
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ItemDataAsset->ManyCardItemPickEffect, Player->GetActorLocation(), GetActorRotation());
 }

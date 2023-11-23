@@ -4,6 +4,7 @@
 #include "Entities/Item/PCRHealItem.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Entities/Item/PCRItemDataAsset.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -18,10 +19,12 @@ APCRHealItem::APCRHealItem()
 	}
 }
 
-void APCRHealItem::PlayerOverlapEvent()
+void APCRHealItem::PlayerOrCardOverlapEvent()
 {
-	Super::PlayerOverlapEvent();
+	Super::PlayerOrCardOverlapEvent();
 
 	Player->Heal(Player->GetMaxHP() * ParameterDataAsset->HealRate);
 	UE_LOG(PCRHealItem, Log, TEXT("체력 : %.2f"), Player->GetCurrentHP());
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ItemDataAsset->HealItemPickEffect, Player->GetActorLocation(), GetActorRotation());
 }
