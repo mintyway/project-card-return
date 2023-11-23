@@ -32,7 +32,6 @@ public:
 protected:
 	virtual void Init() override;
 	virtual void OnStart() override;
-	virtual void Shutdown() override;
 
 public: // 동작
 	void InitInGameSoundSystem();
