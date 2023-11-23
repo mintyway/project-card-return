@@ -114,7 +114,7 @@ APCREricaCharacter::APCREricaCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	if (CameraBoom && ParameterDataAsset)
 	{
-		CameraBoom->SetupAttachment(GetCapsuleComponent());
+		CameraBoom->SetupAttachment(GetRootComponent());
 		CameraBoom->SetRelativeRotation(FRotator(-ParameterDataAsset->CameraPitch, 0.0, 0.0));
 		CameraBoom->bInheritPitch = false;
 		CameraBoom->bInheritYaw = false;
@@ -137,7 +137,7 @@ APCREricaCharacter::APCREricaCharacter()
 	AimingBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("AimingBoxComponent"));
 	if (AimingBoxComponent && EricaDataAsset)
 	{
-		AimingBoxComponent->SetupAttachment(GetCapsuleComponent());
+		AimingBoxComponent->SetupAttachment(GetRootComponent());
 		AimingBoxComponent->InitBoxExtent(FVector(5000.0, 5000.0, 0.0));
 		AimingBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		AimingBoxComponent->SetCollisionObjectType(ECC_GameTraceChannel4);
@@ -146,11 +146,35 @@ APCREricaCharacter::APCREricaCharacter()
 		AimingBoxComponent->SetHiddenInGame(true);
 	}
 
+	DirectionIndicatorMeshMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DirectionMeshComponent"));
+	if (DirectionIndicatorMeshMeshComponent && EricaDataAsset)
+	{
+		DirectionIndicatorMeshMeshComponent->SetupAttachment(GetRootComponent());
+		DirectionIndicatorMeshMeshComponent->SetRelativeScale3D(FVector(2.0));
+		DirectionIndicatorMeshMeshComponent->SetStaticMesh(EricaDataAsset->DirectionIndicatorMesh);
+		FVector NewLocation = GetActorLocation();
+		NewLocation.Z = NewLocation.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 3.0;
+		DirectionIndicatorMeshMeshComponent->SetRelativeLocation(NewLocation);
+	}
+	
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
 	if (DashNiagaraComponent && EricaDataAsset)
 	{
-		DashNiagaraComponent->SetupAttachment(GetCapsuleComponent());
+		DashNiagaraComponent->SetupAttachment(GetRootComponent());
 		DashNiagaraComponent->SetAsset(EricaDataAsset->DashEffect);
+	}
+
+	WalkDustEffectNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("WalkDustEffectNiagaraComponent"));
+	if (WalkDustEffectNiagaraComponent && EricaDataAsset)
+	{
+		WalkDustEffectNiagaraComponent->SetupAttachment(GetRootComponent());
+		float OutRadius;
+		float OutHalfHeight;
+		GetCapsuleComponent()->GetScaledCapsuleSize(OutRadius, OutHalfHeight);
+		FVector NewLocation = GetActorLocation();
+		NewLocation.Z = (NewLocation.Z - OutHalfHeight) + 15.f;
+		WalkDustEffectNiagaraComponent->SetRelativeLocation(NewLocation);
+		WalkDustEffectNiagaraComponent->SetAsset(EricaDataAsset->WalkDustEffect);
 	}
 }
 
@@ -172,7 +196,6 @@ void APCREricaCharacter::PostInitializeComponents()
 	check(CachedListenerActor);
 	CachedListenerActor->Init(this);
 
-	check(DashNiagaraComponent);
 	DashNiagaraComponent->Deactivate();
 
 	// 카드 풀을 생성하는 코드입니다.
@@ -588,6 +611,8 @@ void APCREricaCharacter::Dash()
 		bIsDashing = true;
 		bIsDashInvincible = true;
 
+		WalkDustEffectNiagaraComponent->Deactivate();
+
 		GetCapsuleComponent()->SetCollisionProfileName("PlayerDash");
 
 		FTimerHandle DashCooldownTimerHandle;
@@ -643,6 +668,7 @@ void APCREricaCharacter::HandleDash(float DeltaTime)
 	if (!SetActorLocation(NewLocation, true))
 	{
 		UE_LOG(PCRLogEricaCharacter, Log, TEXT("대시 중 벽에 막혔습니다."));
+		WalkDustEffectNiagaraComponent->Activate(true);
 		bIsDashing = false;
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
@@ -700,6 +726,7 @@ void APCREricaCharacter::TotalDashTimeCallback()
 {
 	ElapsedDashTime = 0.f;
 	bIsDashing = false;
+	WalkDustEffectNiagaraComponent->Activate(true);
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 }

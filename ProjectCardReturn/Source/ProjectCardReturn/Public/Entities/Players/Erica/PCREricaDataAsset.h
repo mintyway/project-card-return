@@ -36,6 +36,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	TObjectPtr<UStaticMesh> AimingPlane;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
+	TObjectPtr<UStaticMesh> DirectionIndicatorMesh;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
@@ -58,6 +61,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> MenuInputAction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "FX")
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> DashEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> WalkDustEffect;
 };

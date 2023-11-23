@@ -4,6 +4,7 @@
 #include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
@@ -446,6 +447,10 @@ void APCRSerinDollHandCharacter::HandleRockAttackHit()
 			check(Actor);
 			const FDamageEvent DamageEvent;
 			ActualDamage = Actor->TakeDamage(RockAttackData.Damage, DamageEvent, CachedSerinDollHead->GetController(), this);
+
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+									   SerinDollDataAsset->RockAttackHitEffect,
+									   Actor->GetActorLocation());
 		}
 	}
 
@@ -485,6 +490,10 @@ void APCRSerinDollHandCharacter::HandlePaperAttackHit(UPrimitiveComponent* Overl
 		OtherActor->TakeDamage(PaperAttackData.Damage, DamageEvent, CachedSerinDollHead->GetController(), this);
 
 		DrawDebugBox(GetWorld(), GetActorLocation(), PaperAttackSweepPlane->GetScaledBoxExtent(), FColor::Red, false, 1.f);
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+											   SerinDollDataAsset->PaperAttackHitEffect,
+											   OtherActor->GetActorLocation());
 	}
 }
 
@@ -509,6 +518,10 @@ void APCRSerinDollHandCharacter::HandleScissorsAttackOverlapped(UPrimitiveCompon
 		const FVector Direction = GetActorRotation().Vector();
 
 		DrawDebugBox(GetWorld(), GetActorLocation() + Direction * 300.f, ScissorsAttackHitPlane->GetScaledBoxExtent(), GetActorRotation().Quaternion(), FColor::Red, false, 1.f);
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+		                                               SerinDollDataAsset->ScissorsAttackHitEffect,
+		                                               OtherActor->GetActorLocation());
 	}
 }
 

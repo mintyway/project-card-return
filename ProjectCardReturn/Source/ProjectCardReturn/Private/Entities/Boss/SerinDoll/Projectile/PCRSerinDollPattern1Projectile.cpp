@@ -3,6 +3,8 @@
 
 #include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
@@ -47,6 +49,13 @@ APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
 		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
 		ProjectileMovementComponent->InitialSpeed = 0.f;
 		ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
+	}
+
+	Pattern1ThrowEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Pattern1ThrowEffectComponent"));
+	if (Pattern1ThrowEffectComponent && SerinDollDataAsset)
+	{
+		Pattern1ThrowEffectComponent->SetupAttachment(GetRootComponent());
+		Pattern1ThrowEffectComponent->SetAsset(SerinDollDataAsset->Pattern1ThrowEffect);
 	}
 }
 
@@ -118,6 +127,7 @@ void APCRSerinDollPattern1Projectile::BindOnReturnCardBegin(APCREricaCardProject
 void APCRSerinDollPattern1Projectile::EnableProjectile()
 {
 	ProjectileMovementComponent->Activate();
+	Pattern1ThrowEffectComponent->Activate(true);
 	SetActorHiddenInGame(false);
 	EnableCollisionDetection();
 }
@@ -125,6 +135,7 @@ void APCRSerinDollPattern1Projectile::EnableProjectile()
 void APCRSerinDollPattern1Projectile::DisableProjectile()
 {
 	ProjectileMovementComponent->Deactivate();
+	Pattern1ThrowEffectComponent->Deactivate();
 	SetActorHiddenInGame(true);
 	DisableCollisionDetection();
 }
@@ -199,6 +210,11 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 		StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel9, ECR_Overlap);
 		ProjectileMovementComponent->Activate();
 		ProjectileMovementComponent->Velocity = Direction * ProjectileReturnSpeed;
+		const FRotator NewRotator = FRotationMatrix::MakeFromX(ProjectileMovementComponent->Velocity.GetSafeNormal()).Rotator();
+		SetActorRotation(NewRotator);
+		Pattern1ThrowEffectComponent->Activate(true);
+		
+		
 
 		if (OnDetachedCard.IsBound())
 		{
@@ -206,13 +222,16 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 		}
 
 		State = ESerinDollProjectileState::Returning;
-		
+
 		bOnceDetached = true;
 	}
 }
 
 void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
 {
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+	                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
+	
 	Destroy();
 }
 
@@ -220,7 +239,7 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 {
 	float DamageAmount;
 	const FDamageEvent DamageEvent;
-	
+
 	if (Cast<APCREricaCharacter>(OtherActor))
 	{
 		DamageAmount = 20.f;

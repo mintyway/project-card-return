@@ -144,8 +144,14 @@ private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Aim")
 	TObjectPtr<UBoxComponent> AimingBoxComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Direction")
+	TObjectPtr<UStaticMeshComponent> DirectionIndicatorMeshMeshComponent;
+
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraComponent> DashNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraComponent> WalkDustEffectNiagaraComponent;
 
 private: // 캐시
 	UPROPERTY()

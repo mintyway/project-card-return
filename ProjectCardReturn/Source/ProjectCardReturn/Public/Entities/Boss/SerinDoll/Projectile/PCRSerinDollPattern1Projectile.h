@@ -7,6 +7,7 @@
 #include "Interfaces/PCREricaCardInteractable.h"
 #include "PCRSerinDollPattern1Projectile.generated.h"
 
+class UNiagaraComponent;
 class USphereComponent;
 class UPCRSerinDollPrimaryDataAsset;
 class UPCRSoundPrimaryDataAsset;
@@ -81,6 +82,9 @@ private: // 컴포넌트
 
 	UPROPERTY(VisibleAnywhere, Category = "Move")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraComponent> Pattern1ThrowEffectComponent;
 
 private: // 데이터
 	ESerinDollProjectileState State;

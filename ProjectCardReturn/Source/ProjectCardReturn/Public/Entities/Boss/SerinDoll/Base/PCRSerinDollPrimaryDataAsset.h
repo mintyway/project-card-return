@@ -71,4 +71,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> ScissorsAttackHitEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> Pattern1ThrowEffect;
+	
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> Pattern1BombEffect;
 };
