@@ -30,6 +30,8 @@ protected:
 	virtual void Attack() override;
 
 public:
+	virtual void Jump() override;
+	
 	FORCEINLINE float GetGimmickMoveRange() const { return GimmickMoveRange; }
 	FORCEINLINE float GetJumpProbability() const { return JumpProbability; }
 	FORCEINLINE float GetWaitAndJumpProbability() const { return WaitAndJumpProbability; }
@@ -40,7 +42,6 @@ public:
 	FVector GetLeftDiagonal() const;
 	
 	void Hit();
-	void RabbitJump();
 	
 private:
 	float GimmickMoveRange;

@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTTaskNode_PCRRabbitJump::ExecuteTask(UBehaviorTreeComponen
 	APCRRabbitCharacter* Rabbit = Cast<APCRRabbitCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 
 	check(Rabbit)
-	Rabbit->RabbitJump();
+	Rabbit->Jump();
 
 	return EBTNodeResult::InProgress;
 }

@@ -46,6 +46,8 @@ void UPCRRabbitAnimInstance::Jump()
 {
 	Montage_Play(MonsterDataAsset->RabbitJumpAnimationMontage);
 
+	CachedRabbit->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
+
 	bCanJump = false;
 }
 
