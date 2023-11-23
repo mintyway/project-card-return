@@ -304,6 +304,8 @@ void APCREricaCharacter::IncreaseMaxHP(float Amount)
 void APCREricaCharacter::IncreaseMaxCardCount(int32 Amount)
 {
 	MaxCardCount += Amount;
+
+	// 여기만 수정하면 됨
 }
 
 void APCREricaCharacter::IncreaseDamage(float Amount)
