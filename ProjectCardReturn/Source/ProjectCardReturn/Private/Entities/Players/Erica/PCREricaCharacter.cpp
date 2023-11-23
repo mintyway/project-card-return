@@ -22,7 +22,6 @@
 #include "NiagaraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Entities/Players/Erica/PCRListenerActor.h"
-#include "GameFramework/GameModeBase.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
