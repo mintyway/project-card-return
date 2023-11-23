@@ -3,7 +3,4 @@
 
 #include "Game/PCRMainGameModeBase.h"
 
-APCRMainGameModeBase::APCRMainGameModeBase()
-{
-	
-}
+APCRMainGameModeBase::APCRMainGameModeBase() {}

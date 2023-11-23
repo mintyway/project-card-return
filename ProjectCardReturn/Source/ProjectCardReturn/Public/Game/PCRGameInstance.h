@@ -35,7 +35,6 @@ protected:
 	virtual void Shutdown() override;
 
 public: // 동작
-	void InitSoundSystem();
 	void InitInGameSoundSystem();
 	void ReleaseInGameSoundSystem();
 
@@ -84,7 +83,6 @@ public: // 동작
 	void QuitGame();
 
 private:
-	bool SoundUpdate(float DeltaTime);
 	FORCEINLINE float GetLastMasterVolume() const { return LastMasterVolume; }
 
 	// 데이터 에셋
@@ -94,7 +92,7 @@ private:
 private: // 오디오
 	FMOD::Studio::System* FMODStudioSystem;
 	FMOD::Studio::Bus* MasterBus;
-
+	
 	FMOD::Studio::EventInstance* MainAudioInst;
 	FMOD::Studio::EventInstance* AmbientAudioInst;
 	FMOD::Studio::EventInstance* Stage1AudioInst;
@@ -103,6 +101,5 @@ private: // 오디오
 
 private: // 데이터
 	uint32 bIsInit:1;
-	float MasterVolume;
 	float LastMasterVolume;
 };

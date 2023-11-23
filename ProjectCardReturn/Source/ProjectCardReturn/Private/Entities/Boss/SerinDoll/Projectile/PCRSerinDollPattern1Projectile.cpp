@@ -105,7 +105,11 @@ void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& Sta
 {
 	SetOwner(NewOwner);
 	LaunchLocation = StartLocation;
+	
+	UFMODAudioComponent* test = UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Pattern1BombThrow, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, false, false, true);
 
+	test->Activate();
+	
 	SetActorLocationAndRotation(LaunchLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
 	SetActorHiddenInGame(false);
 	EnableProjectile();
@@ -125,10 +129,10 @@ void APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart()
 	// TODO: 타이머 파라미터화 필요
 	const float Time = 10.f;
 	const float TimerSoundTime = 3.f;
-	
+
 	FTimerHandle TimerSoundHandle;
 	GetWorldTimerManager().SetTimer(TimerSoundHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound), Time - TimerSoundTime, false);
-	
+
 	FTimerHandle HandlePattern1ExplosionTimerHandle;
 	GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer), Time, false);
 }
@@ -248,7 +252,7 @@ void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
 
 	const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
 	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1Bomb, NewTransform, true);
-	
+
 	TArray<FOverlapResult> OutOverlaps;
 	const float Radius = 700.f;
 	const float Damage = 15.f;
@@ -295,10 +299,10 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 	{
 		DamageAmount = 5.f;
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
-		
+
 		const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
 		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
-		
+
 		Destroy();
 	}
 }
