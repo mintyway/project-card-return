@@ -6,9 +6,6 @@
 #include "Entities/Projectiles/Base/PCRBaseProjectile.h"
 #include "Game/PCRParameterDataAsset.h"
 
-#include "Components/BoxComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
-
 DEFINE_LOG_CATEGORY(PCRLogBaseProjectilePool);
 
 APCRBaseProjectilePool::APCRBaseProjectilePool()
@@ -30,6 +27,16 @@ APCRBaseProjectilePool::APCRBaseProjectilePool()
 void APCRBaseProjectilePool::InitProjectilePool(UClass* ProjectileClass)
 {
 	for (int32 i = 0; i < ProjectilePoolSize; ++i)
+	{
+		APCRBaseProjectile* NewProjectile = GetWorld()->SpawnActor<APCRBaseProjectile>(ProjectileClass, FVector::ZeroVector, FRotator::ZeroRotator);
+		FName FolderName = TEXT("Projectiles");
+		ProjectilePool.Enqueue(NewProjectile);
+	}
+}
+
+void APCRBaseProjectilePool::Add(UClass* ProjectileClass, int32 InCount)
+{
+	for (int32 i = 0; i < InCount; ++i)
 	{
 		APCRBaseProjectile* NewProjectile = GetWorld()->SpawnActor<APCRBaseProjectile>(ProjectileClass, FVector::ZeroVector, FRotator::ZeroRotator);
 		FName FolderName = TEXT("Projectiles");

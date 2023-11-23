@@ -305,7 +305,7 @@ void APCREricaCharacter::IncreaseMaxCardCount(int32 Amount)
 {
 	MaxCardCount += Amount;
 
-	// TODO: 카드 재생성 필요
+	CardProjectilePool->Add(APCREricaCardProjectile::StaticClass(), Amount);
 }
 
 void APCREricaCharacter::IncreaseDamage(float Amount)

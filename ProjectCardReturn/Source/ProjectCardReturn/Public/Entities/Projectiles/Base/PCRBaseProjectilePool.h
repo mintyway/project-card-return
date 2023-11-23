@@ -25,7 +25,9 @@ public:
 	APCRBaseProjectilePool();
 	
 public:
-	virtual void InitProjectilePool(UClass* ProjectileClass);
+	void InitProjectilePool(UClass* ProjectileClass);
+	void Add(UClass* ProjectileClass, int32 InCount);
+	
 	virtual APCRBaseProjectile* Acquire();
 	virtual void Release(APCRBaseProjectile* Projectile);
 
