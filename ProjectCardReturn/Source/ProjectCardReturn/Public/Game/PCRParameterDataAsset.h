@@ -122,6 +122,9 @@ public: // 세린
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	float AttackRadius;
 	
 public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")

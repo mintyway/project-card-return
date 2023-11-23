@@ -14,7 +14,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  SerinMoveSpeed(500.f), SerinBasicChaseSpeed(500.f), SerinChaseSpeed(1000.f), SerinRockSpeed(3000.f),
 
-	  DeadAfterDestroyTime(2.f),
+	  DeadAfterDestroyTime(2.f), AttackRadius(50.0f),
 
 	  RabbitMaxHP(3.f), RabbitMoveSpeed(EricaMoveSpeed * 0.7f), RabbitAttackPower(5.f), RabbitAttackRange(300.f), RabbitAttackRate(1.f), RabbitGimmickMoveRange(1000.f), RabbitJumpProbability(0.2f), RabbitWaitAndJumpProbability(0.25f), RabbitMoveRightDiagonalProbability(0.33f), RabbitMoveLeftDiagonalProbability(0.5f), RabbitMoveDiagonalDistance(300.f),
 
