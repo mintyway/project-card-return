@@ -30,4 +30,19 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	TObjectPtr<UNiagaraSystem> LongRangeItemEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pick")
+	TObjectPtr<UNiagaraSystem> MoreHpItemPickEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Pick")
+	TObjectPtr<UNiagaraSystem> ManyCardItemPickEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Pick")
+	TObjectPtr<UNiagaraSystem> HealItemPickEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pick")
+	TObjectPtr<UNiagaraSystem> StrongAttackItemPickEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pick")
+	TObjectPtr<UNiagaraSystem> LongRangeItemPickEffect;
 };

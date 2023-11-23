@@ -31,6 +31,7 @@ void UBTTaskNode_PCRMonsterAttack::TickTask(UBehaviorTreeComponent& OwnerComp, u
 
 	check(OwnerComp.GetAIOwner());
 	const APCRMonsterBaseCharacter* Monster = Cast<APCRMonsterBaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	
 	check(Monster);
 	const UPCRMonsterBaseAnimInstance* MonsterAnimInstance = Cast<UPCRMonsterBaseAnimInstance>(Monster->GetMesh()->GetAnimInstance());
 	

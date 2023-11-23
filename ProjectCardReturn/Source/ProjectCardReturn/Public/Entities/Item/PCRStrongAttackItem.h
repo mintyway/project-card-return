@@ -20,5 +20,5 @@ public:
 	APCRStrongAttackItem();
 
 protected:
-	virtual void PlayerOverlapEvent() override;
+	virtual void PlayerOrCardOverlapEvent() override;
 };

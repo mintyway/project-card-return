@@ -4,18 +4,18 @@
 
 #include "ProjectCardReturn.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskNode_PCRJump.generated.h"
+#include "BTTaskNode_PCRRabbitJump.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTCARDRETURN_API UBTTaskNode_PCRJump : public UBTTaskNode
+class PROJECTCARDRETURN_API UBTTaskNode_PCRRabbitJump : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTaskNode_PCRJump();
+	UBTTaskNode_PCRRabbitJump();
 	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

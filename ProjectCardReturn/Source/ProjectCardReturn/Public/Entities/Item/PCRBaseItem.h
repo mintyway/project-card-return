@@ -34,7 +34,7 @@ private:
 	TObjectPtr<UBoxComponent> BoxComponent;
 
 protected:
-	virtual void PlayerOverlapEvent();
+	virtual void PlayerOrCardOverlapEvent();
 
 	UPROPERTY(VisibleAnywhere, Category = "Player")
 	TObjectPtr<APCREricaCharacter> Player;
