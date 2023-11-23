@@ -3,7 +3,6 @@
 
 #include "Game/PCRGameModeBase.h"
 
-#include "FMODBlueprintStatics.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -11,8 +10,11 @@
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
 #include "Entities/MonsterGenerator/PCRMonsterGenerator.h"
+#include "Entities/Monsters/Rabbit/EliteRabbit/PCREliteRabbitCharacter.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/EliteMeleeSoldier/PCREliteMeleeSoldierCharacter.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
+#include "Entities/Monsters/Soldier/RangedSoldier/EliteRangedSoldier/PCREliteRangedSoldierCharacter.h"
 #include "Game/PCRGameInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 
@@ -53,8 +55,7 @@ APCRGameModeBase::APCRGameModeBase()
 
 	if (StageDataAsset)
 	{
-		UClass* LiftBP = StageDataAsset->LiftBlueprint.LoadSynchronous();
-		if (LiftBP)
+		if (UClass* LiftBP = StageDataAsset->LiftBlueprint.LoadSynchronous())
 		{
 			LiftActorClass = LiftBP;
 		}
@@ -173,12 +174,12 @@ void APCRGameModeBase::SpawnMonsterGenerators()
 
 void APCRGameModeBase::StartAllMonsterGenerators()
 {
-	MonsterGenerators[0]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[1]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[0]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[1]->Start(APCREliteRabbitCharacter::StaticClass(), GenerateInterval);
 	MonsterGenerators[2]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[3]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[4]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[5]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[3]->Start(APCREliteMeleeSoldierCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[4]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
+	MonsterGenerators[5]->Start(APCREliteRangedSoldierCharacter::StaticClass(), GenerateInterval);
 }
 
 void APCRGameModeBase::StopAllMonsterGeneratorsAndKillSpawnedMonsters()
