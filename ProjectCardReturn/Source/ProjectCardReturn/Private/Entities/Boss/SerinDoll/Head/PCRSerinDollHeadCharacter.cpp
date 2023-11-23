@@ -39,8 +39,8 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 	Pattern2Data.SumPulledCount = 0;
 
 	// 파라미터화 필요
-	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
-	MaxHP = 1000.f;
+	// 기본값 3000.f 테스트를 위해 체력 100으로 조정
+	MaxHP = 2000.f;
 	CurrentHP = MaxHP;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();
