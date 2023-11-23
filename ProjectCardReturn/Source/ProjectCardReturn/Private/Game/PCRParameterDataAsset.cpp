@@ -22,6 +22,6 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  RangedSoldierMaxHP(3.f), RangedSoldierMoveSpeed(300.f), RangedSoldierAttackPower(5.f), RangedSoldierAttackRange(1500.f), RangedSoldierAttackRate(1.f), SpearDestroyTimeAfterDrop(1.f), SpearSpeed(1500.f), SpearPredictionRate(0.5f),
 
-	  ItemSpawnRate(0.25f), ItemDestroyTime(10.0f), MoreHpItemRate(0.3f), ManyCardItemRate(0.2f), HealItemRate(0.1f), StrongAttackItemRate(0.25f), LongerRangeItemRate(0.15f),
+	  ItemSpawnRate(0.25f), ItemSpawnRateByEliteMonster(1.0f), ItemDestroyTime(10.0f), MoreHpItemRate(0.3f), ManyCardItemRate(0.2f), HealItemRate(0.1f), StrongAttackItemRate(0.25f), LongerRangeItemRate(0.15f),
 
 	  MaxHPIncreaseRate(0.05f), HealRateByIncreaseMaxHP(0.05f), MaxCardIncreaseCount(3), HealRate(0.1f), DamageIncreaseValue(0.5f), ShootRangeIncreaseDistance(100) {}

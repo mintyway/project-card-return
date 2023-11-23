@@ -206,6 +206,9 @@ public: // 아이템
 	float ItemSpawnRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float ItemSpawnRateByEliteMonster;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float ItemDestroyTime;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")

@@ -189,7 +189,7 @@ void APCRMonsterBaseCharacter::PlayDeadEffect(AActor* DestroyedActor)
 
 void APCRMonsterBaseCharacter::SpawnItem(AActor* DestroyedActor)
 {
-	if (FMath::RandRange(1, 100) <= ParameterDataAsset->ItemSpawnRate * 100)
+	if (FMath::RandRange(1, 100) <= (!bIsElite ? ParameterDataAsset->ItemSpawnRate : ParameterDataAsset->ItemSpawnRateByEliteMonster) * 100)
 	{
 		GetWorld()->SpawnActor<APCRBaseItem>(GetItemClass(), GetActorLocation(), FRotator(0.0, 90.0, 0.0));
 	}
