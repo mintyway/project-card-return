@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCREliteMeleeSoldierCharacter : public APCRMeleeSoldierCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCREliteMeleeSoldierCharacter();
 };

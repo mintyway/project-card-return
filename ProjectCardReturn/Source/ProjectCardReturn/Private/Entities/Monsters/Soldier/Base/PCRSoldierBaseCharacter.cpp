@@ -14,8 +14,6 @@ DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierCharacter);
 
 APCRSoldierBaseCharacter::APCRSoldierBaseCharacter()
 {
-	bCanAttack = true;
-
 	AIControllerClass = APCRSoldierBaseAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 

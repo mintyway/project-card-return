@@ -44,9 +44,9 @@ public: // Getter, Setter
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
 	FORCEINLINE const UPCRParameterDataAsset* GetParameterDataAsset() const { return ParameterDataAsset; }
 	FORCEINLINE const UPCRUIDataAsset* GetUIDataAsset() const { return UIDataAsset; }
-	FORCEINLINE bool IsAlive() const { return bIsAlive; }
 	FORCEINLINE float GetAttackPower() const { return AttackPower; }
 	FORCEINLINE float GetAttackRange() const { return AttackRange; }
+	FORCEINLINE bool IsAlive() const { return bIsAlive; }
 
 public: // 델리게이트
 	FOnHPChangeDelegate OnHPChange;
@@ -55,11 +55,11 @@ public: // 델리게이트
 	FOnDeadDelegate OnDead;
 
 protected:
-	virtual void HandleChangeHP();
+	void HandleChangeHP();
 	virtual void HandleDead();
 	
 	UFUNCTION()
-	virtual void PlayDeadEffect(AActor* DestroyedActor);
+	void PlayDeadEffect(AActor* DestroyedActor);
 
 	UFUNCTION()
 	void SpawnItem(AActor* DestroyedActor);
@@ -71,15 +71,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<UProgressBar> HPProgressBar;
-
-	float CurrentHP;
+	
 	float MaxHP;
-	uint32 bIsAlive:1;
-
-	float AttackPower;
+	float CurrentHP;
 	float MoveSpeed;
+	float AttackPower;
 	float AttackRange;
-	float AttackRate;
+
+	uint32 bIsAlive:1;
+	uint32 bIsElite:1;
 
 	void DestroyTimeCallback();
 

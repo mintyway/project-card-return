@@ -17,9 +17,9 @@ APCRMeleeSoldierCharacter::APCRMeleeSoldierCharacter()
 	{
 		MaxHP = ParameterDataAsset->MeleeSoldierMaxHP;
 		CurrentHP = MaxHP;
+		MoveSpeed = ParameterDataAsset->MeleeSoldierMoveSpeed;
 		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower;
 		AttackRange = ParameterDataAsset->MeleeSoldierAttackRange;
-		AttackRate = ParameterDataAsset->MeleeSoldierAttackRate;
 	}
 
 	if (GetCapsuleComponent())

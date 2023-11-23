@@ -19,7 +19,6 @@
 #include "Entities/Item/PCRHealItem.h"
 #include "Entities/Item/PCRStrongAttackItem.h"
 #include "Entities/Item/PCRLongerRangeItem.h"
-#include "Entities/Monsters/Base/PCRMonsterBaseAnimInstance.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 
@@ -30,10 +29,12 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	// TODO: 모두 파라미터화 필요
 	MaxHP = 100.f;
 	CurrentHP = MaxHP;
-	AttackPower = 3.f;
-	bIsAlive = true;
 	MoveSpeed = 300.f;
+	AttackPower = 3.f;
 	AttackRange = 300.f;
+	
+	bIsAlive = true;
+	bIsElite = false;
 
 	bUseControllerRotationYaw = false;
 

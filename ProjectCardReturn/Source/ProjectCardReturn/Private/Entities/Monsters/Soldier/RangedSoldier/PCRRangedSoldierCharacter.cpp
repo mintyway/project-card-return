@@ -18,9 +18,9 @@ APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 	{
 		MaxHP = ParameterDataAsset->RangedSoldierMaxHP;
 		CurrentHP = MaxHP;
+		MoveSpeed = ParameterDataAsset->RangedSoldierMoveSpeed;
 		AttackPower = ParameterDataAsset->RangedSoldierAttackPower;
 		AttackRange = ParameterDataAsset->RangedSoldierAttackRange;
-		AttackRate = ParameterDataAsset->RangedSoldierAttackRate;
 	}
 
 	if (GetCapsuleComponent())

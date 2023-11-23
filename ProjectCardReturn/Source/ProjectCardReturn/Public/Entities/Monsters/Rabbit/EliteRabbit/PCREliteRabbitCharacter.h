@@ -13,5 +13,7 @@ UCLASS()
 class PROJECTCARDRETURN_API APCREliteRabbitCharacter : public APCRRabbitCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	APCREliteRabbitCharacter();
 };

@@ -18,11 +18,12 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 {
 	if (ParameterDataAsset)
 	{
-		MaxHP = ParameterDataAsset->RabbitMaxHealthPoint;
+		MaxHP = ParameterDataAsset->RabbitMaxHP;
 		CurrentHP = MaxHP;
+		MoveSpeed = ParameterDataAsset->RabbitMoveSpeed;
 		AttackPower = ParameterDataAsset->RabbitAttackPower;
 		AttackRange = ParameterDataAsset->RabbitAttackRange;
-		AttackRate = ParameterDataAsset->RabbitAttackRate;
+		
 		GimmickMoveRange = ParameterDataAsset->RabbitGimmickMoveRange;
 		JumpProbability = ParameterDataAsset->RabbitJumpProbability;
 		WaitAndJumpProbability = ParameterDataAsset->RabbitWaitAndJumpProbability;
@@ -34,7 +35,6 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 	AIControllerClass = APCRRabbitAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	// TODO: 모델링 작업 완료되면 활성화
 	if (GetMesh() && MonsterDataAsset)
 	{
 		GetMesh()->SetSkeletalMesh(MonsterDataAsset->RabbitMesh);

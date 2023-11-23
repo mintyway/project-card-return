@@ -16,11 +16,11 @@ UPCRParameterDataAsset::UPCRParameterDataAsset()
 
 	  DeadAfterDestroyTime(2.f),
 
-	  MeleeSoldierMaxHP(6.f), MeleeSoldierAttackPower(10.f), MeleeSoldierMoveSpeed(300.f), MeleeSoldierAttackRange(300.f), MeleeSoldierAttackRate(1.f), ShieldDestroyTimeAfterDrop(1.f),
+	  RabbitMaxHP(3.f), RabbitMoveSpeed(EricaMoveSpeed * 0.7f), RabbitAttackPower(5.f), RabbitAttackRange(300.f), RabbitAttackRate(1.f), RabbitGimmickMoveRange(1000.f), RabbitJumpProbability(0.2f), RabbitWaitAndJumpProbability(0.25f), RabbitMoveRightDiagonalProbability(0.33f), RabbitMoveLeftDiagonalProbability(0.5f), RabbitMoveDiagonalDistance(300.f),
 
-	  RangedSoldierMaxHP(3.f), RangedSoldierAttackPower(5.f), RangedSoldierMoveSpeed(300.f), RangedSoldierAttackRange(1500.f), RangedSoldierAttackRate(1.f), SpearDestroyTimeAfterDrop(1.f), SpearSpeed(1500.f), SpearPredictionRate(0.5f),
+	  MeleeSoldierMaxHP(6.f), MeleeSoldierMoveSpeed(300.f), MeleeSoldierAttackPower(10.f), MeleeSoldierAttackRange(300.f), MeleeSoldierAttackRate(1.f), ShieldDestroyTimeAfterDrop(1.f),
 
-	  RabbitMaxHealthPoint(3.f), RabbitAttackPower(5.f), RabbitMoveSpeed(EricaMoveSpeed * 0.7f), RabbitAttackRange(300.f), RabbitAttackRate(1.f), RabbitGimmickMoveRange(1000.f), RabbitJumpProbability(0.2f), RabbitWaitAndJumpProbability(0.25f), RabbitMoveRightDiagonalProbability(0.33f), RabbitMoveLeftDiagonalProbability(0.5f), RabbitMoveDiagonalDistance(300.f),
+	  RangedSoldierMaxHP(3.f), RangedSoldierMoveSpeed(300.f), RangedSoldierAttackPower(5.f), RangedSoldierAttackRange(1500.f), RangedSoldierAttackRate(1.f), SpearDestroyTimeAfterDrop(1.f), SpearSpeed(1500.f), SpearPredictionRate(0.5f),
 
 	  ItemSpawnRate(0.25f), ItemDestroyTime(10.0f), MoreHpItemRate(0.3f), ManyCardItemRate(0.2f), HealItemRate(0.1f), StrongAttackItemRate(0.25f), LongerRangeItemRate(0.15f),
 

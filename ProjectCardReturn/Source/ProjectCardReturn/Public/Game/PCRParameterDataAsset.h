@@ -122,60 +122,16 @@ public: // 세린
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float DeadAfterDestroyTime;
-
-public: // 근접 병사
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierMaxHP;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierAttackPower;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierMoveSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierAttackRange;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float MeleeSoldierAttackRate;
-
-	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	float ShieldDestroyTimeAfterDrop;
-
-public: // 원거리 병사
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierMaxHP;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierAttackPower;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierMoveSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierAttackRange;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float RangedSoldierAttackRate;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float SpearDestroyTimeAfterDrop;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float SpearSpeed;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	float SpearPredictionRate;
-
+	
 public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
-	float RabbitMaxHealthPoint;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
-	float RabbitAttackPower;
+	float RabbitMaxHP;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveSpeed;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	float RabbitAttackPower;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitAttackRange;
@@ -201,6 +157,51 @@ public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveDiagonalDistance;
 
+public: // 근접 병사
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierMaxHP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierMoveSpeed;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackPower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float MeleeSoldierAttackRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	float ShieldDestroyTimeAfterDrop;
+
+public: // 원거리 병사
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierMaxHP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierMoveSpeed;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackPower;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float RangedSoldierAttackRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearDestroyTimeAfterDrop;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	float SpearPredictionRate;
+
+public: // 아이템
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float ItemSpawnRate;
 
