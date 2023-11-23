@@ -9,6 +9,7 @@
 
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitAIController.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitAnimInstance.h"
 #include "Game/PCRParameterDataAsset.h"
@@ -97,9 +98,4 @@ FVector APCRRabbitCharacter::GetLeftDiagonal() const
 	const FVector LeftDiagonalLocation = GetActorLocation() + LeftDiagonalVector * MoveDiagonalDistance;
 
 	return LeftDiagonalLocation;
-}
-
-void APCRRabbitCharacter::Hit()
-{
-	
 }

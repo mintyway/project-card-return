@@ -39,6 +39,7 @@ public: // 동작
 	virtual void Attack();
 	
 	void ChangeHP(float Amount);
+	void Hit();
 
 public: // Getter, Setter
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }

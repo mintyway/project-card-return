@@ -13,6 +13,7 @@
 #include "Components/WidgetComponent.h"
 #include "BrainComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Engine/DamageEvents.h"
 
 #include "Entities/Item/PCRMoreHpItem.h"
 #include "Entities/Item/PCRManyCardItem.h"
@@ -25,13 +26,6 @@ DEFINE_LOG_CATEGORY(PCRLogMonsterBaseCharacter);
 APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	// TODO: 모두 파라미터화 필요
-	MaxHP = 100.f;
-	CurrentHP = MaxHP;
-	MoveSpeed = 300.f;
-	AttackPower = 3.f;
-	AttackRange = 300.f;
 	
 	bIsAlive = true;
 	bIsElite = false;
@@ -116,6 +110,33 @@ void APCRMonsterBaseCharacter::ChangeHP(float Amount)
 {
 	CurrentHP += Amount;
 	HandleChangeHP();
+}
+
+void APCRMonsterBaseCharacter::Hit()
+{
+	FHitResult HitResult;
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + GetActorForwardVector() * AttackRange;
+	const FQuat Rot = FQuat::Identity;
+	FCollisionShape Shape = FCollisionShape::MakeSphere(ParameterDataAsset->AttackRadius);
+	const bool bSweepResult = GetWorld()->SweepSingleByChannel(HitResult, Start, End, Rot, ECC_GameTraceChannel7, Shape);
+	
+	if (bSweepResult)
+	{
+		if (AActor* TargetActor = HitResult.GetActor())
+		{
+			float AttackDamage = GetAttackPower();
+			FDamageEvent DamageEvent;
+			TargetActor->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+		}
+	}
+
+	const FVector TraceVector = GetActorForwardVector() * AttackRange;
+	const FVector Center = Start + TraceVector * 0.5f;
+	const float HalfHeight = AttackRange * 0.5f + ParameterDataAsset->AttackRadius;
+	const FQuat CapsuleRotate = FRotationMatrix::MakeFromZ(TraceVector).ToQuat();
+	const FColor DrawColor = bSweepResult ? FColor::Green : FColor::Red;
+	DrawDebugCapsule(GetWorld(), Center, HalfHeight, ParameterDataAsset->AttackRadius, CapsuleRotate, DrawColor, false, 1.f);
 }
 
 /**

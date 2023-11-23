@@ -29,8 +29,6 @@ public:
 	void SpawnAndAttachShield();
 	void HandleDetachedShield();
 
-	void Hit();
-
 protected:
 	virtual void HandleDead() override;
 

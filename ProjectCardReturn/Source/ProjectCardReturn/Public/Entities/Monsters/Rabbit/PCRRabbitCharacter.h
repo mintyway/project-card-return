@@ -41,8 +41,6 @@ public:
 	FVector GetRightDiagonal() const;
 	FVector GetLeftDiagonal() const;
 	
-	void Hit();
-	
 private:
 	float GimmickMoveRange;
 	float JumpProbability;
