@@ -20,9 +20,9 @@
 DEFINE_LOG_CATEGORY(PCRLogGameInstance);
 
 UPCRGameInstance::UPCRGameInstance()
-	: FMODStudioSystem(nullptr), MasterBus(nullptr),
-	  AmbientAudioInst(nullptr), Stage1AudioInst(nullptr), BossStageAudioInst(nullptr),
-	  MasterVolume(0.f), LastMasterVolume(100.f)
+	: FMODStudioSystem(nullptr), MasterBus(nullptr), MainAudioInst(nullptr),
+	  AmbientAudioInst(nullptr), Stage1AudioInst(nullptr), BossStageAudioInst(nullptr), EndingAudioInst(nullptr),
+	  bIsInit(false), MasterVolume(0.f), LastMasterVolume(100.f)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
 	if (DA_Sound.Succeeded())
@@ -38,6 +38,14 @@ void UPCRGameInstance::Init()
 	check(SoundDataAsset);
 
 	MasterVolume = 0.5f;
+}
+
+void UPCRGameInstance::OnStart()
+{
+	Super::OnStart();
+	
+	InitSoundSystem();
+	InitInGameSoundSystem();
 }
 
 void UPCRGameInstance::Shutdown()
@@ -61,6 +69,13 @@ void UPCRGameInstance::InitSoundSystem()
 void UPCRGameInstance::InitInGameSoundSystem()
 {
 	ReleaseInGameSoundSystem();
+	
+	const FFMODEventInstance MainAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->MainBGM, false);
+	MainAudioInst = MainAudio.Instance;
+	if (MainAudioInst)
+	{
+		MainAudioInst->setVolume(0.25f);
+	}
 
 	const FFMODEventInstance AmbientAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->AmbientBGM, false);
 	AmbientAudioInst = AmbientAudio.Instance;
@@ -73,14 +88,21 @@ void UPCRGameInstance::InitInGameSoundSystem()
 	Stage1AudioInst = Stage1Audio.Instance;
 	if (Stage1AudioInst)
 	{
-		Stage1AudioInst->setVolume(0.2f);
+		Stage1AudioInst->setVolume(0.25f);
 	}
 
 	const FFMODEventInstance BossStageAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->BossStageBGM, false);
 	BossStageAudioInst = BossStageAudio.Instance;
 	if (BossStageAudioInst)
 	{
-		BossStageAudioInst->setVolume(0.2f);
+		BossStageAudioInst->setVolume(0.25f);
+	}
+
+	const FFMODEventInstance EndingAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->EndingBGM, false);
+	EndingAudioInst = EndingAudio.Instance;
+	if (EndingAudioInst)
+	{
+		EndingAudioInst->setVolume(0.25f);
 	}
 }
 
@@ -131,6 +153,16 @@ void UPCRGameInstance::MasterVolumeOff()
 	MasterBus->setVolume(0.f);
 }
 
+void UPCRGameInstance::PlayMainBGM()
+{
+	MainAudioInst->start();
+}
+
+void UPCRGameInstance::StopMainBGM()
+{
+	MainAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+}
+
 void UPCRGameInstance::PlayStage1BGM()
 {
 	Stage1AudioInst->start();
@@ -161,6 +193,16 @@ void UPCRGameInstance::StopBossStageBGM()
 	BossStageAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 }
 
+void UPCRGameInstance::PlayEndingBGM()
+{
+	EndingAudioInst->start();;
+}
+
+void UPCRGameInstance::StopEndingBGM()
+{
+	EndingAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+}
+
 void UPCRGameInstance::RestartGame(UWidget* Widget)
 {
 	const UWorld* CurrentWorld = GetWorld();
@@ -184,11 +226,11 @@ void UPCRGameInstance::RestartGame(UWidget* Widget)
 			PCRGameMode->GetCachedEricaCharacter()->SetActorLocation(NewLocation);
 
 			UE_LOG(PCRLogGameInstance, Log, TEXT("보스전투가 재시작되었습니다."));
-			
+
 			return;
 		}
 	}
-	
+
 	const FString CurrentLevelName = CurrentWorld->GetName();
 	UGameplayStatics::OpenLevel(CurrentWorld, *CurrentLevelName);
 

@@ -62,6 +62,7 @@ private: // 내부 함수
 
 	void HandlePattern1DetachedCard(APCREricaCardProjectile* AttachedCard);
 	void HandlePattern1ExplosionTimer();
+	void HandlePattern1ExplosionTimerSound();
 
 	UFUNCTION()
 	void HandleBossOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

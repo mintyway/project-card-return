@@ -3,6 +3,7 @@
 
 #include "Entities/Boss/SerinDoll/Projectile/PCRSerinDollPattern1Projectile.h"
 
+#include "FMODBlueprintStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/SphereComponent.h"
@@ -24,6 +25,12 @@ APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
 	if (DA_SerinDoll.Succeeded())
 	{
 		SerinDollDataAsset = DA_SerinDoll.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
 	}
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
@@ -116,8 +123,14 @@ void APCRSerinDollPattern1Projectile::Release()
 void APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart()
 {
 	// TODO: 타이머 파라미터화 필요
-	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer), 10.f, false);
+	const float Time = 10.f;
+	const float TimerSoundTime = 3.f;
+	
+	FTimerHandle TimerSoundHandle;
+	GetWorldTimerManager().SetTimer(TimerSoundHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound), Time - TimerSoundTime, false);
+	
+	FTimerHandle HandlePattern1ExplosionTimerHandle;
+	GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer), Time, false);
 }
 
 void APCRSerinDollPattern1Projectile::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
@@ -233,6 +246,9 @@ void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
 	                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
 
+	const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
+	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1Bomb, NewTransform, true);
+	
 	TArray<FOverlapResult> OutOverlaps;
 	const float Radius = 700.f;
 	const float Damage = 15.f;
@@ -259,6 +275,12 @@ void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
 	Destroy();
 }
 
+void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound()
+{
+	const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
+	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombTimer, NewTransform, true);
+}
+
 void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	float DamageAmount;
@@ -273,7 +295,10 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 	{
 		DamageAmount = 5.f;
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
-
+		
+		const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
+		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
+		
 		Destroy();
 	}
 }

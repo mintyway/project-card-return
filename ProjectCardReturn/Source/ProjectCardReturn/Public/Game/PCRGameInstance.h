@@ -31,6 +31,7 @@ public:
 
 protected:
 	virtual void Init() override;
+	virtual void OnStart() override;
 	virtual void Shutdown() override;
 
 public: // 동작
@@ -44,29 +45,41 @@ public: // 동작
 	void MasterVolumeOff();
 
 	UFUNCTION(BlueprintCallable)
+	void PlayMainBGM();
+
+	UFUNCTION(BlueprintCallable)
+	void StopMainBGM();
+
+	UFUNCTION(BlueprintCallable)
 	void PlayStage1BGM();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void StopStage1BGM();
 
 	UFUNCTION(BlueprintCallable)
 	void PlayAmbientBGM();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void StopAmbientBGM();
 
 	UFUNCTION(BlueprintCallable)
 	void PlayBossStageBGM();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void StopBossStageBGM();
+
+	UFUNCTION(BlueprintCallable)
+	void PlayEndingBGM();
+
+	UFUNCTION(BlueprintCallable)
+	void StopEndingBGM();
 
 	UFUNCTION(BlueprintCallable)
 	void RestartGame(UWidget* Widget);
 
 	UFUNCTION(BlueprintCallable)
 	void ToMain();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void QuitGame();
 
@@ -82,11 +95,14 @@ private: // 오디오
 	FMOD::Studio::System* FMODStudioSystem;
 	FMOD::Studio::Bus* MasterBus;
 
+	FMOD::Studio::EventInstance* MainAudioInst;
 	FMOD::Studio::EventInstance* AmbientAudioInst;
 	FMOD::Studio::EventInstance* Stage1AudioInst;
 	FMOD::Studio::EventInstance* BossStageAudioInst;
+	FMOD::Studio::EventInstance* EndingAudioInst;
 
 private: // 데이터
+	uint32 bIsInit:1;
 	float MasterVolume;
 	float LastMasterVolume;
 };

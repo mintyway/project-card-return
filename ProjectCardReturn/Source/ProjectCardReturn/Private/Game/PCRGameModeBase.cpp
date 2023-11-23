@@ -114,12 +114,10 @@ void APCRGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CachedPCRGameInstance->InitSoundSystem();
-	CachedPCRGameInstance->InitInGameSoundSystem();
-
 	SpawnMonsterGenerators();
 	StartAllMonsterGenerators();
 
+	CachedPCRGameInstance->StopMainBGM();
 	CachedPCRGameInstance->PlayAmbientBGM();
 	PlayStage1BGM();
 
