@@ -40,7 +40,7 @@ APCRSerinDollHeadCharacter::APCRSerinDollHeadCharacter()
 
 	// 파라미터화 필요
 	// 기본값 1000.f 테스트를 위해 체력 100으로 조정
-	MaxHP = 100.f;
+	MaxHP = 1000.f;
 	CurrentHP = MaxHP;
 
 	AIControllerClass = APCRSerinDollAIController::StaticClass();

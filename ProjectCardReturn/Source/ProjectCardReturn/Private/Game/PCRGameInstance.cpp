@@ -56,8 +56,6 @@ void UPCRGameInstance::InitSoundSystem()
 	FMODStudioSystem->getBus("bus:/", &MasterBusRawPtr);
 	MasterBus = MasterBusRawPtr;
 	check(MasterBus);
-
-	// FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UPCRGameInstance::SoundUpdate));
 }
 
 void UPCRGameInstance::InitInGameSoundSystem()

@@ -9,6 +9,7 @@
 #include "Engine/DamageEvents.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
+#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -177,6 +178,8 @@ bool APCRSerinDollPattern1Projectile::IsAtMaxRange()
 void APCRSerinDollPattern1Projectile::HandleStop()
 {
 	ProjectileMovementComponent->Deactivate();
+	StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 
 	State = ESerinDollProjectileState::Stop;
 }
@@ -213,8 +216,6 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 		const FRotator NewRotator = FRotationMatrix::MakeFromX(ProjectileMovementComponent->Velocity.GetSafeNormal()).Rotator();
 		SetActorRotation(NewRotator);
 		Pattern1ThrowEffectComponent->Activate(true);
-		
-		
 
 		if (OnDetachedCard.IsBound())
 		{
@@ -231,7 +232,30 @@ void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
 {
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
 	                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
-	
+
+	TArray<FOverlapResult> OutOverlaps;
+	const float Radius = 700.f;
+	const float Damage = 15.f;
+	const bool bSucceed = GetWorld()->OverlapMultiByObjectType(OutOverlaps, GetActorLocation(), FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Radius));
+	if (bSucceed)
+	{
+		for (const auto& OutOverlap : OutOverlaps)
+		{
+			if (AActor* OverlappedActor = OutOverlap.GetActor())
+			{
+				FDamageEvent DamageEvent;
+				const APCRSerinDollHeadCharacter* SerinDollHead = Cast<APCRSerinDollHeadCharacter>(GetOwner());
+				check(SerinDollHead);
+				OverlappedActor->TakeDamage(Damage, DamageEvent, SerinDollHead->GetController(), this);
+			}
+		}
+	}
+
+	const FColor Color = bSucceed ? FColor::Red : FColor::Green;
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 16, Color,
+	                false, 1.f);
+
 	Destroy();
 }
 
