@@ -208,6 +208,8 @@ void UPCRGameInstance::RestartGame(UWidget* Widget)
 			NewLocation.Y = LiftLocation.Y;
 			PCRGameMode->GetCachedEricaCharacter()->SetActorLocation(NewLocation);
 
+			OnRestart.Broadcast();
+			
 			UE_LOG(PCRLogGameInstance, Log, TEXT("보스전투가 재시작되었습니다."));
 
 			return;

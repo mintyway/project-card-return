@@ -6,17 +6,19 @@
 #include "Engine/GameInstance.h"
 #include "PCRGameInstance.generated.h"
 
-class UPCRSoundPrimaryDataAsset;
-class APCREricaCardProjectilePool;
-
-DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameInstance, Log, All);
-
 namespace FMOD::Studio
 {
 	class Bus;
 	class System;
 	class EventInstance;
 }
+
+class UPCRSoundPrimaryDataAsset;
+class APCREricaCardProjectilePool;
+
+DECLARE_LOG_CATEGORY_EXTERN(PCRLogGameInstance, Log, All);
+
+DECLARE_MULTICAST_DELEGATE(FRestartSignature);
 
 /**
  * 
@@ -80,6 +82,9 @@ public: // 동작
 
 	UFUNCTION(BlueprintCallable)
 	void QuitGame();
+
+public: // 델리게이트
+	FRestartSignature OnRestart;
 
 private:
 	FORCEINLINE float GetLastMasterVolume() const { return LastMasterVolume; }

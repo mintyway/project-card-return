@@ -12,9 +12,8 @@
 
 DEFINE_LOG_CATEGORY(PCRLogRiftActor);
 
-// Sets default values
 APCRLiftActor::APCRLiftActor()
-	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(5.138f), ElapsedTime(0.f), bIsOverlappedPattern1(false)
+	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(0.f), ElapsedTime(0.f), bIsOverlappedPattern1(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -128,8 +127,14 @@ void APCRLiftActor::Tick(float DeltaTime)
 void APCRLiftActor::LiftUp()
 {
 	const FFMODEventInstance LiftUpSound = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->StageChange, true);
+	
 	LiftUpSoundInst = LiftUpSound.Instance;
 	check(LiftUpSoundInst);
+	FMOD::Studio::EventDescription* Description = nullptr;
+	LiftUpSoundInst->getDescription(&Description);
+	int32 AudioLength;
+	Description->getLength(&AudioLength);
+	LiftingTime = AudioLength * 0.001f;
 	
 	SetActorTickEnabled(true);
 	StartLiftLocation = GetActorLocation();
@@ -215,6 +220,5 @@ TArray<FVector> APCRLiftActor::GetShuffleLocationPattern1Target() const
 		Indices.RemoveAt(RandIndex);
 	}
 
-	FVector Test = GetActorLocation();
 	return ShuffledPattern1TargetLocations;
 }
