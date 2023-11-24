@@ -3,19 +3,27 @@
 
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 
+#include "FMODBlueprintStatics.h"
 #include "Components/BoxComponent.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(PCRLogRiftActor);
 
 // Sets default values
 APCRLiftActor::APCRLiftActor()
-	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(3.0), ElapsedTime(0.f), bIsOverlappedPattern1(false)
+	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(5.138f), ElapsedTime(0.f), bIsOverlappedPattern1(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
+	}
+	
 	Tags.AddUnique(TEXT("Lift"));
 	
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
@@ -119,6 +127,10 @@ void APCRLiftActor::Tick(float DeltaTime)
 
 void APCRLiftActor::LiftUp()
 {
+	const FFMODEventInstance LiftUpSound = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->StageChange, true);
+	LiftUpSoundInst = LiftUpSound.Instance;
+	check(LiftUpSoundInst);
+	
 	SetActorTickEnabled(true);
 	StartLiftLocation = GetActorLocation();
 	EndLiftLocation = FVector(StartLiftLocation.X, StartLiftLocation.Y, MaxLiftHeight);
@@ -167,6 +179,9 @@ void APCRLiftActor::UpdateLiftUp(float DeltaTime)
 
 	if (alpha >= 1.f)
 	{
+		LiftUpSoundInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+		LiftUpSoundInst->release();
+		
 		SetActorTickEnabled(false);
 		OnLiftUpEnd.Broadcast();
 	}

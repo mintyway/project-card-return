@@ -54,6 +54,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Erica")
 	TObjectPtr<UFMODEvent> Move;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Stage")
+	TObjectPtr<UFMODEvent> StageChange;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Serin")
 	TObjectPtr<UFMODEvent> Rock;
@@ -75,4 +78,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Serin")
 	TObjectPtr<UFMODEvent> Pattern1BombTimer;
+
 };

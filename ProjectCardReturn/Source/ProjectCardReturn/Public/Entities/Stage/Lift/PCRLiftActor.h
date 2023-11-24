@@ -6,9 +6,16 @@
 #include "GameFramework/Actor.h"
 #include "PCRLiftActor.generated.h"
 
+
+class UPCRSoundPrimaryDataAsset;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogRiftActor, Log, All);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLiftUpDelegate);
+
+namespace FMOD::Studio
+{
+	class EventInstance;
+}
 
 class APCREricaCharacter;
 class UBoxComponent;
@@ -61,6 +68,9 @@ private: // 데이터 에셋 섹션
 	UPROPERTY()
 	TObjectPtr<const UPCRStagePrimaryDataAsset> StageDataAsset;
 
+	UPROPERTY()
+	TObjectPtr<const UPCRSoundPrimaryDataAsset> SoundDataAsset;
+
 private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Scene")
 	TObjectPtr<USceneComponent> SceneComponent;
@@ -76,6 +86,8 @@ private: // 컴포넌트 섹션
 	
 	UPROPERTY(VisibleAnywhere, Category = "Pattern1Targets")
 	TArray<TObjectPtr<USceneComponent>> Pattern1TargetComponents;
+	
+	FMOD::Studio::EventInstance* LiftUpSoundInst;
 
 private: // 레퍼런스
 	UPROPERTY()

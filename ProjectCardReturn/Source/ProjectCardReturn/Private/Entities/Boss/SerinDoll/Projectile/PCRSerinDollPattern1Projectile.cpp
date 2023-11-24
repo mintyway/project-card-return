@@ -106,9 +106,9 @@ void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& Sta
 	SetOwner(NewOwner);
 	LaunchLocation = StartLocation;
 	
-	UFMODAudioComponent* test = UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Pattern1BombThrow, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, false, false, true);
+	UFMODAudioComponent* AudioComponent = UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Pattern1BombThrow, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, false, false, true);
 
-	test->Activate();
+	AudioComponent->Play();
 	
 	SetActorLocationAndRotation(LaunchLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
 	SetActorHiddenInGame(false);
@@ -134,7 +134,7 @@ void APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart()
 	GetWorldTimerManager().SetTimer(TimerSoundHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound), Time - TimerSoundTime, false);
 
 	FTimerHandle HandlePattern1ExplosionTimerHandle;
-	GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer), Time, false);
+	GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1Explosion), Time, false);
 }
 
 void APCRSerinDollPattern1Projectile::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
@@ -245,7 +245,7 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 	}
 }
 
-void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimer()
+void APCRSerinDollPattern1Projectile::HandlePattern1Explosion()
 {
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
 	                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());

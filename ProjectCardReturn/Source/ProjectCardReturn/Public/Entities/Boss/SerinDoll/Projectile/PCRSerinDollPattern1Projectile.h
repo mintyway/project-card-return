@@ -61,7 +61,7 @@ private: // 내부 함수
 	void HandleStop();
 
 	void HandlePattern1DetachedCard(APCREricaCardProjectile* AttachedCard);
-	void HandlePattern1ExplosionTimer();
+	void HandlePattern1Explosion();
 	void HandlePattern1ExplosionTimerSound();
 
 	UFUNCTION()
