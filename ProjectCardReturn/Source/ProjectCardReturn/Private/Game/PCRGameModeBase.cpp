@@ -212,36 +212,6 @@ void APCRGameModeBase::HandleKillCount()
 
 void APCRGameModeBase::HandleSpawnMonster()
 {
-	SpawnDefaultMonster();
-
-	// ToDo : 파라미터화 필요
-	switch (Phase)
-	{
-	case 1:
-		if (Stage1DefaultMonsterSpawnCount % 15 == 0)
-		{
-			SpawnEliteMonster();
-		}
-		break;
-	case 2:
-		if (Stage1DefaultMonsterSpawnCount % 15 == 0)
-		{
-			SpawnEliteMonster();
-		}
-		break;
-	case 3:
-		if (Stage1DefaultMonsterSpawnCount % 10 == 0)
-		{
-			SpawnEliteMonster();
-		}
-		break;
-	default:
-		break;
-	}
-}
-
-void APCRGameModeBase::SpawnDefaultMonster()
-{
 	// ToDo : 파라미터화 필요
 	switch (Phase)
 	{
@@ -250,16 +220,31 @@ void APCRGameModeBase::SpawnDefaultMonster()
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(1, 3); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(0, 1); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		break;
 		
@@ -268,16 +253,31 @@ void APCRGameModeBase::SpawnDefaultMonster()
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(2, 4); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(0, 3); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		break;
 		
@@ -286,16 +286,31 @@ void APCRGameModeBase::SpawnDefaultMonster()
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 10 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(3, 7); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 10 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(2, 5); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
+
+			if (Stage1DefaultMonsterSpawnCount % 10 == 0)
+			{
+				SpawnEliteMonster();
+			}
 		}
 		break;
 		
