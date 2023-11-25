@@ -3,8 +3,6 @@
 
 #include "UI/PCRPauseUserWidget.h"
 
-#include "Entities/Players/Erica/PCREricaPlayerController.h"
-
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
 #include "Components/Slider.h"
@@ -55,9 +53,9 @@ void UPCRPauseUserWidget::NativeConstruct()
 
 void UPCRPauseUserWidget::HandleResumeClicked()
 {
-	if (APCREricaPlayerController* EricaPlayerController = Cast<APCREricaPlayerController>(GetOwningPlayer()))
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetOwningPlayer()))
 	{
-		EricaPlayerController->SetPause(false);
+		PlayerController->SetPause(false);
 
 		RemoveFromParent();
 	}
