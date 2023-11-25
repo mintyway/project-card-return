@@ -116,6 +116,7 @@ private: // 데이터 섹션
 
 	float GenerateInterval;
 	int32 Phase;
+	int32 LastPhase;
 
 	FTimerDelegate SpawnMonsterDelegate;
 	FTimerHandle SpawnTimerHandle;
