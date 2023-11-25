@@ -64,6 +64,8 @@ APCRGameModeBase::APCRGameModeBase()
 			LiftActorClass = LiftBP;
 		}
 	}
+
+	LastPhase = Phase;
 }
 
 void APCRGameModeBase::PostInitializeComponents()
@@ -202,24 +204,36 @@ void APCRGameModeBase::HandleKillCount()
 	const int32 TargetKillCountInPhase1 = ParameterDataAsset->MonsterTargetKillCountInPhase1;
 	const int32 TargetKillCountInPhase2 = ParameterDataAsset->MonsterTargetKillCountInPhase2;
 	
-	// ToDo : 파라미터화 필요
 	if (Stage1TotalMonsterKillCount >= TargetKillCountInPhase1 && Stage1TotalMonsterKillCount < TargetKillCountInPhase1 + TargetKillCountInPhase2)
 	{
-		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase2, true);
 		Phase = 2;
+		if (LastPhase != Phase)
+		{
+			GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+			GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase2, true);
+			LastPhase = Phase;
+		}
 	}
 	else if (Stage1TotalMonsterKillCount >= TargetKillCountInPhase1 + TargetKillCountInPhase2 && Stage1TotalMonsterKillCount < Stage1TargetKillCount)
 	{
-		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase3, true);
 		Phase = 3;
+		if (LastPhase != Phase)
+		{
+			GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+			GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase3, true);
+			LastPhase = Phase;
+		}
 	}
 	else if (Stage1TotalMonsterKillCount >= Stage1TargetKillCount)
 	{
-		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-		StopAllMonsterGeneratorsAndKillSpawnedMonsters();
-		OnStage1End.Broadcast();
+		Phase = 4;
+		if (LastPhase != Phase)
+		{
+			GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+			StopAllMonsterGeneratorsAndKillSpawnedMonsters();
+			OnStage1End.Broadcast();
+			LastPhase = Phase;
+		}
 	}
 }
 
@@ -362,7 +376,6 @@ void APCRGameModeBase::SpawnEliteMonster()
 
 UClass* APCRGameModeBase::GetEliteMonsterClass()
 {
-	// ToDo : 파라미터화 필요
 	const float EliteRabbitRate = ParameterDataAsset->EliteRabbitSpawnRate;
 	const float EliteMeleeSoldierRate = ParameterDataAsset->EliteMeleeSoldierSpawnRate;
 	const float EliteRangedSoldierRate = ParameterDataAsset->EliteRangedSoldierSpawnRate;
