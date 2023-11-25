@@ -160,6 +160,18 @@ public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveDiagonalDistance;
 
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
+	float EliteRabbitMaxHpRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
+	float EliteRabbitMoveSpeedRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
+	float EliteRabbitAttackPowerRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
+	float EliteRabbitScaleRate;
+
 public: // 근접 병사
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float MeleeSoldierMaxHP;
@@ -178,6 +190,18 @@ public: // 근접 병사
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float ShieldDestroyTimeAfterDrop;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
+	float EliteMeleeSoldierMaxHpRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
+	float EliteMeleeSoldierMoveSpeedRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
+	float EliteMeleeSoldierAttackPowerRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
+	float EliteMeleeSoldierScaleRate;
 
 public: // 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
@@ -204,6 +228,18 @@ public: // 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float SpearPredictionRate;
 
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
+	float EliteRangedSoldierMaxHpRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
+	float EliteRangedSoldierMoveSpeedRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
+	float EliteRangedSoldierAttackPowerRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
+	float EliteRangedSoldierScaleRate;
+
 public: // 아이템
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float ItemSpawnRate;
@@ -229,8 +265,8 @@ public: // 아이템
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float LongerRangeItemRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item", DisplayName = "Max HP Increase Rate")
-	float MaxHPIncreaseRate;
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	float MaxHpIncreaseRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Item")
 	float HealRateByIncreaseMaxHP;
