@@ -19,7 +19,7 @@ public:
 
 public: // 게임
 	UPROPERTY(EditAnywhere, Category = "Game")
-	uint32 bIsMonsterSpawn : 1;
+	uint32 bIsMonsterSpawn:1;
 
 	UPROPERTY(EditAnywhere, Category = "Game")
 	float SpawnerGenerateInterval;
@@ -119,12 +119,39 @@ public: // 세린
 	UPROPERTY(EditDefaultsOnly, Category = "Serin")
 	float SerinRockSpeed;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Serin")
+	FVector SerinSpawnLocationOffset;
+
 public: // 몬스터 베이스
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	float DeadAfterDestroyTime;
+	float MonsterDestroyTimeAfterDead;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
-	float AttackRadius;
+	float MonsterAttackRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	float MonsterGeneratorSpawnRangeRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	FVector MonsterGeneratorLocation1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	FVector MonsterGeneratorLocation2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	FVector MonsterGeneratorLocation3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	FVector MonsterGeneratorLocation4;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	float MonsterSpawnTimeInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	float MonsterSpawnTimeInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	float MonsterSpawnTimeInPhase3;
 	
 public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
@@ -160,6 +187,7 @@ public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveDiagonalDistance;
 
+public: // 엘리트 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
 	float EliteRabbitMaxHpRate;
 
@@ -191,6 +219,7 @@ public: // 근접 병사
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float ShieldDestroyTimeAfterDrop;
 
+public: // 엘리트 근접 병사
 	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
 	float EliteMeleeSoldierMaxHpRate;
 
@@ -228,6 +257,7 @@ public: // 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float SpearPredictionRate;
 
+public: // 엘리트 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
 	float EliteRangedSoldierMaxHpRate;
 
@@ -240,7 +270,7 @@ public: // 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
 	float EliteRangedSoldierScaleRate;
 
-public: // 아이템
+public: // 아이템 스폰
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float ItemSpawnRate;
 
@@ -265,6 +295,7 @@ public: // 아이템
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float LongerRangeItemRate;
 
+public: // 아이템 스탯
 	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	float MaxHpIncreaseRate;
 
