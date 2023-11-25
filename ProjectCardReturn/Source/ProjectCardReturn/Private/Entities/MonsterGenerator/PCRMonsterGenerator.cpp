@@ -79,7 +79,7 @@ void APCRMonsterGenerator::KillSpawnedMonsters()
 
 	for (const auto& KillMonster : KillMonsters)
 	{
-		KillMonster->ChangeHP(-99999);
+		KillMonster->KillByGenerator();
 	}
 }
 

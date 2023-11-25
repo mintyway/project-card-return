@@ -29,6 +29,7 @@ APCRMonsterBaseCharacter::APCRMonsterBaseCharacter()
 	
 	bIsAlive = true;
 	bIsElite = false;
+	bIsKilledByGenerator = false;
 
 	bUseControllerRotationYaw = false;
 
@@ -139,6 +140,13 @@ void APCRMonsterBaseCharacter::Hit()
 	DrawDebugCapsule(GetWorld(), Center, HalfHeight, ParameterDataAsset->AttackRadius, CapsuleRotate, DrawColor, false, 1.f);
 }
 
+void APCRMonsterBaseCharacter::KillByGenerator()
+{
+	bIsKilledByGenerator = true;
+	CurrentHP = 0.f;
+	HandleDead();
+}
+
 /**
  * 몬스터가 공격을 받을 시 호출됩니다.
  * @param DamageAmount 받은 데미지량
@@ -210,7 +218,7 @@ void APCRMonsterBaseCharacter::PlayDeadEffect(AActor* DestroyedActor)
 
 void APCRMonsterBaseCharacter::SpawnItem(AActor* DestroyedActor)
 {
-	if (FMath::RandRange(1, 100) <= (!bIsElite ? ParameterDataAsset->ItemSpawnRate : ParameterDataAsset->ItemSpawnRateByEliteMonster) * 100)
+	if (!bIsKilledByGenerator && FMath::RandRange(1, 100) <= (!bIsElite ? ParameterDataAsset->ItemSpawnRate : ParameterDataAsset->ItemSpawnRateByEliteMonster) * 100)
 	{
 		GetWorld()->SpawnActor<APCRBaseItem>(GetItemClass(), GetActorLocation(), FRotator(0.0, 90.0, 0.0));
 	}

@@ -40,6 +40,7 @@ public: // 동작
 	
 	void ChangeHP(float Amount);
 	void Hit();
+	void KillByGenerator();
 
 public: // Getter, Setter
 	FORCEINLINE const UPCRMonsterDataAsset* GetMonsterDataAsset() const { return MonsterDataAsset; }
@@ -81,6 +82,7 @@ protected:
 
 	uint32 bIsAlive:1;
 	uint32 bIsElite:1;
+	uint32 bIsKilledByGenerator:1;
 
 	void DestroyTimeCallback();
 
