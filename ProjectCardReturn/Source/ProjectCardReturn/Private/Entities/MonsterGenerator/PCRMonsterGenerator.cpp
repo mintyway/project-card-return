@@ -9,7 +9,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterGenerator);
 
-APCRMonsterGenerator::APCRMonsterGenerator() : SpawnRangeRadius(300.f), MonsterKillCount(0)
+APCRMonsterGenerator::APCRMonsterGenerator() : MonsterKillCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -47,7 +47,7 @@ void APCRMonsterGenerator::SpawnMonster(UClass* MonsterClass)
 		return;
 	}
 	
-	const FVector2D RandomLocation2D = FMath::RandPointInCircle(SpawnRangeRadius);
+	const FVector2D RandomLocation2D = FMath::RandPointInCircle(ParameterDataAsset->MonsterGeneratorSpawnRangeRadius);
 	const FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
 
 	const FVector SpawnLocation = GetActorLocation() + RandomLocation;

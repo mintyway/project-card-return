@@ -148,8 +148,9 @@ void APCRGameModeBase::SpawnSerinDoll()
 {
 	PlayBossStageBGM();
 	FVector SpawnLocation = LiftActor->GetActorLocation();
-	SpawnLocation.X += 1200.0;
-	SpawnLocation.Z -= 250.0;
+	SpawnLocation.X += ParameterDataAsset->SerinSpawnLocationOffset.X;
+	SpawnLocation.Y += ParameterDataAsset->SerinSpawnLocationOffset.Y;
+	SpawnLocation.Z += ParameterDataAsset->SerinSpawnLocationOffset.Z;
 	SerinDollHead = GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(SpawnLocation, FRotator(0.0, 180.0, 0.0));
 
 	CurrentStageState = EStageState::SerinStage;
@@ -157,10 +158,10 @@ void APCRGameModeBase::SpawnSerinDoll()
 
 void APCRGameModeBase::SpawnMonsterGenerators()
 {
-	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(1500.0, -2000.0, 100.0), FRotator::ZeroRotator));
-	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(-1500.0, -2000.0, 100.0), FRotator::ZeroRotator));
-	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(1500.0, 2000.0, 100.0), FRotator::ZeroRotator));
-	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(-1500.0, 2000.0, 100.0), FRotator::ZeroRotator));
+	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(ParameterDataAsset->MonsterGeneratorLocation1, FRotator::ZeroRotator));
+	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(ParameterDataAsset->MonsterGeneratorLocation2, FRotator::ZeroRotator));
+	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(ParameterDataAsset->MonsterGeneratorLocation3, FRotator::ZeroRotator));
+	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(ParameterDataAsset->MonsterGeneratorLocation4, FRotator::ZeroRotator));
 
 	for (const auto& MonsterGenerator : MonsterGenerators)
 	{
@@ -173,7 +174,7 @@ void APCRGameModeBase::StartAllMonsterGenerators()
 	HandleSpawnMonster();
 
 	SpawnMonsterDelegate.BindUObject(this, &APCRGameModeBase::HandleSpawnMonster);
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, 7.0f, true);
+	GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase1, true);
 }
 
 void APCRGameModeBase::StopAllMonsterGeneratorsAndKillSpawnedMonsters()
@@ -195,11 +196,12 @@ void APCRGameModeBase::HandleKillCount()
 	// ToDo : 파라미터화 필요
 	if (Stage1TotalMonsterKillCount >= 60 && Stage1TotalMonsterKillCount < 80)
 	{
+		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase2, true);
 		Phase = 2;
 	}
 	else if (Stage1TotalMonsterKillCount >= 80 && Stage1TotalMonsterKillCount < Stage1TargetKillCount)
 	{
-		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, 6.0f, true);
+		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase3, true);
 		Phase = 3;
 	}
 	else if (Stage1TotalMonsterKillCount >= Stage1TargetKillCount)

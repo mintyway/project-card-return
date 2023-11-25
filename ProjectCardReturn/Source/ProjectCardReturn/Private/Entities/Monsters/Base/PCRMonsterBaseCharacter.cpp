@@ -119,7 +119,7 @@ void APCRMonsterBaseCharacter::Hit()
 	const FVector Start = GetActorLocation();
 	const FVector End = Start + GetActorForwardVector() * AttackRange;
 	const FQuat Rot = FQuat::Identity;
-	FCollisionShape Shape = FCollisionShape::MakeSphere(ParameterDataAsset->AttackRadius);
+	FCollisionShape Shape = FCollisionShape::MakeSphere(ParameterDataAsset->MonsterAttackRadius);
 	const bool bSweepResult = GetWorld()->SweepSingleByChannel(HitResult, Start, End, Rot, ECC_GameTraceChannel7, Shape);
 	
 	if (bSweepResult)
@@ -134,10 +134,10 @@ void APCRMonsterBaseCharacter::Hit()
 
 	const FVector TraceVector = GetActorForwardVector() * AttackRange;
 	const FVector Center = Start + TraceVector * 0.5f;
-	const float HalfHeight = AttackRange * 0.5f + ParameterDataAsset->AttackRadius;
+	const float HalfHeight = AttackRange * 0.5f + ParameterDataAsset->MonsterAttackRadius;
 	const FQuat CapsuleRotate = FRotationMatrix::MakeFromZ(TraceVector).ToQuat();
 	const FColor DrawColor = bSweepResult ? FColor::Green : FColor::Red;
-	DrawDebugCapsule(GetWorld(), Center, HalfHeight, ParameterDataAsset->AttackRadius, CapsuleRotate, DrawColor, false, 1.f);
+	DrawDebugCapsule(GetWorld(), Center, HalfHeight, ParameterDataAsset->MonsterAttackRadius, CapsuleRotate, DrawColor, false, 1.f);
 }
 
 void APCRMonsterBaseCharacter::KillByGenerator()
@@ -206,7 +206,7 @@ void APCRMonsterBaseCharacter::HandleDead()
 	FTimerHandle DestroyTimeHandle;
 	FTimerDelegate DestroyTimeDelegate;
 	DestroyTimeDelegate.BindUObject(this, &APCRMonsterBaseCharacter::DestroyTimeCallback);
-	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->DeadAfterDestroyTime, false);
+	GetWorldTimerManager().SetTimer(DestroyTimeHandle, DestroyTimeDelegate, ParameterDataAsset->MonsterDestroyTimeAfterDead, false);
 }
 
 void APCRMonsterBaseCharacter::PlayDeadEffect(AActor* DestroyedActor)

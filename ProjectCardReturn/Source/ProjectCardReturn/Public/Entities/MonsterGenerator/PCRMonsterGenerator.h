@@ -47,9 +47,6 @@ private: // 컴포넌트 섹션
 	UPROPERTY(VisibleAnywhere, Category = "Root")
 	TObjectPtr<USceneComponent> RootSceneComponent;
 
-private: // 스폰 데이터 섹션
-	float SpawnRangeRadius;
-
 private: // 몬스터 관리 섹션
 	UPROPERTY()
 	TArray<TObjectPtr<APCRMonsterBaseCharacter>> SpawnMonsters;
