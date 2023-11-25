@@ -9,7 +9,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterGenerator);
 
-APCRMonsterGenerator::APCRMonsterGenerator() : SpawnRangeRadius(300.f), MonsterSpawnCount(0), MonsterKillCount(0)
+APCRMonsterGenerator::APCRMonsterGenerator() : SpawnRangeRadius(300.f), MonsterKillCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -56,6 +56,30 @@ void APCRMonsterGenerator::Start(UClass* MonsterClass, float Interval)
 	UE_LOG(PCRLogMonsterGenerator, Log, TEXT("%s이(가) 활성화되었습니다."), *GetName());
 }
 
+void APCRMonsterGenerator::StartOnce(UClass* MonsterClass, int32 SpawnCount)
+{
+	if (!ParameterDataAsset->bIsMonsterSpawn)
+	{
+		return;
+	}
+
+	for (int i = 0; i < SpawnCount; i++)
+	{
+		const FVector2D RandomLocation2D = FMath::RandPointInCircle(SpawnRangeRadius);
+		const FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
+
+		const FVector SpawnLocation = GetActorLocation() + RandomLocation;
+
+		UE_LOG(PCRLogMonsterGenerator, Log, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
+
+		if (APCRMonsterBaseCharacter* NewMonster = GetWorld()->SpawnActor<APCRMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator))
+		{
+			SpawnMonsters.Add(NewMonster);
+			NewMonster->OnDead.AddUObject(this, &APCRMonsterGenerator::RemoveDeadMonster);
+		}
+	}
+}
+
 void APCRMonsterGenerator::Stop()
 {
 	GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
@@ -96,7 +120,6 @@ void APCRMonsterGenerator::SpawnMonster(UClass* MonsterClass)
 	{
 		SpawnMonsters.Add(NewMonster);
 		NewMonster->OnDead.AddUObject(this, &APCRMonsterGenerator::RemoveDeadMonster);
-		++MonsterSpawnCount;
 	}
 }
 
