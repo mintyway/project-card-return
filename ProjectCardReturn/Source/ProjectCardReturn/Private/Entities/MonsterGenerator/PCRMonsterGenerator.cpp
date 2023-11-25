@@ -65,18 +65,7 @@ void APCRMonsterGenerator::StartOnce(UClass* MonsterClass, int32 SpawnCount)
 
 	for (int i = 0; i < SpawnCount; i++)
 	{
-		const FVector2D RandomLocation2D = FMath::RandPointInCircle(SpawnRangeRadius);
-		const FVector RandomLocation = FVector(RandomLocation2D.X, RandomLocation2D.Y, 0.0);
-
-		const FVector SpawnLocation = GetActorLocation() + RandomLocation;
-
-		UE_LOG(PCRLogMonsterGenerator, Log, TEXT("몬스터 스폰 위치: %s"), *SpawnLocation.ToString());
-
-		if (APCRMonsterBaseCharacter* NewMonster = GetWorld()->SpawnActor<APCRMonsterBaseCharacter>(MonsterClass, SpawnLocation, FRotator::ZeroRotator))
-		{
-			SpawnMonsters.Add(NewMonster);
-			NewMonster->OnDead.AddUObject(this, &APCRMonsterGenerator::RemoveDeadMonster);
-		}
+		SpawnMonster(MonsterClass);
 	}
 }
 
