@@ -8,13 +8,13 @@
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
-#include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
 #include "Entities/MonsterGenerator/PCRMonsterGenerator.h"
-#include "Entities/Monsters/Rabbit/EliteRabbit/PCREliteRabbitCharacter.h"
-#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
-#include "Entities/Monsters/Soldier/MeleeSoldier/EliteMeleeSoldier/PCREliteMeleeSoldierCharacter.h"
-#include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
-#include "Entities/Monsters/Soldier/RangedSoldier/EliteRangedSoldier/PCREliteRangedSoldierCharacter.h"
+//#include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
+//#include "Entities/Monsters/Rabbit/EliteRabbit/PCREliteRabbitCharacter.h"
+//#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
+//#include "Entities/Monsters/Soldier/MeleeSoldier/EliteMeleeSoldier/PCREliteMeleeSoldierCharacter.h"
+//#include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
+//#include "Entities/Monsters/Soldier/RangedSoldier/EliteRangedSoldier/PCREliteRangedSoldierCharacter.h"
 #include "Game/PCRGameInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 
@@ -156,8 +156,6 @@ void APCRGameModeBase::SpawnSerinDoll()
 
 void APCRGameModeBase::SpawnMonsterGenerators()
 {
-	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(1500.0, 0.0, 100.0), FRotator::ZeroRotator));
-	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(-1500.0, 0.0, 100.0), FRotator::ZeroRotator));
 	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(1500.0, -2000.0, 100.0), FRotator::ZeroRotator));
 	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(-1500.0, -2000.0, 100.0), FRotator::ZeroRotator));
 	MonsterGenerators.Emplace(GetWorld()->SpawnActor<APCRMonsterGenerator>(FVector(1500.0, 2000.0, 100.0), FRotator::ZeroRotator));
@@ -171,12 +169,12 @@ void APCRGameModeBase::SpawnMonsterGenerators()
 
 void APCRGameModeBase::StartAllMonsterGenerators()
 {
-	MonsterGenerators[0]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[1]->Start(APCREliteRabbitCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[2]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[3]->Start(APCREliteMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[4]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
-	MonsterGenerators[5]->Start(APCREliteRangedSoldierCharacter::StaticClass(), GenerateInterval);
+	//MonsterGenerators[0]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
+	//MonsterGenerators[1]->Start(APCREliteRabbitCharacter::StaticClass(), GenerateInterval);
+	//MonsterGenerators[2]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
+	//MonsterGenerators[3]->Start(APCREliteMeleeSoldierCharacter::StaticClass(), GenerateInterval);
+	//MonsterGenerators[4]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
+	//MonsterGenerators[5]->Start(APCREliteRangedSoldierCharacter::StaticClass(), GenerateInterval);
 }
 
 void APCRGameModeBase::StopAllMonsterGeneratorsAndKillSpawnedMonsters()
