@@ -32,7 +32,7 @@ APCRShieldActor::APCRShieldActor()
 	{
 		RootComponent = BoxComponent;
 		BoxComponent->SetBoxExtent(FVector(40, 10, 55));
-		BoxComponent->SetCollisionProfileName("BlockPlayerProjectile");
+		BoxComponent->SetCollisionProfileName(TEXT("BlockPlayerProjectile"));
 	}
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
@@ -41,7 +41,7 @@ APCRShieldActor::APCRShieldActor()
 		StaticMeshComponent->SetupAttachment(BoxComponent);
 		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->ShieldMesh);
 		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(0, 10, 0), FRotator(0.0, -30.0, 30.0));
-		StaticMeshComponent->SetCollisionProfileName("NoCollision");
+		StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 }
 
