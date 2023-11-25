@@ -58,6 +58,12 @@ protected:
 public: // 동작
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetInput(bool bIsEnable);
+
+	UFUNCTION(BlueprintCallable)
+	void SetHUDVisibility(bool bIsEnable);
+	
 	void Revival();
 	
 	void ShootCard();
@@ -182,6 +188,7 @@ private: // 스탯
 
 private: // 상태
 	uint32 bIsAlive:1;
+	uint32 bCanControl:1;
 
 	uint32 bCanDash:1;
 	uint32 bIsDashing:1;

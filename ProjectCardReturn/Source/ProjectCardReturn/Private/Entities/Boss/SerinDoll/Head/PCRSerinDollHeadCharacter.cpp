@@ -293,7 +293,7 @@ void APCRSerinDollHeadCharacter::Pattern1()
 
 	State = EState::Pattern1;
 
-	OnPattern1Start.Broadcast();
+	OnPattern1StartInternal.Broadcast();
 }
 
 void APCRSerinDollHeadCharacter::Pattern2()
@@ -444,13 +444,13 @@ void APCRSerinDollHeadCharacter::HandlePattern1Succeed()
 	bIsInvincible = false;
 	State = EState::Basic;
 
-	OnPattern1Succeed.Broadcast();
+	OnPattern1SucceedInternal.Broadcast();
 }
 
 void APCRSerinDollHeadCharacter::HandlePattern1Ended()
 {
 	CachedLift->SerinPattern1End();
-	OnPattern1Ended.Broadcast();
+	OnPattern1EndedInternal.Broadcast();
 }
 
 void APCRSerinDollHeadCharacter::HandlePattern1LastShoot()
@@ -497,6 +497,10 @@ void APCRSerinDollHeadCharacter::HandlePattern2Succeed()
 
 	State = EState::End;
 
+	APCREricaPlayerController* EricaController = Cast<APCREricaPlayerController>(CachedErica->GetController());
+	EricaController->SetVisibilitySerinUI(false);
+	
+	OnPattern2SucceedInternal.Broadcast();
 	OnPattern2Succeed.Broadcast();
 }
 

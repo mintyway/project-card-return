@@ -124,6 +124,16 @@ void APCREricaPlayerController::BindSerinUI(APCRSerinDollHeadCharacter* Serin)
 	HUDUserWidget->SetVisibilitySerinUI(true);
 }
 
+void APCREricaPlayerController::SetVisibilityHUD(bool bIsEnable)
+{
+	HUDUserWidget->SetVisibilityEricaUI(bIsEnable);
+}
+
+void APCREricaPlayerController::SetVisibilitySerinUI(bool bIsEnable)
+{
+	HUDUserWidget->SetVisibilitySerinUI(bIsEnable);
+}
+
 void APCREricaPlayerController::GamePause()
 {
 	PauseUserWidget = CreateWidget<UPCRPauseUserWidget>(this, PauseUserWidgetClass);

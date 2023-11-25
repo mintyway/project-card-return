@@ -16,7 +16,8 @@ class UPCRParameterDataAsset;
 class APCRMonsterGenerator;
 class UPCRSoundPrimaryDataAsset;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStage1EndSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStage1Signature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBossStageSignature);
 
 DECLARE_DELEGATE_TwoParams(FStage1MonsterCountSignature, int32, int32);
 
@@ -59,8 +60,11 @@ public: // Getter
 	FORCEINLINE APCRSerinDollHeadCharacter* GetSerinDollHead() const { return SerinDollHead; }
 
 	// 델리게이트
-	FStage1EndSignature OnStage1End;
+	FStage1Signature OnStage1End;
 	FStage1MonsterCountSignature OnChangeStage1MonsterCount;
+
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FBossStageSignature OnSpawnSerin;
 
 private: // 내부 함수 섹션
 	void SpawnMonsterGenerators();
@@ -100,10 +104,10 @@ private: // 레퍼런스
 	UPROPERTY()
 	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Reference", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCREricaCharacter> CachedEricaCharacter; 
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "Reference", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCRSerinDollHeadCharacter> SerinDollHead;
 
 private: // 데이터 섹션

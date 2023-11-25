@@ -300,6 +300,9 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 		DamageAmount = 5.f;
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
 
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+											   SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
+		
 		const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
 		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
 

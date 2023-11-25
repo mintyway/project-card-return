@@ -153,6 +153,8 @@ void APCRGameModeBase::SpawnSerinDoll()
 	SerinDollHead = GetWorld()->SpawnActor<APCRSerinDollHeadCharacter>(SpawnLocation, FRotator(0.0, 180.0, 0.0));
 
 	CurrentStageState = EStageState::SerinStage;
+
+	OnSpawnSerin.Broadcast();
 }
 
 void APCRGameModeBase::SpawnMonsterGenerators()

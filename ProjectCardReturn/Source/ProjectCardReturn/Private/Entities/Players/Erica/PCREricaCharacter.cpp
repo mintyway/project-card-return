@@ -26,7 +26,7 @@
 DEFINE_LOG_CATEGORY(PCRLogEricaCharacter);
 
 APCREricaCharacter::APCREricaCharacter()
-	: bIsAlive(true), bCanDash(true), bIsDashing(false), bIsDashInvincible(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true),
+	: bIsAlive(true), bCanControl(true), bCanDash(true), bIsDashing(false), bIsDashInvincible(false), bCanNarrowShot(true), bCanWideShot(true), bCanReturnCard(true),
 	  bCanAttack(true),
 	  CurrentShotMode(EShootMode::NarrowShot),
 	  MovementKeys{EKeys::W, EKeys::S, EKeys::D, EKeys::A},
@@ -156,7 +156,7 @@ APCREricaCharacter::APCREricaCharacter()
 		NewLocation.Z = NewLocation.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 3.0;
 		DirectionIndicatorMeshMeshComponent->SetRelativeLocation(NewLocation);
 	}
-	
+
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
 	if (DashNiagaraComponent && EricaDataAsset)
 	{
@@ -246,9 +246,8 @@ void APCREricaCharacter::BeginPlay()
 void APCREricaCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// 만약 플레이어가 죽었다면 Tick 함수 내 어떠한 동작도 수행하지 않도록 합니다.
-	if (!bIsAlive)
+	
+	if (!bCanControl)
 	{
 		return;
 	}
@@ -382,6 +381,26 @@ float APCREricaCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	return ActualDamage;
 }
 
+void APCREricaCharacter::SetInput(bool bIsEnable)
+{
+	if (bIsEnable)
+	{
+		EnableInput(CachedEricaPlayerController);
+		bCanControl = true;
+		
+	}
+	else
+	{
+		DisableInput(CachedEricaPlayerController);
+		bCanControl = false;
+	}
+}
+
+void APCREricaCharacter::SetHUDVisibility(bool bIsEnable)
+{
+	CachedEricaPlayerController->SetVisibilityHUD(bIsEnable);
+}
+
 void APCREricaCharacter::Revival()
 {
 	CameraBoom->TargetArmLength = ParameterDataAsset->CameraDistance;
@@ -451,7 +470,7 @@ void APCREricaCharacter::HandleOnAttackMontageEnded(UAnimMontage* Montage, bool 
  */
 void APCREricaCharacter::Move(const FInputActionValue& InputActionValue)
 {
-	if (!bIsAlive)
+	if (!bCanControl)
 	{
 		return;
 	}
@@ -600,7 +619,7 @@ void APCREricaCharacter::HandleShootCard(const FVector& StartLocation, const FVe
  */
 void APCREricaCharacter::Dash()
 {
-	if (!bIsAlive)
+	if (!bCanControl)
 	{
 		return;
 	}
@@ -676,7 +695,7 @@ void APCREricaCharacter::HandleDash(float DeltaTime)
 
 void APCREricaCharacter::Change()
 {
-	if (!bIsAlive)
+	if (!bCanControl)
 	{
 		return;
 	}
@@ -763,7 +782,7 @@ void APCREricaCharacter::HandleDead()
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Ragdoll"));
 	bIsAlive = false;
-	DisableInput(CachedEricaPlayerController);
+	SetInput(false);
 
 	OnDead.Broadcast();
 }

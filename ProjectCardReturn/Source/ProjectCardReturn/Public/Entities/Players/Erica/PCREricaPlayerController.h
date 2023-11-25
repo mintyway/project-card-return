@@ -33,6 +33,8 @@ protected:
 public: // 동작 섹션
 	FVector GetMouseDirection() const;
 	void BindSerinUI(APCRSerinDollHeadCharacter* Serin);
+	void SetVisibilityHUD(bool bIsEnable);
+	void SetVisibilitySerinUI(bool bIsEnable);
 
 private: // 내부 함수 섹션
 	void BindEricaUI();

@@ -16,14 +16,15 @@ DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinDollHeadCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
 DECLARE_MULTICAST_DELEGATE(FHPStateSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPattern2Signature);
 
 UCLASS()
 class PROJECTCARDRETURN_API APCRSerinDollHeadCharacter : public APCRSerinDollBaseCharacter
 {
 	GENERATED_BODY()
 
-	DECLARE_MULTICAST_DELEGATE(FPattern1Signature);
-	DECLARE_MULTICAST_DELEGATE(FPattern2Signature);
+	DECLARE_MULTICAST_DELEGATE(FPattern1InternalSignature);
+	DECLARE_MULTICAST_DELEGATE(FPattern2InternalSignature);
 
 public:
 	APCRSerinDollHeadCharacter();
@@ -66,10 +67,13 @@ public: // Getter, Setter
 	FChangeHPSignature OnChangeHP;
 	FHPStateSignature OnHP50PercentLess;
 	
-	FPattern1Signature OnPattern1Start;
-	FPattern1Signature OnPattern1Ended;
-	FPattern1Signature OnPattern1Succeed;
+	FPattern1InternalSignature OnPattern1StartInternal;
+	FPattern1InternalSignature OnPattern1EndedInternal;
+	FPattern1InternalSignature OnPattern1SucceedInternal;
 
+	FPattern2InternalSignature OnPattern2SucceedInternal;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FPattern2Signature OnPattern2Succeed;
 
 private: // 타입
@@ -125,9 +129,6 @@ private: // 내부 Getter
 	float GetHandWorldHeight();
 
 private: // 레퍼런스
-	// UPROPERTY()
-	// TObjectPtr<void> 
-
 	UPROPERTY()
 	TObjectPtr<APCREricaCharacter> CachedErica;
 
