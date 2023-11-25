@@ -60,6 +60,14 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	MonsterSpawnTimeInPhase1(7.0f),
 	MonsterSpawnTimeInPhase2(7.0f),
 	MonsterSpawnTimeInPhase3(6.0f),
+	MonsterTargetKillCountInPhase1(60),
+	MonsterTargetKillCountInPhase2(80),
+	MonsterTargetKillCountInPhase3(100),
+
+	// 엘리트 몬스터
+	EliteMonsterSpawnPerCountInPhase1(15),
+	EliteMonsterSpawnPerCountInPhase2(15),
+	EliteMonsterSpawnPerCountInPhase3(10),
 
 	// 토끼
 	RabbitMaxHP(3.f),
@@ -73,8 +81,15 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	RabbitMoveRightDiagonalProbability(0.33f),
 	RabbitMoveLeftDiagonalProbability(0.5f),
 	RabbitMoveDiagonalDistance(300.f),
+	RabbitMinSpawnCountByOnceInPhase1(2),
+	RabbitMaxSpawnCountByOnceInPhase1(3),
+	RabbitMinSpawnCountByOnceInPhase2(3),
+	RabbitMaxSpawnCountByOnceInPhase2(5),
+	RabbitMinSpawnCountByOnceInPhase3(3),
+	RabbitMaxSpawnCountByOnceInPhase3(7),
 
 	// 엘리트 토끼
+	EliteRabbitSpawnRate(0.4f),
 	EliteRabbitMaxHpRate(2.0f),
 	EliteRabbitMoveSpeedRate(1.0f),
 	EliteRabbitAttackPowerRate(1.5f),
@@ -87,8 +102,15 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	MeleeSoldierAttackRange(300.f),
 	MeleeSoldierAttackRate(1.f),
 	ShieldDestroyTimeAfterDrop(1.f),
+	MeleeSoldierMinSpawnCountByOnceInPhase1(1),
+	MeleeSoldierMaxSpawnCountByOnceInPhase1(3),
+	MeleeSoldierMinSpawnCountByOnceInPhase2(2),
+	MeleeSoldierMaxSpawnCountByOnceInPhase2(4),
+	MeleeSoldierMinSpawnCountByOnceInPhase3(3),
+	MeleeSoldierMaxSpawnCountByOnceInPhase3(7),
 
 	// 엘리트 근접 병사
+	EliteMeleeSoldierSpawnRate(0.4f),
 	EliteMeleeSoldierMaxHpRate(2.0f),
 	EliteMeleeSoldierMoveSpeedRate(1.0f),
 	EliteMeleeSoldierAttackPowerRate(1.5f),
@@ -103,8 +125,15 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	SpearDestroyTimeAfterDrop(1.f),
 	SpearSpeed(1500.f),
 	SpearPredictionRate(0.5f),
+	RangedSoldierMinSpawnCountByOnceInPhase1(0),
+	RangedSoldierMaxSpawnCountByOnceInPhase1(1),
+	RangedSoldierMinSpawnCountByOnceInPhase2(0),
+	RangedSoldierMaxSpawnCountByOnceInPhase2(3),
+	RangedSoldierMinSpawnCountByOnceInPhase3(2),
+	RangedSoldierMaxSpawnCountByOnceInPhase3(5),
 
 	// 엘리트 원거리 병사
+	EliteRangedSoldierSpawnRate(0.2f),
 	EliteRangedSoldierMaxHpRate(1.5f),
 	EliteRangedSoldierMoveSpeedRate(1.3f),
 	EliteRangedSoldierAttackPowerRate(1.5f),

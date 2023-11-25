@@ -152,6 +152,25 @@ public: // 몬스터 베이스
 
 	UPROPERTY(EditDefaultsOnly, Category = "Monster")
 	float MonsterSpawnTimeInPhase3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	int32 MonsterTargetKillCountInPhase1;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	int32 MonsterTargetKillCountInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Monster")
+	int32 MonsterTargetKillCountInPhase3;
+
+public: // 엘리트 몬스터
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMonster")
+	int32 EliteMonsterSpawnPerCountInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMonster")
+	int32 EliteMonsterSpawnPerCountInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMonster")
+	int32 EliteMonsterSpawnPerCountInPhase3;
 	
 public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
@@ -187,7 +206,28 @@ public: // 토끼
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	float RabbitMoveDiagonalDistance;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	int32 RabbitMinSpawnCountByOnceInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	int32 RabbitMaxSpawnCountByOnceInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	int32 RabbitMinSpawnCountByOnceInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	int32 RabbitMaxSpawnCountByOnceInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	int32 RabbitMinSpawnCountByOnceInPhase3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
+	int32 RabbitMaxSpawnCountByOnceInPhase3;
+
 public: // 엘리트 토끼
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
+	float EliteRabbitSpawnRate;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "EliteRabbit")
 	float EliteRabbitMaxHpRate;
 
@@ -219,7 +259,28 @@ public: // 근접 병사
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	float ShieldDestroyTimeAfterDrop;
 
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	int32 MeleeSoldierMinSpawnCountByOnceInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	int32 MeleeSoldierMaxSpawnCountByOnceInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	int32 MeleeSoldierMinSpawnCountByOnceInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	int32 MeleeSoldierMaxSpawnCountByOnceInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	int32 MeleeSoldierMinSpawnCountByOnceInPhase3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
+	int32 MeleeSoldierMaxSpawnCountByOnceInPhase3;
+
 public: // 엘리트 근접 병사
+	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
+	float EliteMeleeSoldierSpawnRate;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "EliteMeleeSoldier")
 	float EliteMeleeSoldierMaxHpRate;
 
@@ -257,7 +318,28 @@ public: // 원거리 병사
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	float SpearPredictionRate;
 
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	int32 RangedSoldierMinSpawnCountByOnceInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	int32 RangedSoldierMaxSpawnCountByOnceInPhase1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	int32 RangedSoldierMinSpawnCountByOnceInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	int32 RangedSoldierMaxSpawnCountByOnceInPhase2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	int32 RangedSoldierMinSpawnCountByOnceInPhase3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	int32 RangedSoldierMaxSpawnCountByOnceInPhase3;
+
 public: // 엘리트 원거리 병사
+	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
+	float EliteRangedSoldierSpawnRate;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "EliteRangedSoldier")
 	float EliteRangedSoldierMaxHpRate;
 
