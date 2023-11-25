@@ -9,7 +9,7 @@
 
 DEFINE_LOG_CATEGORY(PCRLogMonsterGenerator);
 
-APCRMonsterGenerator::APCRMonsterGenerator() : SpawnRangeRadius(300.f), MonsterKillCount(0)
+APCRMonsterGenerator::APCRMonsterGenerator() : SpawnRangeRadius(300.f), MonsterSpawnCount(0), MonsterKillCount(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -46,12 +46,12 @@ void APCRMonsterGenerator::Start(UClass* MonsterClass, float Interval)
 	{
 		return;
 	}
+
+	SpawnMonster(MonsterClass);
 	
 	FTimerDelegate SpawnMonsterDelegate;
 	SpawnMonsterDelegate.BindUObject(this, &APCRMonsterGenerator::SpawnMonster, MonsterClass);
-
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, Interval, true);
-	SpawnMonster(MonsterClass);
 
 	UE_LOG(PCRLogMonsterGenerator, Log, TEXT("%s이(가) 활성화되었습니다."), *GetName());
 }
@@ -96,6 +96,7 @@ void APCRMonsterGenerator::SpawnMonster(UClass* MonsterClass)
 	{
 		SpawnMonsters.Add(NewMonster);
 		NewMonster->OnDead.AddUObject(this, &APCRMonsterGenerator::RemoveDeadMonster);
+		++MonsterSpawnCount;
 	}
 }
 

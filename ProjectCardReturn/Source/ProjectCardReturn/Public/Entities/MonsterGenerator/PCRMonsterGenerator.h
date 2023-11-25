@@ -35,6 +35,7 @@ public: // 델리게이트 섹션
 	FSpawnedMonsterDeadSignature OnSpawnedMonsterDead;
 
 public: // Getter, Setter 섹션
+	FORCEINLINE int32 GetMonsterSpawnCount() const { return MonsterSpawnCount; }
 	FORCEINLINE int32 GetMonsterKillCount() const { return MonsterKillCount; }
 
 private: // 내부 함수 섹션
@@ -58,5 +59,6 @@ private: // 몬스터 관리 섹션
 	UPROPERTY()
 	TArray<TObjectPtr<APCRMonsterBaseCharacter>> SpawnMonsters;
 
+	int32 MonsterSpawnCount;
 	int32 MonsterKillCount;
 };
