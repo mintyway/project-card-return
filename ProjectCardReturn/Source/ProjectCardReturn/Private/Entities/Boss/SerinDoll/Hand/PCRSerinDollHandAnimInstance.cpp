@@ -89,11 +89,23 @@ void UPCRSerinDollHandAnimInstance::PlayPattern2()
 	Montage_Play(SerinDollDataAsset->HandPattern2AnimMontage);
 }
 
-void UPCRSerinDollHandAnimInstance::EndPattern2()
+void UPCRSerinDollHandAnimInstance::HitPattern2()
 {
 	if (Montage_IsPlaying(SerinDollDataAsset->HandPattern2AnimMontage))
 	{
-		Montage_JumpToSection(TEXT("End"), SerinDollDataAsset->HandPattern2AnimMontage);
+		const FName CurrentSection = Montage_GetCurrentSection(SerinDollDataAsset->HandPattern2AnimMontage);
+		if (CurrentSection != TEXT("Hit"))
+		{
+			Montage_JumpToSection(TEXT("Hit"), SerinDollDataAsset->HandPattern2AnimMontage);
+		}
+	}
+}
+
+void UPCRSerinDollHandAnimInstance::EndPatter2()
+{
+	if (Montage_IsPlaying(SerinDollDataAsset->HandPattern2AnimMontage))
+	{
+		Montage_Stop(0.25f, SerinDollDataAsset->HandPattern2AnimMontage);
 	}
 }
 

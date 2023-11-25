@@ -327,13 +327,14 @@ void APCRSerinDollHandCharacter::Pattern2ResetAttachedCardCount()
 
 void APCRSerinDollHandCharacter::Pattern2End()
 {
-	CachedSerinDollHandAnimInstance->EndPattern2();
+	CachedSerinDollHandAnimInstance->EndPatter2();
 	InitMeshCollision();
 }
 
 void APCRSerinDollHandCharacter::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
 {
 	++Pattern2Data.AttachedCardCount;
+	CachedSerinDollHandAnimInstance->HitPattern2();
 	UE_LOG(PCRLogSerinHandCharacter, Warning, TEXT("박힌 카드 개수: %d"), Pattern2Data.AttachedCardCount);
 	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollHandCharacter::HandlePattern2CardPull);
 }
