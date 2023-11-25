@@ -23,7 +23,7 @@
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
 APCRGameModeBase::APCRGameModeBase()
-	: Phase(1), Stage1DefaultMonsterSpawnCount(0), Stage1EliteMonsterSpawnCount(0), Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(0), CurrentStageState(EStageState::Stage)
+	: Phase(1), Stage1DefaultMonsterSpawnCount(0), Stage1EliteMonsterSpawnCount(0), Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(100), CurrentStageState(EStageState::Stage)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
