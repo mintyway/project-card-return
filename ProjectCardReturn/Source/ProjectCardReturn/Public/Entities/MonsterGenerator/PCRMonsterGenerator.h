@@ -27,9 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public: // 동작 섹션
-	void Start(UClass* MonsterClass, float Interval);
-	void StartOnce(UClass* MonsterClass, int32 SpawnCount);
-	void Stop();
+	void SpawnMonster(UClass* MonsterClass);
 	void KillSpawnedMonsters();
 
 public: // 델리게이트 섹션
@@ -39,8 +37,6 @@ public: // Getter, Setter 섹션
 	FORCEINLINE int32 GetMonsterKillCount() const { return MonsterKillCount; }
 
 private: // 내부 함수 섹션
-	void SpawnMonster(UClass* MonsterClass);
-
 	void RemoveDeadMonster(APCRMonsterBaseCharacter* MonsterBaseCharacter);
 
 private: // 데이터 에셋
@@ -52,7 +48,6 @@ private: // 컴포넌트 섹션
 	TObjectPtr<USceneComponent> RootSceneComponent;
 
 private: // 스폰 데이터 섹션
-	FTimerHandle SpawnTimerHandle;
 	float SpawnRangeRadius;
 
 private: // 몬스터 관리 섹션
