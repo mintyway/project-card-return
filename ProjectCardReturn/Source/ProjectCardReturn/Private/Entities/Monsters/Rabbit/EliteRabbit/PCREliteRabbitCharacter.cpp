@@ -7,23 +7,23 @@
 
 APCREliteRabbitCharacter::APCREliteRabbitCharacter()
 {
-	const float MaxHpRate = ParameterDataAsset->EliteRabbitMaxHpRate;
-	const float MoveSpeedRate = ParameterDataAsset->EliteRabbitMoveSpeedRate;
-	const float AttackPowerRate = ParameterDataAsset->EliteRabbitAttackPowerRate;
-	const float ScaleRate = ParameterDataAsset->EliteRabbitScaleRate;
-	
 	if (ParameterDataAsset)
 	{
+		const float MaxHpRate = ParameterDataAsset->EliteRabbitMaxHpRate;
+		const float MoveSpeedRate = ParameterDataAsset->EliteRabbitMoveSpeedRate;
+		const float AttackPowerRate = ParameterDataAsset->EliteRabbitAttackPowerRate;
+		const float ScaleRate = ParameterDataAsset->EliteRabbitScaleRate;
+	
 		MaxHP = ParameterDataAsset->RabbitMaxHP * MaxHpRate;
 		CurrentHP = MaxHP;
 		MoveSpeed = ParameterDataAsset->RabbitMoveSpeed * MoveSpeedRate;
 		AttackPower = ParameterDataAsset->RabbitAttackPower * AttackPowerRate;
+
+		if (GetMesh())
+		{
+			GetMesh()->SetRelativeScale3D(FVector(ScaleRate, ScaleRate, ScaleRate));
+		}
 	}
 
 	bIsElite = true;
-	
-	if (GetMesh() && MonsterDataAsset)
-	{
-		GetMesh()->SetRelativeScale3D(FVector(ScaleRate, ScaleRate, ScaleRate));
-	}
 }
