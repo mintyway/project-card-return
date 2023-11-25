@@ -53,8 +53,8 @@ public: // 동작
 public: // Getter
 	FORCEINLINE APCREricaCharacter* GetCachedEricaCharacter() const { return CachedEricaCharacter; }
 	FORCEINLINE APCRLiftActor* GetLiftActor() const { return LiftActor; }
-	FORCEINLINE int32 GetStage1MaxMonsterCount() { return Stage1TargetKillCount; }
-	FORCEINLINE int32 GetStage1CurrentMonsterCount() { return Stage1TargetKillCount - Stage1TotalMonsterKillCount; }
+	FORCEINLINE int32 GetStage1MaxMonsterCount() const { return Stage1TargetKillCount; }
+	FORCEINLINE int32 GetStage1CurrentMonsterCount() const { return Stage1TargetKillCount - Stage1TotalMonsterKillCount; }
 	FORCEINLINE EStageState GetCurrentStageState() const { return CurrentStageState; }
 	FORCEINLINE APCRSerinDollHeadCharacter* GetSerinDollHead() const { return SerinDollHead; }
 
@@ -70,7 +70,6 @@ private: // 내부 함수 섹션
 	void HandleKillCount();
 	void HandleSpawnMonster();
 
-	void SpawnDefaultMonster();
 	void SpawnEliteMonster();
 	UClass* GetEliteMonsterClass();
 
