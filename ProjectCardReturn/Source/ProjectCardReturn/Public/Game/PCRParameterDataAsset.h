@@ -241,45 +241,45 @@ public: // 원거리 병사
 	float EliteRangedSoldierScaleRate;
 
 public: // 아이템
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float ItemSpawnRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float ItemSpawnRateByEliteMonster;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float ItemDestroyTime;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float MoreHpItemRate;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float ManyCardItemRate;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float HealItemRate;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float StrongAttackItemRate;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float LongerRangeItemRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	float MaxHpIncreaseRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	float HealRateByIncreaseMaxHP;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	int32 MaxCardIncreaseCount;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	float HealRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	float DamageIncreaseValue;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
 	float ShootRangeIncreaseDistance;
 };
