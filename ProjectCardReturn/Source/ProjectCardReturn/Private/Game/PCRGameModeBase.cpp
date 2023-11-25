@@ -9,12 +9,12 @@
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/MonsterGenerator/PCRMonsterGenerator.h"
-//#include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
-//#include "Entities/Monsters/Rabbit/EliteRabbit/PCREliteRabbitCharacter.h"
-//#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
-//#include "Entities/Monsters/Soldier/MeleeSoldier/EliteMeleeSoldier/PCREliteMeleeSoldierCharacter.h"
-//#include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
-//#include "Entities/Monsters/Soldier/RangedSoldier/EliteRangedSoldier/PCREliteRangedSoldierCharacter.h"
+#include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
+#include "Entities/Monsters/Rabbit/EliteRabbit/PCREliteRabbitCharacter.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
+#include "Entities/Monsters/Soldier/MeleeSoldier/EliteMeleeSoldier/PCREliteMeleeSoldierCharacter.h"
+#include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
+#include "Entities/Monsters/Soldier/RangedSoldier/EliteRangedSoldier/PCREliteRangedSoldierCharacter.h"
 #include "Game/PCRGameInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 
@@ -22,7 +22,8 @@
 
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
-APCRGameModeBase::APCRGameModeBase() : Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageState(EStageState::Stage)
+APCRGameModeBase::APCRGameModeBase()
+	: Phase(1), Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(50), CurrentStageState(EStageState::Stage)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -169,19 +170,18 @@ void APCRGameModeBase::SpawnMonsterGenerators()
 
 void APCRGameModeBase::StartAllMonsterGenerators()
 {
-	//MonsterGenerators[0]->Start(APCRRabbitCharacter::StaticClass(), GenerateInterval);
-	//MonsterGenerators[1]->Start(APCREliteRabbitCharacter::StaticClass(), GenerateInterval);
-	//MonsterGenerators[2]->Start(APCRMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	//MonsterGenerators[3]->Start(APCREliteMeleeSoldierCharacter::StaticClass(), GenerateInterval);
-	//MonsterGenerators[4]->Start(APCRRangedSoldierCharacter::StaticClass(), GenerateInterval);
-	//MonsterGenerators[5]->Start(APCREliteRangedSoldierCharacter::StaticClass(), GenerateInterval);
+	HandleSpawnMonster();
+
+	FTimerDelegate SpawnMonsterDelegate;
+	FTimerHandle SpawnTimerHandle;
+	SpawnMonsterDelegate.BindUObject(this, &APCRGameModeBase::HandleSpawnMonster);
+	GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, 7.0f, true);
 }
 
 void APCRGameModeBase::StopAllMonsterGeneratorsAndKillSpawnedMonsters()
 {
 	for (const auto& MonsterGenerator : MonsterGenerators)
 	{
-		MonsterGenerator->Stop();
 		MonsterGenerator->OnSpawnedMonsterDead.Unbind();
 
 		MonsterGenerator->KillSpawnedMonsters();
@@ -198,6 +198,60 @@ void APCRGameModeBase::HandleKillCount()
 	{
 		StopAllMonsterGeneratorsAndKillSpawnedMonsters();
 		OnStage1End.Broadcast();
+	}
+}
+
+void APCRGameModeBase::HandleSpawnMonster()
+{
+	switch (Phase)
+	{
+	case 0:
+		for (int i = 0; i < FMath::RandRange(2, 3); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
+		}
+		for (int i = 0; i < FMath::RandRange(1, 3); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
+		}
+		for (int i = 0; i < FMath::RandRange(0, 1); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
+		}
+		break;
+		
+	case 1:
+		for (int i = 0; i < FMath::RandRange(3, 5); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
+		}
+		for (int i = 0; i < FMath::RandRange(2, 4); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
+		}
+		for (int i = 0; i < FMath::RandRange(0, 3); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
+		}
+		break;
+		
+	case 2:
+		for (int i = 0; i < FMath::RandRange(3, 7); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
+		}
+		for (int i = 0; i < FMath::RandRange(3, 7); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
+		}
+		for (int i = 0; i < FMath::RandRange(2, 5); i++)
+		{
+			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
+		}
+		break;
+		
+	default:
+		break;
 	}
 }
 

@@ -68,6 +68,7 @@ private: // 내부 함수 섹션
 	void StopAllMonsterGeneratorsAndKillSpawnedMonsters();
 
 	void HandleKillCount();
+	void HandleSpawnMonster();
 
 	void PlayStage1BGM();
 	void PlayBossStageBGM();
@@ -107,6 +108,7 @@ private: // 데이터 섹션
 	TArray<TObjectPtr<APCRMonsterGenerator>> MonsterGenerators;
 
 	float GenerateInterval;
+	int32 Phase;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
 	int32 Stage1TotalMonsterKillCount;
