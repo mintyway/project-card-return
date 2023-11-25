@@ -23,7 +23,7 @@ void APCRMoreHpItem::PlayerOrCardOverlapEvent()
 {
 	Super::PlayerOrCardOverlapEvent();
 
-	Player->IncreaseMaxHP(Player->GetMaxHP() * ParameterDataAsset->MaxHPIncreaseRate);
+	Player->IncreaseMaxHP(Player->GetMaxHP() * ParameterDataAsset->MaxHpIncreaseRate);
 	Player->Heal(Player->GetCurrentHP() * ParameterDataAsset->HealRateByIncreaseMaxHP);
 	UE_LOG(PCRMoreHpItem, Log, TEXT("체력 최대치 : %.2f"), Player->GetMaxHP());
 

@@ -7,18 +7,23 @@
 
 APCREliteRangedSoldierCharacter::APCREliteRangedSoldierCharacter()
 {
+	const float MaxHpRate = ParameterDataAsset->EliteRangedSoldierMaxHpRate;
+	const float MoveSpeedRate = ParameterDataAsset->EliteRangedSoldierMoveSpeedRate;
+	const float AttackPowerRate = ParameterDataAsset->EliteRangedSoldierAttackPowerRate;
+	const float ScaleRate = ParameterDataAsset->EliteRangedSoldierScaleRate;
+	
 	if (ParameterDataAsset)
 	{
-		MaxHP = ParameterDataAsset->RangedSoldierMaxHP * 1.5f;
+		MaxHP = ParameterDataAsset->RangedSoldierMaxHP * MaxHpRate;
 		CurrentHP = MaxHP;
-		MoveSpeed = ParameterDataAsset->RangedSoldierMoveSpeed * 1.3f;
-		AttackPower = ParameterDataAsset->RangedSoldierAttackPower * 1.5f;
+		MoveSpeed = ParameterDataAsset->RangedSoldierMoveSpeed * MoveSpeedRate;
+		AttackPower = ParameterDataAsset->RangedSoldierAttackPower * AttackPowerRate;
 	}
 
 	bIsElite = true;
 	
 	if (GetMesh() && MonsterDataAsset)
 	{
-		GetMesh()->SetRelativeScale3D(FVector(1.5f, 1.5f, 1.5f));
+		GetMesh()->SetRelativeScale3D(FVector(ScaleRate, ScaleRate, ScaleRate));
 	}
 }

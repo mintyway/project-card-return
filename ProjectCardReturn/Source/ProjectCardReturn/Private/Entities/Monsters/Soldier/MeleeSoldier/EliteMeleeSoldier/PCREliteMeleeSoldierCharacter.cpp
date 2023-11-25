@@ -7,17 +7,23 @@
 
 APCREliteMeleeSoldierCharacter::APCREliteMeleeSoldierCharacter()
 {
+	const float MaxHpRate = ParameterDataAsset->EliteMeleeSoldierMaxHpRate;
+	const float MoveSpeedRate = ParameterDataAsset->EliteMeleeSoldierMoveSpeedRate;
+	const float AttackPowerRate = ParameterDataAsset->EliteMeleeSoldierAttackPowerRate;
+	const float ScaleRate = ParameterDataAsset->EliteMeleeSoldierScaleRate;
+	
 	if (ParameterDataAsset)
 	{
-		MaxHP = ParameterDataAsset->MeleeSoldierMaxHP * 2.0f;
+		MaxHP = ParameterDataAsset->MeleeSoldierMaxHP * MaxHpRate;
 		CurrentHP = MaxHP;
-		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower * 1.5f;
+		MoveSpeed = ParameterDataAsset->MeleeSoldierMoveSpeed * MoveSpeedRate;
+		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower * AttackPowerRate;
 	}
 
 	bIsElite = true;
 	
 	if (GetMesh() && MonsterDataAsset)
 	{
-		GetMesh()->SetRelativeScale3D(FVector(1.5f, 1.5f, 1.5f));
+		GetMesh()->SetRelativeScale3D(FVector(ScaleRate, ScaleRate, ScaleRate));
 	}
 }
