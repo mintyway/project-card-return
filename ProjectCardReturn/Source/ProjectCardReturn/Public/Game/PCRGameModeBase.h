@@ -70,6 +70,10 @@ private: // 내부 함수 섹션
 	void HandleKillCount();
 	void HandleSpawnMonster();
 
+	void SpawnDefaultMonster();
+	void SpawnEliteMonster();
+	UClass* GetEliteMonsterClass();
+
 	void PlayStage1BGM();
 	void PlayBossStageBGM();
 
@@ -109,6 +113,15 @@ private: // 데이터 섹션
 
 	float GenerateInterval;
 	int32 Phase;
+
+	FTimerDelegate SpawnMonsterDelegate;
+	FTimerHandle SpawnTimerHandle;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
+	int32 Stage1DefaultMonsterSpawnCount;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
+	int32 Stage1EliteMonsterSpawnCount;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
 	int32 Stage1TotalMonsterKillCount;
