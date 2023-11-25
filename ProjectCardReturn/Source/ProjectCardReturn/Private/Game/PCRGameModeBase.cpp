@@ -23,7 +23,7 @@
 DEFINE_LOG_CATEGORY(PCRLogGameModeBase);
 
 APCRGameModeBase::APCRGameModeBase()
-	: Phase(1), Stage1DefaultMonsterSpawnCount(0), Stage1EliteMonsterSpawnCount(0), Stage1TotalMonsterKillCount(0), Stage1TargetKillCount(100), CurrentStageState(EStageState::Stage)
+	: Phase(1), Stage1DefaultMonsterSpawnCount(0), Stage1EliteMonsterSpawnCount(0), Stage1TotalMonsterKillCount(0), CurrentStageState(EStageState::Stage)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -51,6 +51,10 @@ APCRGameModeBase::APCRGameModeBase()
 	if (ParameterDataAsset)
 	{
 		GenerateInterval = ParameterDataAsset->SpawnerGenerateInterval;
+		Stage1TargetKillCount =
+			ParameterDataAsset->MonsterTargetKillCountInPhase1 +
+			ParameterDataAsset->MonsterTargetKillCountInPhase2 +
+			ParameterDataAsset->MonsterTargetKillCountInPhase3;
 	}
 
 	if (StageDataAsset)
@@ -195,14 +199,19 @@ void APCRGameModeBase::HandleKillCount()
 	const int32 CurrentKillCount = Stage1TargetKillCount - Stage1TotalMonsterKillCount;
 	OnChangeStage1MonsterCount.Execute(Stage1TargetKillCount, CurrentKillCount);
 
+	const int32 TargetKillCountInPhase1 = ParameterDataAsset->MonsterTargetKillCountInPhase1;
+	const int32 TargetKillCountInPhase2 = ParameterDataAsset->MonsterTargetKillCountInPhase2;
+	
 	// ToDo : 파라미터화 필요
-	if (Stage1TotalMonsterKillCount >= 60 && Stage1TotalMonsterKillCount < 80)
+	if (Stage1TotalMonsterKillCount >= TargetKillCountInPhase1 && Stage1TotalMonsterKillCount < TargetKillCountInPhase1 + TargetKillCountInPhase2)
 	{
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase2, true);
 		Phase = 2;
 	}
-	else if (Stage1TotalMonsterKillCount >= 80 && Stage1TotalMonsterKillCount < Stage1TargetKillCount)
+	else if (Stage1TotalMonsterKillCount >= TargetKillCountInPhase1 + TargetKillCountInPhase2 && Stage1TotalMonsterKillCount < Stage1TargetKillCount)
 	{
+		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 		GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase3, true);
 		Phase = 3;
 	}
@@ -216,36 +225,38 @@ void APCRGameModeBase::HandleKillCount()
 
 void APCRGameModeBase::HandleSpawnMonster()
 {
-	// ToDo : 파라미터화 필요
 	switch (Phase)
 	{
 	case 1:
-		for (int i = 0; i < FMath::RandRange(2, 3); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RabbitMinSpawnCountByOnceInPhase1,
+			ParameterDataAsset->RabbitMaxSpawnCountByOnceInPhase1); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase1 == 0)
 			{
 				SpawnEliteMonster();
 			}
 		}
-		for (int i = 0; i < FMath::RandRange(1, 3); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->MeleeSoldierMinSpawnCountByOnceInPhase1,
+			ParameterDataAsset->MeleeSoldierMaxSpawnCountByOnceInPhase1); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase1 == 0)
 			{
 				SpawnEliteMonster();
 			}
 		}
-		for (int i = 0; i < FMath::RandRange(0, 1); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RangedSoldierMinSpawnCountByOnceInPhase1,
+			ParameterDataAsset->RangedSoldierMaxSpawnCountByOnceInPhase1); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase1 == 0)
 			{
 				SpawnEliteMonster();
 			}
@@ -253,32 +264,35 @@ void APCRGameModeBase::HandleSpawnMonster()
 		break;
 		
 	case 2:
-		for (int i = 0; i < FMath::RandRange(3, 5); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RabbitMinSpawnCountByOnceInPhase2,
+			ParameterDataAsset->RabbitMaxSpawnCountByOnceInPhase2); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase2 == 0)
 			{
 				SpawnEliteMonster();
 			}
 		}
-		for (int i = 0; i < FMath::RandRange(2, 4); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->MeleeSoldierMinSpawnCountByOnceInPhase2,
+			ParameterDataAsset->MeleeSoldierMaxSpawnCountByOnceInPhase2); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase2 == 0)
 			{
 				SpawnEliteMonster();
 			}
 		}
-		for (int i = 0; i < FMath::RandRange(0, 3); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RangedSoldierMinSpawnCountByOnceInPhase2,
+			ParameterDataAsset->RangedSoldierMaxSpawnCountByOnceInPhase2); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 15 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase2 == 0)
 			{
 				SpawnEliteMonster();
 			}
@@ -286,32 +300,35 @@ void APCRGameModeBase::HandleSpawnMonster()
 		break;
 		
 	case 3:
-		for (int i = 0; i < FMath::RandRange(3, 7); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RabbitMinSpawnCountByOnceInPhase3,
+			ParameterDataAsset->RabbitMaxSpawnCountByOnceInPhase3); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRabbitCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 10 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase3 == 0)
 			{
 				SpawnEliteMonster();
 			}
 		}
-		for (int i = 0; i < FMath::RandRange(3, 7); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->MeleeSoldierMinSpawnCountByOnceInPhase3,
+			ParameterDataAsset->MeleeSoldierMaxSpawnCountByOnceInPhase3); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRMeleeSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 10 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase3 == 0)
 			{
 				SpawnEliteMonster();
 			}
 		}
-		for (int i = 0; i < FMath::RandRange(2, 5); i++)
+		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RangedSoldierMinSpawnCountByOnceInPhase3,
+			ParameterDataAsset->RangedSoldierMaxSpawnCountByOnceInPhase3); i++)
 		{
 			MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(APCRRangedSoldierCharacter::StaticClass());
 			++Stage1DefaultMonsterSpawnCount;
 
-			if (Stage1DefaultMonsterSpawnCount % 10 == 0)
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase3 == 0)
 			{
 				SpawnEliteMonster();
 			}
@@ -346,9 +363,9 @@ void APCRGameModeBase::SpawnEliteMonster()
 UClass* APCRGameModeBase::GetEliteMonsterClass()
 {
 	// ToDo : 파라미터화 필요
-	const float EliteRabbitRate = 40.0f;
-	const float EliteMeleeSoldierRate = 40.0f;
-	const float EliteRangedSoldierRate = 20.0f;
+	const float EliteRabbitRate = ParameterDataAsset->EliteRabbitSpawnRate;
+	const float EliteMeleeSoldierRate = ParameterDataAsset->EliteMeleeSoldierSpawnRate;
+	const float EliteRangedSoldierRate = ParameterDataAsset->EliteRangedSoldierSpawnRate;
 
 	const float RangeMax
 		= EliteRabbitRate
