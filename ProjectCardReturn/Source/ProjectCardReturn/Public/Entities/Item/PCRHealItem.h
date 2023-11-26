@@ -8,6 +8,8 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(PCRHealItem, Log, All);
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnOverlapDelegate, APCRHealItem*);
+
 /**
  * 
  */
@@ -21,4 +23,7 @@ public:
 
 protected:
 	virtual void PlayerOrCardOverlapEvent() override;
+
+public:
+	FOnOverlapDelegate OnOverlapDelegate;
 };

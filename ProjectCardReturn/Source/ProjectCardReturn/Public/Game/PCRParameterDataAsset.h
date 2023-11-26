@@ -370,6 +370,18 @@ public: // 아이템 스폰
 	
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float HealItemRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
+	FVector HealItemSpawnLocationByGame1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
+	FVector HealItemSpawnLocationByGame2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
+	FVector HealItemSpawnLocationByGame3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
+	int32 HealItemSpawnPerCountByGame;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float StrongAttackItemRate;

@@ -4,6 +4,7 @@
 #include "Game/PCRGameModeBase.h"
 
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
+#include "Entities/Item/PCRHealItem.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
@@ -131,6 +132,11 @@ void APCRGameModeBase::BeginPlay()
 	{
 		HandleKillCount();
 	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		HealItems.Emplace(nullptr);
+	}
 }
 
 void APCRGameModeBase::Tick(float DeltaSeconds)
@@ -182,7 +188,7 @@ void APCRGameModeBase::StartAllMonsterGenerators()
 	HandleSpawnMonster();
 
 	SpawnMonsterDelegate.BindUObject(this, &APCRGameModeBase::HandleSpawnMonster);
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase1, true);
+	GetWorldTimerManager().SetTimer(SpawnMonsterTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase1, true);
 }
 
 void APCRGameModeBase::StopAllMonsterGeneratorsAndKillSpawnedMonsters()
@@ -209,8 +215,8 @@ void APCRGameModeBase::HandleKillCount()
 		Phase = 2;
 		if (LastPhase != Phase)
 		{
-			GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-			GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase2, true);
+			GetWorldTimerManager().ClearTimer(SpawnMonsterTimerHandle);
+			GetWorldTimerManager().SetTimer(SpawnMonsterTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase2, true);
 			LastPhase = Phase;
 		}
 	}
@@ -219,8 +225,8 @@ void APCRGameModeBase::HandleKillCount()
 		Phase = 3;
 		if (LastPhase != Phase)
 		{
-			GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
-			GetWorldTimerManager().SetTimer(SpawnTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase3, true);
+			GetWorldTimerManager().ClearTimer(SpawnMonsterTimerHandle);
+			GetWorldTimerManager().SetTimer(SpawnMonsterTimerHandle, SpawnMonsterDelegate, ParameterDataAsset->MonsterSpawnTimeInPhase3, true);
 			LastPhase = Phase;
 		}
 	}
@@ -229,7 +235,7 @@ void APCRGameModeBase::HandleKillCount()
 		Phase = 4;
 		if (LastPhase != Phase)
 		{
-			GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+			GetWorldTimerManager().ClearTimer(SpawnMonsterTimerHandle);
 			StopAllMonsterGeneratorsAndKillSpawnedMonsters();
 			OnStage1End.Broadcast();
 			LastPhase = Phase;
@@ -252,6 +258,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			{
 				SpawnEliteMonster();
 			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->MeleeSoldierMinSpawnCountByOnceInPhase1,
 			ParameterDataAsset->MeleeSoldierMaxSpawnCountByOnceInPhase1); i++)
@@ -263,6 +274,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			{
 				SpawnEliteMonster();
 			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RangedSoldierMinSpawnCountByOnceInPhase1,
 			ParameterDataAsset->RangedSoldierMaxSpawnCountByOnceInPhase1); i++)
@@ -273,6 +289,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase1 == 0)
 			{
 				SpawnEliteMonster();
+			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
 			}
 		}
 		break;
@@ -288,6 +309,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			{
 				SpawnEliteMonster();
 			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->MeleeSoldierMinSpawnCountByOnceInPhase2,
 			ParameterDataAsset->MeleeSoldierMaxSpawnCountByOnceInPhase2); i++)
@@ -299,6 +325,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			{
 				SpawnEliteMonster();
 			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RangedSoldierMinSpawnCountByOnceInPhase2,
 			ParameterDataAsset->RangedSoldierMaxSpawnCountByOnceInPhase2); i++)
@@ -309,6 +340,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase2 == 0)
 			{
 				SpawnEliteMonster();
+			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
 			}
 		}
 		break;
@@ -324,6 +360,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			{
 				SpawnEliteMonster();
 			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
+			}
 		}
 		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->MeleeSoldierMinSpawnCountByOnceInPhase3,
 			ParameterDataAsset->MeleeSoldierMaxSpawnCountByOnceInPhase3); i++)
@@ -334,6 +375,11 @@ void APCRGameModeBase::HandleSpawnMonster()
 			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->EliteMonsterSpawnPerCountInPhase3 == 0)
 			{
 				SpawnEliteMonster();
+			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
 			}
 		}
 		for (int i = 0; i < FMath::RandRange(ParameterDataAsset->RangedSoldierMinSpawnCountByOnceInPhase3,
@@ -346,12 +392,22 @@ void APCRGameModeBase::HandleSpawnMonster()
 			{
 				SpawnEliteMonster();
 			}
+
+			if (Stage1DefaultMonsterSpawnCount % ParameterDataAsset->HealItemSpawnPerCountByGame == 0)
+			{
+				SpawnHealItem();
+			}
 		}
 		break;
 		
 	default:
 		break;
 	}
+}
+
+void APCRGameModeBase::HandleHealItemOverlap(APCRHealItem* HealItem)
+{
+	HealItems[HealItems.Find(HealItem)] = nullptr;
 }
 
 void APCRGameModeBase::SpawnEliteMonster()
@@ -372,6 +428,27 @@ void APCRGameModeBase::SpawnEliteMonster()
 
 	MonsterGenerators[FMath::RandRange(0, 3)]->SpawnMonster(EliteMonsterClass);
 	++Stage1EliteMonsterSpawnCount;
+}
+
+void APCRGameModeBase::SpawnHealItem()
+{
+	if (!HealItems[0])
+	{
+		HealItems[0] = GetWorld()->SpawnActor<APCRHealItem>(ParameterDataAsset->HealItemSpawnLocationByGame1, FRotator(0.0, 90.0, 0.0));
+		HealItems[0]->OnOverlapDelegate.AddUObject(this, &APCRGameModeBase::HandleHealItemOverlap);
+	}
+
+	if (!HealItems[1])
+	{
+		HealItems[1] = GetWorld()->SpawnActor<APCRHealItem>(ParameterDataAsset->HealItemSpawnLocationByGame2, FRotator(0.0, 90.0, 0.0));
+		HealItems[1]->OnOverlapDelegate.AddUObject(this, &APCRGameModeBase::HandleHealItemOverlap);
+	}
+
+	if (!HealItems[2])
+	{
+		HealItems[2] = GetWorld()->SpawnActor<APCRHealItem>(ParameterDataAsset->HealItemSpawnLocationByGame3, FRotator(0.0, 90.0, 0.0));
+		HealItems[2]->OnOverlapDelegate.AddUObject(this, &APCRGameModeBase::HandleHealItemOverlap);
+	}
 }
 
 UClass* APCRGameModeBase::GetEliteMonsterClass()
