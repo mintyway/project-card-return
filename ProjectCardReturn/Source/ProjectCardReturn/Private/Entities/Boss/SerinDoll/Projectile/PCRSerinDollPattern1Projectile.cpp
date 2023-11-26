@@ -17,7 +17,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 
 APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
-	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(5000.f), ProjectileReturnSpeed(10000.f), Range(3000.f), bOnceDetached(false)
+	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(7500.f), ProjectileReturnSpeed(12500.f),
+	  bOnceDetached(false), bCanTakeDamageToErica(true)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -101,15 +102,17 @@ void APCRSerinDollPattern1Projectile::Tick(float DeltaTime)
 	}
 }
 
-void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction)
+void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& InStartLocation, const FVector& InTargetLocation)
 {
 	SetOwner(NewOwner);
-	LaunchLocation = StartLocation;
+	LaunchLocation = InStartLocation;
+	TargetLocation = InTargetLocation;
 	
 	UFMODAudioComponent* AudioComponent = UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Pattern1BombThrow, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, false, false, true);
 
 	AudioComponent->Play();
-	
+
+	const FVector Direction = (InTargetLocation - InStartLocation).GetSafeNormal();
 	SetActorLocationAndRotation(LaunchLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
 	SetActorHiddenInGame(false);
 	EnableProjectile();
@@ -183,8 +186,7 @@ void APCRSerinDollPattern1Projectile::HandleShooting()
 
 bool APCRSerinDollPattern1Projectile::IsAtMaxRange()
 {
-	const float Distance = FVector::Dist(LaunchLocation, GetActorLocation());
-	if (Distance >= Range)
+	if (GetActorLocation().X <= TargetLocation.X)
 	{
 		return true;
 	}
@@ -211,19 +213,19 @@ void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardPr
 		const APCRLiftActor* CachedLift = CachedSerinDollHead->GetCachedLift();
 		check(CachedLift);
 
-		FVector TargetLocation;
+		FVector PullTargetLocation;
 		FVector Direction;
 		if (CachedLift->IsOverlappedPattern1())
 		{
-			TargetLocation = CachedSerinDollHead->GetActorLocation();
-			TargetLocation.Z = GetActorLocation().Z;
-			Direction = (TargetLocation - GetActorLocation()).GetSafeNormal();
+			PullTargetLocation = CachedSerinDollHead->GetActorLocation();
+			PullTargetLocation.Z = GetActorLocation().Z;
+			Direction = (PullTargetLocation - GetActorLocation()).GetSafeNormal();
 		}
 		else
 		{
-			TargetLocation = CachedSerinDollHead->GetCachedErica()->GetActorLocation();
-			TargetLocation.Z = GetActorLocation().Z;
-			Direction = (TargetLocation - GetActorLocation()).GetSafeNormal();
+			PullTargetLocation = CachedSerinDollHead->GetCachedErica()->GetActorLocation();
+			PullTargetLocation.Z = GetActorLocation().Z;
+			Direction = (PullTargetLocation - GetActorLocation()).GetSafeNormal();
 		}
 
 		StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -292,8 +294,12 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 
 	if (Cast<APCREricaCharacter>(OtherActor))
 	{
-		DamageAmount = 20.f;
-		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
+		if (bCanTakeDamageToErica)
+		{
+			DamageAmount = 20.f;
+			OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
+			bCanTakeDamageToErica = false; 
+		}
 	}
 	else
 	{
@@ -301,8 +307,8 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
-											   SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
-		
+		                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
+
 		const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
 		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
 

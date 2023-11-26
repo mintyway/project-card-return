@@ -281,6 +281,7 @@ void APCRSerinDollHeadCharacter::Pattern1()
 	LeftHand->ResetAllAttack();
 	RightHand->ResetAllAttack();
 
+	const TArray<FVector> Pattern1TargetLocations = CachedLift->GetShuffleLocationForPattern1Target();
 	Pattern1Data.DetachCount = 0;
 	Pattern1Data.DetachAttackCount = 0;
 	Pattern1Data.bIsStarted = true;
@@ -288,8 +289,8 @@ void APCRSerinDollHeadCharacter::Pattern1()
 	CachedLift->SerinPattern1Start();
 
 	CachedSerinDollHeadAnimInstance->PlayPattern1();
-	LeftHand->Pattern1();
-	RightHand->Pattern1();
+	LeftHand->Pattern1(Pattern1TargetLocations);
+	RightHand->Pattern1(Pattern1TargetLocations);
 
 	State = EState::Pattern1;
 
@@ -403,22 +404,6 @@ void APCRSerinDollHeadCharacter::Pattern1DetachCountCheck()
 {
 	++Pattern1Data.DetachCount;
 	UE_LOG(PCRLogSerinHandCharacter, Warning, TEXT("Pattern1DetachCount: %d"), Pattern1Data.DetachCount);
-}
-
-void APCRSerinDollHeadCharacter::Pattern1MoveStart()
-{
-	if (IsAttacking(LeftHand) || IsAttacking(RightHand))
-	{
-		return;
-	}
-
-	LeftHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
-	RightHand->GetMesh()->GetAnimInstance()->StopAllMontages(0.3f);
-
-	LeftHand->Pattern1();
-	RightHand->Pattern1();
-
-	Pattern1Data.bMoveStarted = true;
 }
 
 void APCRSerinDollHeadCharacter::HandleReadyPattern1(bool IsLeftHand)

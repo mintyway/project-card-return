@@ -43,7 +43,7 @@ public: // 동작
 	void PaperAttack(bool bIsFarAttack);
 	void ScissorsAttack(AActor* NewTarget);
 	void ResetAllAttack();
-	void Pattern1();
+	void Pattern1(const TArray<FVector>& Pattern1TargetLocations);
 	
 	void Pattern2();
 	void Pattern2ResetAttachedCardCount();

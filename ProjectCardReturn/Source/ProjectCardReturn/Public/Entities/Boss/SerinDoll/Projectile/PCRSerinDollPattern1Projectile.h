@@ -38,7 +38,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	void Shoot(AActor* NewOwner, const FVector& StartLocation, const FVector& Direction);
+	void Shoot(AActor* NewOwner, const FVector& InStartLocation, const FVector& InTargetLocation);
 	void Release();
 	void Pattern1ExplosionTimerStart();
 
@@ -90,8 +90,9 @@ private: // 컴포넌트
 private: // 데이터
 	ESerinDollProjectileState State;
 	FVector LaunchLocation;
+	FVector TargetLocation;
 	float ProjectileSpeed;
 	float ProjectileReturnSpeed;
-	float Range;
 	uint32 bOnceDetached:1;
+	uint32 bCanTakeDamageToErica:1;
 };

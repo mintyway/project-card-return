@@ -111,7 +111,6 @@ private: // 내부 함수
 	bool IsAttacking(APCRSerinDollHandCharacter* InSerinDollHand);
 
 	void Pattern1DetachCountCheck();
-	void Pattern1MoveStart();
 	void HandleReadyPattern1(bool IsLeftHand);
 	void HandlePattern1Succeed();
 	void HandlePattern1Ended();

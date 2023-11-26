@@ -40,7 +40,7 @@ public: // 동작 섹션
 	void SerinPattern1Start();
 	void SerinPattern1End();
 
-	TArray<FVector> GetShuffleLocationPattern1Target() const;
+	TArray<FVector> GetShuffleLocationForPattern1Target();
 
 public: // Getter
 	bool IsOverlappedPattern1() const;

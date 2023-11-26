@@ -94,7 +94,7 @@ APCRLiftActor::APCRLiftActor()
 		const FName ComponentKey = *ComponentKeyString;
 		Pattern1TargetComponents.Emplace(CreateDefaultSubobject<USceneComponent>(ComponentKey));
 		Pattern1TargetComponents[i]->SetupAttachment(GetRootComponent());
-		Pattern1TargetComponents[i]->SetRelativeLocation(FVector(-1000.0, -1125.0 + (450 * i), 0.0));
+		Pattern1TargetComponents[i]->SetRelativeLocation(FVector(-800.0, -1125.0 + (450 * i), 0.0));
 	}
 }
 
@@ -170,6 +170,25 @@ void APCRLiftActor::SerinPattern1End()
 	SetActorTickEnabled(false);
 }
 
+TArray<FVector> APCRLiftActor::GetShuffleLocationForPattern1Target()
+{
+	TArray<int32> Indices;
+	for (int32 i = 0; i < 6; ++i)
+	{
+		Indices.Add(i);
+	}
+
+	TArray<FVector> ShuffledPattern1TargetLocations;
+	while (Indices.Num() > 0)
+	{
+		const int32 RandIndex = FMath::RandRange(0, Indices.Num() - 1);
+		ShuffledPattern1TargetLocations.Add(Pattern1TargetComponents[Indices[RandIndex]]->GetComponentLocation());
+		Indices.RemoveAt(RandIndex);
+	}
+
+	return ShuffledPattern1TargetLocations;
+}
+
 bool APCRLiftActor::IsOverlappedPattern1() const
 {
 	return bIsOverlappedPattern1;
@@ -202,23 +221,4 @@ void APCRLiftActor::UpdatePattern1OverlapCheck()
 	{
 		bIsOverlappedPattern1 = false;
 	}
-}
-
-TArray<FVector> APCRLiftActor::GetShuffleLocationPattern1Target() const
-{
-	TArray<int32> Indices;
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Indices.Add(i);
-	}
-
-	TArray<FVector> ShuffledPattern1TargetLocations;
-	while (Indices.Num() > 0)
-	{
-		const int32 RandIndex = FMath::RandRange(0, Indices.Num() - 1);
-		ShuffledPattern1TargetLocations.Add(Pattern1TargetComponents[Indices[RandIndex]]->GetComponentLocation());
-		Indices.RemoveAt(RandIndex);
-	}
-
-	return ShuffledPattern1TargetLocations;
 }
