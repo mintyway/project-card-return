@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
+class APCRHealItem;
 class APCREricaCharacter;
 class APCRSerinDollHeadCharacter;
 class UPCRGameInstance;
@@ -73,8 +74,10 @@ private: // 내부 함수 섹션
 
 	void HandleKillCount();
 	void HandleSpawnMonster();
+	void HandleHealItemOverlap(APCRHealItem* HealItem);
 
 	void SpawnEliteMonster();
+	void SpawnHealItem();
 	UClass* GetEliteMonsterClass();
 
 	void PlayStage1BGM();
@@ -114,12 +117,15 @@ private: // 데이터 섹션
 	UPROPERTY()
 	TArray<TObjectPtr<APCRMonsterGenerator>> MonsterGenerators;
 
+	UPROPERTY()
+	TArray<TObjectPtr<APCRHealItem>> HealItems;
+
 	float GenerateInterval;
 	int32 Phase;
 	int32 LastPhase;
 
 	FTimerDelegate SpawnMonsterDelegate;
-	FTimerHandle SpawnTimerHandle;
+	FTimerHandle SpawnMonsterTimerHandle;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Debug", meta = (allowPrivateAccess = true))
 	int32 Stage1DefaultMonsterSpawnCount;

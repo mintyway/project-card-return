@@ -27,4 +27,6 @@ void APCRHealItem::PlayerOrCardOverlapEvent()
 	UE_LOG(PCRHealItem, Log, TEXT("체력 : %.2f"), Player->GetCurrentHP());
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ItemDataAsset->HealItemPickEffect, Player->GetActorLocation(), GetActorRotation());
+
+	OnOverlapDelegate.Broadcast(this);
 }
