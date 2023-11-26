@@ -61,6 +61,7 @@ public: // Getter
 	FORCEINLINE APCRSerinDollHeadCharacter* GetSerinDollHead() const { return SerinDollHead; }
 
 	// 델리게이트
+	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FStage1Signature OnStage1End;
 	FStage1MonsterCountSignature OnChangeStage1MonsterCount;
 
@@ -83,7 +84,7 @@ private: // 내부 함수 섹션
 	void PlayStage1BGM();
 	void PlayBossStageBGM();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void LiftFloor();
 
 private: // 데이터 에셋 섹션
