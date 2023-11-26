@@ -248,6 +248,11 @@ void APCRSerinDollHandCharacter::Init(APCRSerinDollHeadCharacter* NewSerinDollHe
 	SideVector = InSideVector;
 	IdleOffsetFromTarget = (SideVector * IdleSideOffset) + (GetActorUpVector() * IdleUpOffset);
 
+	const FVector Offset = FVector(1250.0, 1000.0, 0.0);
+	const FVector Location = (Offset * -CachedSerinDollHead->GetActorForwardVector()) + (Offset * SideVector) + (Offset * CachedSerinDollHead->GetActorUpVector());
+	const FVector NewLocation = CachedSerinDollHead->CachedLift->GetActorLocation() + Location;
+	SetActorLocation(NewLocation);
+	
 	const FRotator RelativeInsideRotation = FRotationMatrix::MakeFromX(SideVector).Rotator();
 	PaperAttackNiagaraComponent->SetRelativeRotation(RelativeInsideRotation);
 }

@@ -30,8 +30,16 @@ APCRLiftActor::APCRLiftActor()
 	{
 		SetRootComponent(SceneComponent);
 	}
+	
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	if (BoxComponent)
+	{
+		BoxComponent->SetupAttachment(GetRootComponent());
+		BoxComponent->SetBoxExtent(FVector(1000.0, 1400.0, 50.0));
+		BoxComponent->SetRelativeLocation(FVector(0.0, 0.0, -50.0));
+	}
 
-	LiftMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LiftMeshComponent"));
+	LiftMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LiftMeshComponent"));
 	if (LiftMeshComponent)
 	{
 		LiftMeshComponent->SetupAttachment(GetRootComponent());

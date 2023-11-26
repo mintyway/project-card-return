@@ -34,6 +34,12 @@ public:
 	TSoftClassPtr<UPCRSerinDollHandAnimInstance> HandAnimInstanceClass;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> HeadStartAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> HandStartAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> RockAttackAnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")

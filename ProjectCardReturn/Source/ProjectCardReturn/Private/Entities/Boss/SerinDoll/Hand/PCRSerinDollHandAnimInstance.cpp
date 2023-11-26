@@ -46,6 +46,11 @@ void UPCRSerinDollHandAnimInstance::NativeBeginPlay()
 	Super::NativeBeginPlay();
 }
 
+void UPCRSerinDollHandAnimInstance::PlayStart()
+{
+	Montage_Play(SerinDollDataAsset->HandStartAnimMontage);
+}
+
 void UPCRSerinDollHandAnimInstance::PlayRockAttack()
 {
 	Montage_Play(SerinDollDataAsset->RockAttackAnimMontage);

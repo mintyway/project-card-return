@@ -34,6 +34,7 @@ protected:
 	virtual void NativeBeginPlay() override;
 
 public: // 동작
+	void PlayStart();
 	void PlayRockAttack();
 	void PlayPaperAttack(bool bIsFarAttack = false);
 	void PlayScissorsAttack();

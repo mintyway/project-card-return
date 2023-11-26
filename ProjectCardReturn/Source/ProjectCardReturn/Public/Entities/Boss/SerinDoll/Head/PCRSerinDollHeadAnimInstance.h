@@ -20,6 +20,7 @@ public:
 	UPCRSerinDollHeadAnimInstance();
 
 public: // 동작
+	void PlayStart();
 	void PlayPattern1();
 	void EndPattern1();
 	

@@ -49,7 +49,7 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 public: // 동작
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SpawnSerinDoll();
 	
 public: // Getter

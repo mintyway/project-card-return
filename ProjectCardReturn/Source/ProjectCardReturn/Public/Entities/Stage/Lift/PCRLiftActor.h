@@ -76,7 +76,10 @@ private: // 컴포넌트 섹션
 	TObjectPtr<USceneComponent> SceneComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
-	TObjectPtr<UStaticMeshComponent> LiftMeshComponent;
+	TObjectPtr<UBoxComponent> BoxComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = true))
+	TObjectPtr<USkeletalMeshComponent> LiftMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "ColliderComponents")
 	TArray<TObjectPtr<UBoxComponent>> ColliderComponents;

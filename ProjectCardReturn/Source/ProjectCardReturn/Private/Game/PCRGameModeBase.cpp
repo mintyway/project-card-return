@@ -99,7 +99,9 @@ void APCRGameModeBase::PostInitializeComponents()
 	}
 
 	check(LiftActor);
-	LiftActor->OnLiftUpEnd.AddDynamic(this, &APCRGameModeBase::SpawnSerinDoll);
+
+	// TODO: 시퀀스 재생 이벤트에 맞게 리프트 상승 필요함.
+	// LiftActor->OnLiftUpEnd.AddDynamic(this, &APCRGameModeBase::SpawnSerinDoll);
 
 	// TODO: 시퀀스 재생 이벤트에 맞게 리프트 상승 필요함.
 	// OnStage1End.AddDynamic(this, &APCRGameModeBase::LiftFloor);

@@ -110,6 +110,10 @@ void APCRSerinDollHeadCharacter::BeginPlay()
 	CachedErica = Cast<APCREricaCharacter>(FoundErica[0]);
 	check(CachedErica);
 
+	CachedSerinDollHeadAnimInstance->PlayStart();
+	LeftHand->GetCachedSerinDollHandAnimInstance()->PlayStart();
+	RightHand->GetCachedSerinDollHandAnimInstance()->PlayStart();
+
 	LeftHand->Idle(CachedErica);
 	RightHand->Idle(CachedErica);
 
