@@ -133,10 +133,8 @@ void APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart()
 	const float Time = 10.f;
 	const float TimerSoundTime = 3.f;
 
-	FTimerHandle TimerSoundHandle;
 	GetWorldTimerManager().SetTimer(TimerSoundHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound), Time - TimerSoundTime, false);
 
-	FTimerHandle HandlePattern1ExplosionTimerHandle;
 	GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1Explosion), Time, false);
 }
 
@@ -303,6 +301,9 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 	}
 	else
 	{
+		GetWorldTimerManager().ClearTimer(TimerSoundHandle);
+		GetWorldTimerManager().ClearTimer(HandlePattern1ExplosionTimerHandle);
+		
 		DamageAmount = 5.f;
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
 

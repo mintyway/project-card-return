@@ -89,6 +89,8 @@ private: // 컴포넌트
 
 private: // 데이터
 	ESerinDollProjectileState State;
+	FTimerHandle TimerSoundHandle;
+	FTimerHandle HandlePattern1ExplosionTimerHandle;
 	FVector LaunchLocation;
 	FVector TargetLocation;
 	float ProjectileSpeed;
