@@ -29,7 +29,7 @@ void UPCRRangedSoldierAnimInstance::Throw()
 		return;
 	}
 	
-	UE_LOG(PCRLogRangedSoldierAnimInstance, Warning, TEXT("Throw!"));
+	UE_LOG(PCRLogRangedSoldierAnimInstance, Log, TEXT("Throw!"));
 	
 	Montage_Play(MonsterDataAsset->RangedSoldierThrowAnimationMontage);
 

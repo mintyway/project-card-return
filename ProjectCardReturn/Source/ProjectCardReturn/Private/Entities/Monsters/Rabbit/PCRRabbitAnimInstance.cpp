@@ -35,7 +35,7 @@ void UPCRRabbitAnimInstance::Hit()
 		return;
 	}
 
-	UE_LOG(PCRRabbitAnimInstance, Warning, TEXT("Attack!"));
+	UE_LOG(PCRRabbitAnimInstance, Log, TEXT("Attack!"));
 	
 	Montage_Play(MonsterDataAsset->RabbitAttackAnimationMontage);
 
