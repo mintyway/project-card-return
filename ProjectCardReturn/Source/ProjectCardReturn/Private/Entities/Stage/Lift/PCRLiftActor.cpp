@@ -13,7 +13,7 @@
 DEFINE_LOG_CATEGORY(PCRLogRiftActor);
 
 APCRLiftActor::APCRLiftActor()
-	: State(EState::LiftUp), MaxLiftHeight(350.f), LiftingTime(0.f), ElapsedTime(0.f), bIsOverlappedPattern1(false)
+	: State(EState::LiftUp), MaxLiftHeight(900.f), LiftingTime(0.f), ElapsedTime(0.f), bIsOverlappedPattern1(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
