@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Soldier/RangedSoldier/EliteRangedSoldier/PCREliteRangedSoldierCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Game/PCRParameterDataAsset.h"
 
 APCREliteRangedSoldierCharacter::APCREliteRangedSoldierCharacter()
@@ -18,6 +19,13 @@ APCREliteRangedSoldierCharacter::APCREliteRangedSoldierCharacter()
 		CurrentHP = MaxHP;
 		MoveSpeed = ParameterDataAsset->RangedSoldierMoveSpeed * MoveSpeedRate;
 		AttackPower = ParameterDataAsset->RangedSoldierAttackPower * AttackPowerRate;
+
+		if (GetCapsuleComponent())
+		{
+			const float Radius = GetCapsuleComponent()->GetScaledCapsuleRadius() * ScaleRate;
+			const float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * ScaleRate;
+			GetCapsuleComponent()->InitCapsuleSize(Radius, HalfHeight);
+		}
 
 		if (GetMesh())
 		{

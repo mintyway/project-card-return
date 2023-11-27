@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Soldier/MeleeSoldier/EliteMeleeSoldier/PCREliteMeleeSoldierCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Game/PCRParameterDataAsset.h"
 
 APCREliteMeleeSoldierCharacter::APCREliteMeleeSoldierCharacter()
@@ -18,6 +19,13 @@ APCREliteMeleeSoldierCharacter::APCREliteMeleeSoldierCharacter()
 		CurrentHP = MaxHP;
 		MoveSpeed = ParameterDataAsset->MeleeSoldierMoveSpeed * MoveSpeedRate;
 		AttackPower = ParameterDataAsset->MeleeSoldierAttackPower * AttackPowerRate;
+
+		if (GetCapsuleComponent())
+		{
+			const float Radius = GetCapsuleComponent()->GetScaledCapsuleRadius() * ScaleRate;
+			const float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * ScaleRate;
+			GetCapsuleComponent()->InitCapsuleSize(Radius, HalfHeight);
+		}
 
 		if (GetMesh())
 		{

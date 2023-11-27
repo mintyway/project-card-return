@@ -3,6 +3,7 @@
 
 #include "Entities/Monsters/Rabbit/EliteRabbit/PCREliteRabbitCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Game/PCRParameterDataAsset.h"
 
 APCREliteRabbitCharacter::APCREliteRabbitCharacter()
@@ -18,6 +19,13 @@ APCREliteRabbitCharacter::APCREliteRabbitCharacter()
 		CurrentHP = MaxHP;
 		MoveSpeed = ParameterDataAsset->RabbitMoveSpeed * MoveSpeedRate;
 		AttackPower = ParameterDataAsset->RabbitAttackPower * AttackPowerRate;
+
+		if (GetCapsuleComponent())
+		{
+			const float Radius = GetCapsuleComponent()->GetScaledCapsuleRadius() * ScaleRate;
+			const float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * ScaleRate;
+			GetCapsuleComponent()->InitCapsuleSize(Radius, HalfHeight);
+		}
 
 		if (GetMesh())
 		{
