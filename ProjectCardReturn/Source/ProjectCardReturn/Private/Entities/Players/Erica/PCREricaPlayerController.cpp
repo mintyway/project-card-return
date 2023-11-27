@@ -129,6 +129,11 @@ void APCREricaPlayerController::SetVisibilityHUD(bool bIsEnable)
 	HUDUserWidget->SetVisibilityEricaUI(bIsEnable);
 }
 
+void APCREricaPlayerController::SetVisibilityStage1UI(bool bIsEnable)
+{
+	HUDUserWidget->SetVisibilityStage1UI(bIsEnable);
+}
+
 void APCREricaPlayerController::SetVisibilitySerinUI(bool bIsEnable)
 {
 	HUDUserWidget->SetVisibilitySerinUI(bIsEnable);

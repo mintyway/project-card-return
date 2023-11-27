@@ -33,7 +33,14 @@ protected:
 public: // 동작 섹션
 	FVector GetMouseDirection() const;
 	void BindSerinUI(APCRSerinDollHeadCharacter* Serin);
+	
+	UFUNCTION(BlueprintCallable)
 	void SetVisibilityHUD(bool bIsEnable);
+
+	UFUNCTION(BlueprintCallable)
+	void SetVisibilityStage1UI(bool bIsEnable);
+
+	UFUNCTION(BlueprintCallable)
 	void SetVisibilitySerinUI(bool bIsEnable);
 
 private: // 내부 함수 섹션
