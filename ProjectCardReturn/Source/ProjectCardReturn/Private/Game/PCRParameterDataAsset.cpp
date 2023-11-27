@@ -122,7 +122,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	RangedSoldierAttackPower(5.f),
 	RangedSoldierAttackRange(1500.f),
 	RangedSoldierAttackRate(1.f),
-	SpearDestroyTimeAfterDrop(1.f),
+	SpearDestroyTimeAfterDrop(3.f),
 	SpearSpeed(1500.f),
 	SpearPredictionRate(0.5f),
 	RangedSoldierMinSpawnCountByOnceInPhase1(0),

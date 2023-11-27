@@ -54,6 +54,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	TObjectPtr<UAnimMontage> RangedSoldierThrowAnimationMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	TObjectPtr<UNiagaraSystem> RangedSoldierWarnEffect;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<UBehaviorTree> RabbitBehaviorTree;
 
