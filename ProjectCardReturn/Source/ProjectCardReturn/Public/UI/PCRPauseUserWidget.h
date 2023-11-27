@@ -31,17 +31,6 @@ private:
 	UFUNCTION()
 	void HandleToMainClicked();
 
-	UFUNCTION()
-	void HandleChangeSoundBar(float Value);
-
-	UFUNCTION()
-	void HandleSoundOn();
-
-	UFUNCTION()
-	void HandleSoundOff();
-
-	void HandleSoundImageOnOff();
-
 private: // 데이터
 	UPROPERTY()
 	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance;
@@ -54,16 +43,4 @@ private: // 데이터
 
 	UPROPERTY()
 	TObjectPtr<UButton> BT_ToMain;
-
-	UPROPERTY()
-	TObjectPtr<USlider> SLD_SoundBar;
-
-	UPROPERTY()
-	TObjectPtr<UProgressBar> PB_SoundBar;
-
-	UPROPERTY()
-	TObjectPtr<UButton> BT_SoundOn;
-
-	UPROPERTY()
-	TObjectPtr<UButton> BT_SoundOff;
 };

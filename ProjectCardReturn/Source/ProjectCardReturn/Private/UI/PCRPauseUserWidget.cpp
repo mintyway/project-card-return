@@ -23,32 +23,12 @@ void UPCRPauseUserWidget::NativeConstruct()
 	BT_ToMain = Cast<UButton>(GetWidgetFromName(TEXT("BT_ToMain")));
 	check(BT_ToMain);
 
-	SLD_SoundBar = Cast<USlider>(GetWidgetFromName(TEXT("SLD_SoundBar")));
-	check(SLD_SoundBar);
-
-	PB_SoundBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("PB_SoundBar")));
-	check(PB_SoundBar);
-
-	BT_SoundOn = Cast<UButton>(GetWidgetFromName(TEXT("BT_SoundOn")));
-	check(BT_SoundOn);
-
-	BT_SoundOff = Cast<UButton>(GetWidgetFromName(TEXT("BT_SoundOff")));
-	check(BT_SoundOff);
-
 	CachedPCRGameInstance = Cast<UPCRGameInstance>(GetGameInstance());
 	check(CachedPCRGameInstance);
-
-	const float VolumeRatio = CachedPCRGameInstance->GetMasterVolume();
-	SLD_SoundBar->SetValue(VolumeRatio);
-	PB_SoundBar->SetPercent(VolumeRatio);
-	HandleSoundImageOnOff();
 
 	BT_Resume->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleResumeClicked);
 	BT_Restart->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleRestartClicked);
 	BT_ToMain->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleToMainClicked);
-	SLD_SoundBar->OnValueChanged.AddDynamic(this, &UPCRPauseUserWidget::HandleChangeSoundBar);
-	BT_SoundOn->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleSoundOff);
-	BT_SoundOff->OnClicked.AddDynamic(this, &UPCRPauseUserWidget::HandleSoundOn);
 }
 
 void UPCRPauseUserWidget::HandleResumeClicked()
@@ -73,39 +53,4 @@ void UPCRPauseUserWidget::HandleRestartClicked()
 void UPCRPauseUserWidget::HandleToMainClicked()
 {
 	CachedPCRGameInstance->ToMain();
-}
-
-void UPCRPauseUserWidget::HandleChangeSoundBar(float Value)
-{
-	PB_SoundBar->SetPercent(Value);
-	CachedPCRGameInstance->SetMasterVolume(Value);
-	HandleSoundImageOnOff();
-}
-
-void UPCRPauseUserWidget::HandleSoundOn()
-{
-	CachedPCRGameInstance->MasterVolumeOn();
-	HandleSoundImageOnOff();
-}
-
-void UPCRPauseUserWidget::HandleSoundOff()
-{
-	CachedPCRGameInstance->MasterVolumeOff();
-	HandleSoundImageOnOff();
-}
-
-void UPCRPauseUserWidget::HandleSoundImageOnOff()
-{
-	const float MasterVolume = CachedPCRGameInstance->GetMasterVolume();
-
-	if (MasterVolume > 0.f)
-	{
-		BT_SoundOn->SetVisibility(ESlateVisibility::Visible);
-		BT_SoundOff->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else
-	{
-		BT_SoundOn->SetVisibility(ESlateVisibility::Hidden);
-		BT_SoundOff->SetVisibility(ESlateVisibility::Visible);
-	}
 }
