@@ -39,7 +39,7 @@ APCRShieldActor::APCRShieldActor()
 	if (StaticMeshComponent && MonsterDataAsset)
 	{
 		StaticMeshComponent->SetupAttachment(BoxComponent);
-		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->ShieldMesh);
+		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->MeleeSoldierShieldMesh);
 		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(0, 10, 0), FRotator(0.0, -30.0, 30.0));
 		StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}

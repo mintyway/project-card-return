@@ -3,6 +3,8 @@
 
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRSpearActor.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 #include "Components/BoxComponent.h"
@@ -47,7 +49,7 @@ APCRSpearActor::APCRSpearActor()
 	if (StaticMeshComponent && MonsterDataAsset)
 	{
 		StaticMeshComponent->SetupAttachment(BoxComponent);
-		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->SpearMesh);
+		StaticMeshComponent->SetStaticMesh(MonsterDataAsset->RangedSoldierSpearMesh);
 		StaticMeshComponent->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0.0, 0.0, 0.0));
 		StaticMeshComponent->SetCollisionProfileName("NoCollision");
 	}
@@ -61,6 +63,13 @@ APCRSpearActor::APCRSpearActor()
 		ProjectileMovementComponent->MaxSpeed = ParameterDataAsset->SpearSpeed;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->Deactivate();
+	}
+
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
+	if (NiagaraComponent && MonsterDataAsset)
+	{
+		NiagaraComponent->SetupAttachment(RootComponent);
+		NiagaraComponent->SetAsset(MonsterDataAsset->RangedSoldierSpearFlyEffect);
 	}
 }
 
