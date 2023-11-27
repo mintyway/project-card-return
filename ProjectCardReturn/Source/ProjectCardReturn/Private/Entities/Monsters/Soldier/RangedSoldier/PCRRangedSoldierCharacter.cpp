@@ -3,11 +3,11 @@
 
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
 
+#include "NiagaraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierAnimInstance.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRSpearActor.h"
-#include "Game/PCRGameModeBase.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -43,6 +43,14 @@ APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = ParameterDataAsset->RangedSoldierMoveSpeed;
 	}
+
+	WarnEffectNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	if (WarnEffectNiagaraComponent && MonsterDataAsset)
+	{
+		WarnEffectNiagaraComponent->SetAsset(MonsterDataAsset->RangedSoldierWarnEffect);
+		WarnEffectNiagaraComponent->SetupAttachment(RootComponent);
+		WarnEffectNiagaraComponent->SetAutoActivate(false);
+	}
 }
 
 void APCRRangedSoldierCharacter::PostInitializeComponents()
@@ -58,9 +66,18 @@ void APCRRangedSoldierCharacter::PostInitializeComponents()
 	}
 }
 
+void APCRRangedSoldierCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	WarnEffectNiagaraComponent->SetWorldRotation(FRotationMatrix::MakeFromX(SpearDirection()).Rotator());
+}
+
 void APCRRangedSoldierCharacter::Attack()
 {
 	Super::Attack();
+
+	WarnEffectNiagaraComponent->Activate(true);
 
 	if (AnimInstance)
 	{
@@ -73,12 +90,15 @@ void APCRRangedSoldierCharacter::Throw()
 	check(GetWorld());
 	APCRSpearActor* Spear = GetWorld()->SpawnActor<APCRSpearActor>();
 	check(Spear);
-	
+		
+	Spear->Throw(this, GetActorLocation(), SpearDirection());
+}
+
+FVector APCRRangedSoldierCharacter::SpearDirection()
+{
 	const float SpearSpeed = ParameterDataAsset->SpearSpeed;
 	const float Distance = GetDistanceTo(CachedPlayerCharacter);
 	const FVector PredictedMove = CachedPlayerCharacter->GetVelocity() * (Distance / SpearSpeed);
 	const FVector PredictedLocation = CachedPlayerCharacter->GetActorLocation() + PredictedMove * ParameterDataAsset->SpearPredictionRate;
-	const FVector Direction = (PredictedLocation - GetActorLocation()).GetSafeNormal();
-		
-	Spear->Throw(this, GetActorLocation(), Direction);
+	return (PredictedLocation - GetActorLocation()).GetSafeNormal();
 }

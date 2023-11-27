@@ -165,7 +165,7 @@ float APCRMonsterBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 }
 
 /**
-* 데미지를 받아 체력이 변할때 호출되며 실시간으로 현재 체력과 HPBar를 동기화 해줍니다. HP변경 후 무조건 이 함수를 호출하도록 설계해야합니다.\n
+ * 데미지를 받아 체력이 변할때 호출되며 실시간으로 현재 체력과 HPBar를 동기화 해줍니다. HP변경 후 무조건 이 함수를 호출하도록 설계해야합니다.\n
  * 이벤트가 존재합니다.
  */
 void APCRMonsterBaseCharacter::HandleChangeHP()

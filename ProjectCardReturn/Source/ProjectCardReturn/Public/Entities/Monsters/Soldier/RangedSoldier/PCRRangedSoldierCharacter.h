@@ -6,6 +6,7 @@
 #include "Entities/Monsters/Soldier/Base/PCRSoldierBaseCharacter.h"
 #include "PCRRangedSoldierCharacter.generated.h"
 
+class UNiagaraComponent;
 class APCRSpearActor;
 class UPCRRangedSoldierAnimInstance;
 /**
@@ -21,10 +22,13 @@ public:
 
 protected:
 	virtual void PostInitializeComponents() override;
+	virtual void Tick(float DeltaSeconds) override;
+	
 	virtual void Attack() override;
 
 public:
 	void Throw();
+	FVector SpearDirection();
 
 private:
 	UPROPERTY()
@@ -32,4 +36,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UPCRRangedSoldierAnimInstance> AnimInstance;
+	
+	UPROPERTY()
+	TObjectPtr<UNiagaraComponent> WarnEffectNiagaraComponent;
 };
