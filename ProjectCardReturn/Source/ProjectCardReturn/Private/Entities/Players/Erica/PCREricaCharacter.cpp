@@ -320,6 +320,7 @@ void APCREricaCharacter::Heal(float Amount)
 void APCREricaCharacter::IncreaseMaxHP(float Amount)
 {
 	MaxHP += Amount;
+	HandleChangeHP();
 }
 
 void APCREricaCharacter::IncreaseMaxCardCount(int32 Amount)
