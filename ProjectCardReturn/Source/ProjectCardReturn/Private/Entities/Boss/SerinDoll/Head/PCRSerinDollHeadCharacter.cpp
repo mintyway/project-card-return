@@ -103,7 +103,7 @@ void APCRSerinDollHeadCharacter::PostInitializeComponents()
 void APCRSerinDollHeadCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	TArray<AActor*> FoundErica;
 	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), APCREricaCharacter::StaticClass(), TEXT("Erica"), FoundErica);
 
@@ -211,6 +211,13 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 		ChangeHP(-Damage);
 		return Damage;
 	}
+}
+
+void APCRSerinDollHeadCharacter::SetMeshVisibility(bool bIsVisible)
+{
+	GetMesh()->SetVisibility(bIsVisible);
+	LeftHand->GetMesh()->SetVisibility(bIsVisible);
+	RightHand->GetMesh()->SetVisibility(bIsVisible);
 }
 
 void APCRSerinDollHeadCharacter::DestroySerinDoll()
