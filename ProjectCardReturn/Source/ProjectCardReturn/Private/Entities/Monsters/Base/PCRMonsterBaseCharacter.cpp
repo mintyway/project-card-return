@@ -194,7 +194,7 @@ void APCRMonsterBaseCharacter::HandleDead()
 
 	bIsAlive = false;
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("IgnoreOnlyPawn"));
-	APCRMonsterBaseAIController* const MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
+	APCRMonsterBaseAIController* MonsterBaseAIController = Cast<APCRMonsterBaseAIController>(GetController());
 	check(MonsterBaseAIController);
 	MonsterBaseAIController->StopMovement();
 	check(MonsterBaseAIController->GetBrainComponent());

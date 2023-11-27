@@ -35,6 +35,11 @@ APCRRabbitCharacter::APCRRabbitCharacter()
 
 	AIControllerClass = APCRRabbitAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->InitCapsuleSize(50.f, 50.f);
+	}
 
 	if (GetMesh() && MonsterDataAsset)
 	{
