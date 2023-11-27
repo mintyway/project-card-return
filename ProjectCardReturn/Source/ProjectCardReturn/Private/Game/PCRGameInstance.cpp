@@ -22,7 +22,8 @@ DEFINE_LOG_CATEGORY(PCRLogGameInstance);
 UPCRGameInstance::UPCRGameInstance()
 	: FMODStudioSystem(nullptr), MasterBus(nullptr), MainAudioInst(nullptr),
 	  AmbientAudioInst(nullptr), Stage1AudioInst(nullptr), BossStageAudioInst(nullptr), EndingAudioInst(nullptr),
-	  bIsInit(false), LastMasterVolume(100.f)
+	  bIsInit(false), LastMasterVolume(100.f),
+	  bEnableLumen(true), GraphicLevel(EGraphicLevel::High)
 {
 	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
 	if (DA_Sound.Succeeded())
@@ -34,7 +35,7 @@ UPCRGameInstance::UPCRGameInstance()
 void UPCRGameInstance::Init()
 {
 	Super::Init();
-	
+
 	check(SoundDataAsset);
 
 	FMODStudioSystem = IFMODStudioModule::Get().GetStudioSystem(EFMODSystemContext::Runtime);
@@ -44,6 +45,12 @@ void UPCRGameInstance::Init()
 	FMODStudioSystem->getBus("bus:/", &MasterBusRawPtr);
 	MasterBus = MasterBusRawPtr;
 	check(MasterBus);
+
+	if (GEngine)
+	{
+		GEngine->Exec(GetWorld(), TEXT("r.DynamicGlobalIlluminationMethod 1"));
+		GEngine->Exec(GetWorld(), TEXT("sg.ShadowQuality 3"));
+	}
 }
 
 void UPCRGameInstance::OnStart()
@@ -88,7 +95,7 @@ void UPCRGameInstance::ReleaseInGameSoundSystem()
 	{
 		MainAudioInst->release();
 	}
-	
+
 	if (AmbientAudioInst)
 	{
 		AmbientAudioInst->release();
@@ -209,7 +216,7 @@ void UPCRGameInstance::RestartGame(UWidget* Widget)
 			PCRGameMode->GetCachedEricaCharacter()->SetActorLocation(NewLocation);
 
 			OnRestart.Broadcast();
-			
+
 			UE_LOG(PCRLogGameInstance, Log, TEXT("보스전투가 재시작되었습니다."));
 
 			return;
@@ -235,6 +242,6 @@ void UPCRGameInstance::ToMain()
 void UPCRGameInstance::QuitGame()
 {
 	ReleaseInGameSoundSystem();
-	
+
 	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 }

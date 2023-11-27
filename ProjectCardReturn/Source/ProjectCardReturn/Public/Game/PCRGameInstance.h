@@ -13,6 +13,14 @@ namespace FMOD::Studio
 	class EventInstance;
 }
 
+UENUM(BlueprintType)
+enum class EGraphicLevel : uint8
+{
+	Low,
+	Middle,
+	High
+};
+
 class UPCRSoundPrimaryDataAsset;
 class APCREricaCardProjectilePool;
 
@@ -106,4 +114,10 @@ private: // 오디오
 private: // 데이터
 	uint32 bIsInit:1;
 	float LastMasterVolume;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	uint32 bEnableLumen:1;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	EGraphicLevel GraphicLevel;
 };
