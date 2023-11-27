@@ -31,7 +31,7 @@ public:
 	TObjectPtr<USkeletalMesh> MeleeSoldierMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
-	TObjectPtr<UStaticMesh> ShieldMesh;
+	TObjectPtr<UStaticMesh> MeleeSoldierShieldMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "MeleeSoldier")
 	TSoftClassPtr<UAnimInstance> MeleeSoldierAnimationBlueprint;
@@ -46,16 +46,19 @@ public:
 	TObjectPtr<USkeletalMesh> RangedSoldierMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	TObjectPtr<UStaticMesh> SpearMesh;
+	TObjectPtr<UStaticMesh> RangedSoldierSpearMesh;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	TObjectPtr<UNiagaraSystem> RangedSoldierSpearFlyEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
+	TObjectPtr<UNiagaraSystem> RangedSoldierSpearWarnEffect;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
 	TSoftClassPtr<UAnimInstance> RangedSoldierAnimationBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	TObjectPtr<UAnimMontage> RangedSoldierThrowAnimationMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RangedSoldier")
-	TObjectPtr<UNiagaraSystem> RangedSoldierWarnEffect;
+	TObjectPtr<UAnimMontage> RangedSoldierThrowAnimationMontage;;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rabbit")
 	TObjectPtr<UBehaviorTree> RabbitBehaviorTree;

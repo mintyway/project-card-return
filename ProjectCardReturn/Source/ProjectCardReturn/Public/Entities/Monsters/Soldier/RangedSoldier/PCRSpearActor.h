@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "PCRSpearActor.generated.h"
 
+class UNiagaraComponent;
 class UPCRParameterDataAsset;
 class UProjectileMovementComponent;
 class UBoxComponent;
@@ -52,4 +53,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Data")
 	TObjectPtr<const UPCRParameterDataAsset> ParameterDataAsset;
+
+	UPROPERTY(VisibleAnywhere, Category = "Data")
+	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 };

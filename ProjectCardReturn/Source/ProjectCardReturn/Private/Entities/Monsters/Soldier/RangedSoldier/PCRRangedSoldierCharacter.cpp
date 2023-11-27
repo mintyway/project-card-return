@@ -47,8 +47,8 @@ APCRRangedSoldierCharacter::APCRRangedSoldierCharacter()
 	WarnEffectNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 	if (WarnEffectNiagaraComponent && MonsterDataAsset)
 	{
-		WarnEffectNiagaraComponent->SetAsset(MonsterDataAsset->RangedSoldierWarnEffect);
 		WarnEffectNiagaraComponent->SetupAttachment(RootComponent);
+		WarnEffectNiagaraComponent->SetAsset(MonsterDataAsset->RangedSoldierSpearWarnEffect);
 		WarnEffectNiagaraComponent->SetAutoActivate(false);
 	}
 }
