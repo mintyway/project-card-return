@@ -225,6 +225,8 @@ void APCRSerinDollHeadCharacter::DestroySerinDoll()
 	LeftHand->Destroy();
 	RightHand->Destroy();
 	Destroy();
+
+	OnDestroyed.Broadcast();
 }
 
 void APCRSerinDollHeadCharacter::LeftRockAttack()

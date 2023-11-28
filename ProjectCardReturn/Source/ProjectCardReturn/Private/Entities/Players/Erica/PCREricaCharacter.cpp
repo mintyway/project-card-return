@@ -409,6 +409,7 @@ void APCREricaCharacter::Revival()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	ChangeHP(MaxHP - CurrentHP);
 	bIsAlive = true;
+	bCanControl = true;
 	EnableInput(CachedEricaPlayerController);
 }
 

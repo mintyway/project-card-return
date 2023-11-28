@@ -15,6 +15,7 @@ class APCRSerinDollHandBaseCharacter;
 DECLARE_LOG_CATEGORY_EXTERN(PCRLogSerinDollHeadCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
+DECLARE_MULTICAST_DELEGATE(FDestroyedSignature);
 DECLARE_MULTICAST_DELEGATE(FHPStateSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPattern2Signature);
 
@@ -68,6 +69,8 @@ public: // Getter, Setter
 	// 델리게이트
 	FChangeHPSignature OnChangeHP;
 	FHPStateSignature OnHP50PercentLess;
+
+	FDestroyedSignature OnDestroyed;
 	
 	FPattern1InternalSignature OnPattern1StartInternal;
 	FPattern1InternalSignature OnPattern1EndedInternal;

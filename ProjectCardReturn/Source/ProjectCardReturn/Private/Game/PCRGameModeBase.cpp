@@ -140,6 +140,13 @@ void APCRGameModeBase::BeginPlay()
 	{
 		HealItems.Emplace(nullptr);
 	}
+
+	// auto Pause = [this]() -> void
+	// {
+	// 	SetPause(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	// };
+	//
+	// GetWorldTimerManager().SetTimerForNextTick(Pause);
 }
 
 void APCRGameModeBase::Tick(float DeltaSeconds)

@@ -26,7 +26,7 @@ DECLARE_LOG_CATEGORY_EXTERN(PCRLogEricaCharacter, Log, All);
 DECLARE_MULTICAST_DELEGATE(FAttackSignature);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeHPSignature, float, float);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FChangeCardCountSignature, int32, int32);
-DECLARE_MULTICAST_DELEGATE(FDeadSignature);
+DECLARE_MULTICAST_DELEGATE(FDestroyedSignature);
 
 /**
  * 캐릭터의 공격 모드를 설정합니다.
@@ -82,7 +82,7 @@ public: // 델리게이트
 	FAttackSignature OnCardRecall;
 
 	FChangeHPSignature OnChangeHP;
-	FDeadSignature OnDead;
+	FDestroyedSignature OnDead;
 
 	FChangeCardCountSignature OnChangeCardCount;
 	FShootModeSignature OnChangeShootMode;

@@ -123,6 +123,8 @@ void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& InS
 
 void APCRSerinDollPattern1Projectile::Release()
 {
+	GetWorldTimerManager().ClearTimer(TimerSoundHandle);
+	GetWorldTimerManager().ClearTimer(HandlePattern1ExplosionTimerHandle);
 	Destroy();
 }
 
@@ -300,9 +302,6 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 	}
 	else
 	{
-		GetWorldTimerManager().ClearTimer(TimerSoundHandle);
-		GetWorldTimerManager().ClearTimer(HandlePattern1ExplosionTimerHandle);
-		
 		DamageAmount = 5.f;
 		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
 
@@ -312,6 +311,6 @@ void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* Ove
 		const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
 		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
 
-		Destroy();
+		Release();
 	}
 }
