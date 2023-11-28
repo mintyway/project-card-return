@@ -4,7 +4,6 @@
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 
 #include "Components/CapsuleComponent.h"
-#include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRShieldActor.h"

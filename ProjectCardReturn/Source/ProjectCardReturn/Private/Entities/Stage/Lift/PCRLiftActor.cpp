@@ -6,7 +6,6 @@
 #include "FMODBlueprintStatics.h"
 #include "Components/BoxComponent.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
-#include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Game/PCRSoundPrimaryDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 

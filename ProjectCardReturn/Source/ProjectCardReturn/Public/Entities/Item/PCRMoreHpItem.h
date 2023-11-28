@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "Entities/Item/PCRBaseItem.h"
 #include "PCRMoreHpItem.generated.h"
 

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectCardReturn.h"
 #include "Engine/DataAsset.h"
 #include "PCRItemDataAsset.generated.h"
 

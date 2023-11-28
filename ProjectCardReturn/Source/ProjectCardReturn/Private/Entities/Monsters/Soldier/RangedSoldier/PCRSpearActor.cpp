@@ -4,15 +4,12 @@
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRSpearActor.h"
 
 #include "NiagaraComponent.h"
-#include "NiagaraSystem.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
 #include "Components/BoxComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Soldier/RangedSoldier/PCRRangedSoldierCharacter.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
-#include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
-#include "Game/PCRGameModeBase.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
