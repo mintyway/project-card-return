@@ -169,6 +169,7 @@ void APCRSerinDollHandCharacter::PostInitializeComponents()
 	CachedSerinDollHandAnimInstance->OnScissorsAttackHitEnd.AddUObject(this, &APCRSerinDollHandCharacter::HandleScissorsAttackHitEnd);
 
 	CachedSerinDollHandAnimInstance->OnPattern1Shoot.AddUObject(this, &APCRSerinDollHandCharacter::Pattern1Shoot);
+	CachedSerinDollHandAnimInstance->OnPattern2CollisionActivate.AddUObject(this, &APCRSerinDollHandCharacter::HandlePattern2CollisionActivate);
 }
 
 void APCRSerinDollHandCharacter::BeginPlay()
@@ -319,7 +320,7 @@ void APCRSerinDollHandCharacter::Pattern2()
 	const FRotator NewRotation = CachedSerinDollHead->GetActorRotation();
 	SetActorLocationAndRotation(NewLocation, NewRotation);
 
-	HandlePatter2Start();
+	HandlePattern2CollisionActivate();
 	CachedSerinDollHandAnimInstance->PlayPattern2();
 
 	CurrentState = EState::Pattern2;
@@ -565,7 +566,7 @@ void APCRSerinDollHandCharacter::Pattern1Shoot()
 	Pattern1Projectile->Shoot(CachedSerinDollHead, StartLocation, TargetLocation);
 }
 
-void APCRSerinDollHandCharacter::HandlePatter2Start()
+void APCRSerinDollHandCharacter::HandlePattern2CollisionActivate()
 {
 	GetMesh()->SetCollisionObjectType(ECC_GameTraceChannel6);
 	GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);

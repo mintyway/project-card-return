@@ -162,7 +162,7 @@ private: // 내부 함수
 
 	void Pattern1Shoot();
 
-	void HandlePatter2Start();
+	void HandlePattern2CollisionActivate();
 	void HandlePattern2CardPull(APCREricaCardProjectile* AttachedCard);
 
 public: // 외부 콜백

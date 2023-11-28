@@ -25,6 +25,7 @@ private: // 타입
 	DECLARE_MULTICAST_DELEGATE(FPaperAttackSignature);
 	DECLARE_MULTICAST_DELEGATE(FScissorsAttackSignature);
 	DECLARE_MULTICAST_DELEGATE(FPattern1Signature);
+	DECLARE_MULTICAST_DELEGATE(FPattern2Signature);
 
 public:
 	UPCRSerinDollHandAnimInstance();
@@ -63,6 +64,8 @@ public: // 델리게이트
 	FPattern1Signature OnPattern1LastShoot;
 	FPattern1Signature OnPattern1Ended;
 
+	FPattern2Signature OnPattern2CollisionActivate;
+
 private: // 애님 노티파이
 	UFUNCTION()
 	void AnimNotify_RockAttackChaseEnd();
@@ -96,6 +99,9 @@ private: // 애님 노티파이
 
 	UFUNCTION()
 	void AnimNotify_Pattern1LastShoot();
+
+	UFUNCTION()
+	void AnimNotify_Pattern2CollisionActivate();
 
 	void HandlePattern1Ended(UAnimMontage* AnimMontage, bool bArg);
 

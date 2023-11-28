@@ -177,6 +177,11 @@ void UPCRSerinDollHandAnimInstance::AnimNotify_Pattern1LastShoot()
 	OnPattern1LastShoot.Broadcast();
 }
 
+void UPCRSerinDollHandAnimInstance::AnimNotify_Pattern2CollisionActivate()
+{
+	OnPattern2CollisionActivate.Broadcast();
+}
+
 void UPCRSerinDollHandAnimInstance::HandlePattern1Ended(UAnimMontage* AnimMontage, bool bArg)
 {
 	OnPattern1Ended.Broadcast();
