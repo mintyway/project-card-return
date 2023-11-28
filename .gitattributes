@@ -1,3 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 ProjectCardReturn/Content/Levels/Sequences/Animations/AS_EndingScene.uasset filter=lfs diff=lfs merge=lfs -text
+ProjectCardReturn/Content/Movies/MS_ShowDownIntro.mp4 filter=lfs diff=lfs merge=lfs -text
