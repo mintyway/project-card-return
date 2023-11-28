@@ -152,6 +152,7 @@ APCREricaCharacter::APCREricaCharacter()
 		FVector NewLocation = GetActorLocation();
 		NewLocation.Z = NewLocation.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 3.0;
 		DirectionIndicatorMeshMeshComponent->SetRelativeLocation(NewLocation);
+		DirectionIndicatorMeshMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
