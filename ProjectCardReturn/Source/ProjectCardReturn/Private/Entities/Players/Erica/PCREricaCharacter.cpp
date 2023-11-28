@@ -111,7 +111,7 @@ APCREricaCharacter::APCREricaCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	if (CameraBoom && ParameterDataAsset)
 	{
-		CameraBoom->SetupAttachment(GetRootComponent());
+		CameraBoom->SetupAttachment(RootComponent);
 		CameraBoom->SetRelativeRotation(FRotator(-ParameterDataAsset->CameraPitch, 0.0, 0.0));
 		CameraBoom->bInheritPitch = false;
 		CameraBoom->bInheritYaw = false;
@@ -134,7 +134,7 @@ APCREricaCharacter::APCREricaCharacter()
 	AimingBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("AimingBoxComponent"));
 	if (AimingBoxComponent && EricaDataAsset)
 	{
-		AimingBoxComponent->SetupAttachment(GetRootComponent());
+		AimingBoxComponent->SetupAttachment(RootComponent);
 		AimingBoxComponent->InitBoxExtent(FVector(5000.0, 5000.0, 0.0));
 		AimingBoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		AimingBoxComponent->SetCollisionObjectType(ECC_GameTraceChannel4);
@@ -146,7 +146,7 @@ APCREricaCharacter::APCREricaCharacter()
 	DirectionIndicatorMeshMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DirectionMeshComponent"));
 	if (DirectionIndicatorMeshMeshComponent && EricaDataAsset)
 	{
-		DirectionIndicatorMeshMeshComponent->SetupAttachment(GetRootComponent());
+		DirectionIndicatorMeshMeshComponent->SetupAttachment(RootComponent);
 		DirectionIndicatorMeshMeshComponent->SetRelativeScale3D(FVector(2.0));
 		DirectionIndicatorMeshMeshComponent->SetStaticMesh(EricaDataAsset->DirectionIndicatorMesh);
 		FVector NewLocation = GetActorLocation();
@@ -157,14 +157,14 @@ APCREricaCharacter::APCREricaCharacter()
 	DashNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DashNiagaraComponent"));
 	if (DashNiagaraComponent && EricaDataAsset)
 	{
-		DashNiagaraComponent->SetupAttachment(GetRootComponent());
+		DashNiagaraComponent->SetupAttachment(RootComponent);
 		DashNiagaraComponent->SetAsset(EricaDataAsset->DashEffect);
 	}
 
 	WalkDustEffectNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("WalkDustEffectNiagaraComponent"));
 	if (WalkDustEffectNiagaraComponent && EricaDataAsset)
 	{
-		WalkDustEffectNiagaraComponent->SetupAttachment(GetRootComponent());
+		WalkDustEffectNiagaraComponent->SetupAttachment(RootComponent);
 		float OutRadius;
 		float OutHalfHeight;
 		GetCapsuleComponent()->GetScaledCapsuleSize(OutRadius, OutHalfHeight);
