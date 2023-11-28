@@ -3,7 +3,6 @@
 
 #include "Entities/Projectiles/Base/PCRBaseProjectile.h"
 
-#include "SimpleElementShaders.h"
 #include "Entities/Projectiles/Base/PCRProjectileDataAsset.h"
 #include "Game/PCRParameterDataAsset.h"
 

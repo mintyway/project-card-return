@@ -4,12 +4,8 @@
 #include "Entities/Monsters/Rabbit/PCRRabbitCharacter.h"
 
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
-#include "Entities/Monsters/Base/PCRMonsterBaseAIController.h"
-#include "UI/PCRUIDataAsset.h"
 
-#include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitAIController.h"
 #include "Entities/Monsters/Rabbit/PCRRabbitAnimInstance.h"
 #include "Game/PCRParameterDataAsset.h"

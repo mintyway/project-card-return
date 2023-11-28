@@ -3,7 +3,6 @@
 
 #include "Entities/MonsterGenerator/PCRMonsterGenerator.h"
 
-#include "Engine/DamageEvents.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "Entities/Monsters/Base/PCRMonsterBaseCharacter.h"
 

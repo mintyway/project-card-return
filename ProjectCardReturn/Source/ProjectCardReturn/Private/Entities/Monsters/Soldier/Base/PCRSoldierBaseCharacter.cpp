@@ -5,9 +5,7 @@
 
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 
-#include "Components/CapsuleComponent.h"
 #include "Entities/Monsters/Soldier/Base/PCRSoldierBaseAIController.h"
-#include "Game/PCRParameterDataAsset.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogMeleeSoldierCharacter);

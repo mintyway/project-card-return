@@ -5,7 +5,6 @@
 
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Game/PCRParameterDataAsset.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(PCRLogEricaCardProjectilePool);
 

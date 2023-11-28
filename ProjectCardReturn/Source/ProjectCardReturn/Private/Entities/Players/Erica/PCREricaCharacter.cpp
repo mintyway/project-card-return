@@ -1,13 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Entities/Players/Erica/PCREricaCharacter.h"
-#include "Entities/Players/Erica/PCREricaCharacter.h"
 
 #include "Entities/Players/Erica/PCREricaDataAsset.h"
 #include "Entities/Players/Erica/PCREricaPlayerController.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectilePool.h"
-#include "Game/PCRGameInstance.h"
 #include "Game/PCRParameterDataAsset.h"
 #include "Game/PCRSoundPrimaryDataAsset.h"
 #include "FMODBlueprintStatics.h"
@@ -18,7 +16,6 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Entities/Players/Erica/PCREricaAnimInstance.h"
-#include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Entities/Players/Erica/PCRListenerActor.h"

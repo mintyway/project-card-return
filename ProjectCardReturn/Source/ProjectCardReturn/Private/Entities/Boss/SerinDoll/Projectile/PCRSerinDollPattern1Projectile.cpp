@@ -10,7 +10,6 @@
 #include "Engine/DamageEvents.h"
 #include "Entities/Projectiles/EricaCard/PCREricaCardProjectile.h"
 #include "Entities/Boss/SerinDoll/Base/PCRSerinDollPrimaryDataAsset.h"
-#include "Entities/Boss/SerinDoll/Hand/PCRSerinDollHandCharacter.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
 #include "Entities/Players/Erica/PCREricaCharacter.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"

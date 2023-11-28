@@ -3,8 +3,6 @@
 
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierAnimInstance.h"
 
-#include "Algo/RandomShuffle.h"
-#include "Engine/DamageEvents.h"
 #include "Entities/Monsters/Base/PCRMonsterDataAsset.h"
 #include "Entities/Monsters/Soldier/MeleeSoldier/PCRMeleeSoldierCharacter.h"
 

@@ -5,10 +5,7 @@
 
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
-#include "Components/Slider.h"
 #include "Game/PCRGameInstance.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 void UPCRPauseUserWidget::NativeConstruct()
 {
