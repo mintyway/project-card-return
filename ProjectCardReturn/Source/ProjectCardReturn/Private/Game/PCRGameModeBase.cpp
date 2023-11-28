@@ -240,6 +240,9 @@ void APCRGameModeBase::HandleKillCount()
 		{
 			GetWorldTimerManager().ClearTimer(SpawnMonsterTimerHandle);
 			StopAllMonsterGeneratorsAndKillSpawnedMonsters();
+			FVector NewLocation = FVector(-1105.0, 0.0, 0.0);
+			NewLocation.Z = CachedEricaCharacter->GetActorLocation().Z;
+			CachedEricaCharacter->SetActorLocation(NewLocation);
 			OnStage1End.Broadcast();
 			LastPhase = Phase;
 		}
