@@ -243,6 +243,7 @@ void APCRGameModeBase::HandleKillCount()
 			FVector NewLocation = FVector(-1105.0, 0.0, 0.0);
 			NewLocation.Z = CachedEricaCharacter->GetActorLocation().Z;
 			CachedEricaCharacter->SetActorLocation(NewLocation);
+			CachedEricaCharacter->Heal(CachedEricaCharacter->GetMaxHP());
 			OnStage1End.Broadcast();
 			LastPhase = Phase;
 		}
