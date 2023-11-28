@@ -95,6 +95,9 @@
 		<property name="volume">
 			<value>6.5</value>
 		</property>
+		<property name="pitch">
+			<value>-2</value>
+		</property>
 		<relationship name="modulators">
 			<destination>{b40d337f-d482-4b98-966c-a741bab220a1}</destination>
 		</relationship>
