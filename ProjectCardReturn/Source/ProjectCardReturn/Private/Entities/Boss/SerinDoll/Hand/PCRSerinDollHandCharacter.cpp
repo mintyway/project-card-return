@@ -332,7 +332,7 @@ void APCRSerinDollHandCharacter::Pattern2ResetAttachedCardCount()
 
 void APCRSerinDollHandCharacter::Pattern2End()
 {
-	CachedSerinDollHandAnimInstance->EndPatter2();
+	CachedSerinDollHandAnimInstance->EndPattern2();
 	InitMeshCollision();
 }
 

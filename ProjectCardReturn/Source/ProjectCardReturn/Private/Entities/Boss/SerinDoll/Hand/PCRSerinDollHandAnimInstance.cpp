@@ -105,7 +105,7 @@ void UPCRSerinDollHandAnimInstance::HitPattern2()
 	}
 }
 
-void UPCRSerinDollHandAnimInstance::EndPatter2()
+void UPCRSerinDollHandAnimInstance::EndPattern2()
 {
 	if (Montage_IsPlaying(SerinDollDataAsset->HandPattern2AnimMontage))
 	{

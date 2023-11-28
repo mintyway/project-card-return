@@ -45,7 +45,7 @@ public: // 동작
 
 	void PlayPattern2();
 	void HitPattern2();
-	void EndPatter2();
+	void EndPattern2();
 
 public: // 델리게이트
 	FIdleSignature OnToIdle;

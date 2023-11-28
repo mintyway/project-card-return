@@ -474,7 +474,7 @@ void APCRSerinDollHeadCharacter::HandlePattern2CardPull()
 	if (State == EState::Pattern2)
 	{
 		const int32 AttachedCardCount = LeftHand->GetPattern2AttachedCardCount() + RightHand->GetPattern2AttachedCardCount();
-		if (AttachedCardCount >= 20)
+		if (AttachedCardCount >= 15)
 		{
 			HandlePattern2Succeed();
 		}

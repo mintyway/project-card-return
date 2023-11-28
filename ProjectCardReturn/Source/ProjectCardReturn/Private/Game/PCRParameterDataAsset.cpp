@@ -19,7 +19,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	// 에리카 스탯
 	EricaMaxHP(100.f),
 	EricaMoveSpeed(750.f),
-	EricaCardCount(12),
+	EricaCardCount(15),
 	EricaNarrowShotFiringRate(5.f),
 	EricaWideShotFiringRate(5.f),
 	EricaRecallCooldownTime(1.f),
