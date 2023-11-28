@@ -370,6 +370,12 @@ public: // 아이템 스폰
 	
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	float HealItemRate;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
+	float StrongAttackItemRate;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
+	float LongerRangeItemRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	FVector HealItemSpawnLocationByGame1;
@@ -382,12 +388,6 @@ public: // 아이템 스폰
 
 	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
 	int32 HealItemSpawnPerCountByGame;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
-	float StrongAttackItemRate;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "ItemSpawn")
-	float LongerRangeItemRate;
 
 public: // 아이템 스탯
 	UPROPERTY(EditDefaultsOnly, Category = "ItemStat")
