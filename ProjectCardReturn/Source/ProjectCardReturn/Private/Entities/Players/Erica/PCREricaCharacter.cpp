@@ -759,6 +759,12 @@ void APCREricaCharacter::DashInvincibleTimerCallback()
 void APCREricaCharacter::ChangeHP(float Amount)
 {
 	CurrentHP += Amount;
+	
+	if (CurrentHP >= MaxHP)
+	{
+		CurrentHP = MaxHP;
+	}
+	
 	HandleChangeHP();
 }
 
