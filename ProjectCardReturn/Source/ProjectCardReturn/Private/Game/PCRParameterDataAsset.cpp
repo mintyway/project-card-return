@@ -140,7 +140,7 @@ UPCRParameterDataAsset::UPCRParameterDataAsset() :
 	EliteRangedSoldierScaleRate(1.5f),
 
 	// 아이템 스폰
-	ItemSpawnRate(0.15f),
+	ItemSpawnRate(0.2f),
 	ItemSpawnRateByEliteMonster(1.0f),
 	ItemDestroyTime(10.0f),
 	MoreHpItemRate(0.2f),
