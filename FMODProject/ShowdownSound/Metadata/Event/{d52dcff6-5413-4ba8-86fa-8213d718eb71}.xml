@@ -72,6 +72,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{b9f1bf66-f50b-478a-b81a-10f33549a49f}">
+		<property name="volume">
+			<value>6.5</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{1769847d-412a-4103-a42a-6ac40b6c56b6}</destination>
 		</relationship>
@@ -98,9 +101,6 @@
 		<property name="pitch">
 			<value>1.80000007</value>
 		</property>
-		<relationship name="modulators">
-			<destination>{49349162-a3af-484e-9509-e2e6f51396d2}</destination>
-		</relationship>
 		<relationship name="fadeOutCurve">
 			<destination>{3029be9e-0fc7-4767-a2cd-6906b8011d73}</destination>
 		</relationship>
@@ -110,7 +110,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{903d1f29-8e1c-4429-b053-cfc4bad1d4cd}">
 		<property name="volume">
-			<value>4.5</value>
+			<value>10</value>
 		</property>
 		<property name="name">
 			<value>Audio 2</value>
@@ -133,14 +133,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{d60d924f-4fb1-4034-91bf-6792b90dd38e}" />
 	<object class="MixerBusFader" id="{6e951bf8-7d97-4fba-ad45-2b02a3bfb2a0}" />
-	<object class="RandomizerModulator" id="{49349162-a3af-484e-9509-e2e6f51396d2}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>pitch</value>
-		</property>
-		<property name="amount">
-			<value>10.416666</value>
-		</property>
-	</object>
 	<object class="FadeCurve" id="{3029be9e-0fc7-4767-a2cd-6906b8011d73}">
 		<relationship name="startPoint">
 			<destination>{e5ef3a18-7f95-4d0d-a143-4c1013ba5950}</destination>
