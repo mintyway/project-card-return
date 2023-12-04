@@ -238,7 +238,7 @@ float APCRSerinDollHandCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	Damage *= 1.5;
-	CachedSerinDollHead->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	CachedSerinDollHead->TakeDamage(Damage, DamageEvent, EventInstigator, this);
 	return Damage;
 }
 

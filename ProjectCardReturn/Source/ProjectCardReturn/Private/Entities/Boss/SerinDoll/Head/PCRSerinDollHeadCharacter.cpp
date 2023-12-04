@@ -191,9 +191,8 @@ void APCRSerinDollHeadCharacter::Tick(float DeltaTime)
 float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
 	
-	if (State != EState::Pattern1 && State != EState::Pattern2)
+	if (State != EState::Pattern1 && State != EState::Pattern2 && !Cast<APCRSerinDollHandCharacter>(DamageCauser))
 	{
 		CachedSerinDollHeadAnimInstance->PlayHit();
 	}
