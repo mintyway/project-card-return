@@ -25,7 +25,7 @@ public:
 	TObjectPtr<USkeletalMesh> HandMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Mesh")
-	TObjectPtr<UStaticMesh> Pattern1ProjectileMesh; 
+	TObjectPtr<UStaticMesh> Pattern1ProjectileMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TSoftClassPtr<UPCRSerinDollHeadAnimInstance> HeadAnimInstanceClass;
@@ -35,6 +35,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> HeadStartAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> HeadHitAnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> HandStartAnimMontage;

@@ -21,6 +21,7 @@ public:
 
 public: // 동작
 	void PlayStart();
+	void PlayHit();
 	void PlayPattern1();
 	void EndPattern1();
 	

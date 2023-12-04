@@ -192,6 +192,12 @@ float APCRSerinDollHeadCharacter::TakeDamage(float DamageAmount, FDamageEvent co
 {
 	const float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	
+	if (State != EState::Pattern1 && State != EState::Pattern2)
+	{
+		CachedSerinDollHeadAnimInstance->PlayHit();
+	}
+	
 	if (State == EState::Pattern1 && Cast<APCRSerinDollPattern1Projectile>(DamageCauser))
 	{
 		++Pattern1Data.DetachAttackCount;

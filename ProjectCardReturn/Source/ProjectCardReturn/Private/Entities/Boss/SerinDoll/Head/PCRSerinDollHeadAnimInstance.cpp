@@ -29,6 +29,14 @@ void UPCRSerinDollHeadAnimInstance::PlayStart()
 	Montage_Play(SerinDollDataAsset->HeadStartAnimMontage);
 }
 
+void UPCRSerinDollHeadAnimInstance::PlayHit()
+{
+	if (!Montage_IsPlaying(nullptr))
+	{
+		Montage_Play(SerinDollDataAsset->HeadHitAnimMontage);
+	}
+}
+
 void UPCRSerinDollHeadAnimInstance::PlayPattern1()
 {
 	Montage_Play(SerinDollDataAsset->HeadPattern1AnimMontage);
