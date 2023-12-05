@@ -181,5 +181,5 @@ void APCREricaPlayerController::BindStage1UI()
 
 	HUDUserWidget->Stage1UserWidget->HandleUpdateMonsterCount(PCRGameMode->GetStage1MaxMonsterCount(), PCRGameMode->GetStage1CurrentMonsterCount());
 
-	HUDUserWidget->SetVisibilityStage1UI(true);
+	HUDUserWidget->SetVisibilityStage1UI(false);
 }

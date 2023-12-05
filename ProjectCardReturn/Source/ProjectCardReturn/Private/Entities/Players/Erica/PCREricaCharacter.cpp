@@ -401,6 +401,11 @@ void APCREricaCharacter::SetHUDVisibility(bool bIsEnable)
 	CachedEricaPlayerController->SetVisibilityHUD(bIsEnable);
 }
 
+void APCREricaCharacter::SetStage1UIVisibility(bool bIsEnable)
+{
+	CachedEricaPlayerController->SetVisibilityStage1UI(bIsEnable);
+}
+
 void APCREricaCharacter::Revival()
 {
 	CameraBoom->TargetArmLength = ParameterDataAsset->CameraDistance;

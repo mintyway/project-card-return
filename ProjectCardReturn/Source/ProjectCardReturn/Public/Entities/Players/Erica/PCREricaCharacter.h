@@ -63,6 +63,9 @@ public: // 동작
 
 	UFUNCTION(BlueprintCallable)
 	void SetHUDVisibility(bool bIsEnable);
+
+	UFUNCTION(BlueprintCallable)
+	void SetStage1UIVisibility(bool bIsEnable);
 	
 	void Revival();
 	
@@ -88,6 +91,7 @@ public: // 델리게이트
 	FShootModeSignature OnChangeShootMode;
 
 public: // Getter, Setter
+	FORCEINLINE APCREricaPlayerController* GetCachedEricaPlayerController() const { return CachedEricaPlayerController; }
 	FORCEINLINE float GetMaxHP() const { return MaxHP; }
 	FORCEINLINE float GetCurrentHP() const { return CurrentHP; }
 	FORCEINLINE bool GetIsAlive() const { return bIsAlive; }
@@ -144,7 +148,7 @@ private: // 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
 	UPROPERTY(VisibleAnywhere, Category = "Aim")

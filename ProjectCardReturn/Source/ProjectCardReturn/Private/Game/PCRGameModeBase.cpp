@@ -3,7 +3,10 @@
 
 #include "Game/PCRGameModeBase.h"
 
+#include "Camera/CameraActor.h"
 #include "Entities/Boss/SerinDoll/Head/PCRSerinDollHeadCharacter.h"
+#include "Entities/Cinematics/PCRTutoRabbit.h"
+#include "Entities/Cinematics/PCRTutorialLight.h"
 #include "Entities/Item/PCRHealItem.h"
 #include "Entities/Stage/Base/PCRStagePrimaryDataAsset.h"
 #include "Entities/Stage/Lift/PCRLiftActor.h"
@@ -100,11 +103,9 @@ void APCRGameModeBase::PostInitializeComponents()
 
 	check(LiftActor);
 
-	// TODO: 시퀀스 재생 이벤트에 맞게 리프트 상승 필요함.
-	// LiftActor->OnLiftUpEnd.AddDynamic(this, &APCRGameModeBase::SpawnSerinDoll);
-
-	// TODO: 시퀀스 재생 이벤트에 맞게 리프트 상승 필요함.
-	// OnStage1End.AddDynamic(this, &APCRGameModeBase::LiftFloor);
+	TutoRabbit = Cast<APCRTutoRabbit>(UGameplayStatics::GetActorOfClass(GetWorld(), APCRTutoRabbit::StaticClass()))
+	;
+	check(TutoRabbit);
 }
 
 void APCRGameModeBase::StartPlay()
@@ -125,12 +126,10 @@ void APCRGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnMonsterGenerators();
-	StartAllMonsterGenerators();
-
 	CachedPCRGameInstance->StopMainBGM();
-	CachedPCRGameInstance->PlayAmbientBGM();
-	PlayStage1BGM();
 
+	// StageStart();
+	
 	if (Stage1TargetKillCount == 0)
 	{
 		HandleKillCount();
@@ -140,6 +139,12 @@ void APCRGameModeBase::BeginPlay()
 	{
 		HealItems.Emplace(nullptr);
 	}
+
+	TutorialLight = GetWorld()->SpawnActor<APCRTutorialLight>();
+	check(TutorialLight);
+
+	
+	// TutoRabbit->OnAnimationEnd.AddDynamic(TutorialLight, &APCRTutorialLight::TurnOnLights);
 }
 
 void APCRGameModeBase::Tick(float DeltaSeconds)
@@ -171,6 +176,54 @@ void APCRGameModeBase::SpawnSerinDoll()
 	CurrentStageState = EStageState::SerinStage;
 
 	OnSpawnSerin.Broadcast();
+}
+
+void APCRGameModeBase::StageStart()
+{
+	StartAllMonsterGenerators();
+	CachedPCRGameInstance->PlayAmbientBGM();
+	PlayStage1BGM();
+}
+
+void APCRGameModeBase::ZoomInRabbit(AActor* NewViewTarget)
+{
+	// 이 시점에 CachedEricaCharacter가 nullptr이므로 아래와 같은 방법으로 호출합니다.
+	APCREricaCharacter* Erica = Cast<APCREricaCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), APCREricaCharacter::StaticClass()));
+	APlayerController* PlayerController = Cast<APlayerController>(Erica->GetController());
+	check(PlayerController);
+	PlayerController->SetViewTarget(NewViewTarget);
+	Erica->SetInput(false);
+	Erica->SetHUDVisibility(false);
+}
+
+void APCRGameModeBase::ZoomOutRabbit()
+{
+	const float BlendTime = 4.f;
+	CachedEricaCharacter->GetCachedEricaPlayerController()->SetViewTargetWithBlend(CachedEricaCharacter, BlendTime, VTBlend_Cubic);
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateUObject(this, &APCRGameModeBase::ZoomOutRabbitEnd), BlendTime, false);
+}
+
+void APCRGameModeBase::StartLightCamera(AActor* NewViewTarget)
+{
+	const float BlendTime = 4.5f;
+	CachedEricaCharacter->GetCachedEricaPlayerController()->SetViewTargetWithBlend(NewViewTarget, BlendTime);
+	CachedEricaCharacter->SetInput(false);
+	CachedEricaCharacter->SetHUDVisibility(false);
+}
+
+void APCRGameModeBase::EndLightCamera()
+{
+	const float BlendTime = 3.f;
+	CachedEricaCharacter->GetCachedEricaPlayerController()->SetViewTargetWithBlend(CachedEricaCharacter, BlendTime, VTBlend_Cubic);
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateUObject(this, &APCRGameModeBase::ZoomOutRabbitEnd), BlendTime, false);
+}
+
+void APCRGameModeBase::ZoomOutRabbitEnd()
+{
+	CachedEricaCharacter->SetInput(true);
+	CachedEricaCharacter->SetHUDVisibility(true);
 }
 
 void APCRGameModeBase::SpawnMonsterGenerators()

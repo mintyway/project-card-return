@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "PCRGameModeBase.generated.h"
 
+class APCRTutoRabbit;
+class APCRTutorialLight;
 class APCRHealItem;
 class APCREricaCharacter;
 class APCRSerinDollHeadCharacter;
@@ -51,6 +53,21 @@ protected:
 public: // 동작
 	UFUNCTION(BlueprintCallable)
 	void SpawnSerinDoll();
+
+	UFUNCTION(BlueprintCallable)
+	void StageStart();
+
+	UFUNCTION(BlueprintCallable)
+	void ZoomInRabbit(AActor* NewViewTarget);
+
+	UFUNCTION(BlueprintCallable)
+	void ZoomOutRabbit();
+
+	UFUNCTION(BlueprintCallable)
+	void StartLightCamera(AActor* NewViewTarget);
+	
+	UFUNCTION(BlueprintCallable)
+	void EndLightCamera();
 	
 public: // Getter
 	FORCEINLINE APCREricaCharacter* GetCachedEricaCharacter() const { return CachedEricaCharacter; }
@@ -69,6 +86,8 @@ public: // Getter
 	FBossStageSignature OnSpawnSerin;
 
 private: // 내부 함수 섹션
+	void ZoomOutRabbitEnd();
+	
 	void SpawnMonsterGenerators();
 	void StartAllMonsterGenerators();
 	void StopAllMonsterGeneratorsAndKillSpawnedMonsters();
@@ -104,6 +123,9 @@ private: // 서브 액터 섹션
 	UPROPERTY(BlueprintReadOnly, Category = "Actor", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCRLiftActor> LiftActor;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Actor", meta = (AllowPrivateAccess = true))
+	TObjectPtr<APCRTutorialLight> TutorialLight;
+
 private: // 레퍼런스
 	UPROPERTY()
 	TObjectPtr<UPCRGameInstance> CachedPCRGameInstance;
@@ -113,6 +135,9 @@ private: // 레퍼런스
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Reference", meta = (AllowPrivateAccess = true))
 	TObjectPtr<APCRSerinDollHeadCharacter> SerinDollHead;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Reference", meta = (AllowPrivateAccess = true))
+	TObjectPtr<APCRTutoRabbit> TutoRabbit;
 
 private: // 데이터 섹션
 	UPROPERTY()
