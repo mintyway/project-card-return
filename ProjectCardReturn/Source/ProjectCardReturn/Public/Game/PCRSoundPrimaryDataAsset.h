@@ -34,6 +34,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "SFX")
 	TObjectPtr<UFMODEvent> GameOver;
 
+	UPROPERTY(EditDefaultsOnly, Category = "SFX")
+	TObjectPtr<UFMODEvent> LightOn;
+
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TObjectPtr<UFMODEvent> Button;
 

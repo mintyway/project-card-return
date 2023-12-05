@@ -796,6 +796,7 @@ void APCREricaCharacter::HandleDead()
 	bIsAlive = false;
 	SetInput(false);
 
+	UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->GameOver, true);
 	OnDead.Broadcast();
 }
 

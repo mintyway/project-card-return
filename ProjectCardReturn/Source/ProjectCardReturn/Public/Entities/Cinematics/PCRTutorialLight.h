@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "PCRTutorialLight.generated.h"
 
+class UPCRSoundPrimaryDataAsset;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLightSignature);
 
 UCLASS()
@@ -32,6 +33,10 @@ private:
 	void SetLight2s(bool bIsHidden);
 	void SetLight3s(bool bIsHidden);
 
+private: // 레퍼런스
+	UPROPERTY()
+	TObjectPtr<UPCRSoundPrimaryDataAsset> SoundDataAsset;
+	
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> Light0s;

@@ -183,6 +183,7 @@ void APCRGameModeBase::StageStart()
 	StartAllMonsterGenerators();
 	CachedPCRGameInstance->PlayAmbientBGM();
 	PlayStage1BGM();
+	CachedEricaCharacter->SetStage1UIVisibility(true);
 }
 
 void APCRGameModeBase::ZoomInRabbit(AActor* NewViewTarget)

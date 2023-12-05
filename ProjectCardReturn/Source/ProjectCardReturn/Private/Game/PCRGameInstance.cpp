@@ -71,7 +71,7 @@ void UPCRGameInstance::InitInGameSoundSystem()
 	const FFMODEventInstance AmbientAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->AmbientBGM, false);
 	AmbientAudioInst = AmbientAudio.Instance;
 	check(AmbientAudioInst);
-	AmbientAudioInst->setVolume(0.75f);
+	AmbientAudioInst->setVolume(0.25f);
 
 	const FFMODEventInstance Stage1Audio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->Stage1BGM, false);
 	Stage1AudioInst = Stage1Audio.Instance;
@@ -86,33 +86,38 @@ void UPCRGameInstance::InitInGameSoundSystem()
 	const FFMODEventInstance EndingAudio = UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->EndingBGM, false);
 	EndingAudioInst = EndingAudio.Instance;
 	check(EndingAudioInst);
-	EndingAudioInst->setVolume(0.25f);
+	EndingAudioInst->setVolume(1.f);
 }
 
 void UPCRGameInstance::ReleaseInGameSoundSystem()
 {
 	if (MainAudioInst)
 	{
+		MainAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 		MainAudioInst->release();
 	}
 
 	if (AmbientAudioInst)
 	{
+		AmbientAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 		AmbientAudioInst->release();
 	}
 
 	if (Stage1AudioInst)
 	{
+		Stage1AudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 		Stage1AudioInst->release();
 	}
 
 	if (BossStageAudioInst)
 	{
+		BossStageAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 		BossStageAudioInst->release();
 	}
 
 	if (EndingAudioInst)
 	{
+		EndingAudioInst->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 		EndingAudioInst->release();
 	}
 }
@@ -195,12 +200,19 @@ void UPCRGameInstance::StopEndingBGM()
 
 void UPCRGameInstance::RestartGame(UWidget* Widget)
 {
+	StopAmbientBGM();
+	StopStage1BGM();
+	StopBossStageBGM();
+	
 	const UWorld* CurrentWorld = GetWorld();
 	APCRGameModeBase* PCRGameMode = Cast<APCRGameModeBase>(CurrentWorld->GetAuthGameMode());
 	if (PCRGameMode)
 	{
 		if (PCRGameMode->GetCurrentStageState() == EStageState::SerinStage)
 		{
+			PlayAmbientBGM();
+			PlayBossStageBGM();
+			
 			Widget->RemoveFromParent();
 			PCRGameMode->GetSerinDollHead()->DestroySerinDoll();
 			PCRGameMode->SpawnSerinDoll();

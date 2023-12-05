@@ -3,11 +3,19 @@
 
 #include "Entities/Cinematics/PCRTutorialLight.h"
 
+#include "FMODBlueprintStatics.h"
+#include "Game/PCRSoundPrimaryDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
 APCRTutorialLight::APCRTutorialLight()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+	if (DA_Sound.Succeeded())
+	{
+		SoundDataAsset = DA_Sound.Object;
+	}
 	
 }
 
@@ -35,6 +43,8 @@ void APCRTutorialLight::TurnOnLights()
 		Light0->Destroy();
 	}
 	
+	UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->LightOn, true);
+	
 	FTimerHandle Light1TimerHandle;
 	GetWorldTimerManager().SetTimer(Light1TimerHandle, FTimerDelegate::CreateUObject(this, &APCRTutorialLight::SetLight1s, false), LightDelayTime, false);
 	FTimerHandle Light2TimerHandle;
@@ -54,7 +64,7 @@ void APCRTutorialLight::SetLight1s(bool bIsHidden)
 
 	if (!bIsHidden)
 	{
-		
+		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->LightOn, true);
 	}
 }
 
@@ -67,7 +77,7 @@ void APCRTutorialLight::SetLight2s(bool bIsHidden)
 
 	if (!bIsHidden)
 	{
-		
+		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->LightOn, true);
 	}
 }
 
@@ -80,6 +90,7 @@ void APCRTutorialLight::SetLight3s(bool bIsHidden)
 	
 	if (!bIsHidden)
 	{
+		UFMODBlueprintStatics::PlayEvent2D(GetWorld(), SoundDataAsset->LightOn, true);
 		OnLightEnd.Broadcast();
 	}
 }
