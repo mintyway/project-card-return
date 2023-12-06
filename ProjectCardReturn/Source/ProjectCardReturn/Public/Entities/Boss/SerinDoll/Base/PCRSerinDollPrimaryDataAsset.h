@@ -86,4 +86,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Effect")
 	TObjectPtr<UNiagaraSystem> Pattern1BombEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> Pattern1BombTimerEffect;
+	
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	TObjectPtr<UNiagaraSystem> SparkEffect;
 };

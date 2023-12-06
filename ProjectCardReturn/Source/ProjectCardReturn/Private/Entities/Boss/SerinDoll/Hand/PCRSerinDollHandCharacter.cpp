@@ -550,7 +550,7 @@ void APCRSerinDollHandCharacter::Pattern1Shoot()
 	CachedSerinDollHead->OnDestroyed.AddUObject(Pattern1Projectile, &APCRSerinDollPattern1Projectile::Release);
 
 	FVector StartLocation = GetActorLocation();
-	StartLocation.Z = CachedSerinDollHead->CachedErica->GetActorLocation().Z;
+	StartLocation.Z = CachedSerinDollHead->CachedLift->GetActorLocation().Z;
 	FVector TargetLocation;
 	if (Pattern1Data.Pattern1TargetLocations.IsValidIndex(Pattern1Data.Pattern1TargetLocationIndex))
 	{

@@ -16,301 +16,334 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 
 APCRSerinDollPattern1Projectile::APCRSerinDollPattern1Projectile()
-	: State(ESerinDollProjectileState::Unused), ProjectileSpeed(7500.f), ProjectileReturnSpeed(12500.f),
-	  bOnceDetached(false), bCanTakeDamageToErica(true)
+    : State(ESerinDollProjectileState::Unused), ProjectileSpeed(7500.f), ProjectileReturnSpeed(12500.f),
+      bOnceDetached(false), bCanTakeDamageToErica(true)
 {
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UPCRSerinDollPrimaryDataAsset> DA_SerinDoll(TEXT("/Script/ProjectCardReturn.PCRSerinDollPrimaryDataAsset'/Game/DataAssets/DA_SerinDoll.DA_SerinDoll'"));
-	if (DA_SerinDoll.Succeeded())
-	{
-		SerinDollDataAsset = DA_SerinDoll.Object;
-	}
+    static ConstructorHelpers::FObjectFinder<UPCRSerinDollPrimaryDataAsset> DA_SerinDoll(TEXT("/Script/ProjectCardReturn.PCRSerinDollPrimaryDataAsset'/Game/DataAssets/DA_SerinDoll.DA_SerinDoll'"));
+    if (DA_SerinDoll.Succeeded())
+    {
+        SerinDollDataAsset = DA_SerinDoll.Object;
+    }
 
-	static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
-	if (DA_Sound.Succeeded())
-	{
-		SoundDataAsset = DA_Sound.Object;
-	}
+    static ConstructorHelpers::FObjectFinder<UPCRSoundPrimaryDataAsset> DA_Sound(TEXT("/Script/ProjectCardReturn.PCRSoundPrimaryDataAsset'/Game/DataAssets/DA_Sound.DA_Sound'"));
+    if (DA_Sound.Succeeded())
+    {
+        SoundDataAsset = DA_Sound.Object;
+    }
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	if (SphereComponent)
-	{
-		SetRootComponent(SphereComponent);
-		SphereComponent->InitSphereRadius(50.f);
-		SphereComponent->SetCollisionProfileName("NoCollision");
-	}
+    SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+    if (SphereComponent)
+    {
+        SetRootComponent(SphereComponent);
+        SphereComponent->InitSphereRadius(50.f);
+        SphereComponent->SetCollisionProfileName("NoCollision");
+    }
 
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	if (StaticMeshComponent)
-	{
-		StaticMeshComponent->SetupAttachment(SphereComponent);
-		StaticMeshComponent->SetRelativeScale3D(FVector(2.f));
-		StaticMeshComponent->SetCollisionProfileName("NoCollision");
-		StaticMeshComponent->SetStaticMesh(SerinDollDataAsset->Pattern1ProjectileMesh);
-	}
+    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+    if (StaticMeshComponent)
+    {
+        StaticMeshComponent->SetupAttachment(SphereComponent);
+        StaticMeshComponent->SetRelativeScale3D(FVector(2.f));
+        StaticMeshComponent->SetCollisionProfileName("NoCollision");
+        StaticMeshComponent->SetStaticMesh(SerinDollDataAsset->Pattern1ProjectileMesh);
+    }
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	if (ProjectileMovementComponent)
-	{
-		ProjectileMovementComponent->bShouldBounce = false;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.f;
-		ProjectileMovementComponent->InitialSpeed = 0.f;
-		ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
-	}
+    ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+    if (ProjectileMovementComponent)
+    {
+        ProjectileMovementComponent->bShouldBounce = false;
+        ProjectileMovementComponent->ProjectileGravityScale = 0.f;
+        ProjectileMovementComponent->InitialSpeed = 0.f;
+        ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
+    }
 
-	Pattern1ThrowEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Pattern1ThrowEffectComponent"));
-	if (Pattern1ThrowEffectComponent && SerinDollDataAsset)
-	{
-		Pattern1ThrowEffectComponent->SetupAttachment(GetRootComponent());
-		Pattern1ThrowEffectComponent->SetAsset(SerinDollDataAsset->Pattern1ThrowEffect);
-	}
+    Pattern1ThrowEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Pattern1ThrowEffectComponent"));
+    if (Pattern1ThrowEffectComponent && SerinDollDataAsset)
+    {
+        Pattern1ThrowEffectComponent->SetupAttachment(GetRootComponent());
+        Pattern1ThrowEffectComponent->SetAsset(SerinDollDataAsset->Pattern1ThrowEffect);
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        FString ComponentName = FString::Printf(TEXT("Pattern1SparkEffectComponent%d"), i);
+        Pattern1SparkEffectComponents.Add(CreateDefaultSubobject<UNiagaraComponent>(*ComponentName));
+        Pattern1SparkEffectComponents[i]->SetupAttachment(GetRootComponent());
+        Pattern1SparkEffectComponents[i]->SetAsset(SerinDollDataAsset->SparkEffect);
+    }
+
+    if (Pattern1SparkEffectComponents[0])
+    {
+        Pattern1SparkEffectComponents[0]->SetRelativeLocation(FVector{-15.0, 8.0, 63.0});
+    }
+
+    if (Pattern1SparkEffectComponents[1])
+    {
+        Pattern1SparkEffectComponents[1]->SetRelativeLocation(FVector{31.0, 31.0, 42.0});
+    }
+    
+    if (Pattern1SparkEffectComponents[2])
+    {
+        Pattern1SparkEffectComponents[2]->SetRelativeLocation(FVector{13.0, -20.0, 42.0});
+    }
+
+    Pattern1BombTimerEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Pattern1BombTimerEffectComponent"));
+    if (Pattern1BombTimerEffectComponent)
+    {
+        Pattern1BombTimerEffectComponent->SetupAttachment(GetRootComponent());
+        Pattern1BombTimerEffectComponent->SetAsset(SerinDollDataAsset->Pattern1BombTimerEffect);
+        Pattern1BombTimerEffectComponent->SetAutoActivate(false);
+        Pattern1BombTimerEffectComponent->SetRelativeLocation(FVector(0.0, 0.0, 10.0));
+    }
 }
 
 void APCRSerinDollPattern1Projectile::PostInitializeComponents()
 {
-	Super::PostInitializeComponents();
+    Super::PostInitializeComponents();
 
-	DisableProjectile();
-	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &APCRSerinDollPattern1Projectile::HandleBossOverlap);
+    DisableProjectile();
+    StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &APCRSerinDollPattern1Projectile::HandleBossOverlap);
 }
 
 void APCRSerinDollPattern1Projectile::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
 
-	switch (State)
-	{
-		case ESerinDollProjectileState::Unused:
-		{
-			return;
-		}
-		case ESerinDollProjectileState::Shooting:
-		{
-			HandleShooting();
-			break;
-		}
-		case ESerinDollProjectileState::Stop:
-		{
-			break;
-		}
-		case ESerinDollProjectileState::Returning:
-		{
-			break;
-		}
-	}
+    switch (State)
+    {
+        case ESerinDollProjectileState::Unused:
+        {
+            return;
+        }
+        case ESerinDollProjectileState::Shooting:
+        {
+            HandleShooting();
+            break;
+        }
+        case ESerinDollProjectileState::Stop:
+        {
+            break;
+        }
+        case ESerinDollProjectileState::Returning:
+        {
+            break;
+        }
+    }
 }
 
 void APCRSerinDollPattern1Projectile::Shoot(AActor* NewOwner, const FVector& InStartLocation, const FVector& InTargetLocation)
 {
-	SetOwner(NewOwner);
-	LaunchLocation = InStartLocation;
-	TargetLocation = InTargetLocation;
-	
-	UFMODAudioComponent* AudioComponent = UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Pattern1BombThrow, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, false, false, true);
+    SetOwner(NewOwner);
+    LaunchLocation = InStartLocation;
+    TargetLocation = InTargetLocation;
 
-	AudioComponent->Play();
+    UFMODAudioComponent* AudioComponent = UFMODBlueprintStatics::PlayEventAttached(SoundDataAsset->Pattern1BombThrow, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, false, false, true);
 
-	const FVector Direction = (InTargetLocation - InStartLocation).GetSafeNormal();
-	SetActorLocationAndRotation(LaunchLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
-	SetActorHiddenInGame(false);
-	EnableProjectile();
-	SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
-	ProjectileMovementComponent->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
+    AudioComponent->Play();
 
-	State = ESerinDollProjectileState::Shooting;
+    const FVector Direction = (InTargetLocation - InStartLocation).GetSafeNormal();
+    SetActorLocationAndRotation(LaunchLocation, FRotationMatrix::MakeFromX(Direction).Rotator());
+    SetActorHiddenInGame(false);
+    EnableProjectile();
+    SphereComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
+    ProjectileMovementComponent->Velocity = Direction.GetSafeNormal() * ProjectileSpeed;
+
+    State = ESerinDollProjectileState::Shooting;
 }
 
 void APCRSerinDollPattern1Projectile::Release()
 {
-	GetWorldTimerManager().ClearTimer(TimerSoundHandle);
-	GetWorldTimerManager().ClearTimer(HandlePattern1ExplosionTimerHandle);
-	Destroy();
+    GetWorldTimerManager().ClearTimer(TimerSoundHandle);
+    GetWorldTimerManager().ClearTimer(HandlePattern1ExplosionTimerHandle);
+    Destroy();
 }
 
 void APCRSerinDollPattern1Projectile::Pattern1ExplosionTimerStart()
 {
-	// TODO: 타이머 파라미터화 필요
-	const float Time = 10.f;
-	const float TimerSoundTime = 3.f;
+    // TODO: 타이머 파라미터화 필요
+    const float Time = 10.f;
+    const float TimerSoundTime = 3.f;
+    
+    Pattern1BombTimerEffectComponent->Activate(true);
+    GetWorldTimerManager().SetTimer(TimerSoundHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound), Time - TimerSoundTime, false);
 
-	GetWorldTimerManager().SetTimer(TimerSoundHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound), Time - TimerSoundTime, false);
-
-	GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1Explosion), Time, false);
+    GetWorldTimerManager().SetTimer(HandlePattern1ExplosionTimerHandle, FTimerDelegate::CreateUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1Explosion), Time, false);
 }
 
 void APCRSerinDollPattern1Projectile::BindOnReturnCardBegin(APCREricaCardProjectile* AttachedCard)
 {
-	AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard);
+    AttachedCard->OnReturnCardBegin.AddUObject(this, &APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard);
 }
 
 void APCRSerinDollPattern1Projectile::EnableProjectile()
 {
-	ProjectileMovementComponent->Activate();
-	Pattern1ThrowEffectComponent->Activate(true);
-	SetActorHiddenInGame(false);
-	EnableCollisionDetection();
+    ProjectileMovementComponent->Activate();
+    Pattern1ThrowEffectComponent->Activate(true);
+    SetActorHiddenInGame(false);
+    EnableCollisionDetection();
 }
 
 void APCRSerinDollPattern1Projectile::DisableProjectile()
 {
-	ProjectileMovementComponent->Deactivate();
-	Pattern1ThrowEffectComponent->Deactivate();
-	SetActorHiddenInGame(true);
-	DisableCollisionDetection();
+    ProjectileMovementComponent->Deactivate();
+    Pattern1ThrowEffectComponent->Deactivate();
+    SetActorHiddenInGame(true);
+    DisableCollisionDetection();
 }
 
 void APCRSerinDollPattern1Projectile::EnableCollisionDetection()
 {
-	StaticMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel6);
-	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
-	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+    StaticMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel6);
+    StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+    StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+    StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 }
 
 void APCRSerinDollPattern1Projectile::DisableCollisionDetection()
 {
-	StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
+    StaticMeshComponent->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
 void APCRSerinDollPattern1Projectile::HandleShooting()
 {
-	if (IsAtMaxRange())
-	{
-		EnableProjectile();
-		HandleStop();
-	}
+    if (IsAtMaxRange())
+    {
+        EnableProjectile();
+        HandleStop();
+    }
 }
 
 bool APCRSerinDollPattern1Projectile::IsAtMaxRange()
 {
-	if (GetActorLocation().X <= TargetLocation.X)
-	{
-		return true;
-	}
+    if (GetActorLocation().X <= TargetLocation.X)
+    {
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 void APCRSerinDollPattern1Projectile::HandleStop()
 {
-	ProjectileMovementComponent->Deactivate();
-	StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+    ProjectileMovementComponent->Deactivate();
+    StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+    StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 
-	State = ESerinDollProjectileState::Stop;
+    State = ESerinDollProjectileState::Stop;
 }
 
 void APCRSerinDollPattern1Projectile::HandlePattern1DetachedCard(APCREricaCardProjectile* AttachedCard)
 {
-	if (!bOnceDetached)
-	{
-		const APCRSerinDollHeadCharacter* CachedSerinDollHead = Cast<APCRSerinDollHeadCharacter>(GetOwner());
-		check(CachedSerinDollHead);
+    if (!bOnceDetached)
+    {
+        const APCRSerinDollHeadCharacter* CachedSerinDollHead = Cast<APCRSerinDollHeadCharacter>(GetOwner());
+        check(CachedSerinDollHead);
 
-		const APCRLiftActor* CachedLift = CachedSerinDollHead->GetCachedLift();
-		check(CachedLift);
+        const APCRLiftActor* CachedLift = CachedSerinDollHead->GetCachedLift();
+        check(CachedLift);
 
-		FVector PullTargetLocation;
-		FVector Direction;
-		if (CachedLift->IsOverlappedPattern1())
-		{
-			PullTargetLocation = CachedSerinDollHead->GetActorLocation();
-			PullTargetLocation.Z = GetActorLocation().Z;
-			Direction = (PullTargetLocation - GetActorLocation()).GetSafeNormal();
-		}
-		else
-		{
-			PullTargetLocation = CachedSerinDollHead->GetCachedErica()->GetActorLocation();
-			PullTargetLocation.Z = GetActorLocation().Z;
-			Direction = (PullTargetLocation - GetActorLocation()).GetSafeNormal();
-		}
+        FVector PullTargetLocation;
+        FVector Direction;
+        if (CachedLift->IsOverlappedPattern1())
+        {
+            PullTargetLocation = CachedSerinDollHead->GetActorLocation();
+            PullTargetLocation.Z = GetActorLocation().Z;
+            Direction = (PullTargetLocation - GetActorLocation()).GetSafeNormal();
+        }
+        else
+        {
+            PullTargetLocation = CachedSerinDollHead->GetCachedErica()->GetActorLocation();
+            PullTargetLocation.Z = GetActorLocation().Z;
+            Direction = (PullTargetLocation - GetActorLocation()).GetSafeNormal();
+        }
 
-		StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-		StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel9, ECR_Overlap);
-		ProjectileMovementComponent->Activate();
-		ProjectileMovementComponent->Velocity = Direction * ProjectileReturnSpeed;
-		const FRotator NewRotator = FRotationMatrix::MakeFromX(ProjectileMovementComponent->Velocity.GetSafeNormal()).Rotator();
-		SetActorRotation(NewRotator);
-		Pattern1ThrowEffectComponent->Activate(true);
+        StaticMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+        StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel9, ECR_Overlap);
+        ProjectileMovementComponent->Activate();
+        ProjectileMovementComponent->Velocity = Direction * ProjectileReturnSpeed;
+        const FRotator NewRotator = FRotationMatrix::MakeFromX(ProjectileMovementComponent->Velocity.GetSafeNormal()).Rotator();
+        SetActorRotation(NewRotator);
+        Pattern1ThrowEffectComponent->Activate(true);
 
-		if (OnDetachedCard.IsBound())
-		{
-			OnDetachedCard.Execute();
-		}
+        if (OnDetachedCard.IsBound())
+        {
+            OnDetachedCard.Execute();
+        }
 
-		State = ESerinDollProjectileState::Returning;
+        State = ESerinDollProjectileState::Returning;
 
-		bOnceDetached = true;
-	}
+        bOnceDetached = true;
+    }
 }
 
 void APCRSerinDollPattern1Projectile::HandlePattern1Explosion()
 {
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
-	                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
+    UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+                                                   SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
 
-	const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
-	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1Bomb, NewTransform, true);
+    const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
+    UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1Bomb, NewTransform, true);
 
-	TArray<FOverlapResult> OutOverlaps;
-	const float Radius = 700.f;
-	const float Damage = 15.f;
-	const bool bSucceed = GetWorld()->OverlapMultiByObjectType(OutOverlaps, GetActorLocation(), FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Radius));
-	if (bSucceed)
-	{
-		for (const auto& OutOverlap : OutOverlaps)
-		{
-			if (AActor* OverlappedActor = OutOverlap.GetActor())
-			{
-				FDamageEvent DamageEvent;
-				const APCRSerinDollHeadCharacter* SerinDollHead = Cast<APCRSerinDollHeadCharacter>(GetOwner());
-				check(SerinDollHead);
-				OverlappedActor->TakeDamage(Damage, DamageEvent, SerinDollHead->GetController(), this);
-			}
-		}
-	}
+    TArray<FOverlapResult> OutOverlaps;
+    const float Radius = 700.f;
+    const float Damage = 15.f;
+    const bool bSucceed = GetWorld()->OverlapMultiByObjectType(OutOverlaps, GetActorLocation(), FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Radius));
+    if (bSucceed)
+    {
+        for (const auto& OutOverlap : OutOverlaps)
+        {
+            if (AActor* OverlappedActor = OutOverlap.GetActor())
+            {
+                FDamageEvent DamageEvent;
+                const APCRSerinDollHeadCharacter* SerinDollHead = Cast<APCRSerinDollHeadCharacter>(GetOwner());
+                check(SerinDollHead);
+                OverlappedActor->TakeDamage(Damage, DamageEvent, SerinDollHead->GetController(), this);
+            }
+        }
+    }
 
-	const FColor Color = bSucceed ? FColor::Red : FColor::Green;
+    const FColor Color = bSucceed ? FColor::Red : FColor::Green;
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 16, Color,
-	                false, 1.f);
+    DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 16, Color,
+                    false, 1.f);
 
-	Destroy();
+    Destroy();
 }
 
 void APCRSerinDollPattern1Projectile::HandlePattern1ExplosionTimerSound()
 {
-	const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
-	UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombTimer, NewTransform, true);
+    const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
+    UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombTimer, NewTransform, true);
 }
 
 void APCRSerinDollPattern1Projectile::HandleBossOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	float DamageAmount;
-	const FDamageEvent DamageEvent;
+    float DamageAmount;
+    const FDamageEvent DamageEvent;
 
-	if (Cast<APCREricaCharacter>(OtherActor))
-	{
-		if (bCanTakeDamageToErica)
-		{
-			DamageAmount = 20.f;
-			OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
-			bCanTakeDamageToErica = false; 
-		}
-	}
-	else
-	{
-		DamageAmount = 5.f;
-		OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
+    if (Cast<APCREricaCharacter>(OtherActor))
+    {
+        if (bCanTakeDamageToErica)
+        {
+            DamageAmount = 20.f;
+            OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
+            bCanTakeDamageToErica = false;
+        }
+    }
+    else
+    {
+        DamageAmount = 5.f;
+        OtherActor->TakeDamage(DamageAmount, DamageEvent, nullptr, this);
 
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
-		                                               SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(),
+                                                       SerinDollDataAsset->Pattern1BombEffect, GetActorLocation());
 
-		const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
-		UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
+        const FTransform NewTransform = FTransform(GetActorRotation(), GetActorLocation());
+        UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), SoundDataAsset->Pattern1BombCrash, NewTransform, true);
 
-		Release();
-	}
+        Release();
+    }
 }

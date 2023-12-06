@@ -87,6 +87,12 @@ private: // 컴포넌트
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> Pattern1ThrowEffectComponent;
 
+	UPROPERTY()
+	TArray<TObjectPtr<UNiagaraComponent>> Pattern1SparkEffectComponents;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraComponent> Pattern1BombTimerEffectComponent;
+
 private: // 데이터
 	ESerinDollProjectileState State;
 	FTimerHandle TimerSoundHandle;
