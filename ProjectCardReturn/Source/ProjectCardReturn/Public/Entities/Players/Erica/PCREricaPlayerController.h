@@ -19,73 +19,73 @@ class APCRSerinDollHeadCharacter;
 UCLASS()
 class PROJECTCARDRETURN_API APCREricaPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	APCREricaPlayerController();
+    APCREricaPlayerController();
 
 protected:
-	virtual void PostInitializeComponents() override;
-	virtual void SetupInputComponent() override;
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void BeginPlay() override;
+    virtual void PostInitializeComponents() override;
+    virtual void SetupInputComponent() override;
+    virtual void OnPossess(APawn* InPawn) override;
+    virtual void BeginPlay() override;
 
 public: // 동작 섹션
-	FVector GetMouseDirection() const;
-	void BindSerinUI(APCRSerinDollHeadCharacter* Serin);
-	
-	UFUNCTION(BlueprintCallable)
-	void SetVisibilityHUD(bool bIsEnable);
+    FVector GetMouseDirection() const;
+    void BindSerinUI(APCRSerinDollHeadCharacter* Serin);
 
-	UFUNCTION(BlueprintCallable)
-	void SetVisibilityStage1UI(bool bIsEnable);
+    UFUNCTION(BlueprintCallable)
+    void SetVisibilityHUD(bool bIsEnable);
 
-	UFUNCTION(BlueprintCallable)
-	void SetVisibilitySerinUI(bool bIsEnable);
+    UFUNCTION(BlueprintCallable)
+    void SetVisibilityStage1UI(bool bIsEnable);
+
+    UFUNCTION(BlueprintCallable)
+    void SetVisibilitySerinUI(bool bIsEnable);
 
 private: // 내부 함수 섹션
-	void BindEricaUI();
-	void BindStage1UI();
-	void GamePause();
-	void GameOver();
+    void BindEricaUI();
+    void BindStage1UI();
+    void GamePause();
+    void GameOver();
 
 private: // 데이터 에셋 섹션
-	UPROPERTY()
-	TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
+    UPROPERTY()
+    TObjectPtr<const UPCREricaDataAsset> EricaDataAsset;
 
-	UPROPERTY()
-	TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
+    UPROPERTY()
+    TObjectPtr<const UPCRUIDataAsset> UIDataAsset;
 
 private: // 캐시 섹션
-	UPROPERTY()
-	TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
+    UPROPERTY()
+    TObjectPtr<APCREricaCharacter> CachedEricaCharacter;
 
 private: // UI 섹션
-	UPROPERTY()
-	TSubclassOf<UPCRHUDUserWidget> HUDUserWidgetClass;
+    UPROPERTY()
+    TSubclassOf<UPCRHUDUserWidget> HUDUserWidgetClass;
 
-	UPROPERTY()
-	TObjectPtr<UPCRHUDUserWidget> HUDUserWidget;
+    UPROPERTY()
+    TObjectPtr<UPCRHUDUserWidget> HUDUserWidget;
 
-	UPROPERTY()
-	TSubclassOf<UPCRPauseUserWidget> PauseUserWidgetClass;
+    UPROPERTY()
+    TSubclassOf<UPCRPauseUserWidget> PauseUserWidgetClass;
 
-	UPROPERTY()
-	TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
+    UPROPERTY()
+    TObjectPtr<UPCRPauseUserWidget> PauseUserWidget;
 
-	UPROPERTY()
-	TSubclassOf<UPCRSerinUserWidget> SerinUserWidgetClass;
+    UPROPERTY()
+    TSubclassOf<UPCRSerinUserWidget> SerinUserWidgetClass;
 
-	UPROPERTY()
-	TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
+    UPROPERTY()
+    TObjectPtr<UPCRSerinUserWidget> SerinUserWidget;
 
-	UPROPERTY()
-	TSubclassOf<UUserWidget> GameOverUserWidgetClass;
+    UPROPERTY()
+    TSubclassOf<UUserWidget> GameOverUserWidgetClass;
 
-	UPROPERTY()
-	TObjectPtr<UUserWidget> GameOverUserWidget;
-
+    UPROPERTY()
+    TObjectPtr<UUserWidget> GameOverUserWidget;
 
 private: // 상태 섹션
-	uint32 bUseCharacterRotationByCursorDirection : 1;
+    uint32 bUseCharacterRotationByCursorDirection:1;
+    uint32 bIsPause:1;
 };

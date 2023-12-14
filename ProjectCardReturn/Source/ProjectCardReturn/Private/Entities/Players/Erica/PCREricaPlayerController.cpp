@@ -20,7 +20,7 @@
 #include "UI/PCRSerinUserWidget.h"
 #include "UI/PCRStage1UserWidget.h"
 
-APCREricaPlayerController::APCREricaPlayerController(): bUseCharacterRotationByCursorDirection(true)
+APCREricaPlayerController::APCREricaPlayerController() : bUseCharacterRotationByCursorDirection(true), bIsPause(false)
 {
 	bShowMouseCursor = true;
 
@@ -141,12 +141,23 @@ void APCREricaPlayerController::SetVisibilitySerinUI(bool bIsEnable)
 
 void APCREricaPlayerController::GamePause()
 {
-	PauseUserWidget = CreateWidget<UPCRPauseUserWidget>(this, PauseUserWidgetClass);
-	check(PauseUserWidget);
+	// PauseUserWidget = CreateWidget<UPCRPauseUserWidget>(this, PauseUserWidgetClass);
+	// check(PauseUserWidget);
+	//
+	// PauseUserWidget->AddToViewport(3);
 
-	PauseUserWidget->AddToViewport(3);
+	if (!bIsPause)
+	{
+		bIsPause = true;
+		bIsPause = SetPause(true);
+	}
+	else
+	{
+		bIsPause = false;
+		SetPause(false);
+	}
 
-	SetPause(true);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *GetCurrentInputModeDebugString());
 }
 
 void APCREricaPlayerController::GameOver()
